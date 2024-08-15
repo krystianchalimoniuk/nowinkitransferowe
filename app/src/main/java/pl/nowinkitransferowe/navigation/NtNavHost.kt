@@ -1,0 +1,111 @@
+package pl.nowinkitransferowe.navigation
+
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
+import pl.nowinkitransferowe.feature.bookmarks.navigation.bookmarksScreen
+import pl.nowinkitransferowe.feature.details.navigation.detailsScreen
+import pl.nowinkitransferowe.feature.details.navigation.navigateToDetails
+import pl.nowinkitransferowe.feature.news.navigation.NEWS_ROUTE
+import pl.nowinkitransferowe.feature.search.navigation.navigateToSearch
+import pl.nowinkitransferowe.feature.search.navigation.searchScreen
+import pl.nowinkitransferowe.feature.transfers.navigation.navigateToTransfer
+import pl.nowinkitransferowe.feature.transfers.navigation.transferScreen
+import pl.nowinkitransferowe.ui.NtAppState
+import pl.nowinkitransferowe.ui.news2pane.newsListDetailScreen
+
+/**
+ * Top-level navigation graph. Navigation is organized as explained at
+ * https://d.android.com/jetpack/compose/nav-adaptive
+ *
+ * The navigation graph defined in this file defines the different top level routes. Navigation
+ * within each route is handled using state and Back Handlers.
+ */
+@Composable
+fun NtNavHost(
+    appState: NtAppState,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
+    modifier: Modifier = Modifier,
+    startDestination: String = NEWS_ROUTE,
+) {
+    val navController = appState.navController
+    NavHost(
+
+        navController = navController,
+        startDestination = startDestination,
+//        enterTransition = enterTransition,
+//        exitTransition = exitTransition,
+//        popEnterTransition = popEnterTransition,
+//        popExitTransition = popExitTransition,
+        modifier = modifier,
+
+        ) {
+        newsListDetailScreen(
+            onTopicClick = navController::navigateToSearch
+        )
+        transferScreen(onCleanBackStack = {
+            navController.popBackStack()
+            navController.navigateToTransfer(navOptions {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            })
+        })
+        bookmarksScreen(
+            onNewsClick = navController::navigateToDetails,
+            onTopicClick = navController::navigateToSearch,
+            onShowSnackbar = onShowSnackbar,
+        )
+        detailsScreen(
+            showBackButton = true,
+            onBackClick = navController::popBackStack,
+            onTopicClick = navController::navigateToSearch
+        )
+        searchScreen(
+            onBackClick = navController::popBackStack,
+            onNewsClick = navController::navigateToDetails
+        )
+    }
+}
+
+private const val TIME_DURATION = 300
+
+val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+    slideInHorizontally(
+        initialOffsetX = { it },
+        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+    )
+}
+
+val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+    slideOutHorizontally(
+        targetOffsetX = { -it / 3 },
+        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+    )
+}
+
+val popEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+    slideInHorizontally(
+        initialOffsetX = { -it / 3 },
+        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+    )
+}
+
+val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+    slideOutHorizontally(
+        targetOffsetX = { it },
+        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+    )
+}

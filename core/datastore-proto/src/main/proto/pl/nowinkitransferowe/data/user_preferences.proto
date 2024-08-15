@@ -1,0 +1,34 @@
+
+syntax = "proto3";
+
+import "pl/nowinkitransferowe/data/dark_theme_config.proto";
+
+option java_package = "pl.nowinkitransferowe.core.datastoreproto";
+option java_multiple_files = true;
+
+message UserPreferences {
+    reserved 2;
+    int32 transferResourcesChangeListVersion = 1;
+    int32 newsResourceChangeListVersion = 3;
+
+    // Each map is used to store a set of string IDs. The bool has no meaning, but proto3 doesn't
+    // have a Set type so this is the closest we can get to a Set.
+    map<string, bool> followed_topic_ids = 4;
+    map<string, bool> followed_author_ids = 5;
+    map<string, bool> bookmarked_news_resource_ids = 6;
+    map<string, bool> viewed_news_resource_ids = 7;
+
+    DarkThemeConfigProto dark_theme_config = 8;
+
+    bool use_dynamic_color = 19;
+
+    map<string, bool> bookmarked_transfer_resource_ids = 10;
+    map<string, bool> viewed_transfer_resource_ids = 11;
+
+    bool notifyNews = 12;
+    bool notifyTransfers = 13;
+    bool notifyGeneral = 14;
+
+
+    // NEXT AVAILABLE ID: 22
+}

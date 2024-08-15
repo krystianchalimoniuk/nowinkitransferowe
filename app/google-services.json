@@ -1,0 +1,185 @@
+{
+  "project_info": {
+    "project_number": "842952013310",
+    "firebase_url": "https://nowinki-transferowe.firebaseio.com",
+    "project_id": "nowinki-transferowe",
+    "storage_bucket": "nowinki-transferowe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842952013310:android:6b1c8376a19cc279",
+        "android_client_info": {
+          "package_name": "pl.nowinkitransferowe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7gOFWXOYX6n9ojXCtGEbshv7eDg7Crw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842952013310:android:8e860a5b48f29618fbfcaf",
+        "android_client_info": {
+          "package_name": "pl.nowinkitransferowe.benchmark"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7gOFWXOYX6n9ojXCtGEbshv7eDg7Crw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842952013310:android:8102d410295f97cbfbfcaf",
+        "android_client_info": {
+          "package_name": "pl.nowinkitransferowe.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7gOFWXOYX6n9ojXCtGEbshv7eDg7Crw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842952013310:android:8cb71e1b21ec49e6fbfcaf",
+        "android_client_info": {
+          "package_name": "pl.nowinkitransferowe.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7gOFWXOYX6n9ojXCtGEbshv7eDg7Crw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842952013310:android:47f7ab7096f8246cfbfcaf",
+        "android_client_info": {
+          "package_name": "pl.nowinkitransferowe.demo.benchmark"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7gOFWXOYX6n9ojXCtGEbshv7eDg7Crw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842952013310:android:a4d20fe73fde9eecfbfcaf",
+        "android_client_info": {
+          "package_name": "pl.nowinkitransferowe.demo.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7gOFWXOYX6n9ojXCtGEbshv7eDg7Crw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842952013310-68ltae4rdmj5a3a7t4rsv2ud1jnv5v9h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

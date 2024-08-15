@@ -1,0 +1,13 @@
+<resources>
+    <string name="core_ui_bookmark">Zakładka</string>
+    <string name="core_ui_unbookmark">Usuń zakładkę</string>
+    <string name="core_ui_back">Wróć</string>
+    <string name="core_ui_share">Udostępnij</string>
+
+    <string name="core_ui_unread_resource_dot_content_description">Nieprzeczytana</string>
+    <string name="core_ui_card_meta_data_text">%1$s • %2$s</string>
+    <string name="core_ui_topic_chip_content_description_when_followed">%1$s jest obserwowany</string>
+    <string name="core_ui_topic_chip_content_description_when_not_followed">%1$s nie jest obserwowany</string>
+    <string name="core_ui_topic_chip_content_description">Topic: %1$s</string>
+    <string name="core_ui_card_tap_action">Otwórz szczegóły</string>
+</resources>

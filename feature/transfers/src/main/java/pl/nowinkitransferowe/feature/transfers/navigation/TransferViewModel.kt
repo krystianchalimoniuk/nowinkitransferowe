@@ -1,0 +1,133 @@
+package pl.nowinkitransferowe.feature.transfers.navigation
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
+import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
+import pl.nowinkitransferowe.core.data.repository.UserDataRepository
+import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
+import pl.nowinkitransferowe.core.data.util.SyncManager
+import pl.nowinkitransferowe.core.ui.TransferFeedUiState
+import javax.inject.Inject
+import pl.nowinkitransferowe.core.data.repository.TransferResourceQuery
+
+@HiltViewModel
+class TransferViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    syncManager: SyncManager,
+    private val analyticsHelper: AnalyticsHelper,
+    userTransferResourceRepository: UserTransferResourceRepository,
+    private val userDataRepository: UserDataRepository,
+) : ViewModel() {
+    private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
+    val page: StateFlow<Int> = _page.asStateFlow()
+
+    val transfersCount = userTransferResourceRepository.getCount().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = 0
+    )
+
+    val deepLinkedTransferResource = savedStateHandle.getStateFlow<String?>(
+        key = LINKED_TRANSFER_RESOURCE_ID,
+        null,
+    )
+        .flatMapLatest { transfersResourceId ->
+            if (transfersResourceId == null) {
+                flowOf(emptyList())
+            } else {
+                userTransferResourceRepository.observeAll(
+                    TransferResourceQuery(
+                        filterTransferIds = setOf(transfersResourceId),
+                    ),
+                )
+            }
+        }
+        .map { it.firstOrNull() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+
+    val feedUiState: StateFlow<TransferFeedUiState> = _page.flatMapLatest {
+        userTransferResourceRepository.observeAllPages(
+            PAGE_SIZE * it, 0
+        )
+    }.map { updatedList ->
+        TransferFeedUiState.Success(updatedList)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = TransferFeedUiState.Loading,
+    )
+
+    val isSyncing = syncManager.isSyncing
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false,
+        )
+
+    fun updateTransferResourceSaved(transferResourceId: String, isChecked: Boolean) {
+        viewModelScope.launch {
+            userDataRepository.setTransferResourceBookmarked(transferResourceId, isChecked)
+        }
+    }
+
+    fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean) {
+        viewModelScope.launch {
+            userDataRepository.setTransferResourceViewed(transferResourceId, viewed)
+        }
+    }
+
+    fun loadNextPage(page: Int, transferCount: Int) {
+        if (page * PAGE_SIZE < transferCount) {
+            viewModelScope.launch {
+                _page.value += 1
+            }
+        }
+    }
+
+    fun onDeepLinkOpened(transferResourceId: String) {
+        if (transferResourceId == deepLinkedTransferResource.value?.id) {
+            savedStateHandle[LINKED_TRANSFER_RESOURCE_ID] = null
+        }
+        analyticsHelper.logTransferDeepLinkOpen(transferResourceId = transferResourceId)
+        viewModelScope.launch {
+            userDataRepository.setTransferResourceViewed(
+                transferResourceId = transferResourceId,
+                viewed = true,
+            )
+        }
+    }
+
+    companion object {
+        const val PAGE_SIZE = 5
+    }
+}
+
+private fun AnalyticsHelper.logTransferDeepLinkOpen(transferResourceId: String) =
+    logEvent(
+        AnalyticsEvent(
+            type = "transfer_deep_link_opened",
+            extras = listOf(
+                AnalyticsEvent.Param(
+                    key = LINKED_TRANSFER_RESOURCE_ID,
+                    value = transferResourceId,
+                ),
+            ),
+        ),
+    )
+

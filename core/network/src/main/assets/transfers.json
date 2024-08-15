@@ -1,0 +1,90 @@
+[
+  {
+    "id": 15813,
+    "name": "Raphael Varane",
+    "footballer_photo": "aa11twarz.jpg",
+    "club_from": "Manchester United",
+    "club_from_photo": "manchesterunited_herbb.png",
+    "club_to": "Como 1907",
+    "club_to_photo": "como_herbb.png",
+    "price": "za darmo",
+    "link": "11233\/Transfery\/oficjalnie-raphael-varane-w-como-1907"
+  },
+  {
+    "id": 15812,
+    "name": "Morgan Guilavogui",
+    "footballer_photo": "aa11twarz.jpg",
+    "club_from": "RC Lens",
+    "club_from_photo": "lens_herbb.png",
+    "club_to": "FC St. Pauli",
+    "club_to_photo": "stpauli_herbb.png",
+    "price": "wypożyczenie",
+    "link": ""
+  },
+  {
+    "id": 15811,
+    "name": "Zinho Vanheusden",
+    "footballer_photo": "aa11twarz.jpg",
+    "club_from": "Inter Mediolan",
+    "club_from_photo": "inter_herbb.png",
+    "club_to": "KV Mechelen",
+    "club_to_photo": "mechelen_herbb.png",
+    "price": "wypożyczenie",
+    "link": ""
+  },
+  {
+    "id": 15810,
+    "name": "Alfred Duncan",
+    "footballer_photo": "aa11twarz.jpg",
+    "club_from": "ACF Fiorentina",
+    "club_from_photo": "fiorentinanew_herbb.png",
+    "club_to": "Venezia FC",
+    "club_to_photo": "venezianew_herbb.png",
+    "price": "za darmo",
+    "link": ""
+  },
+  {
+    "id": 15809,
+    "name": "Sardar Azmoun",
+    "footballer_photo": "aa11twarz.jpg",
+    "club_from": "Bayer Leverkusen",
+    "club_from_photo": "bayer_herbb.png",
+    "club_to": "Shabab Al-Ahli",
+    "club_to_photo": "alahlidubai_herb.png",
+    "price": "5 mln €",
+    "link": ""
+  },
+  {
+    "id": 15808,
+    "name": "Jakub Murawski",
+    "footballer_photo": "aa11twarz.jpg",
+    "club_from": "Legia Warszawa",
+    "club_from_photo": "legia_herbb.png",
+    "club_to": "Avia Świdnik",
+    "club_to_photo": "avia_herbb.png",
+    "price": "za darmo",
+    "link": ""
+  },
+  {
+    "id": 15807,
+    "name": "Marek Rodak",
+    "footballer_photo": "aa11twarz.jpg",
+    "club_from": "Fulham FC",
+    "club_from_photo": "fulham_herbb.png",
+    "club_to": "Al-Ettifaq",
+    "club_to_photo": "alettifaq_herb.png",
+    "price": "za darmo",
+    "link": ""
+  },
+  {
+    "id": 15806,
+    "name": "Kay Tejan",
+    "footballer_photo": "aa11twarz.jpg",
+    "club_from": "ŁKS Łódź",
+    "club_from_photo": "lks_herbb.png",
+    "club_to": "USL Dunkerque",
+    "club_to_photo": "usldunkerque_herbb.png",
+    "price": "nie ujawniono",
+    "link": ""
+  }
+]
