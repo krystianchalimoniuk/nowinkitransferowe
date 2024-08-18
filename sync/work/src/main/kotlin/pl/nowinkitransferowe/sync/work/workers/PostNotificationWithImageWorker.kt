@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.sync.work.workers
 
 import android.content.Context
@@ -87,8 +103,8 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
                 id,
                 title,
                 description,
-                url
-            )
+                url,
+            ),
         )
     }
 
@@ -110,8 +126,8 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
                 analyticsHelper.logDownloadImageError(
                     AnalyticsEvent.Param(
                         "error",
-                        result.throwable.toString()
-                    )
+                        result.throwable.toString(),
+                    ),
                 )
                 postNotificationWithoutImage(id, title, description, url)
             }
@@ -120,7 +136,7 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
                 val bitmapDrawable = result.drawable as BitmapDrawable
                 notifier.postGeneralNotification(
                     GeneralNotificationResource(id, title, description, url),
-                    bitmap = bitmapDrawable.bitmap
+                    bitmap = bitmapDrawable.bitmap,
                 )
             }
         }
@@ -148,7 +164,7 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
                 .setConstraints(
                     Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
+                        .build(),
                 )
                 .setInputData(
                     PostNotificationWithImageWorker::class.delegatedData(
@@ -157,12 +173,10 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
                             KEY_NOTIFICATION_TITLE to title,
                             KEY_NOTIFICATION_DESCRIPTION to description,
                             KEY_NOTIFICATION_URL to url,
-                            KEY_NOTIFICATION_IMAGE_URL to imageUrl
-                        )
-                    )
+                            KEY_NOTIFICATION_IMAGE_URL to imageUrl,
+                        ),
+                    ),
                 )
                 .build()
     }
-
-
 }

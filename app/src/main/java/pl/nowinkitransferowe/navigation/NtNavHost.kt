@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -49,19 +65,21 @@ fun NtNavHost(
 //        popExitTransition = popExitTransition,
         modifier = modifier,
 
-        ) {
+    ) {
         newsListDetailScreen(
-            onTopicClick = navController::navigateToSearch
+            onTopicClick = navController::navigateToSearch,
         )
         transferScreen(onCleanBackStack = {
             navController.popBackStack()
-            navController.navigateToTransfer(navOptions {
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
-                }
-                launchSingleTop = true
-                restoreState = true
-            })
+            navController.navigateToTransfer(
+                navOptions {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                },
+            )
         })
         bookmarksScreen(
             onNewsClick = navController::navigateToDetails,
@@ -71,11 +89,11 @@ fun NtNavHost(
         detailsScreen(
             showBackButton = true,
             onBackClick = navController::popBackStack,
-            onTopicClick = navController::navigateToSearch
+            onTopicClick = navController::navigateToSearch,
         )
         searchScreen(
             onBackClick = navController::popBackStack,
-            onNewsClick = navController::navigateToDetails
+            onNewsClick = navController::navigateToDetails,
         )
     }
 }
@@ -85,27 +103,27 @@ private const val TIME_DURATION = 300
 val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
     slideInHorizontally(
         initialOffsetX = { it },
-        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing),
     )
 }
 
 val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
     slideOutHorizontally(
         targetOffsetX = { -it / 3 },
-        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing),
     )
 }
 
 val popEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
     slideInHorizontally(
         initialOffsetX = { -it / 3 },
-        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing),
     )
 }
 
 val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
     slideOutHorizontally(
         targetOffsetX = { it },
-        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+        animationSpec = tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing),
     )
 }

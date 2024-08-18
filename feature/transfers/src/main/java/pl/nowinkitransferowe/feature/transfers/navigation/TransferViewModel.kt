@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.transfers.navigation
 
 import androidx.lifecycle.SavedStateHandle
@@ -15,12 +31,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
+import pl.nowinkitransferowe.core.data.repository.TransferResourceQuery
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import javax.inject.Inject
-import pl.nowinkitransferowe.core.data.repository.TransferResourceQuery
 
 @HiltViewModel
 class TransferViewModel @Inject constructor(
@@ -36,7 +52,7 @@ class TransferViewModel @Inject constructor(
     val transfersCount = userTransferResourceRepository.getCount().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = 0
+        initialValue = 0,
     )
 
     val deepLinkedTransferResource = savedStateHandle.getStateFlow<String?>(
@@ -63,7 +79,8 @@ class TransferViewModel @Inject constructor(
 
     val feedUiState: StateFlow<TransferFeedUiState> = _page.flatMapLatest {
         userTransferResourceRepository.observeAllPages(
-            PAGE_SIZE * it, 0
+            PAGE_SIZE * it,
+            0,
         )
     }.map { updatedList ->
         TransferFeedUiState.Success(updatedList)
@@ -130,4 +147,3 @@ private fun AnalyticsHelper.logTransferDeepLinkOpen(transferResourceId: String) 
             ),
         ),
     )
-

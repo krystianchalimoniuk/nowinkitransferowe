@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe
 
 import android.os.Bundle
@@ -23,20 +39,20 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import pl.nowinkitransferowe.MainActivityUiState.Loading
+import pl.nowinkitransferowe.MainActivityUiState.Success
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.analytics.LocalAnalyticsHelper
 import pl.nowinkitransferowe.core.data.repository.UserNewsResourceRepository
+import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.ui.LocalTimeZone
 import pl.nowinkitransferowe.ui.NtApp
-import javax.inject.Inject
-import pl.nowinkitransferowe.MainActivityUiState.Loading
-import pl.nowinkitransferowe.MainActivityUiState.Success
-import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.ui.rememberNtAppState
+import javax.inject.Inject
 
 private const val TAG = "MainActivity"
 
@@ -124,7 +140,6 @@ class MainActivity : ComponentActivity() {
                 timeZoneMonitor = timeZoneMonitor,
             )
 
-
             val currentTimeZone by appState.currentTimeZone.collectAsStateWithLifecycle()
 
             CompositionLocalProvider(
@@ -151,8 +166,6 @@ class MainActivity : ComponentActivity() {
         lazyStats.get().isTrackingEnabled = false
     }
 }
-
-
 
 /**
  * Returns `true` if the dynamic color is disabled, as a function of the [uiState].

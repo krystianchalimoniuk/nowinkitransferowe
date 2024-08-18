@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.first
@@ -35,7 +51,6 @@ class OfflineFirstNewsRepositoryTest {
 
     private lateinit var newsResourceDao: TestNewsResourceDao
 
-
     private lateinit var network: TestNtNetworkDataSource
 
     private lateinit var notifier: TestNotifier
@@ -65,7 +80,7 @@ class OfflineFirstNewsRepositoryTest {
             newsResourceDao = newsResourceDao,
             network = network,
             notifier = notifier,
-            databaseUpdatingMonitor = databaseUpdatingMonitor
+            databaseUpdatingMonitor = databaseUpdatingMonitor,
         )
     }
 
@@ -77,11 +92,9 @@ class OfflineFirstNewsRepositoryTest {
                     .first()
                     .map(NewsResourceEntity::asExternalModel),
                 subject.getNewsResources()
-                    .first()
+                    .first(),
             )
-
         }
-
 
     @Test
     fun offlineFirstNewsRepository_sync_pulls_from_network() =
@@ -116,7 +129,6 @@ class OfflineFirstNewsRepositoryTest {
     @Test
     fun offlineFirstNewsRepository_sync_deletes_items_marked_deleted_on_network() =
         testScope.runTest {
-
             val newsResourcesFromNetwork = network.getNewsResources()
                 .map(NetworkNewsResource::asEntity)
                 .map(NewsResourceEntity::asExternalModel)
@@ -200,7 +212,6 @@ class OfflineFirstNewsRepositoryTest {
             assertTrue(notifier.addedNewsResources.isEmpty())
         }
 
-
     @Test
     fun offlineFirstNewsRepository_sync_marks_as_read_on_first_run() =
         testScope.runTest {
@@ -230,13 +241,12 @@ class OfflineFirstNewsRepositoryTest {
     @Test
     fun offlineFirstNewsRepository_sends_notifications_for_newly_synced_news() =
         testScope.runTest {
-           ntPreferencesDataSource.setNewsNotificationsAllowed(true)
+            ntPreferencesDataSource.setNewsNotificationsAllowed(true)
             // Pretend that we already have up to change list 7
             synchronizer.updateChangeListVersions {
                 copy(newsResourceVersion = 7)
             }
             val networkNewsResources = network.getNewsResources()
-
 
             subject.syncWith(synchronizer)
 
@@ -265,7 +275,6 @@ class OfflineFirstNewsRepositoryTest {
 
             // Prepopulate dao with news resources
             newsResourceDao.upsertNewsResources(networkNewsResources)
-
 
             subject.syncWith(synchronizer)
 

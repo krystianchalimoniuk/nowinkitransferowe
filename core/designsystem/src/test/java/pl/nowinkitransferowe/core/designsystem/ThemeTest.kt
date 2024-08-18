@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.designsystem
 
 import android.os.Build.VERSION.SDK_INT
@@ -11,9 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
-import org.junit.Test
-
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import pl.nowinkitransferowe.core.designsystem.theme.BackgroundTheme
@@ -167,17 +182,17 @@ class ThemeTest {
         kotlin.test.assertEquals(expectedColorScheme.onPrimary, actualColorScheme.onPrimary)
         kotlin.test.assertEquals(
             expectedColorScheme.primaryContainer,
-            actualColorScheme.primaryContainer
+            actualColorScheme.primaryContainer,
         )
         kotlin.test.assertEquals(
             expectedColorScheme.onPrimaryContainer,
-            actualColorScheme.onPrimaryContainer
+            actualColorScheme.onPrimaryContainer,
         )
         kotlin.test.assertEquals(expectedColorScheme.secondary, actualColorScheme.secondary)
         kotlin.test.assertEquals(expectedColorScheme.onSecondary, actualColorScheme.onSecondary)
         kotlin.test.assertEquals(
             expectedColorScheme.secondaryContainer,
-            actualColorScheme.secondaryContainer
+            actualColorScheme.secondaryContainer,
         )
         kotlin.test.assertEquals(
             expectedColorScheme.onSecondaryContainer,
@@ -187,21 +202,21 @@ class ThemeTest {
         kotlin.test.assertEquals(expectedColorScheme.onTertiary, actualColorScheme.onTertiary)
         kotlin.test.assertEquals(
             expectedColorScheme.tertiaryContainer,
-            actualColorScheme.tertiaryContainer
+            actualColorScheme.tertiaryContainer,
         )
         kotlin.test.assertEquals(
             expectedColorScheme.onTertiaryContainer,
-            actualColorScheme.onTertiaryContainer
+            actualColorScheme.onTertiaryContainer,
         )
         kotlin.test.assertEquals(expectedColorScheme.error, actualColorScheme.error)
         kotlin.test.assertEquals(expectedColorScheme.onError, actualColorScheme.onError)
         kotlin.test.assertEquals(
             expectedColorScheme.errorContainer,
-            actualColorScheme.errorContainer
+            actualColorScheme.errorContainer,
         )
         kotlin.test.assertEquals(
             expectedColorScheme.onErrorContainer,
-            actualColorScheme.onErrorContainer
+            actualColorScheme.onErrorContainer,
         )
         kotlin.test.assertEquals(expectedColorScheme.background, actualColorScheme.background)
         kotlin.test.assertEquals(expectedColorScheme.onBackground, actualColorScheme.onBackground)
@@ -209,19 +224,19 @@ class ThemeTest {
         kotlin.test.assertEquals(expectedColorScheme.onSurface, actualColorScheme.onSurface)
         kotlin.test.assertEquals(
             expectedColorScheme.surfaceVariant,
-            actualColorScheme.surfaceVariant
+            actualColorScheme.surfaceVariant,
         )
         kotlin.test.assertEquals(
             expectedColorScheme.onSurfaceVariant,
-            actualColorScheme.onSurfaceVariant
+            actualColorScheme.onSurfaceVariant,
         )
         kotlin.test.assertEquals(
             expectedColorScheme.inverseSurface,
-            actualColorScheme.inverseSurface
+            actualColorScheme.inverseSurface,
         )
         kotlin.test.assertEquals(
             expectedColorScheme.inverseOnSurface,
-            actualColorScheme.inverseOnSurface
+            actualColorScheme.inverseOnSurface,
         )
         kotlin.test.assertEquals(expectedColorScheme.outline, actualColorScheme.outline)
     }

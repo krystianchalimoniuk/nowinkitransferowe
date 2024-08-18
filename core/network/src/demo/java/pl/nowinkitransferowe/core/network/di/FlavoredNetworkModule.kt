@@ -16,7 +16,6 @@
 
 package pl.nowinkitransferowe.core.network.di
 
-
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

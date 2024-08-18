@@ -85,9 +85,9 @@ internal class SystemTrayNotifier @Inject constructor(
                     .setContentText(
                         HtmlCompat.fromHtml(
                             newsResource.description,
-                            HtmlCompat.FROM_HTML_MODE_COMPACT
+                            HtmlCompat.FROM_HTML_MODE_COMPACT,
                         )
-                            .toString()
+                            .toString(),
                     )
                     .setContentIntent(newsPendingIntent(newsResource))
                     .setGroup(NEWS_NOTIFICATION_GROUP)
@@ -175,7 +175,7 @@ internal class SystemTrayNotifier @Inject constructor(
         with(context) {
             if (checkSelfPermission(
                     this,
-                    permission.POST_NOTIFICATIONS
+                    permission.POST_NOTIFICATIONS,
                 ) != PERMISSION_GRANTED
             ) {
                 return
@@ -193,8 +193,8 @@ internal class SystemTrayNotifier @Inject constructor(
                     .setStyle(
                         generalNotificationSummaryStyle(
                             generalNotificationResource.title,
-                            title
-                        )
+                            title,
+                        ),
                     )
                     .setGroup(GENERAL_NOTIFICATION_GROUP)
                     .setGroupSummary(true)
@@ -211,8 +211,8 @@ internal class SystemTrayNotifier @Inject constructor(
                     .setStyle(style)
                     .setContentIntent(
                         generalNotificationPendingIntent(
-                            generalNotificationResource
-                        )
+                            generalNotificationResource,
+                        ),
                     )
                     .setGroup(GENERAL_NOTIFICATION_GROUP)
                     .setAutoCancel(true)
@@ -225,7 +225,6 @@ internal class SystemTrayNotifier @Inject constructor(
             )
             notificationManager.notify(GENERAL_NOTIFICATION_SUMMARY_ID, summaryNotification)
         }
-
 
     /**
      * Creates an inbox style summary notification for news updates
@@ -266,9 +265,7 @@ internal class SystemTrayNotifier @Inject constructor(
         title: String,
     ) = InboxStyle().addLine(notificationTitle).setBigContentTitle(title)
         .setSummaryText(title)
-
 }
-
 
 /**
  * Creates a notification for configured for news updates
@@ -337,12 +334,14 @@ private fun Context.transferPendingIntent(
 
 private fun Context.generalNotificationPendingIntent(generalNotificationResource: GeneralNotificationResource): PendingIntent? =
     PendingIntent.getActivity(
-        this, GENERAL_NOTIFICATIONS_REQUEST_CODE,
+        this,
+        GENERAL_NOTIFICATIONS_REQUEST_CODE,
         Intent().apply {
             action = Intent.ACTION_VIEW
             data = generalNotificationResource.url.toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        },
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
 
 private fun NewsResource.newsDeepLinkUri() = "$DEEP_LINK_SCHEME_AND_HOST/$NEWS_PATH/$id".toUri()

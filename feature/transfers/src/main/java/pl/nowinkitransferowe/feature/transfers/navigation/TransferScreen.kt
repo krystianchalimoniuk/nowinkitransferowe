@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.transfers.navigation
 
 import androidx.activity.compose.ReportDrawnWhen
@@ -77,7 +93,6 @@ internal fun TransferRoute(
     )
 }
 
-
 @Composable
 internal fun TransferScreen(
     isSyncing: Boolean,
@@ -93,7 +108,7 @@ internal fun TransferScreen(
     DeepLinkEffect(
         deepLinkedUserTransferResource,
         onDeepLinkOpened,
-        onCleanBackStack
+        onCleanBackStack,
     )
     val isFeedLoading = feedState is TransferFeedUiState.Loading
 
@@ -133,7 +148,6 @@ internal fun TransferScreen(
                 .testTag("transfers:feed"),
             state = state,
         ) {
-
             transferFeed(
                 feedState = feedState,
                 onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
@@ -186,7 +200,6 @@ internal fun TransferScreen(
         )
     }
     TrackScreenViewEvent(screenName = "Transfer")
-
 }
 
 @Composable
@@ -195,15 +208,13 @@ private fun DeepLinkEffect(
     onDeepLinkOpened: (String) -> Unit,
     onCleanBackStack: () -> Unit,
 ) {
-
     LaunchedEffect(userTransferResource) {
-        if (userTransferResource == null) return@LaunchedEffect
-        else {
+        if (userTransferResource == null) {
+            return@LaunchedEffect
+        } else {
             onDeepLinkOpened(userTransferResource.id)
             onCleanBackStack()
-
         }
-
     }
 }
 
@@ -230,7 +241,7 @@ fun TransferScreenLoading() {
             onTransferResourceViewed = {},
             onDeepLinkOpened = {},
             onCleanBackStack = {},
-            loadNextPage = {}
+            loadNextPage = {},
         )
     }
 }
@@ -252,7 +263,7 @@ fun TransferScreenPopulatedAndLoading(
             onTransferResourceViewed = {},
             onDeepLinkOpened = {},
             onCleanBackStack = {},
-            loadNextPage = {}
+            loadNextPage = {},
         )
     }
 }

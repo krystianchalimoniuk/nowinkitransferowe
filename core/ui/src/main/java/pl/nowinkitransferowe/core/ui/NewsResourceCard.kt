@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.ui
 
 import androidx.compose.foundation.BorderStroke
@@ -50,18 +66,16 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
-import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import kotlinx.datetime.toJavaZoneId
-import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.designsystem.R.drawable
 import pl.nowinkitransferowe.core.designsystem.component.NtIconToggleButton
 import pl.nowinkitransferowe.core.designsystem.component.NtTopicTag
-
+import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
+import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.UserNewsResource
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
-
 
 @Composable
 fun NewsResourceCardExpanded(
@@ -81,14 +95,17 @@ fun NewsResourceCardExpanded(
     OutlinedCard(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        border = if (isSelected) BorderStroke(
-            2.dp,
-            MaterialTheme.colorScheme.onSurface
-        ) else BorderStroke(0.dp, Color.Transparent),
+        border = if (isSelected) {
+            BorderStroke(
+                2.dp,
+                MaterialTheme.colorScheme.onSurface,
+            )
+        } else {
+            BorderStroke(0.dp, Color.Transparent)
+        },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = modifier.semantics {
             onClick(label = clickActionLabel, action = null)
-
         },
     ) {
         Column {
@@ -119,12 +136,12 @@ fun NewsResourceCardExpanded(
                         }
                         NewsResourceMetaData(
                             userNewsResource.publishDate,
-                            userNewsResource.category.combineNameWithEmoji()
+                            userNewsResource.category.combineNameWithEmoji(),
                         )
                     }
                     Spacer(modifier = Modifier.height(14.dp))
                     NewsResourceShortDescription(
-                        userNewsResource.description
+                        userNewsResource.description,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     NewsResourceTopics(
@@ -133,7 +150,6 @@ fun NewsResourceCardExpanded(
                     )
                 }
             }
-
         }
     }
 }
@@ -154,7 +170,6 @@ fun NewsResourceTopics(
                 followed = false,
                 onClick = { onTopicClick(followableTopic) },
                 text = {
-
 //                    val contentDescription = if () {
 //                        stringResource(
 //                            R.string.core_ui_topic_chip_content_description_when_followed,
@@ -166,7 +181,7 @@ fun NewsResourceTopics(
 //                            followableTopic.topic.name,
 //                        )
 //                    }
-                    val contentDescription = stringResource(id =R.string.core_ui_topic_chip_content_description_when_followed , followableTopic)
+                    val contentDescription = stringResource(id = R.string.core_ui_topic_chip_content_description_when_followed, followableTopic)
                     Text(
                         text = followableTopic,
                         modifier = Modifier.semantics {
@@ -226,9 +241,7 @@ fun NewsResourceHeaderImage(
             contentDescription = null,
         )
     }
-
 }
-
 
 @Composable
 fun NewsResourceTitle(
@@ -241,7 +254,7 @@ fun NewsResourceTitle(
         modifier = modifier,
         minLines = 2,
         maxLines = 2,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
 
     )
 }
@@ -296,7 +309,6 @@ fun dateFormatted(publishDate: Instant): String = DateTimeFormatter
     .withZone(LocalTimeZone.current.toJavaZoneId())
     .format(publishDate.toJavaInstant())
 
-
 @Composable
 fun NewsResourceMetaData(
     publishDate: Instant,
@@ -325,7 +337,7 @@ fun NewsResourceShortDescription(
         style = MaterialTheme.typography.bodyLarge,
         maxLines = 4,
         modifier = modifier,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
     )
 }
 
@@ -340,7 +352,7 @@ fun NewsResourceLongDescription(
         style = MaterialTheme.typography.bodyLarge,
         modifier = modifier,
 
-        )
+    )
 }
 
 @Composable
@@ -352,7 +364,7 @@ fun NewsResourceAuthor(
         newsResourceAuthor,
         style = MaterialTheme.typography.bodyMedium,
         modifier = modifier,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -363,7 +375,6 @@ fun NewsResourceSrc(
 ) {
     Text(newsResourceSrc, style = MaterialTheme.typography.bodyMedium, modifier = modifier)
 }
-
 
 fun trimDescription(text: String, limiter: Int): String {
     val words = text.split(" ")

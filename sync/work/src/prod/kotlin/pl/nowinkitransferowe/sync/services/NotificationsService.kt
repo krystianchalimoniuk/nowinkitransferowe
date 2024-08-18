@@ -23,8 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import pl.nowinkitransferowe.core.data.util.SyncManager
 import pl.nowinkitransferowe.core.notifications.Notifier
-import javax.inject.Inject
 import pl.nowinkitransferowe.sync.work.initializers.PostNotificationWithImageInitializer
+import javax.inject.Inject
 import kotlin.random.Random
 
 private const val SYNC_TOPIC_SENDER = "/topics/sync"
@@ -59,7 +59,7 @@ internal class NotificationsService : FirebaseMessagingService() {
                     title,
                     description,
                     url,
-                    imageUrl
+                    imageUrl,
                 )
             }
         }

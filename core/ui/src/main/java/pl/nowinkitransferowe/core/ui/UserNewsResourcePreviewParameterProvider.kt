@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.ui
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -28,7 +44,7 @@ object PreviewParameterData {
         useDynamicColor = false,
         isNewsNotificationsAllowed = true,
         isTransfersNotificationsAllowed = true,
-        isGeneralNotificationAllowed = true
+        isGeneralNotificationAllowed = true,
     )
 
     val newsResources = listOf(
@@ -45,10 +61,10 @@ object PreviewParameterData {
                 src = "Inter Miami CF",
                 imageUrl = "intermiaminw.jpg",
                 authPic = "123.jpg",
-                authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",                link = "Transfery\\/oficjalnie-luis-suarez-w-interze-miami",
-                topics = listOf("Luis Suarez", "Inter Miami CF", "Gremio")
+                authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer", link = "Transfery\\/oficjalnie-luis-suarez-w-interze-miami",
+                topics = listOf("Luis Suarez", "Inter Miami CF", "Gremio"),
             ),
-            userData = userData
+            userData = userData,
         ),
         UserNewsResource(
             newsResource = NewsResource(
@@ -63,10 +79,10 @@ object PreviewParameterData {
                 publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
                 imageUrl = "barcelonanw2.jpg",
                 authPic = "123.jpg",
-                authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",                link = "Transfery\\/oficjalnie-vitor-roque-w-barcelonie",
-                topics = listOf("Vitor Roque", "FC Barcelona", "Athletico Paranaense")
+                authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer", link = "Transfery\\/oficjalnie-vitor-roque-w-barcelonie",
+                topics = listOf("Vitor Roque", "FC Barcelona", "Athletico Paranaense"),
             ),
-            userData = userData
+            userData = userData,
         ),
         UserNewsResource(
             newsResource = NewsResource(
@@ -83,10 +99,9 @@ object PreviewParameterData {
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-bryan-zaragoza-w-bayernie-monachium",
-                topics = listOf("Bryan Zaragoza", "Bayern Monachium", "Granada CF")
+                topics = listOf("Bryan Zaragoza", "Bayern Monachium", "Granada CF"),
             ),
-            userData = userData
-        )
+            userData = userData,
+        ),
     )
-
 }

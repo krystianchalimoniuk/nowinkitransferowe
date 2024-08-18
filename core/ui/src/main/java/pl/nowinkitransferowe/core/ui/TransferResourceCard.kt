@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.ui
 
 import androidx.annotation.DrawableRes
@@ -70,18 +86,18 @@ fun TransferResourceCardExpanded(
                 modifier
                     .fillMaxWidth()
                     .background(Color.Transparent)
-                    .padding(8.dp)
+                    .padding(8.dp),
             ) {
-
                 BookmarkButton(
                     isBookmarked = isBookmarked,
                     onClick = onToggleBookmark,
-                    modifier = Modifier.align(Alignment.TopEnd)
+                    modifier = Modifier.align(Alignment.TopEnd),
                 )
             }
 
             Column(
-                Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
                 Image(
@@ -95,23 +111,24 @@ fun TransferResourceCardExpanded(
 
                 Spacer(modifier = Modifier.height(16.dp))
                 TransfersResourceFootballerName(
-                    name = userTransferResource.name, modifier = Modifier.widthIn(180.dp)
+                    name = userTransferResource.name,
+                    modifier = Modifier.widthIn(180.dp),
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(80.dp)
+                        modifier = Modifier.width(80.dp),
                     ) {
                         TransfersResourceImage(
                             userTransferResource.clubFromImg,
                             pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_crest_placeholder,
                             40.dp,
-                            0.dp
+                            0.dp,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         TransfersResourceClubName(name = userTransferResource.clubFrom)
@@ -130,22 +147,21 @@ fun TransferResourceCardExpanded(
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(80.dp)
+                        modifier = Modifier.width(80.dp),
                     ) {
                         TransfersResourceImage(
                             userTransferResource.clubToImg,
                             pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_crest_placeholder,
                             40.dp,
-                            0.dp
+                            0.dp,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         TransfersResourceClubName(name = userTransferResource.clubTo)
                     }
-
                 }
                 Spacer(modifier = Modifier.height(48.dp))
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TransfersResourceFootballerPrice(price = userTransferResource.price)
                     Spacer(modifier = Modifier.width(8.dp))
@@ -153,18 +169,16 @@ fun TransferResourceCardExpanded(
                         NotificationDot(
                             color = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier
-                                .size(8.dp)
+                                .size(8.dp),
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
-
             }
         }
     }
 }
-
 
 @Composable
 fun TransfersResourceFootballerName(
@@ -176,7 +190,7 @@ fun TransfersResourceFootballerName(
         style = MaterialTheme.typography.titleLarge,
         modifier = modifier,
         maxLines = 1,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -222,7 +236,7 @@ fun TransfersResourceImage(
     val isLocalInspection = LocalInspectionMode.current
     Box(
         modifier = Modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
 
     ) {
         if (isLoading) {
@@ -247,7 +261,6 @@ fun TransfersResourceImage(
             contentDescription = null,
         )
     }
-
 }
 
 @Preview("TransfersResourceCardExpanded")

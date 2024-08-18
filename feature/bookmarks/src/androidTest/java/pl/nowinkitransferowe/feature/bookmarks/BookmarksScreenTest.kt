@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.bookmarks
 
 import androidx.activity.ComponentActivity
@@ -19,10 +35,8 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.test.runTest
-
-import org.junit.Test
-
 import org.junit.Rule
+import org.junit.Test
 import pl.nowinkitransferowe.core.testing.data.userNewsResourcesTestData
 import pl.nowinkitransferowe.core.testing.data.userTransferResourcesTestData
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
@@ -69,8 +83,8 @@ class BookmarksScreenTest {
                 ),
                 transferFeedState = TransferFeedUiState.Success(
                     feed = userTransferResourcesTestData.take(
-                        2
-                    )
+                        2,
+                    ),
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = {},
@@ -136,7 +150,6 @@ class BookmarksScreenTest {
             )
             .assertExists()
             .assertHasClickAction()
-
     }
 
     @Test
@@ -151,8 +164,8 @@ class BookmarksScreenTest {
                 ),
                 transferFeedState = TransferFeedUiState.Success(
                     feed = userTransferResourcesTestData.take(
-                        2
-                    )
+                        2,
+                    ),
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = { newsResourceId ->
@@ -162,14 +175,14 @@ class BookmarksScreenTest {
                 removeFromTransferBookmarks = { transferResourceId ->
                     kotlin.test.assertEquals(
                         userTransferResourcesTestData[0].id,
-                        transferResourceId
+                        transferResourceId,
                     )
                     removeTransferFromBookmarksCalled = true
                 },
                 onTopicClick = {},
                 onNewsResourceViewed = {},
                 onTransferResourceViewed = {},
-                onNewsClick = {}
+                onNewsClick = {},
             )
         }
 
@@ -184,7 +197,7 @@ class BookmarksScreenTest {
                         userNewsResourcesTestData[0].title,
                         substring = true,
                     ),
-                )
+                ),
             )
             .assertCountEquals(1)
             .onFirst()
@@ -211,7 +224,7 @@ class BookmarksScreenTest {
                         userTransferResourcesTestData[0].name,
                         substring = true,
                     ),
-                )
+                ),
             )
             .assertCountEquals(1)
             .onFirst()
@@ -232,7 +245,7 @@ class BookmarksScreenTest {
                 onNewsClick = {},
                 onTopicClick = {},
                 onNewsResourceViewed = {},
-                onTransferResourceViewed = {}
+                onTransferResourceViewed = {},
             )
         }
 

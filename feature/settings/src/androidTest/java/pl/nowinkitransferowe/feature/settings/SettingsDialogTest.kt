@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.settings
 
 import androidx.activity.ComponentActivity
@@ -7,11 +23,10 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import org.junit.Test
 import org.junit.Rule
+import org.junit.Test
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
-
 
 class SettingsDialogTest {
 
@@ -21,9 +36,7 @@ class SettingsDialogTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
-
     private fun getString(id: Int) = composeTestRule.activity.resources.getString(id)
-
 
     @Test
     fun whenLoading_showsLoadingText() {
@@ -35,7 +48,7 @@ class SettingsDialogTest {
                 onChangeDarkThemeConfig = {},
                 onChangeNewsNotificationsPreference = {},
                 onChangeTransfersNotificationsPreference = {},
-                onChangeGeneralNotificationsPreference = {}
+                onChangeGeneralNotificationsPreference = {},
 
             )
         }
@@ -56,14 +69,14 @@ class SettingsDialogTest {
                         useDynamicColor = false,
                         isNewsNotificationsAllowed = true,
                         isTransfersNotificationsAllowed = true,
-                        isGeneralNotificationsAllowed = true
+                        isGeneralNotificationsAllowed = true,
                     ),
                 ),
                 onChangeDynamicColorPreference = {},
                 onChangeDarkThemeConfig = {},
                 onChangeNewsNotificationsPreference = {},
                 onChangeTransfersNotificationsPreference = {},
-                onChangeGeneralNotificationsPreference = {}
+                onChangeGeneralNotificationsPreference = {},
             )
         }
 
@@ -71,7 +84,6 @@ class SettingsDialogTest {
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_notification_channel_news)).assertExists()
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_notification_channel_transfers)).assertExists()
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_notification_channel_general)).assertExists()
-
 
         composeTestRule.onNodeWithText(
             getString(R.string.feature_settings_dark_mode_config_system_default),
@@ -97,7 +109,7 @@ class SettingsDialogTest {
                         useDynamicColor = false,
                         isNewsNotificationsAllowed = true,
                         isTransfersNotificationsAllowed = true,
-                        isGeneralNotificationsAllowed = true
+                        isGeneralNotificationsAllowed = true,
                     ),
                 ),
                 onDismiss = {},
@@ -105,7 +117,7 @@ class SettingsDialogTest {
                 onChangeDarkThemeConfig = {},
                 onChangeNewsNotificationsPreference = {},
                 onChangeTransfersNotificationsPreference = {},
-                onChangeGeneralNotificationsPreference = {}
+                onChangeGeneralNotificationsPreference = {},
             )
         }
         composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_instagram_content_description)).assertExists()
@@ -124,7 +136,7 @@ class SettingsDialogTest {
                         useDynamicColor = false,
                         isNewsNotificationsAllowed = true,
                         isTransfersNotificationsAllowed = true,
-                        isGeneralNotificationsAllowed = true
+                        isGeneralNotificationsAllowed = true,
                     ),
                 ),
                 onDismiss = {},
@@ -132,7 +144,7 @@ class SettingsDialogTest {
                 onChangeDarkThemeConfig = {},
                 onChangeNewsNotificationsPreference = {},
                 onChangeTransfersNotificationsPreference = {},
-                onChangeGeneralNotificationsPreference = {}
+                onChangeGeneralNotificationsPreference = {},
             )
         }
 

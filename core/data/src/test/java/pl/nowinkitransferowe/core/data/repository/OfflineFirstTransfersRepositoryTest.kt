@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.first
@@ -35,7 +51,6 @@ class OfflineFirstTransfersRepositoryTest {
 
     private lateinit var transferResourceDao: TestTransferResourceDao
 
-
     private lateinit var network: TestNtNetworkDataSource
 
     private lateinit var notifier: TestNotifier
@@ -65,7 +80,7 @@ class OfflineFirstTransfersRepositoryTest {
             transferResourceDao = transferResourceDao,
             network = network,
             notifier = notifier,
-            databaseUpdatingMonitor = databaseUpdatingMonitor
+            databaseUpdatingMonitor = databaseUpdatingMonitor,
         )
     }
 
@@ -77,11 +92,9 @@ class OfflineFirstTransfersRepositoryTest {
                     .first()
                     .map(TransferResourceEntity::asExternalModel),
                 subject.getTransferResources()
-                    .first()
+                    .first(),
             )
-
         }
-
 
     @Test
     fun offlineFirstTransfersRepository_sync_pulls_from_network() =
@@ -116,7 +129,6 @@ class OfflineFirstTransfersRepositoryTest {
     @Test
     fun offlineFirstTransferRepository_sync_deletes_items_marked_deleted_on_network() =
         testScope.runTest {
-
             val transferResourcesFromNetwork = network.getTransferResources()
                 .map(NetworkTransferResource::asEntity)
                 .map(TransferResourceEntity::asExternalModel)
@@ -200,7 +212,6 @@ class OfflineFirstTransfersRepositoryTest {
             assertTrue(notifier.addedTransferResources.isEmpty())
         }
 
-
     @Test
     fun offlineFirstTransferRepository_sync_marks_as_read_on_first_run() =
         testScope.runTest {
@@ -237,7 +248,6 @@ class OfflineFirstTransfersRepositoryTest {
             }
             val networkTransferResources = network.getTransferResources()
 
-
             subject.syncWith(synchronizer)
 
             val followedTransferResourceIdsFromNetwork = networkTransferResources
@@ -265,7 +275,6 @@ class OfflineFirstTransfersRepositoryTest {
 
             // Prepopulate dao with transfer resources
             transferResourceDao.upsertTransferResources(networkTransferResources)
-
 
             subject.syncWith(synchronizer)
 

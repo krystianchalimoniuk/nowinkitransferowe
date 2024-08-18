@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe
 
 import androidx.compose.runtime.Composable
@@ -10,15 +26,15 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.composable
 import androidx.navigation.createGraph
 import androidx.navigation.testing.TestNavHostController
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.TimeZone
-
-import org.junit.Test
-
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
+import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserNewsResourceRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
 import pl.nowinkitransferowe.core.testing.repository.TestNewsRepository
@@ -28,9 +44,6 @@ import pl.nowinkitransferowe.core.testing.util.TestNetworkMonitor
 import pl.nowinkitransferowe.core.testing.util.TestTimeZoneMonitor
 import pl.nowinkitransferowe.ui.NtAppState
 import pl.nowinkitransferowe.ui.rememberNtAppState
-import kotlinx.coroutines.flow.collect
-import org.junit.Assert.assertTrue
-
 
 /**
  * Tests [NtAppState].
@@ -83,7 +96,7 @@ class NtAppStateTest {
             }
         }
 
-      assertEquals("b", currentDestination)
+        assertEquals("b", currentDestination)
     }
 
     @Test
@@ -118,7 +131,7 @@ class NtAppStateTest {
 
         backgroundScope.launch { state.isOffline.collect() }
         networkMonitor.setConnected(false)
-       assertEquals(
+        assertEquals(
             true,
             state.isOffline.value,
         )

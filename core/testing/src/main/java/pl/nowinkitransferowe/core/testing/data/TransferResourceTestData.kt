@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.testing.data
 
 import pl.nowinkitransferowe.core.model.TransferResource
@@ -12,7 +28,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "Stockport",
         clubFromImg = "stockportcounty_herbb.png",
         price = "za darmo",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "2",
@@ -23,7 +39,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "Malmo FF",
         clubFromImg = "malmo_herbb.png",
         price = "nie ujawniono",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "3",
@@ -34,7 +50,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "Saint-Etienne",
         clubFromImg = "saintetiennenw2_herbb.png",
         price = "0,5 mln \u20ac",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "4",
@@ -45,7 +61,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "Real Sociedad",
         clubFromImg = "sociedad_herbb.png",
         price = "34,5 mln €",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "5",
@@ -56,7 +72,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "Olympique Marsylia",
         clubFromImg = "marsylia_herbb.png",
         price = "5 mln €",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "6",
@@ -67,7 +83,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "SC Braga",
         clubFromImg = "braga_herbb.png",
         price = "za darmo",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "7",
@@ -78,7 +94,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "Chelsea FC",
         clubFromImg = "chelsea_herbb.png",
         price = "za darmo",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "8",
@@ -89,7 +105,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "SSC Napoli",
         clubFromImg = "napolinowe_herbb.png",
         price = "wypożyczenie",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "9",
@@ -100,7 +116,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "Liverpool FC",
         clubFromImg = "liverpool_herbb.png",
         price = "wypożyczenie",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
     TransferResource(
         id = "10",
@@ -111,6 +127,6 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFrom = "Kisvarda FC",
         clubFromImg = "kisvarda_herbb.jpg",
         price = "za darmo",
-        url = "6592/Inne/nowinki-transferowe-na-zywo-"
+        url = "6592/Inne/nowinki-transferowe-na-zywo-",
     ),
 )

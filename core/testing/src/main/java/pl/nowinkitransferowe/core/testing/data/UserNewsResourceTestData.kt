@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.testing.data
 
 import kotlinx.datetime.toInstant
@@ -16,7 +32,7 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
     useDynamicColor = false,
     isNewsNotificationsAllowed = true,
     isTransfersNotificationsAllowed = true,
-    isGeneralNotificationAllowed = true
+    isGeneralNotificationAllowed = true,
 ).let { userData ->
     listOf(
         UserNewsResource(
@@ -35,8 +51,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-luis-suarez-w-interze-miami",
-                topics = listOf("Luis Suarez", "Inter Miami CF", "Gremio")
-            ), userData = userData
+                topics = listOf("Luis Suarez", "Inter Miami CF", "Gremio"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource =
@@ -54,8 +71,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-vitor-roque-w-barcelonie",
-                topics = listOf("Vitor Roque", "FC Barcelona", "Athletico Paranaense")
-            ), userData = userData
+                topics = listOf("Vitor Roque", "FC Barcelona", "Athletico Paranaense"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource =
@@ -73,8 +91,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-bryan-zaragoza-w-bayernie-monachium",
-                topics = listOf("Bryan Zaragoza", "Bayern Monachium", "Granada CF")
-            ), userData = userData
+                topics = listOf("Bryan Zaragoza", "Bayern Monachium", "Granada CF"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource =
@@ -92,8 +111,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-bryan-zaragoza-w-bayernie-monachium",
-                topics = listOf("Moussa Diaby", "Al Itihad", "Aston Villa")
-            ), userData = userData
+                topics = listOf("Moussa Diaby", "Al Itihad", "Aston Villa"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource =
@@ -111,8 +131,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-amadou-onana-w-aston-villi",
-                topics = listOf("Amadou Onana", "Aston Villa", "Everton FC")
-            ), userData = userData
+                topics = listOf("Amadou Onana", "Aston Villa", "Everton FC"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource =
@@ -130,8 +151,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-amadou-onana-w-aston-villi",
-                topics = listOf("Leny Yoro", "Manchester United", "LOSC Lille")
-            ), userData = userData
+                topics = listOf("Leny Yoro", "Manchester United", "LOSC Lille"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource =
@@ -149,8 +171,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-savio-w-manchesterze-city",
-                topics = listOf("Savio", "Manchester City", "ESTAC Troyes")
-            ), userData = userData
+                topics = listOf("Savio", "Manchester City", "ESTAC Troyes"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource =
@@ -168,8 +191,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-alvaro-morata-w-milanie",
-                topics = listOf("Alvaro Morata", "AC Milan", "Atletico Madryt")
-            ), userData = userData
+                topics = listOf("Alvaro Morata", "AC Milan", "Atletico Madryt"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource = NewsResource(
@@ -186,8 +210,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-kacper-kozlowski-w-gaziantep-fk",
-                topics = listOf("Kacper Kozłowski", "Gaziantep FK", "Brighton & Hove Albion")
-            ), userData = userData
+                topics = listOf("Kacper Kozłowski", "Gaziantep FK", "Brighton & Hove Albion"),
+            ),
+            userData = userData,
         ),
         UserNewsResource(
             newsResource =
@@ -205,8 +230,9 @@ val userNewsResourcesTestData: List<UserNewsResource> = UserData(
                 authPic = "123.jpg",
                 authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
                 link = "Transfery\\/oficjalnie-kylian-mbappe-w-realu-madryt",
-                topics = listOf("Kylian Mbappe", "Real Madryt", "Paris Saint-Germain")
-            ), userData = userData
-        )
+                topics = listOf("Kylian Mbappe", "Real Madryt", "Paris Saint-Germain"),
+            ),
+            userData = userData,
+        ),
     )
 }

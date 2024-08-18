@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.search
 
 import androidx.compose.foundation.clickable
@@ -61,13 +77,12 @@ import pl.nowinkitransferowe.core.model.UserNewsResource
 import pl.nowinkitransferowe.core.model.UserTransferResource
 import pl.nowinkitransferowe.core.ui.DevicePreviews
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
-import pl.nowinkitransferowe.feature.search.R as searchR
 import pl.nowinkitransferowe.core.ui.R.string
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import pl.nowinkitransferowe.core.ui.newsFeed
 import pl.nowinkitransferowe.core.ui.transferFeed
-
+import pl.nowinkitransferowe.feature.search.R as searchR
 
 @Composable
 internal fun SearchRoute(
@@ -93,10 +108,9 @@ internal fun SearchRoute(
         onTransferResourceViewed = { searchViewModel.setTransferResourceViewed(it, true) },
         onBackClick = onBackClick,
         onTopicClick = searchViewModel::onSearchQueryChanged,
-        onNewsClick = onNewsClick
+        onNewsClick = onNewsClick,
     )
 }
-
 
 @Composable
 internal fun SearchScreen(
@@ -170,7 +184,7 @@ internal fun SearchScreen(
                         onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
                         onNewsResourceViewed = onNewsResourceViewed,
                         onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
-                        onTransferResourceViewed = onTransferResourceViewed
+                        onTransferResourceViewed = onTransferResourceViewed,
                     )
                 }
             }
@@ -268,7 +282,7 @@ private fun SearchResultBody(
                 transferFeed(
                     feedState = TransferFeedUiState.Success(feed = transferResources),
                     onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
-                    onTransferResourceViewed = onTransferResourceViewed
+                    onTransferResourceViewed = onTransferResourceViewed,
                 )
             }
 
@@ -292,7 +306,7 @@ private fun SearchResultBody(
                     onNewsResourceViewed = onNewsResourceViewed,
                     onTopicClick = onTopicClick,
                     onNewsSelected = {},
-                    onNewsClick = onNewsClick
+                    onNewsClick = onNewsClick,
                 )
             }
         }

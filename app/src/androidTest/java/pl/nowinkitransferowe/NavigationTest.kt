@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe
 
 import androidx.compose.ui.test.assertCountEquals
@@ -25,13 +41,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
-import pl.nowinkitransferowe.core.model.NewsResource
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
 import javax.inject.Inject
 import pl.nowinkitransferowe.feature.bookmarks.R as BookmarksR
 import pl.nowinkitransferowe.feature.news.R as NewsR
-import pl.nowinkitransferowe.feature.transfers.R as TransfersR
 import pl.nowinkitransferowe.feature.settings.R as SettingsR
+import pl.nowinkitransferowe.feature.transfers.R as TransfersR
 
 /**
  * Tests all the navigation flows that are handled by the navigation library.
@@ -99,7 +114,6 @@ class NavigationTest {
     @Test
     fun navigationBar_navigateToPreviouslySelectedTab_restoresContent() {
         composeTestRule.apply {
-
             onAllNodesWithContentDescription(
                 activity.getString(
                     pl.nowinkitransferowe.core.ui.R.string.core_ui_bookmark,
@@ -119,7 +133,6 @@ class NavigationTest {
             )
                 .assertCountEquals(1)
                 .onFirst()
-
         }
     }
 
@@ -149,7 +162,6 @@ class NavigationTest {
                 .onFirst()
         }
     }
-
 
     @Test
     fun topLevelDestinations_doNotShowUpArrow() {
@@ -255,7 +267,6 @@ class NavigationTest {
     @Test
     fun navigationBar_multipleBackStackNews() {
         composeTestRule.apply {
-
             // Select the last news
             val newsItem = runBlocking {
                 newsRepository.getNewsResources().first()[4]

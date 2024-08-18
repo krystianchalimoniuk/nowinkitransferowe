@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.details
 
 import android.annotation.SuppressLint
@@ -72,7 +88,6 @@ import pl.nowinkitransferowe.core.ui.TransfersResourceImage
 import pl.nowinkitransferowe.core.ui.UserNewsResourcePreviewParameterProvider
 import java.lang.StringBuilder
 
-
 @Composable
 internal fun DetailsRoute(
     showBackButton: Boolean,
@@ -91,7 +106,7 @@ internal fun DetailsRoute(
         onTopicClick = onTopicClick,
         onBookmarkChanged = viewModel::bookmarkNews,
         darkThemeConfig = darkThemeConfig,
-        modifier = modifier.testTag("news:${viewModel.newsId}")
+        modifier = modifier.testTag("news:${viewModel.newsId}"),
     )
 }
 
@@ -112,20 +127,18 @@ internal fun DetailsScreen(
     Box(
         modifier = modifier
             .verticalScroll(state = state)
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
-
             when (detailsUiState) {
                 DetailsUiState.Loading ->
                     NtLoadingWheel(
                         modifier = modifier,
                         contentDesc = stringResource(id = R.string.feature_details_loading),
                     )
-
 
                 DetailsUiState.Error -> {
                     LaunchedEffect(Unit) {
@@ -134,13 +147,11 @@ internal fun DetailsScreen(
                 }
 
                 is DetailsUiState.Success -> {
-
                     DetailsToolbar(
                         showBackButton = showBackButton,
                         onBackClick = onBackClick,
-                        userNewsResource = detailsUiState.userNewsResource
+                        userNewsResource = detailsUiState.userNewsResource,
                     )
-
 
                     DetailsBody(
                         userNewsResource = detailsUiState.userNewsResource,
@@ -151,19 +162,15 @@ internal fun DetailsScreen(
                             )
                         },
                         onTopicClick = onTopicClick,
-                        darkThemeConfig = darkThemeConfig
+                        darkThemeConfig = darkThemeConfig,
                     )
-
                 }
             }
 
             Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
-
         }
-
     }
 }
-
 
 @Composable
 private fun DetailsToolbar(
@@ -197,20 +204,20 @@ private fun DetailsToolbar(
             url = prepareUrl(
                 id = userNewsResource.id,
                 title = userNewsResource.title,
-                category = userNewsResource.category.serializedName
-            )
+                category = userNewsResource.category.serializedName,
+            ),
         )
         IconButton(onClick = {
             startActivity(
-                context, shareIntent, null
+                context,
+                shareIntent,
+                null,
             )
-
         }) {
             Icon(
                 imageVector = NtIcons.Share,
-                contentDescription = stringResource(id = pl.nowinkitransferowe.core.ui.R.string.core_ui_share)
+                contentDescription = stringResource(id = pl.nowinkitransferowe.core.ui.R.string.core_ui_share),
             )
-
         }
     }
 }
@@ -229,10 +236,9 @@ private fun prepareUrl(id: String, title: String, category: String) =
     "${BuildConfig.BASE_URL}$id/${
         category.replace(
             " ",
-            "-"
+            "-",
         )
     }/${escapeTitle(title = title)}"
-
 
 @Composable
 private fun escapeTitle(title: String): String =
@@ -255,8 +261,7 @@ private fun escapeTitle(title: String): String =
         .replace("(", "")
         .replace(")", "")
         .replace("[", "")
-        .replace("]", "");
-
+        .replace("]", "")
 
 @Composable
 private fun DetailsBody(
@@ -288,14 +293,15 @@ private fun DetailsBody(
                     NewsResourceMetaData(
                         userNewsResource.publishDate,
                         userNewsResource.category.combineNameWithEmoji(),
-                        textStyle = MaterialTheme.typography.labelMedium
+                        textStyle = MaterialTheme.typography.labelMedium,
                     )
                 }
                 Spacer(modifier = Modifier.height(14.dp))
                 NewsResourceDetailsDescription(
-                    userNewsResource.description, shouldUserDarkTheme = shouldUseDarkTheme(
-                        darkThemeConfig = darkThemeConfig
-                    )
+                    userNewsResource.description,
+                    shouldUserDarkTheme = shouldUseDarkTheme(
+                        darkThemeConfig = darkThemeConfig,
+                    ),
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 NewsResourceTopics(
@@ -306,45 +312,42 @@ private fun DetailsBody(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TransfersResourceImage(
                             imageUrl = userNewsResource.authPic,
                             placeHolderRes = pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_author_picture_placeholder,
                             size = 60.dp,
-                            cornerShape = 32.dp
+                            cornerShape = 32.dp,
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         NewsResourceAuthor(
                             newsResourceAuthor = userNewsResource.author,
-                            modifier = Modifier.width(80.dp)
+                            modifier = Modifier.width(80.dp),
                         )
                     }
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(end = 12.dp)
+                        modifier = Modifier.padding(end = 12.dp),
                     ) {
                         Text(
                             "Źródło:",
                             style = MaterialTheme.typography.bodyMedium,
-                            modifier = modifier
+                            modifier = modifier,
                         )
                         NewsResourceSrc(newsResourceSrc = userNewsResource.src)
-
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-
     }
 }
-
 
 @Composable
 fun NewsResourceDetailsTitle(
@@ -368,18 +371,17 @@ private fun shouldUseDarkTheme(
         DarkThemeConfig.DARK -> true
     }
 
-
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDarkTheme: Boolean) {
     val width = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
     val socialMediaJsScript = "<style>iframe {" +
-            "        display: block;" +
-            "        max-width:100%;" +
-            "        }  </style>" + "<style>img{display: inline; height: auto; max-width: 100%;}</style>" +
-            "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');" +
-            "</script>" +
-            "<script>" + " <script async defer src=\"//platform.instagram.com/en_US/embeds.js\"></script>"
+        "        display: block;" +
+        "        max-width:100%;" +
+        "        }  </style>" + "<style>img{display: inline; height: auto; max-width: 100%;}</style>" +
+        "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');" +
+        "</script>" +
+        "<script>" + " <script async defer src=\"//platform.instagram.com/en_US/embeds.js\"></script>"
     val fontSize = "<body style=\"font-size:110%"
     val fontColor = ";color:white"
     val htmlStyle = StringBuilder().append(width).append(socialMediaJsScript).append(fontSize)
@@ -391,13 +393,13 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
     AnimatedVisibility(
         visible = isLoading,
         enter = fadeIn(),
-        exit = fadeOut()
+        exit = fadeOut(),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(500.dp),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             NtLoadingWheel(contentDesc = stringResource(id = R.string.feature_details_loading))
         }
@@ -405,9 +407,8 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
     AnimatedVisibility(
         visible = !isLoading,
         enter = slideInVertically() + fadeIn(),
-        exit = fadeOut()
+        exit = fadeOut(),
     ) {
-
         AndroidView(
             factory = { context ->
                 WebView(context).apply {
@@ -435,9 +436,10 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
                     "https://twitter.com",
                     htmlStyle.toString() + description,
                     "text/html; charset=utf-8",
-                    "UTF-8", ""
+                    "UTF-8",
+                    "",
                 )
-            }
+            },
 
         )
     }
@@ -445,7 +447,6 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
     LaunchedEffect(Unit) {
         delay(200)
         isLoading = false
-
     }
 }
 
@@ -463,7 +464,7 @@ fun TopicScreenPopulated(
                 onBackClick = {},
                 onTopicClick = {},
                 onBookmarkChanged = { _, _ -> },
-                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM
+                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
             )
         }
     }
@@ -480,7 +481,7 @@ fun DetailsScreenLoading() {
                 onBackClick = {},
                 onTopicClick = {},
                 onBookmarkChanged = { _, _ -> },
-                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM
+                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
             )
         }
     }

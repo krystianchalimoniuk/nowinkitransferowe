@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.settings
 
 import android.app.NotificationManager
@@ -62,7 +78,6 @@ import pl.nowinkitransferowe.core.network.BuildConfig
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.feature.settings.R.string
 
-
 @Composable
 fun SettingsDialog(
     onDismiss: () -> Unit,
@@ -76,10 +91,9 @@ fun SettingsDialog(
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
         onChangeNewsNotificationsPreference = viewModel::updateNewsNotificationsPreference,
         onChangeTransfersNotificationsPreference = viewModel::updateTransfersNotificationsPreference,
-        onChangeGeneralNotificationsPreference = viewModel::updateGeneralNotificationsPreference
+        onChangeGeneralNotificationsPreference = viewModel::updateGeneralNotificationsPreference,
     )
 }
-
 
 @Composable
 fun SettingsDialog(
@@ -127,7 +141,7 @@ fun SettingsDialog(
                             settings = settingsUiState.settings,
                             onChangeNewsNotificationsPreference = onChangeNewsNotificationsPreference,
                             onChangeTransfersNotificationsPreference = onChangeTransfersNotificationsPreference,
-                            onChangeGeneralNotificationsPreference = onChangeGeneralNotificationsPreference
+                            onChangeGeneralNotificationsPreference = onChangeGeneralNotificationsPreference,
                         )
                         SettingsPanel(
                             settings = settingsUiState.settings,
@@ -157,15 +171,13 @@ fun SettingsDialog(
     )
 }
 
-
 @Composable
 private fun ColumnScope.NotificationPanel(
     settings: UserEditableSettings,
     onChangeNewsNotificationsPreference: (isAllowed: Boolean) -> Unit,
     onChangeTransfersNotificationsPreference: (isAllowed: Boolean) -> Unit,
     onChangeGeneralNotificationsPreference: (isAllowed: Boolean) -> Unit,
-
-    ) {
+) {
     val context = LocalContext.current
     val isNotificationsAllowed = remember { mutableStateOf(checkIfNotificationsAllowed(context)) }
     val isNotificationChannelEnabled =
@@ -177,20 +189,21 @@ private fun ColumnScope.NotificationPanel(
                 SettingsDialogNotificationSwitchRow(
                     text = stringResource(id = string.feature_settings_notification_channel_news),
                     checked = settings.isNewsNotificationsAllowed,
-                    onCheckedChange = onChangeNewsNotificationsPreference
+                    onCheckedChange = onChangeNewsNotificationsPreference,
                 )
                 SettingsDialogNotificationSwitchRow(
-                    text = stringResource(id = string.feature_settings_notification_channel_transfers),                    checked = settings.isTransfersNotificationsAllowed,
-                    onCheckedChange = onChangeTransfersNotificationsPreference
+                    text = stringResource(id = string.feature_settings_notification_channel_transfers),
+                    checked = settings.isTransfersNotificationsAllowed,
+                    onCheckedChange = onChangeTransfersNotificationsPreference,
                 )
                 SettingsDialogNotificationSwitchRow(
-                    text = stringResource(id = string.feature_settings_notification_channel_general),                    checked = settings.isGeneralNotificationsAllowed,
-                    onCheckedChange = onChangeGeneralNotificationsPreference
+                    text = stringResource(id = string.feature_settings_notification_channel_general),
+                    checked = settings.isGeneralNotificationsAllowed,
+                    onCheckedChange = onChangeGeneralNotificationsPreference,
                 )
             }
         }
     }
-
 }
 
 fun checkIfNotificationsAllowed(context: Context): Boolean {
@@ -215,7 +228,6 @@ private fun ColumnScope.SettingsPanel(
     onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
 ) {
-
     AnimatedVisibility(supportDynamicColor) {
         Column {
             SettingsDialogSectionTitle(text = stringResource(string.feature_settings_dynamic_color_preference))
@@ -304,7 +316,7 @@ fun SettingsDialogNotificationSwitchRow(
 //            )
             .padding(2.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(text)
         Spacer(Modifier.width(8.dp))
@@ -322,9 +334,8 @@ fun SettingsDialogNotificationSwitchRow(
                 }
             } else {
                 null
-            }
+            },
         )
-
     }
 }
 
@@ -347,7 +358,7 @@ private fun SocialMediaPanel() {
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            contentDescription = stringResource(id = string.feature_settings_instagram_content_description)
+            contentDescription = stringResource(id = string.feature_settings_instagram_content_description),
         )
         NtIconButton(
             onClick = { uriHandler.openUri(X_URL) },
@@ -355,7 +366,7 @@ private fun SocialMediaPanel() {
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            contentDescription = stringResource(id = string.feature_settings_x_content_description)
+            contentDescription = stringResource(id = string.feature_settings_x_content_description),
         )
         NtIconButton(
             onClick = { uriHandler.openUri(FACEBOOK_URL) },
@@ -363,7 +374,7 @@ private fun SocialMediaPanel() {
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            contentDescription = stringResource(id = string.feature_settings_facebook_content_description)
+            contentDescription = stringResource(id = string.feature_settings_facebook_content_description),
         )
         NtIconButton(
             onClick = { uriHandler.openUri(WWW_URL) },
@@ -371,11 +382,10 @@ private fun SocialMediaPanel() {
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            contentDescription = stringResource(id = string.feature_settings_www_content_description)
+            contentDescription = stringResource(id = string.feature_settings_www_content_description),
         )
     }
     Spacer(modifier = Modifier.height(16.dp))
-
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -417,14 +427,14 @@ private fun PreviewSettingsDialog() {
                     useDynamicColor = false,
                     isNewsNotificationsAllowed = true,
                     isTransfersNotificationsAllowed = true,
-                    isGeneralNotificationsAllowed = true
+                    isGeneralNotificationsAllowed = true,
                 ),
             ),
             onChangeDynamicColorPreference = {},
             onChangeDarkThemeConfig = {},
             onChangeNewsNotificationsPreference = {},
             onChangeTransfersNotificationsPreference = {},
-            onChangeGeneralNotificationsPreference = {}
+            onChangeGeneralNotificationsPreference = {},
         )
     }
 }
@@ -440,7 +450,7 @@ private fun PreviewSettingsDialogLoading() {
             onChangeDarkThemeConfig = {},
             onChangeNewsNotificationsPreference = {},
             onChangeTransfersNotificationsPreference = {},
-            onChangeGeneralNotificationsPreference = {}
+            onChangeGeneralNotificationsPreference = {},
         )
     }
 }

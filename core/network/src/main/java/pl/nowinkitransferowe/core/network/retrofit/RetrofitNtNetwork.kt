@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.network.retrofit
 
 import androidx.tracing.trace
@@ -8,7 +24,6 @@ import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
 import pl.nowinkitransferowe.core.network.BuildConfig
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
-import pl.nowinkitransferowe.core.network.demo.mapToChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
 import pl.nowinkitransferowe.core.network.model.NetworkTransferResource
@@ -44,7 +59,6 @@ private interface RetrofitNtNetworkApi {
 }
 
 private const val NT_BASE_URL = BuildConfig.BACKEND_URL
-
 
 /**
  * Wrapper for data provided from the [NT_BASE_URL]
@@ -87,6 +101,4 @@ class RetrofitNtNetwork @Inject constructor(
 
     override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> =
         networkApi.getTransfersChangeList(after = after)
-
-
 }

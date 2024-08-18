@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.core.ui
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -27,7 +43,7 @@ object TransfersPreviewParameterData {
         useDynamicColor = false,
         isNewsNotificationsAllowed = true,
         isTransfersNotificationsAllowed = true,
-        isGeneralNotificationAllowed = true
+        isGeneralNotificationAllowed = true,
     )
     val transfersResources = listOf(
         UserTransferResource(
@@ -40,9 +56,9 @@ object TransfersPreviewParameterData {
                 clubFrom = "Stockport",
                 clubFromImg = "stockportcounty_herbb.png",
                 price = "za darmo",
-                url = "6592/Inne/nowinki-transferowe-na-zywo-"
+                url = "6592/Inne/nowinki-transferowe-na-zywo-",
             ),
-            userData = userData
+            userData = userData,
         ),
         UserTransferResource(
             transferResource = TransferResource(
@@ -54,9 +70,9 @@ object TransfersPreviewParameterData {
                 clubFrom = "Malmo FF",
                 clubFromImg = "malmo_herbb.png",
                 price = "nie ujawniono",
-                url = "6592/Inne/nowinki-transferowe-na-zywo-"
+                url = "6592/Inne/nowinki-transferowe-na-zywo-",
             ),
-            userData = userData
+            userData = userData,
         ),
         UserTransferResource(
             transferResource = TransferResource(
@@ -68,10 +84,9 @@ object TransfersPreviewParameterData {
                 clubFrom = "Saint-Etienne",
                 clubFromImg = "saintetiennenw2_herbb.png",
                 price = "0,5 mln \u20ac",
-                url = "6592/Inne/nowinki-transferowe-na-zywo-"
+                url = "6592/Inne/nowinki-transferowe-na-zywo-",
             ),
-            userData = userData
-        )
+            userData = userData,
+        ),
     )
-
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.ui
 
 import androidx.compose.runtime.Composable
@@ -104,12 +120,12 @@ class NtAppState(
             userNewsResourceRepository.observeAll(),
             userNewsResourceRepository.observeAllBookmarked(),
             userTransferResourceRepository.observeAll(),
-            userTransferResourceRepository.observeAllBookmarked()
+            userTransferResourceRepository.observeAllBookmarked(),
         ) { newsResources, bookmarkedNewsResources, transferResources, bookmarkedTransfersResources ->
             setOfNotNull(
                 TopLevelDestination.NEWS.takeIf { newsResources.any { !it.hasBeenViewed } },
                 TopLevelDestination.TRANSFERS.takeIf { transferResources.any { !it.hasBeenViewed } },
-                TopLevelDestination.BOOKMARKS.takeIf { bookmarkedNewsResources.any { !it.hasBeenViewed } or bookmarkedTransfersResources.any { !it.hasBeenViewed } }
+                TopLevelDestination.BOOKMARKS.takeIf { bookmarkedNewsResources.any { !it.hasBeenViewed } or bookmarkedTransfersResources.any { !it.hasBeenViewed } },
 
             )
         }
@@ -149,12 +165,11 @@ class NtAppState(
                 restoreState = true
             }
 
-
             when (topLevelDestination) {
                 TopLevelDestination.NEWS -> navController.navigateToNews(topLevelNavOptions)
                 TopLevelDestination.TRANSFERS -> navController.navigateToTransfer(topLevelNavOptions)
                 TopLevelDestination.BOOKMARKS -> navController.navigateToBookmarks(
-                    topLevelNavOptions
+                    topLevelNavOptions,
                 )
             }
         }
@@ -163,7 +178,6 @@ class NtAppState(
     fun navigateToSearch() {
         navController.navigateToSearch(null)
     }
-
 }
 
 /**

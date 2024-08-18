@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.bookmarks
 
 import androidx.annotation.VisibleForTesting
@@ -113,7 +129,6 @@ internal fun BookmarksScreen(
     val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_removed)
     val undoText = stringResource(id = R.string.feature_bookmarks_undo)
 
-
     val itemsAvailable = feedItemsSize(newsFeedState, transferFeedState)
 
     LaunchedEffect(shouldDisplayUndoBookmark) {
@@ -147,7 +162,6 @@ internal fun BookmarksScreen(
         )
     }
     TrackScreenViewEvent(screenName = "Saved")
-
 }
 
 @Composable
@@ -177,7 +191,6 @@ fun BookmarksGrid(
                 .testTag("bookmarks:feed"),
             state = scrollableState,
         ) {
-
             if (newsFeedState is NewsFeedUiState.Success && newsFeedState.feed.isNotEmpty()) {
                 item(
                     span = StaggeredGridItemSpan.FullLine,
@@ -214,10 +227,11 @@ fun BookmarksGrid(
                     )
                 }
             }
-            transferFeed(transferFeedState,
+            transferFeed(
+                transferFeedState,
                 onTransferResourcesCheckedChanged = { id, _ -> removeFromTransferBookmarks(id) },
                 onTransferResourceViewed = onTransferResourceViewed,
-                onTransferClick = {}
+                onTransferClick = {},
             )
             item(span = StaggeredGridItemSpan.FullLine) {
                 Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
@@ -305,7 +319,6 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         )
     }
 }
-
 
 @Preview
 @Composable
