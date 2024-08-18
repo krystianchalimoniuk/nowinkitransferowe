@@ -39,8 +39,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -71,6 +69,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import pl.nowinkitransferowe.core.designsystem.component.NtIconButton
 import pl.nowinkitransferowe.core.designsystem.component.NtTextButton
+import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.designsystem.theme.supportsDynamicTheming
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
@@ -327,7 +326,7 @@ fun SettingsDialogNotificationSwitchRow(
             thumbContent = if (checked) {
                 {
                     Icon(
-                        imageVector = Icons.Filled.Check,
+                        imageVector = NtIcons.CheckFiled,
                         contentDescription = null,
                         modifier = Modifier.size(SwitchDefaults.IconSize),
                     )
