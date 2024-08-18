@@ -34,7 +34,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":benchmark:pixel6Api31atdDemoBenchmarkAndroidTest" />
+          <option value=":benchmarks:pixel6Api33demoNonMinifiedReleaseAndroidTest" />
           <option value="--rerun" />
           <option value="--enable-display" />
         </list>
@@ -44,6 +44,7 @@
     <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
+    <RunAsTest>false</RunAsTest>
     <method v="2" />
   </configuration>
 </component>
