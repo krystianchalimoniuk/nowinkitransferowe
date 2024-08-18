@@ -35,7 +35,7 @@ class NtIssueRegistry : IssueRegistry() {
 
     override val vendor: Vendor = Vendor(
         vendorName = "Nowinki transferowe",
-        feedbackUrl = "https://github.com/android/nowinkitransferowe",
-        contact = "https://github.com/android/nowinkitransferowe",
+        feedbackUrl = "https://github.com/krystianchalimoniuk/nowinkitransferowe",
+        contact = "https://github.com/krystianchalimoniuk/nowinkitransferowe",
     )
 }
