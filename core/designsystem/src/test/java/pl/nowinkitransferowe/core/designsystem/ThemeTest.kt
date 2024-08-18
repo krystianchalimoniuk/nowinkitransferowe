@@ -44,7 +44,7 @@ import pl.nowinkitransferowe.core.designsystem.theme.darkScheme
 import pl.nowinkitransferowe.core.designsystem.theme.lightScheme
 
 /**
- * Tests [NiaTheme] using different combinations of the theme mode parameters:
+ * Tests [NtTheme] using different combinations of the theme mode parameters:
  * darkTheme, disableDynamicTheming, and androidTheme.
  *
  * It verifies that the various composition locals — [MaterialTheme], [LocalGradientColors] and
