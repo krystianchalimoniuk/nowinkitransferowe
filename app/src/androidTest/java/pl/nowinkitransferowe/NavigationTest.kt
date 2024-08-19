@@ -264,24 +264,24 @@ class NavigationTest {
         }
     }
 
-//    @Test
-//    fun navigationBar_multipleBackStackNews() {
-//        composeTestRule.apply {
-//            // Select the last news
-//            val newsItem = runBlocking {
-//                newsRepository.getNewsResources().first()[4]
-//            }
-//            onNodeWithTag("news:feed").performScrollToNode(hasText(newsItem.title))
-//            onNodeWithText(newsItem.title).performClick()
-//
-//            // Switch tab
-//            onNodeWithText(transfers).performClick()
-//
-//            // Come back to Transfers
-//            onNodeWithText(news).performClick()
-//
-//            // Verify the topic is still shown
-//            onNodeWithTag("news:${newsItem.id}").assertExists()
-//        }
-//    }
+    @Test
+    fun navigationBar_multipleBackStackNews() {
+        composeTestRule.apply {
+            // Select the last news
+            val newsItem = runBlocking {
+                newsRepository.getNewsResources().first()[4]
+            }
+            onNodeWithTag("news:feed").performScrollToNode(hasText(newsItem.title))
+            onNodeWithText(newsItem.title).performClick()
+
+            // Switch tab
+            onNodeWithText(transfers).performClick()
+
+            // Come back to Transfers
+            onNodeWithText(news).performClick()
+
+            // Verify the topic is still shown
+            onNodeWithTag("news:${newsItem.id}").assertExists()
+        }
+    }
 }
