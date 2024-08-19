@@ -198,9 +198,9 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
           disable-animations: true
-          disk-size: 6000M
-          heap-size: 600M
-          script: ./gradlew connectedDemoDebugAndroidTest --daemon
+          disk-size: 10G
+          heap-size: 2048M
+          script: ./gradlew connectedDemoDebugAndroidTest --daemon --stacktrace --info
 
       - name: Run local tests (including Roborazzi) for the combined coverage report (only API 30)
         if: matrix.api-level == 30
