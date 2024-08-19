@@ -269,7 +269,7 @@ class NavigationTest {
         composeTestRule.apply {
             // Select the last news
             val newsItem = runBlocking {
-                newsRepository.getNewsResources().first()[4]
+                newsRepository.getNewsResources().first()[3]
             }
             onNodeWithTag("news:feed").performScrollToNode(hasText(newsItem.title))
             onNodeWithText(newsItem.title).performClick()
