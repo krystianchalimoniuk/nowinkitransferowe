@@ -54,7 +54,6 @@ class BookmarksScreenTest {
     fun loading_showsLoadingSpinner() {
         composeTestRule.setContent {
             BookmarksScreen(
-
                 newsFeedState = NewsFeedUiState.Loading,
                 transferFeedState = TransferFeedUiState.Loading,
                 onShowSnackbar = { _, _ -> false },
@@ -153,7 +152,7 @@ class BookmarksScreenTest {
     }
 
     @Test
-    fun feed_whenRemovingBookmark_removesBookmark() {
+    fun feed_whenRemovingBookmark_removesBookmark() = runTest {
         var removeNewsFromBookmarksCalled = false
         var removeTransferFromBookmarksCalled = false
 
