@@ -35,6 +35,8 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.test.runTest
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.testing.data.userNewsResourcesTestData
@@ -168,11 +170,11 @@ class BookmarksScreenTest {
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = { newsResourceId ->
-                    kotlin.test.assertEquals(userNewsResourcesTestData[0].id, newsResourceId)
+                    assertEquals(userNewsResourcesTestData[0].id, newsResourceId)
                     removeNewsFromBookmarksCalled = true
                 },
                 removeFromTransferBookmarks = { transferResourceId ->
-                    kotlin.test.assertEquals(
+                    assertEquals(
                         userTransferResourcesTestData[0].id,
                         transferResourceId,
                     )
@@ -202,7 +204,7 @@ class BookmarksScreenTest {
             .onFirst()
             .performClick()
 
-        kotlin.test.assertTrue(removeNewsFromBookmarksCalled)
+        assertTrue(removeNewsFromBookmarksCalled)
 
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
@@ -229,7 +231,7 @@ class BookmarksScreenTest {
             .onFirst()
             .performClick()
 
-        kotlin.test.assertTrue(removeTransferFromBookmarksCalled)
+        assertTrue(removeTransferFromBookmarksCalled)
     }
 
     @Test
@@ -285,8 +287,8 @@ class BookmarksScreenTest {
             }
         }
 
-        kotlin.test.assertEquals(false, undoStateCleared)
+        assertEquals(false, undoStateCleared)
         testLifecycleOwner.handleLifecycleEvent(event = Lifecycle.Event.ON_STOP)
-        kotlin.test.assertEquals(true, undoStateCleared)
+        assertEquals(true, undoStateCleared)
     }
 }
