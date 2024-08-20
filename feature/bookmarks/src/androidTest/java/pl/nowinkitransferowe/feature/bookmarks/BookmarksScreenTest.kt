@@ -35,14 +35,14 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.test.runTest
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.testing.data.userNewsResourcesTestData
 import pl.nowinkitransferowe.core.testing.data.userTransferResourcesTestData
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * UI tests for [BookmarksScreen] composable.
