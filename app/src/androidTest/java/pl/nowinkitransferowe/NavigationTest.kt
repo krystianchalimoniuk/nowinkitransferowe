@@ -265,7 +265,7 @@ class NavigationTest {
     }
 
     @Test
-    fun navigationBar_multipleBackStackNews() = runTest{
+    fun navigationBar_multipleBackStackNews() = runTest {
         composeTestRule.apply {
             // Select the last news
             val newsItem =
