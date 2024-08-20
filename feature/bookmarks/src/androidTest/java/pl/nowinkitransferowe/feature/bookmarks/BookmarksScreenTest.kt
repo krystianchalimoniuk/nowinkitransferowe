@@ -177,7 +177,6 @@ class BookmarksScreenTest {
                         userTransferResourcesTestData[0].id,
                         transferResourceId,
                     )
-                    removeTransferFromBookmarksCalled = true
                 },
                 onTopicClick = {},
                 onNewsResourceViewed = {},
