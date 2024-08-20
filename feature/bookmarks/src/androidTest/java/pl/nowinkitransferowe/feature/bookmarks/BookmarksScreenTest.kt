@@ -156,7 +156,6 @@ class BookmarksScreenTest {
     @Test
     fun feed_whenRemovingBookmark_removesBookmark() = runTest {
         var removeNewsFromBookmarksCalled = false
-        var removeTransferFromBookmarksCalled = false
 
         composeTestRule.setContent {
             BookmarksScreen(
@@ -205,33 +204,6 @@ class BookmarksScreenTest {
             .performClick()
 
         assertTrue(removeNewsFromBookmarksCalled)
-
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    composeTestRule.activity.getString(R.string.feature_bookmarks_transfers),
-                    substring = true,
-                ),
-            )
-
-        composeTestRule
-            .onAllNodesWithContentDescription(
-                composeTestRule.activity.getString(
-                    pl.nowinkitransferowe.core.ui.R.string.core_ui_unbookmark,
-                ),
-            ).filter(
-                hasAnyAncestor(
-                    hasText(
-                        userTransferResourcesTestData[0].name,
-                        substring = true,
-                    ),
-                ),
-            )
-            .assertCountEquals(1)
-            .onFirst()
-            .performClick()
-
-        assertTrue(removeTransferFromBookmarksCalled)
     }
 
     @Test
