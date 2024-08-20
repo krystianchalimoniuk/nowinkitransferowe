@@ -154,30 +154,23 @@ class BookmarksScreenTest {
     }
 
     @Test
-    fun feed_whenRemovingBookmark_removesBookmark() = runTest {
+    fun feed_whenRemovingNewsBookmark_removesNewsBookmark() = runTest {
         var removeNewsFromBookmarksCalled = false
 
         composeTestRule.setContent {
             BookmarksScreen(
                 newsFeedState = NewsFeedUiState.Success(
-                    userNewsResourcesTestData.take(2),
+                    feed = userNewsResourcesTestData.take(2),
                 ),
                 transferFeedState = TransferFeedUiState.Success(
-                    feed = userTransferResourcesTestData.take(
-                        2,
-                    ),
+                    feed = arrayListOf(),
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = { newsResourceId ->
                     assertEquals(userNewsResourcesTestData[0].id, newsResourceId)
                     removeNewsFromBookmarksCalled = true
                 },
-                removeFromTransferBookmarks = { transferResourceId ->
-                    assertEquals(
-                        userTransferResourcesTestData[0].id,
-                        transferResourceId,
-                    )
-                },
+                removeFromTransferBookmarks = {},
                 onTopicClick = {},
                 onNewsResourceViewed = {},
                 onTransferResourceViewed = {},
@@ -203,6 +196,53 @@ class BookmarksScreenTest {
             .performClick()
 
         assertTrue(removeNewsFromBookmarksCalled)
+    }
+
+    @Test
+    fun feed_whenRemovingTransfersBookmark_removesTransfersBookmark() = runTest {
+        var removeTransfersFromBookmarksCalled = false
+
+        composeTestRule.setContent {
+            BookmarksScreen(
+                newsFeedState = NewsFeedUiState.Success(
+                    feed = arrayListOf(),
+                ),
+                transferFeedState = TransferFeedUiState.Success(
+                    feed = userTransferResourcesTestData.take(
+                        2,
+                    ),
+                ),
+                onShowSnackbar = { _, _ -> false },
+                removeFromNewsBookmarks = {},
+                removeFromTransferBookmarks = { transferResourceId ->
+                    assertEquals(userTransferResourcesTestData[0].id, transferResourceId)
+                    removeTransfersFromBookmarksCalled = true
+                },
+                onTopicClick = {},
+                onNewsResourceViewed = {},
+                onTransferResourceViewed = {},
+                onNewsClick = {},
+            )
+        }
+
+        composeTestRule
+            .onAllNodesWithContentDescription(
+                composeTestRule.activity.getString(
+                    pl.nowinkitransferowe.core.ui.R.string.core_ui_unbookmark,
+                ),
+            ).filter(
+                hasAnyAncestor(
+                    hasText(
+                        userTransferResourcesTestData[0].name,
+                        substring = true,
+                    ),
+                ),
+            )
+            .assertCountEquals(1)
+            .onFirst()
+            .performClick()
+
+        assertTrue(removeTransfersFromBookmarksCalled)
     }
 
     @Test
