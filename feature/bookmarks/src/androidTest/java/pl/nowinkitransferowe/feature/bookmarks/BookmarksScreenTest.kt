@@ -41,6 +41,8 @@ import pl.nowinkitransferowe.core.testing.data.userNewsResourcesTestData
 import pl.nowinkitransferowe.core.testing.data.userTransferResourcesTestData
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * UI tests for [BookmarksScreen] composable.
@@ -54,7 +56,6 @@ class BookmarksScreenTest {
     fun loading_showsLoadingSpinner() {
         composeTestRule.setContent {
             BookmarksScreen(
-
                 newsFeedState = NewsFeedUiState.Loading,
                 transferFeedState = TransferFeedUiState.Loading,
                 onShowSnackbar = { _, _ -> false },
@@ -153,32 +154,23 @@ class BookmarksScreenTest {
     }
 
     @Test
-    fun feed_whenRemovingBookmark_removesBookmark() {
+    fun feed_whenRemovingNewsBookmark_removesNewsBookmark() = runTest {
         var removeNewsFromBookmarksCalled = false
-        var removeTransferFromBookmarksCalled = false
 
         composeTestRule.setContent {
             BookmarksScreen(
                 newsFeedState = NewsFeedUiState.Success(
-                    userNewsResourcesTestData.take(2),
+                    feed = userNewsResourcesTestData.take(2),
                 ),
                 transferFeedState = TransferFeedUiState.Success(
-                    feed = userTransferResourcesTestData.take(
-                        2,
-                    ),
+                    feed = arrayListOf(),
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = { newsResourceId ->
-                    kotlin.test.assertEquals(userNewsResourcesTestData[0].id, newsResourceId)
+                    assertEquals(userNewsResourcesTestData[0].id, newsResourceId)
                     removeNewsFromBookmarksCalled = true
                 },
-                removeFromTransferBookmarks = { transferResourceId ->
-                    kotlin.test.assertEquals(
-                        userTransferResourcesTestData[0].id,
-                        transferResourceId,
-                    )
-                    removeTransferFromBookmarksCalled = true
-                },
+                removeFromTransferBookmarks = {},
                 onTopicClick = {},
                 onNewsResourceViewed = {},
                 onTransferResourceViewed = {},
@@ -203,15 +195,35 @@ class BookmarksScreenTest {
             .onFirst()
             .performClick()
 
-        kotlin.test.assertTrue(removeNewsFromBookmarksCalled)
+        assertTrue(removeNewsFromBookmarksCalled)
+    }
 
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    composeTestRule.activity.getString(R.string.feature_bookmarks_transfers),
-                    substring = true,
+    @Test
+    fun feed_whenRemovingTransfersBookmark_removesTransfersBookmark() = runTest {
+        var removeTransfersFromBookmarksCalled = false
+
+        composeTestRule.setContent {
+            BookmarksScreen(
+                newsFeedState = NewsFeedUiState.Success(
+                    feed = arrayListOf(),
                 ),
+                transferFeedState = TransferFeedUiState.Success(
+                    feed = userTransferResourcesTestData.take(
+                        2,
+                    ),
+                ),
+                onShowSnackbar = { _, _ -> false },
+                removeFromNewsBookmarks = {},
+                removeFromTransferBookmarks = { transferResourceId ->
+                    assertEquals(userTransferResourcesTestData[0].id, transferResourceId)
+                    removeTransfersFromBookmarksCalled = true
+                },
+                onTopicClick = {},
+                onNewsResourceViewed = {},
+                onTransferResourceViewed = {},
+                onNewsClick = {},
             )
+        }
 
         composeTestRule
             .onAllNodesWithContentDescription(
@@ -230,7 +242,7 @@ class BookmarksScreenTest {
             .onFirst()
             .performClick()
 
-        kotlin.test.assertTrue(removeTransferFromBookmarksCalled)
+        assertTrue(removeTransfersFromBookmarksCalled)
     }
 
     @Test
@@ -286,8 +298,8 @@ class BookmarksScreenTest {
             }
         }
 
-        kotlin.test.assertEquals(false, undoStateCleared)
+        assertEquals(false, undoStateCleared)
         testLifecycleOwner.handleLifecycleEvent(event = Lifecycle.Event.ON_STOP)
-        kotlin.test.assertEquals(true, undoStateCleared)
+        assertEquals(true, undoStateCleared)
     }
 }
