@@ -35,7 +35,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -265,12 +265,12 @@ class NavigationTest {
     }
 
     @Test
-    fun navigationBar_multipleBackStackNews() = runTest {
+    fun navigationBar_multipleBackStackNews() {
         composeTestRule.apply {
             // Select the last news
-            val newsItem =
+            val newsItem = runBlocking {
                 newsRepository.getNewsResources().first()[4]
-
+            }
             onNodeWithTag("news:feed").performScrollToNode(hasText(newsItem.title))
             onNodeWithText(newsItem.title).performClick()
 
