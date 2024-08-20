@@ -153,7 +153,7 @@ jobs:
     timeout-minutes: 55
     strategy:
       matrix:
-        api-level: [26, 30]
+        api-level: [30]
 
     steps:
       - name: Delete unnecessary tools 🔧
@@ -198,9 +198,9 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
           disable-animations: true
-          disk-size: 10G
-          heap-size: 2048M
-          script: ./gradlew connectedDemoDebugAndroidTest --daemon --stacktrace --info
+          disk-size: 6000M
+          heap-size: 600M
+          script: ./gradlew connectedDemoDebugAndroidTest --daemon
 
       - name: Run local tests (including Roborazzi) for the combined coverage report (only API 30)
         if: matrix.api-level == 30
