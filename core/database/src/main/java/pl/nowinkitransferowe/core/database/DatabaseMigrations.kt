@@ -51,7 +51,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20170702InMillis, season = '17/18' 
-                WHERE id BETWEEN '3' AND '357' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 3 AND 357 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -59,7 +59,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20180103InMillis, season = '17/18' 
-                WHERE id BETWEEN '358' AND '811' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 358 AND 811 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -67,7 +67,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20180704InMillis, season = '18/19' 
-                WHERE id BETWEEN '812' AND '1531' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 812 AND 1531 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -75,7 +75,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20190105InMillis, season = '18/19' 
-                WHERE id BETWEEN '1532' AND '2090' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 1532 AND 2090 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -83,7 +83,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20190706InMillis, season = '19/20' 
-                WHERE id BETWEEN '2091' AND '3747' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 2091 AND 3747 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -91,7 +91,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20200107InMillis, season = '19/20' 
-                WHERE id BETWEEN '3748' AND '4299' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 3748 AND 4299 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -99,7 +99,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20200707InMillis, season = '20/21' 
-                WHERE id BETWEEN '4300' AND '5870' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 4300 AND 5870 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -107,7 +107,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20210108InMillis, season = '20/21' 
-                WHERE id BETWEEN '5872' AND '6639' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 5872 AND 6639 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -115,7 +115,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20210709InMillis, season = '21/22' 
-                WHERE id BETWEEN '6640' AND '8269' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 6640 AND 8269 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -123,7 +123,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20220110InMillis, season = '21/22' 
-                WHERE id BETWEEN '8270' AND '8410' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 8270 AND 8410 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -131,7 +131,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20220711InMillis, season = '22/23' 
-                WHERE id BETWEEN '8411' AND '10938' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 8411 AND 10938 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -139,7 +139,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20230112InMillis, season = '22/23' 
-                WHERE id BETWEEN '10939' AND '11843' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 10939 AND 11843 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -147,7 +147,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20230716InMillis, season = '23/24' 
-                WHERE id BETWEEN '11844' AND '13939' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 11844 AND 13939 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -155,7 +155,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20240115InMillis, season = '23/24' 
-                WHERE id BETWEEN '13940' AND '14856' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 13940 AND '14856' AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
@@ -163,7 +163,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20240830InMillis, season = '24/25' 
-                WHERE id BETWEEN '14857' AND '16931' AND (publish_date IS NULL OR season IS NULL)
+                WHERE CAST(id AS INTEGER) BETWEEN 14857 AND 16931 AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
         }
