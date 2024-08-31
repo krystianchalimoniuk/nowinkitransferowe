@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.core.testing.data
 
+import kotlinx.datetime.toInstant
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.UserData
@@ -44,6 +45,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "stockportcounty_herbb.png",
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -58,6 +61,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "malmo_herbb.png",
                 price = "nie ujawniono",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -72,6 +77,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "saintetiennenw2_herbb.png",
                 price = "0,5 mln \u20ac",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -86,6 +93,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "sociedad_herbb.png",
                 price = "34,5 mln €",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -100,6 +109,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "marsylia_herbb.png",
                 price = "5 mln €",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -114,6 +125,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "braga_herbb.png",
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -128,6 +141,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "chelsea_herbb.png",
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -142,6 +157,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "napolinowe_herbb.png",
                 price = "wypożyczenie",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -156,6 +173,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "liverpool_herbb.png",
                 price = "wypożyczenie",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -170,6 +189,8 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 clubFromImg = "kisvarda_herbb.jpg",
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),

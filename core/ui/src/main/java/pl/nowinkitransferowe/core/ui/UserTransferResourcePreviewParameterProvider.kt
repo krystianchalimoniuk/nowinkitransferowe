@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.core.ui
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import kotlinx.datetime.toInstant
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.UserData
@@ -57,6 +58,8 @@ object TransfersPreviewParameterData {
                 clubFromImg = "stockportcounty_herbb.png",
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -71,6 +74,8 @@ object TransfersPreviewParameterData {
                 clubFromImg = "malmo_herbb.png",
                 price = "nie ujawniono",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),
@@ -85,6 +90,8 @@ object TransfersPreviewParameterData {
                 clubFromImg = "saintetiennenw2_herbb.png",
                 price = "0,5 mln \u20ac",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
+                season = "23/24",
+                publishDate = "2022-10-06T23:00:00.000Z".toInstant()
             ),
             userData = userData,
         ),

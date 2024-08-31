@@ -28,6 +28,29 @@ import pl.nowinkitransferowe.core.database.model.TransferResourceEntity
  */
 @Dao
 interface TransferResourceDao {
+    /**
+     * Fetches transfer resources that match the id
+     */
+    @Query(
+        value = """
+        SELECT * FROM transfer_resources
+        WHERE id = :transferId
+    """,
+    )
+    fun getTransferResource(transferId: String): Flow<TransferResourceEntity>
+
+    /**
+     * Fetches transfer resources that match the name
+     */
+    @Transaction
+    @Query(
+        value = """
+        SELECT * FROM transfer_resources
+        WHERE name = :name ORDER BY CAST(id as INT) DESC
+
+    """,
+    )
+    fun getTransferResourcesByName(name: String): Flow<List<TransferResourceEntity>>
 
     /**
      * Fetches transfer resources that match the query parameters

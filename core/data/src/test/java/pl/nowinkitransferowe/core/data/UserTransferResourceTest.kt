@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.core.data
 
+import kotlinx.datetime.toInstant
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
@@ -42,6 +43,8 @@ class UserTransferResourceTest {
             clubFromImg = "stockportcounty_herbb.png",
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
         )
 
         val userData = UserData(

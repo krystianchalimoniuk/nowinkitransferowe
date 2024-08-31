@@ -16,6 +16,8 @@
 
 package pl.nowinkitransferowe.core.model
 
+import kotlinx.datetime.Instant
+
 data class UserTransferResource(
     val id: String,
     val name: String,
@@ -26,6 +28,8 @@ data class UserTransferResource(
     val clubToImg: String,
     val price: String,
     val url: String,
+    val publishDate: Instant,
+    val season: String,
     val isSaved: Boolean,
     val hasBeenViewed: Boolean,
 ) {
@@ -40,6 +44,8 @@ data class UserTransferResource(
         clubToImg = transferResource.clubToImg,
         price = transferResource.price,
         url = transferResource.url,
+        season = transferResource.season,
+        publishDate = transferResource.publishDate,
         isSaved = transferResource.id in userData.bookmarkedTransferResources,
         hasBeenViewed = transferResource.id in userData.viewedTransferResources,
     )

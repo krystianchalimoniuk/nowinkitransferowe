@@ -452,7 +452,7 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
 
 @DevicePreviews
 @Composable
-fun TopicScreenPopulated(
+fun DetailsScreenPopulated(
     @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
     userNewsResources: List<UserNewsResource>,
 ) {

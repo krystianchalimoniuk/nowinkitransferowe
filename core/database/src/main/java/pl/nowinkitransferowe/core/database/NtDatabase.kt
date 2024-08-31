@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.core.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -39,8 +40,10 @@ import pl.nowinkitransferowe.core.database.util.InstantConverter
         TransferResourceFtsEntity::class,
         RecentSearchQueryEntity::class,
     ],
-    version = 1,
-    autoMigrations = [],
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2, spec = DatabaseMigrations.Schema1to2::class),
+    ],
     exportSchema = true,
 )
 @TypeConverters(

@@ -37,6 +37,7 @@ class NetworkEntityKtTest {
                 clubToImg = "como_herbb.png",
                 price = "za darmo",
                 link = "11233/Transfery/oficjalnie-raphael-varane-w-como-1907",
+                publishDate = "2024-08-30 15:22:04"
             )
         val entity = networkModel.asEntity()
 

@@ -8,7 +8,8 @@
     "club_to": "Como 1907",
     "club_to_photo": "como_herbb.png",
     "price": "za darmo",
-    "link": "11233\/Transfery\/oficjalnie-raphael-varane-w-como-1907"
+    "link": "11233\/Transfery\/oficjalnie-raphael-varane-w-como-1907",
+    "created_at": "2024-08-30 15:22:04"
   },
   {
     "id": 15812,
@@ -19,7 +20,8 @@
     "club_to": "FC St. Pauli",
     "club_to_photo": "stpauli_herbb.png",
     "price": "wypożyczenie",
-    "link": ""
+    "link": "",
+    "created_at": "2024-08-30 15:22:04"
   },
   {
     "id": 15811,
@@ -30,7 +32,8 @@
     "club_to": "KV Mechelen",
     "club_to_photo": "mechelen_herbb.png",
     "price": "wypożyczenie",
-    "link": ""
+    "link": "",
+    "created_at": "2024-08-30 15:22:04"
   },
   {
     "id": 15810,
@@ -41,7 +44,8 @@
     "club_to": "Venezia FC",
     "club_to_photo": "venezianew_herbb.png",
     "price": "za darmo",
-    "link": ""
+    "link": "",
+    "created_at": "2024-08-30 15:22:04"
   },
   {
     "id": 15809,
@@ -52,7 +56,8 @@
     "club_to": "Shabab Al-Ahli",
     "club_to_photo": "alahlidubai_herb.png",
     "price": "5 mln €",
-    "link": ""
+    "link": "",
+    "created_at": "2024-08-30 15:22:04"
   },
   {
     "id": 15808,
@@ -63,7 +68,8 @@
     "club_to": "Avia Świdnik",
     "club_to_photo": "avia_herbb.png",
     "price": "za darmo",
-    "link": ""
+    "link": "",
+    "created_at": "2024-08-30 15:22:04"
   },
   {
     "id": 15807,
@@ -74,7 +80,8 @@
     "club_to": "Al-Ettifaq",
     "club_to_photo": "alettifaq_herb.png",
     "price": "za darmo",
-    "link": ""
+    "link": "",
+    "created_at": "2024-08-30 15:22:04"
   },
   {
     "id": 15806,
@@ -85,6 +92,7 @@
     "club_to": "USL Dunkerque",
     "club_to_photo": "usldunkerque_herbb.png",
     "price": "nie ujawniono",
-    "link": ""
+    "link": "",
+    "created_at": "2024-08-30 15:22:04"
   }
 ]

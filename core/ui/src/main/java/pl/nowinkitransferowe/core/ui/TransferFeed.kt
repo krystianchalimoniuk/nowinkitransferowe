@@ -73,15 +73,7 @@ fun LazyStaggeredGridScope.transferFeed(
     }
 }
 
-// fun launchCustomChromeTab(context: Context, uri: Uri, @ColorInt toolbarColor: Int) {
-//    val customTabBarColor = CustomTabColorSchemeParams.Builder()
-//        .setToolbarColor(toolbarColor).build()
-//    val customTabsIntent = CustomTabsIntent.Builder()
-//        .setDefaultColorSchemeParams(customTabBarColor)
-//        .build()
-//
-//    customTabsIntent.launchUrl(context, uri)
-// }
+
 /**
  * A sealed hierarchy describing the state of the feed of news resources.
  */

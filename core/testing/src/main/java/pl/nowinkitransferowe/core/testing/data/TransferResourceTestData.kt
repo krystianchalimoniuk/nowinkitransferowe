@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.core.testing.data
 
+import kotlinx.datetime.toInstant
 import pl.nowinkitransferowe.core.model.TransferResource
 
 val transferResourceTestData: List<TransferResource> = listOf(
@@ -29,6 +30,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "stockportcounty_herbb.png",
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "2",
@@ -40,6 +43,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "malmo_herbb.png",
         price = "nie ujawniono",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "3",
@@ -51,6 +56,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "saintetiennenw2_herbb.png",
         price = "0,5 mln \u20ac",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "4",
@@ -62,6 +69,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "sociedad_herbb.png",
         price = "34,5 mln €",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "5",
@@ -73,6 +82,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "marsylia_herbb.png",
         price = "5 mln €",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "6",
@@ -84,6 +95,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "braga_herbb.png",
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "7",
@@ -95,6 +108,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "chelsea_herbb.png",
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "8",
@@ -106,6 +121,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "napolinowe_herbb.png",
         price = "wypożyczenie",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "9",
@@ -117,6 +134,8 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "liverpool_herbb.png",
         price = "wypożyczenie",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
     TransferResource(
         id = "10",
@@ -128,5 +147,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         clubFromImg = "kisvarda_herbb.jpg",
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
+        season = "23/24",
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
     ),
 )

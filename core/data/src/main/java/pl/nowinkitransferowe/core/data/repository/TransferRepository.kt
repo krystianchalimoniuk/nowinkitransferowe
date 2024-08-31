@@ -25,6 +25,7 @@ import pl.nowinkitransferowe.core.model.TransferResource
  */
 data class TransferResourceQuery(
     val filterTransferIds: Set<String>? = null,
+    val footballerName: String? = null
 )
 
 /**
@@ -35,7 +36,7 @@ interface TransferRepository : Syncable {
      * Returns available news resources that match the specified [query].
      */
     fun getTransferResources(
-        query: TransferResourceQuery = TransferResourceQuery(filterTransferIds = null),
+        query: TransferResourceQuery = TransferResourceQuery(filterTransferIds = null, footballerName = null),
     ): Flow<List<TransferResource>>
 
     /**
@@ -45,6 +46,16 @@ interface TransferRepository : Syncable {
         limit: Int,
         offset: Int,
     ): Flow<List<TransferResource>>
+
+    /**
+     * Returns available transfer resource that match the specified [id].
+     */
+    fun getTransferResource(id: String): Flow<TransferResource>
+
+    /**
+     * Returns available transfer resource that match the specified [name].
+     */
+    fun getTransferResourceByName(name: String): Flow<List<TransferResource>>
 
     /**
      * Returns counts number.

@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+plugins {
+    alias(libs.plugins.nowinkitransferowe.android.feature)
+    alias(libs.plugins.nowinkitransferowe.android.library.compose)
+    alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
+}
 
-package pl.nowinkitransferowe.core.model
+android {
+    namespace = "pl.nowinkitransferowe.feature.details.transfers"
+}
 
-import kotlinx.datetime.Instant
+dependencies {
+    implementation(projects.core.data)
 
-data class TransferResource(
-    val id: String,
-    val name: String,
-    val footballerImg: String,
-    val clubFrom: String,
-    val clubFromImg: String,
-    val clubTo: String,
-    val clubToImg: String,
-    val price: String,
-    val url: String,
-    val season: String,
-    val publishDate: Instant,
+    testImplementation(projects.core.testing)
 
-    )
+    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
+    androidTestImplementation(projects.core.testing)
+}
