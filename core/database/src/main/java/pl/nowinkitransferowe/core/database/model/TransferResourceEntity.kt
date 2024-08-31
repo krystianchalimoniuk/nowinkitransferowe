@@ -47,9 +47,8 @@ data class TransferResourceEntity(
     val url: String,
     @ColumnInfo(name ="publish_date")
     val publishDate: Instant?,
-    @ColumnInfo(defaultValue = "23/24" )
-    val season: String,
+    val season: String?,
 )
 
 fun TransferResourceEntity.asExternalModel() =
-    TransferResource(id, name, footballerImg, clubFrom, clubFromImg, clubTo, clubToImg, price, url, season, publishDate ?: "2024-08-30T14:00:00.000Z".toInstant())
+    TransferResource(id, name, footballerImg, clubFrom, clubFromImg, clubTo, clubToImg, price, url, season ?: "23/24", publishDate ?: "2024-08-30T14:00:00.000Z".toInstant())

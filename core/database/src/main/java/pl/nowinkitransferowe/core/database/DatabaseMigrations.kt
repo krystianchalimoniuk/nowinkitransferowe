@@ -51,7 +51,7 @@ internal object DatabaseMigrations {
                 """
                 UPDATE transfer_resources
                 SET publish_date = $date20170702InMillis, season = '17/18' 
-                WHERE id BETWEEN '3' AND '357' AND publish_date IS NULL OR season IS NULL)
+                WHERE id BETWEEN '3' AND '357' AND (publish_date IS NULL OR season IS NULL)
                 """,
             )
 
