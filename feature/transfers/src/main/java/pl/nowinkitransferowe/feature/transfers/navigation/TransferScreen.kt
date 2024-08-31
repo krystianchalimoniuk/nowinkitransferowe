@@ -74,6 +74,7 @@ internal fun TransferRoute(
     modifier: Modifier = Modifier,
     onCleanBackStack: () -> Unit,
     viewModel: TransferViewModel = hiltViewModel(),
+    onTransferClick: (String) -> Unit,
 ) {
     val feedState by viewModel.feedUiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
@@ -81,6 +82,7 @@ internal fun TransferRoute(
     val page by viewModel.page.collectAsStateWithLifecycle()
     val transfersCounts by viewModel.transfersCount.collectAsStateWithLifecycle()
     TransferScreen(
+        onTransferClick = onTransferClick,
         isSyncing = isSyncing,
         feedState = feedState,
         deepLinkedUserTransferResource = deepLinkedUserTransferResource,
@@ -95,6 +97,7 @@ internal fun TransferRoute(
 
 @Composable
 internal fun TransferScreen(
+    onTransferClick: (String) -> Unit,
     isSyncing: Boolean,
     feedState: TransferFeedUiState,
     deepLinkedUserTransferResource: UserTransferResource?,
@@ -152,6 +155,7 @@ internal fun TransferScreen(
                 feedState = feedState,
                 onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
                 onTransferResourceViewed = onTransferResourceViewed,
+                onTransferClick = onTransferClick
             )
 
             item(span = StaggeredGridItemSpan.FullLine, contentType = "bottomSpacing") {
@@ -242,6 +246,7 @@ fun TransferScreenLoading() {
             onDeepLinkOpened = {},
             onCleanBackStack = {},
             loadNextPage = {},
+            onTransferClick = {}
         )
     }
 }
@@ -264,6 +269,7 @@ fun TransferScreenPopulatedAndLoading(
             onDeepLinkOpened = {},
             onCleanBackStack = {},
             loadNextPage = {},
+            onTransferClick = {}
         )
     }
 }

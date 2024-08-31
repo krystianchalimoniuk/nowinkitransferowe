@@ -12,7 +12,7 @@ import pl.nowinkitransferowe.feature.details.transfers.DetailsTransferRoute
 const val LINKED_TRANSFER_RESOURCE_ID = "linkedTransferResourceId"
 const val DETAILS_TRANSFER_ROUTE = "details_transfer_route"
 
-fun NavController.navigateToDetails(
+fun NavController.navigateToTransferDetails(
     detailsId: String,
     navOptions: NavOptionsBuilder.() -> Unit = {},
 ) {

@@ -35,7 +35,7 @@ fun LazyStaggeredGridScope.transferFeed(
     feedState: TransferFeedUiState,
     onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
     onTransferResourceViewed: (String) -> Unit,
-    onTransferClick: () -> Unit = {},
+    onTransferClick: (String) -> Unit = {},
 ) {
     when (feedState) {
         TransferFeedUiState.Loading -> Unit
@@ -51,9 +51,9 @@ fun LazyStaggeredGridScope.transferFeed(
                     userTransferResource = userTransferResource,
                     isBookmarked = userTransferResource.isSaved,
                     onClick = {
-                        onTransferClick()
-                        analyticsHelper.logNewsResourceOpened(
-                            newsResourceId = userTransferResource.id,
+                        onTransferClick(userTransferResource.id)
+                        analyticsHelper.logTransferResourceOpened(
+                            transferResourceId = userTransferResource.id,
                         )
                         onTransferResourceViewed(userTransferResource.id)
                     },

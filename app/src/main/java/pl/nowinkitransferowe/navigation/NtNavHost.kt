@@ -32,6 +32,8 @@ import androidx.navigation.navOptions
 import pl.nowinkitransferowe.feature.bookmarks.navigation.bookmarksScreen
 import pl.nowinkitransferowe.feature.details.navigation.detailsScreen
 import pl.nowinkitransferowe.feature.details.navigation.navigateToDetails
+import pl.nowinkitransferowe.feature.details.transfers.navigation.detailsTransferScreen
+import pl.nowinkitransferowe.feature.details.transfers.navigation.navigateToTransferDetails
 import pl.nowinkitransferowe.feature.news.navigation.NEWS_ROUTE
 import pl.nowinkitransferowe.feature.search.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.navigation.searchScreen
@@ -65,22 +67,25 @@ fun NtNavHost(
 //        popExitTransition = popExitTransition,
         modifier = modifier,
 
-    ) {
+        ) {
         newsListDetailScreen(
             onTopicClick = navController::navigateToSearch,
         )
-        transferScreen(onCleanBackStack = {
-            navController.popBackStack()
-            navController.navigateToTransfer(
-                navOptions {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                },
-            )
-        })
+        transferScreen(
+            onCleanBackStack = {
+                navController.popBackStack()
+                navController.navigateToTransfer(
+                    navOptions {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    },
+                )
+            },
+            onTransferClick = navController::navigateToTransferDetails,
+        )
         bookmarksScreen(
             onNewsClick = navController::navigateToDetails,
             onTopicClick = navController::navigateToSearch,
@@ -91,6 +96,11 @@ fun NtNavHost(
             onBackClick = navController::popBackStack,
             onTopicClick = navController::navigateToSearch,
         )
+        detailsTransferScreen(
+            showBackButton = true,
+            onBackClick = navController::popBackStack,
+        )
+
         searchScreen(
             onBackClick = navController::popBackStack,
             onNewsClick = navController::navigateToDetails,

@@ -53,6 +53,7 @@ import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferListItemCard
 import pl.nowinkitransferowe.core.ui.UserTransfersResourcePreviewParameterProvider
 import androidx.compose.foundation.lazy.items
+
 @Composable
 fun DetailsTransferRoute(
     showBackButton: Boolean,
@@ -199,7 +200,7 @@ fun DetailsTransferBody(
                 items(
                     items = userTransferResources,
                     key = { it.id },
-                    contentType = { "transferListItem" }
+                    contentType = { "transferListItem" },
                 ) { userTransferResource ->
                     TransferListItemCard(
                         userTransferResource,
@@ -233,7 +234,7 @@ fun DetailsTransferBody(
 fun calculateTransferSum(prices: List<String>): String {
     var sum = 0.0
     prices.forEach { price ->
-        if (price == "za darmo" || price == "nie ujawniono") {
+        if (price == "za darmo" || price == "nie ujawniono" || price == "wypożyczenie") {
             sum += 0.0
         } else {
             val value = price.split(" ")[0].replace(",", ".").toDoubleOrNull()

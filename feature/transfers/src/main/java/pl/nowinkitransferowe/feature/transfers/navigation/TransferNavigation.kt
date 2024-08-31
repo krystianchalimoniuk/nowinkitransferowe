@@ -32,7 +32,7 @@ private const val DEEP_LINK_URI_PATTERN =
 
 fun NavController.navigateToTransfer(navOptions: NavOptions) = navigate(TRANSFERS_ROUTE, navOptions)
 
-fun NavGraphBuilder.transferScreen(onCleanBackStack: () -> Unit) {
+fun NavGraphBuilder.transferScreen(onCleanBackStack: () -> Unit,  onTransferClick: (String) -> Unit) {
     composable(
         route = TRANSFERS_ROUTE,
         deepLinks = listOf(
@@ -49,6 +49,6 @@ fun NavGraphBuilder.transferScreen(onCleanBackStack: () -> Unit) {
             },
         ),
     ) {
-        TransferRoute(onCleanBackStack = onCleanBackStack)
+        TransferRoute(onCleanBackStack = onCleanBackStack, onTransferClick = onTransferClick)
     }
 }

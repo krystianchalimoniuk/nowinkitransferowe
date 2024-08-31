@@ -78,7 +78,7 @@ dependencies {
     implementation(projects.feature.details)
     implementation(projects.feature.search)
     implementation(projects.feature.settings)
-
+    implementation(projects.feature.detailsTransfers)
     implementation(projects.core.common)
     implementation(projects.core.ui)
     implementation(projects.core.designsystem)
