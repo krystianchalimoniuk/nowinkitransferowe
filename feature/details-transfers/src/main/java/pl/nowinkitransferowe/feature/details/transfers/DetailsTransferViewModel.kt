@@ -16,19 +16,11 @@
 
 package pl.nowinkitransferowe.feature.details.transfers
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.ImageLoader
-import coil.request.ErrorResult
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -43,9 +35,9 @@ import pl.nowinkitransferowe.core.common.result.Result
 import pl.nowinkitransferowe.core.common.result.asResult
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
+import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.model.UserTransferResource
 import pl.nowinkitransferowe.core.model.mapToUserTransferResources
-import pl.nowinkitransferowe.core.network.BuildConfig
 import pl.nowinkitransferowe.feature.details.transfers.Util.dateFormatted
 import pl.nowinkitransferowe.feature.details.transfers.Util.priceToFloat
 import pl.nowinkitransferowe.feature.details.transfers.Util.shortcutDate
@@ -55,9 +47,9 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsTransferViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    @ApplicationContext private val context: Context,
     private val userDataRepository: UserDataRepository,
     transferRepository: TransferRepository,
+    private val imageDownloader: ImageDownloader,
 ) : ViewModel() {
 
     val transferId: String = savedStateHandle[LINKED_TRANSFER_RESOURCE_ID] ?: ""
@@ -111,35 +103,16 @@ class DetailsTransferViewModel @Inject constructor(
         userTransferResource.sortedBy { it.id.toInt() }.forEach {
             val date = shortcutDate(dateFormatted(it.publishDate))
             val price = priceToFloat(it.price)
-            val imageLoader = ImageLoader(context)
-            val request = ImageRequest.Builder(context)
-                .data("${BuildConfig.IMAGES_URL}${it.clubToImg}".toUri())
-                .allowHardware(false)
-                .build()
-            when (val result = imageLoader.execute(request)) {
-                is ErrorResult -> {
-                    dataPoints.add(
-                        DataPoint(
-                            date = date,
-                            price = price,
-                            null,
-                        ),
-                    )
-                }
-
-                is SuccessResult -> {
-                    val bitmapDrawable = result.drawable as BitmapDrawable
-                    val scaledBitmap =
-                        Bitmap.createScaledBitmap(bitmapDrawable.bitmap, 80, 80, false)
-                    dataPoints.add(
-                        DataPoint(
-                            date = date,
-                            price = price,
-                            scaledBitmap,
-                        ),
-                    )
-                }
-            }
+            val bitmap = imageDownloader.loadImage(it.clubToImg)
+            val scaledBitmap =
+                bitmap?.let { it1 -> Bitmap.createScaledBitmap(it1, 80, 80, false) }
+            dataPoints.add(
+                DataPoint(
+                    date = date,
+                    price = price,
+                    scaledBitmap,
+                ),
+            )
         }
         return dataPoints
     }

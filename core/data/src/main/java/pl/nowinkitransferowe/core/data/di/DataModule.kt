@@ -33,6 +33,8 @@ import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.util.ConnectivityManagerNetworkMonitor
 import pl.nowinkitransferowe.core.data.util.DatabaseUpdatingMonitor
 import pl.nowinkitransferowe.core.data.util.DefaultDatabaseUpdatingMonitor
+import pl.nowinkitransferowe.core.data.util.DefaultImageDownLoader
+import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneBroadcastMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
@@ -76,4 +78,7 @@ abstract class DataModule {
 
     @Binds
     internal abstract fun bindsDatabaseUpdatingMonitor(defaultDatabaseUpdatingMonitor: DefaultDatabaseUpdatingMonitor): DatabaseUpdatingMonitor
+
+    @Binds
+    internal abstract fun bindsImageDownloader(defaultImageDownLoader: DefaultImageDownLoader): ImageDownloader
 }

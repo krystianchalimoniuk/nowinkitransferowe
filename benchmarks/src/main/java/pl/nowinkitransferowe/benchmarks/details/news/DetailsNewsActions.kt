@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.benchmarks.details
+package pl.nowinkitransferowe.benchmarks.details.news
 
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
@@ -22,7 +22,7 @@ import androidx.test.uiautomator.Until
 import pl.nowinkitransferowe.benchmarks.flingElementDownUp
 import pl.nowinkitransferowe.benchmarks.waitForObjectOnTopAppBar
 
-fun MacrobenchmarkScope.goToDetailsScreen() {
+fun MacrobenchmarkScope.goToDetailsNewsScreen() {
     device.findObject(By.text("Oficjalnie: Raphael Varane w Como 1907")).click()
     device.waitForIdle()
     // Wait until transfers are shown on screen
@@ -32,7 +32,7 @@ fun MacrobenchmarkScope.goToDetailsScreen() {
     device.wait(Until.gone(By.res("loadingWheel")), 5_000)
 }
 
-fun MacrobenchmarkScope.detailsScrollFeedDownUp() {
-    val feedList = device.findObject(By.res("content"))
+fun MacrobenchmarkScope.detailsNewsScrollFeedDownUp() {
+    val feedList = device.findObject(By.res("details_transfers:feed"))
     device.flingElementDownUp(feedList)
 }

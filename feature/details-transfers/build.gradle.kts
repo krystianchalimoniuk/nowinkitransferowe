@@ -25,7 +25,6 @@ android {
 
 dependencies {
     implementation(projects.core.data)
-    implementation(libs.coil.kt)
     testImplementation(projects.core.testing)
 
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)
