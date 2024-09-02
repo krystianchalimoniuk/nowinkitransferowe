@@ -2,6 +2,7 @@ package pl.nowinkitransferowe.feature.details.transfers
 
 import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.Typeface
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -77,6 +78,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
 import pl.nowinkitransferowe.feature.details.transfers.Util.calculateMaxTransferValue
 import pl.nowinkitransferowe.feature.details.transfers.Util.calculateTransferSum
 import pl.nowinkitransferowe.feature.details.transfers.Util.hasMoreThanTwoCashTransfers
@@ -94,12 +96,17 @@ fun DetailsTransferRoute(
 ) {
     val detailsTransferUiState by viewModel.detailsTransferUiState.collectAsStateWithLifecycle()
     TrackScreenViewEvent(screenName = "Transfer: ${viewModel.transferId}")
-    DetailsTransferScreen(
-        detailsTransferUiState = detailsTransferUiState,
-        showBackButton = showBackButton,
-        onBackClick = onBackClick,
-        modifier = modifier.testTag("transfer:${viewModel.transferId}"),
-    )
+    NtBackground {
+        NtGradientBackground {
+            DetailsTransferScreen(
+                detailsTransferUiState = detailsTransferUiState,
+                showBackButton = showBackButton,
+                onBackClick = onBackClick,
+                modifier = modifier.testTag("transfer:${viewModel.transferId}"),
+            )
+        }
+    }
+
 }
 
 @VisibleForTesting
@@ -114,8 +121,7 @@ fun DetailsTransferScreen(
     TrackScrollJank(scrollableState = state, stateName = "details-transfers:screen")
 
     Box(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)),
+        modifier = modifier,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -168,7 +174,7 @@ fun DetailsTransferBody(
                 modifier = Modifier
                     .testTag("details_transfers:feed"),
                 state = state,
-                verticalArrangement = Arrangement.spacedBy(2.dp)
+                verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 item {
                     Column {
@@ -394,9 +400,10 @@ fun LineChart(
     //paint for the text shown in data values
     val textPaint = remember(density) {
         Paint().apply {
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             color = materialColor.toArgb()
             textAlign = Paint.Align.CENTER
-            textSize = density.run { 12.sp.toPx() }
+            textSize = density.run { 14.sp.toPx() }
         }
     }
 
@@ -460,7 +467,7 @@ fun LineChart(
             start = Offset(spacingFromLeft, size.height - spacingFromLeft),
             end = Offset(spacingFromLeft, 0f - spacingFromLeft - 50),
             color = materialColor,
-            strokeWidth = 3f,
+            strokeWidth = 4f,
         )
 
         //Horizontal line
@@ -468,7 +475,7 @@ fun LineChart(
             start = Offset(spacingFromLeft, size.height - spacingFromLeft),
             end = Offset(size.width - 40f, size.height - spacingFromLeft),
             color = materialColor,
-            strokeWidth = 3f,
+            strokeWidth = 4f,
         )
 
         //Use this to show straight line path

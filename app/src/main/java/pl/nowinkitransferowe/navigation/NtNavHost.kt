@@ -35,8 +35,6 @@ import pl.nowinkitransferowe.feature.details.transfers.navigation.navigateToTran
 import pl.nowinkitransferowe.feature.news.navigation.NEWS_ROUTE
 import pl.nowinkitransferowe.feature.search.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.navigation.searchScreen
-import pl.nowinkitransferowe.feature.transfers.navigation.navigateToTransfer
-import pl.nowinkitransferowe.feature.transfers.navigation.transferScreen
 import pl.nowinkitransferowe.ui.NtAppState
 import pl.nowinkitransferowe.ui.news2pane.newsListDetailScreen
 import pl.nowinkitransferowe.ui.transfers2pane.transferListDetailScreen
@@ -71,21 +69,7 @@ fun NtNavHost(
             onTopicClick = navController::navigateToSearch,
         )
         transferListDetailScreen()
-//        transferScreen(
-//            onCleanBackStack = {
-//                navController.popBackStack()
-//                navController.navigateToTransfer(
-//                    navOptions {
-//                        popUpTo(navController.graph.findStartDestination().id) {
-//                            saveState = true
-//                        }
-//                        launchSingleTop = true
-//                        restoreState = true
-//                    },
-//                )
-//            },
-//            onTransferClick = navController::navigateToTransferDetails,
-//        )
+
         bookmarksScreen(
             onNewsClick = navController::navigateToDetails,
             onTransferClick = navController::navigateToTransferDetails,

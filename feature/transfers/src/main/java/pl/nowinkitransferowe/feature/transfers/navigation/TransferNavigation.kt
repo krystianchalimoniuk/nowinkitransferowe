@@ -34,6 +34,6 @@ fun NavGraphBuilder.transferScreen(
     composable(
         route = TRANSFERS_ROUTE,
     ) {
-        TransferRoute(onCleanBackStack = onCleanBackStack, onTransferClick = onTransferClick)
+        TransferRoute(onTransferClick = onTransferClick)
     }
 }

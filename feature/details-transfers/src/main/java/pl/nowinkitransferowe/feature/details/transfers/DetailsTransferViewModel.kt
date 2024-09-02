@@ -84,13 +84,6 @@ class DetailsTransferViewModel @Inject constructor(
             DetailsTransferUiState.Loading,
         )
 
-
-    fun bookmarkTransfer(transferResourceId: String, bookmarked: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setTransferResourceBookmarked(transferResourceId, bookmarked)
-        }
-    }
-
     private fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
             userDataRepository.setTransferResourceViewed(transferResourceId, viewed)
