@@ -1,18 +1,12 @@
 package pl.nowinkitransferowe.core.ui
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.onClick
@@ -38,9 +31,6 @@ import pl.nowinkitransferowe.core.model.UserTransferResource
 @Composable
 fun TransferListItemCard(
     userTransferResource: UserTransferResource,
-    isBookmarked: Boolean,
-    hasBeenViewed: Boolean,
-    onToggleBookmark: () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -63,19 +53,20 @@ fun TransferListItemCard(
                     Modifier
                         .fillMaxWidth()
                         .padding(vertical = 16.dp),
-                    horizontalArrangement = Arrangement.Absolute.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     TransfersResourceTransferListLabel(
                         label = userTransferResource.season,
-                        modifier = Modifier.weight(.166f),
+                        modifier = Modifier.weight(.12f),
                     )
                     TransfersResourceTransferListLabel(
                         label = dateFormatted(publishDate = userTransferResource.publishDate),
-                        modifier = Modifier.weight(.166f),
+                        modifier = Modifier.weight(.14f),
                     )
                     Row(
-                        modifier = Modifier.weight(.25f),
+                        modifier = Modifier.weight(.32f),
                         horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TransfersResourceImage(
                             userTransferResource.clubFromImg,
@@ -83,12 +74,13 @@ fun TransferListItemCard(
                             16.dp,
                             0.dp,
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(2.dp))
                         TransfersResourceTransferListLabel(label = userTransferResource.clubFrom)
                     }
                     Row(
-                        modifier = Modifier.weight(.25f),
+                        modifier = Modifier.weight(.32f),
                         horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TransfersResourceImage(
                             userTransferResource.clubToImg,
@@ -96,12 +88,12 @@ fun TransferListItemCard(
                             16.dp,
                             0.dp,
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(2.dp))
                         TransfersResourceTransferListLabel(label = userTransferResource.clubTo)
                     }
                     TransfersResourceTransferListLabel(
-                        label = userTransferResource.price,
-                        modifier = Modifier.weight(.166f),
+                        label = shortPriceValueIfNoInformationOrOnLoan(userTransferResource.price),
+                        modifier = Modifier.weight(.1f),
                     )
 
                 }
@@ -110,6 +102,17 @@ fun TransferListItemCard(
     }
 }
 
+private fun shortPriceValueIfNoInformationOrOnLoan(price: String): String {
+    return if (price == "wypożyczenie") {
+        "wyp."
+    } else if (price == "nie ujawniono") {
+        "-"
+    } else if (price == "za darmo") {
+        "0"
+    } else {
+        price.split(" ")[0]
+    }
+}
 
 @Composable
 fun TransfersResourceTransferListLabel(
@@ -118,7 +121,7 @@ fun TransfersResourceTransferListLabel(
 ) {
     Text(
         label,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.labelSmall,
         modifier = modifier,
         maxLines = 1,
         textAlign = TextAlign.Center,
@@ -138,9 +141,6 @@ private fun TransferListItemPreview(
             Surface {
                 TransferListItemCard(
                     userTransferResource = userTransferResources[0],
-                    isBookmarked = true,
-                    hasBeenViewed = false,
-                    onToggleBookmark = {},
                     onClick = {},
                 )
             }

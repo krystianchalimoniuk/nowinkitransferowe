@@ -88,6 +88,7 @@ import pl.nowinkitransferowe.feature.search.R as searchR
 internal fun SearchRoute(
     onBackClick: () -> Unit,
     onNewsClick: (String) -> Unit,
+    onTransferClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
@@ -109,6 +110,7 @@ internal fun SearchRoute(
         onBackClick = onBackClick,
         onTopicClick = searchViewModel::onSearchQueryChanged,
         onNewsClick = onNewsClick,
+        onTransferClick = onTransferClick
     )
 }
 
@@ -128,7 +130,9 @@ internal fun SearchScreen(
     onBackClick: () -> Unit = {},
     onTopicClick: (String) -> Unit = {},
     onNewsClick: (String) -> Unit = {},
-) {
+    onTransferClick: (String) -> Unit = {},
+
+    ) {
     TrackScreenViewEvent(screenName = "Search")
     Column(modifier = modifier) {
         Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
@@ -181,6 +185,7 @@ internal fun SearchScreen(
                         onSearchTriggered = onSearchTriggered,
                         onTopicClick = onTopicClick,
                         onNewsClick = onNewsClick,
+                        onTransferClick =onTransferClick,
                         onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
                         onNewsResourceViewed = onNewsResourceViewed,
                         onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
@@ -245,6 +250,7 @@ private fun SearchResultBody(
     onSearchTriggered: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onNewsClick: (String) -> Unit,
+    onTransferClick: (String) -> Unit,
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
@@ -283,6 +289,7 @@ private fun SearchResultBody(
                     feedState = TransferFeedUiState.Success(feed = transferResources),
                     onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
                     onTransferResourceViewed = onTransferResourceViewed,
+                    onTransferClick = onTransferClick
                 )
             }
 

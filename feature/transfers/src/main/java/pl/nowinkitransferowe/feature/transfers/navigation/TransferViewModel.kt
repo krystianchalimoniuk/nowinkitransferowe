@@ -49,6 +49,9 @@ class TransferViewModel @Inject constructor(
     private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
     val page: StateFlow<Int> = _page.asStateFlow()
 
+    val selectedTransferId: StateFlow<String?> =
+        savedStateHandle.getStateFlow(LINKED_TRANSFER_RESOURCE_ID, null)
+
     val transfersCount = userTransferResourceRepository.getCount().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -115,6 +118,10 @@ class TransferViewModel @Inject constructor(
                 _page.value += 1
             }
         }
+    }
+
+    fun onTransferClick(transferId: String?) {
+        savedStateHandle[LINKED_TRANSFER_RESOURCE_ID] = transferId
     }
 
     fun onDeepLinkOpened(transferResourceId: String) {

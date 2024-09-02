@@ -45,6 +45,7 @@ fun createSearchRoute(query: String?): String {
 fun NavGraphBuilder.searchScreen(
     onBackClick: () -> Unit,
     onNewsClick: (String) -> Unit,
+    onTransferClick: (String) -> Unit,
 ) {
     // TODO: Handle back stack for each top-level destination. At the moment each top-level
     // destination may have own search screen's back stack.
@@ -61,6 +62,7 @@ fun NavGraphBuilder.searchScreen(
         SearchRoute(
             onBackClick = onBackClick,
             onNewsClick = onNewsClick,
+            onTransferClick = onTransferClick,
         )
     }
 }

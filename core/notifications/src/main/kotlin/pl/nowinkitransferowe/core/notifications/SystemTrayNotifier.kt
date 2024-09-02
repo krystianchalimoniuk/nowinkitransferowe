@@ -133,7 +133,7 @@ internal class SystemTrayNotifier @Inject constructor(
                     setSmallIcon(
                         pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
                     )
-                        .setContentTitle("\uD83D\uDC64 ${transferResource.name}")
+                        .setContentTitle("\uD83D\uDC64 ${HtmlCompat.fromHtml(transferResource.name, HtmlCompat.FROM_HTML_MODE_COMPACT)}")
                         .setContentText("\uD83D\uDD01 ${transferResource.clubFrom} - ${transferResource.clubTo}\n\uD83D\uDCB6 ${transferResource.price}")
                         .setContentIntent(transferPendingIntent(transferResource))
                         .setGroup(TRANSFER_NOTIFICATION_GROUP)
@@ -244,7 +244,7 @@ internal class SystemTrayNotifier @Inject constructor(
         transferResources: List<TransferResource>,
         title: String,
     ): InboxStyle = transferResources
-        .fold(InboxStyle()) { inboxStyle, transferResource -> inboxStyle.addLine("\uD83D\uDC64 ${transferResource.name}") }
+        .fold(InboxStyle()) { inboxStyle, transferResource -> inboxStyle.addLine("\uD83D\uDC64 ${HtmlCompat.fromHtml(transferResource.name, HtmlCompat.FROM_HTML_MODE_COMPACT)}") }
         .setBigContentTitle(title)
         .setSummaryText(title)
 

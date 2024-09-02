@@ -79,6 +79,7 @@ import java.util.Locale
 
 @Composable
 fun NewsResourceCardExpanded(
+    modifier: Modifier = Modifier,
     userNewsResource: UserNewsResource,
     isBookmarked: Boolean,
     hasBeenViewed: Boolean,
@@ -87,7 +88,6 @@ fun NewsResourceCardExpanded(
     selectedNewsId: String? = null,
     highlightSelectedNews: Boolean = false,
     onTopicClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val clickActionLabel = stringResource(R.string.core_ui_card_tap_action)
     val isSelected = highlightSelectedNews && userNewsResource.id == selectedNewsId
@@ -303,8 +303,8 @@ fun NotificationDot(
 }
 
 @Composable
-fun dateFormatted(publishDate: Instant): String = DateTimeFormatter
-    .ofLocalizedDate(FormatStyle.MEDIUM)
+fun dateFormatted(publishDate: Instant,style: FormatStyle = FormatStyle.MEDIUM): String = DateTimeFormatter
+    .ofLocalizedDate(style)
     .withLocale(Locale.getDefault())
     .withZone(LocalTimeZone.current.toJavaZoneId())
     .format(publishDate.toJavaInstant())

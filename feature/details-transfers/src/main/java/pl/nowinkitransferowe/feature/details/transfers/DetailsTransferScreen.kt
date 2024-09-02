@@ -1,12 +1,14 @@
 package pl.nowinkitransferowe.feature.details.transfers
 
+import android.graphics.Bitmap
+import android.graphics.Paint
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -53,6 +55,35 @@ import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferListItemCard
 import pl.nowinkitransferowe.core.ui.UserTransfersResourcePreviewParameterProvider
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.sp
+import pl.nowinkitransferowe.core.ui.dateFormatted
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asAndroidPath
+import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import pl.nowinkitransferowe.feature.details.transfers.Util.calculateMaxTransferValue
+import pl.nowinkitransferowe.feature.details.transfers.Util.calculateTransferSum
+import pl.nowinkitransferowe.feature.details.transfers.Util.hasMoreThanTwoCashTransfers
+import pl.nowinkitransferowe.feature.details.transfers.Util.priceToFloat
+import pl.nowinkitransferowe.feature.details.transfers.Util.shortcutDate
+import java.util.Locale
+import kotlin.math.roundToInt
 
 @Composable
 fun DetailsTransferRoute(
@@ -67,7 +98,6 @@ fun DetailsTransferRoute(
         detailsTransferUiState = detailsTransferUiState,
         showBackButton = showBackButton,
         onBackClick = onBackClick,
-        onBookmarkChanged = viewModel::bookmarkTransfer,
         modifier = modifier.testTag("transfer:${viewModel.transferId}"),
     )
 }
@@ -78,7 +108,6 @@ fun DetailsTransferScreen(
     detailsTransferUiState: DetailsTransferUiState,
     showBackButton: Boolean,
     onBackClick: () -> Unit,
-    onBookmarkChanged: (String, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state = rememberLazyListState()
@@ -113,13 +142,8 @@ fun DetailsTransferScreen(
 
                     DetailsTransferBody(
                         userTransferResources = detailsTransferUiState.userTransferResource,
+                        dataPoints = detailsTransferUiState.dataPoints,
                         state = state,
-                        onToggleBookmark = {
-                            onBookmarkChanged(
-                                detailsTransferUiState.userTransferResource.first().id,
-                                !detailsTransferUiState.userTransferResource.first().isSaved,
-                            )
-                        },
                     )
                 }
             }
@@ -132,19 +156,19 @@ fun DetailsTransferScreen(
 @Composable
 fun DetailsTransferBody(
     userTransferResources: List<UserTransferResource>,
+    dataPoints: List<DataPoint>,
     state: LazyListState,
-    onToggleBookmark: () -> Unit,
 ) {
 
     Column(modifier = Modifier.testTag("content")) {
         Box(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(8.dp),
         ) {
             LazyColumn(
-                contentPadding = PaddingValues(16.dp),
                 modifier = Modifier
-                    .testTag("bookmarks:feed"),
+                    .testTag("details_transfers:feed"),
                 state = state,
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 item {
                     Column {
@@ -172,26 +196,27 @@ fun DetailsTransferBody(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             TransfersResourceTransferListLabel(
                                 label = stringResource(id = R.string.feature_details_transfers_list_label_season),
-                                modifier = Modifier.weight(.166f),
+                                modifier = Modifier.weight(.12f),
                             )
                             TransfersResourceTransferListLabel(
                                 label = stringResource(id = R.string.feature_details_transfers_list_label_date),
-                                modifier = Modifier.weight(.166f),
+                                modifier = Modifier.weight(.14f),
                             )
                             TransfersResourceTransferListLabel(
                                 label = stringResource(id = R.string.feature_details_transfers_list_label_club_from),
-                                modifier = Modifier.weight(.25f),
+                                modifier = Modifier.weight(.32f),
                             )
                             TransfersResourceTransferListLabel(
                                 label = stringResource(id = R.string.feature_details_transfers_list_label_club_to),
-                                modifier = Modifier.weight(.25f),
+                                modifier = Modifier.weight(.32f),
                             )
                             TransfersResourceTransferListLabel(
                                 label = stringResource(id = R.string.feature_details_transfers_list_label_price),
-                                modifier = Modifier.weight(.166f),
+                                modifier = Modifier.weight(.1f),
                             )
                         }
                     }
@@ -204,47 +229,59 @@ fun DetailsTransferBody(
                 ) { userTransferResource ->
                     TransferListItemCard(
                         userTransferResource,
-                        hasBeenViewed = userTransferResource.hasBeenViewed,
-                        isBookmarked = userTransferResource.isSaved,
                         onClick = {},
-                        onToggleBookmark = {},
                     )
                 }
                 item {
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp),
-                    ) {
-                        TransfersResourceTransferListLabel(label = stringResource(id = R.string.feature_details_transfers_list_label_total_transfer_amount))
-                        TransfersResourceTransferListLabel(
-                            label = calculateTransferSum(
-                                userTransferResources.map { it.price },
-                            ),
-                        )
+                    Column(Modifier.fillMaxWidth()) {
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp, horizontal = 8.dp),
+                        ) {
+                            TransfersResourceTransferListLabel(label = stringResource(id = R.string.feature_details_transfers_list_label_total_transfer_amount))
+                            TransfersResourceTransferListLabel(
+                                label = calculateTransferSum(
+                                    userTransferResources.map { it.price },
+                                ),
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        if (hasMoreThanTwoCashTransfers(userTransferResources.map { it.price })) {
+                            TransfersResourceChartTitle(
+                                label = stringResource(R.string.feature_details_transfers_transfers_value),
+                                Modifier.padding(horizontal = 8.dp),
+                            )
+                            TransfersResourceMaxTransferValue(
+                                label = stringResource(R.string.feature_details_transfers_max_transfer_value),
+                                value = calculateMaxTransferValue(prices = userTransferResources.map { it.price }),
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .padding(top = 25.dp, end = 16.dp),
+                            )
 
+                            Spacer(modifier = Modifier.height(60.dp))
+                            LineChart(
+                                data
+                                = dataPoints,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(150.dp)
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(horizontal = 8.dp),
+                            )
+
+                            Spacer(modifier = Modifier.height(90.dp))
+                        }
                     }
+
                 }
             }
         }
     }
 }
 
-fun calculateTransferSum(prices: List<String>): String {
-    var sum = 0.0
-    prices.forEach { price ->
-        if (price == "za darmo" || price == "nie ujawniono" || price == "wypożyczenie") {
-            sum += 0.0
-        } else {
-            val value = price.split(" ")[0].replace(",", ".").toDoubleOrNull()
-            if (value != null) {
-                sum += value
-            }
-        }
-    }
-    return " $sum mln €"
-}
 
 @Composable
 fun TransfersResourceFootballerName(
@@ -267,10 +304,44 @@ fun TransfersResourceTransferListLabel(
 ) {
     Text(
         label,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.labelSmall,
+        modifier = modifier,
+        maxLines = 2,
+        textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+fun TransfersResourceChartTitle(
+    label: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        label,
+        style = MaterialTheme.typography.titleMedium,
         modifier = modifier,
         maxLines = 1,
         textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+fun TransfersResourceMaxTransferValue(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        buildAnnotatedString {
+            append(label)
+            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(value)
+            }
+        },
+        style = MaterialTheme.typography.bodySmall,
+        modifier = modifier,
+        maxLines = 2,
+        textAlign = TextAlign.End,
     )
 }
 
@@ -303,6 +374,187 @@ private fun DetailsTransferToolbar(
     }
 }
 
+
+@Composable
+fun LineChart(
+    modifier: Modifier = Modifier,
+    data: List<DataPoint> = emptyList(),
+) {
+    val defaultBitmap =
+        ImageBitmap.imageResource(id = pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_crest_placeholder)
+            .asAndroidBitmap()
+    val defaultScaledBitmap = Bitmap.createScaledBitmap(defaultBitmap, 80, 80, false)
+    val spacingFromLeft = 80f
+    val graphColor = Color.Blue   //color for your graph
+    val transparentGraphColor = remember { graphColor.copy(alpha = 0.5f) }
+    val upperValue = remember { (data.maxOfOrNull { it.price })?.roundToInt() ?: 0 }
+    val lowerValue = remember { 0 }
+    val density = LocalDensity.current
+    val materialColor = MaterialTheme.colorScheme.inverseSurface
+    //paint for the text shown in data values
+    val textPaint = remember(density) {
+        Paint().apply {
+            color = materialColor.toArgb()
+            textAlign = Paint.Align.CENTER
+            textSize = density.run { 12.sp.toPx() }
+        }
+    }
+
+
+
+    Canvas(modifier = modifier) {
+        val spacePerData = (size.width - spacingFromLeft) / data.size
+
+        //loop through each index by step of 1
+        //data shown horizontally
+        (data.indices step 1).forEach { i ->
+            val date = data[i].date
+            val bitmap = data[i].bitmap ?: defaultScaledBitmap
+            drawContext.canvas.nativeCanvas.apply {
+                drawText(
+                    date,
+                    spacingFromLeft + i * spacePerData,
+                    size.height,
+                    textPaint,
+
+                    )
+                drawImage(
+                    image = bitmap.asImageBitmap(),
+                    topLeft = Offset(
+                        (spacingFromLeft + i * spacePerData) - (bitmap.width / 2),
+                        size.height + 30,
+                    ),
+                )
+            }
+        }
+
+
+        val priceStep = (upperValue - lowerValue) / 5f
+        //data shown vertically
+        (0..5).forEachIndexed { index, i ->
+            drawContext.canvas.nativeCanvas.apply {
+                drawText(
+                    String.format(
+                        Locale.forLanguageTag("pl"),
+                        "%.1f",
+                        (lowerValue + priceStep * i),
+                    ),
+                    30f,
+                    size.height - spacingFromLeft - i * size.height / 5f,
+                    textPaint,
+                )
+                if (index == 5) {
+                    drawText(
+                        "[mln €]",
+                        30f,
+                        0f - spacingFromLeft - 80,
+                        textPaint,
+                    )
+                }
+            }
+        }
+
+
+        //Vertical line
+        drawLine(
+            start = Offset(spacingFromLeft, size.height - spacingFromLeft),
+            end = Offset(spacingFromLeft, 0f - spacingFromLeft - 50),
+            color = materialColor,
+            strokeWidth = 3f,
+        )
+
+        //Horizontal line
+        drawLine(
+            start = Offset(spacingFromLeft, size.height - spacingFromLeft),
+            end = Offset(size.width - 40f, size.height - spacingFromLeft),
+            color = materialColor,
+            strokeWidth = 3f,
+        )
+
+        //Use this to show straight line path
+        val straightLinePath = Path().apply {
+            val height = size.height
+
+            //loop through index only not value
+            data.indices.forEach { i ->
+                val info = data[i]
+                val x1 = spacingFromLeft + i * spacePerData
+                val y1 =
+                    (upperValue - info.price) / upperValue * height - spacingFromLeft
+
+                if (i == 0) {
+                    moveTo(x1, y1)
+                }
+                lineTo(x1, y1)
+                drawCircle(
+                    color = materialColor,
+                    radius = 5f,
+                    center = Offset(x1, y1),
+                ) //Uncomment it to see the end points
+            }
+        }
+
+        //Use this to show curved path
+        var medX: Float
+        var medY: Float
+        Path().apply {
+            val height = size.height
+            data.indices.forEach { i ->
+                val nextInfo = data.getOrNull(i + 1) ?: data.last()
+
+                val x1 = spacingFromLeft + i * spacePerData
+                val y1 =
+                    (upperValue - data[i].price) / upperValue * height - spacingFromLeft
+                val x2 = spacingFromLeft + (i + 1) * spacePerData
+                val y2 =
+                    (upperValue - nextInfo.price) / upperValue * height - spacingFromLeft
+                if (i == 0) {
+                    moveTo(x1, y1)
+                } else {
+                    medX = (x1 + x2) / 2f
+                    medY = (y1 + y2) / 2f
+                    quadraticTo(x1 = x1, y1 = y1, x2 = medX, y2 = medY)
+
+                }
+
+                //drawCircle(color = Color.White, radius = 5f, center = Offset(x1,y1))
+                //drawCircle(color = Color.Magenta, radius = 9f, center = Offset(medX,medY))
+                //drawCircle(color = Color.Blue, radius = 7f, center = Offset(x2,y2))  //Uncomment these to see the control Points
+            }
+        }
+
+        //Now draw path on canvas
+        drawPath(
+            path = straightLinePath,
+            color = graphColor,
+            style = Stroke(
+                width = 1.dp.toPx(),
+                cap = StrokeCap.Round,
+            ),
+        )
+
+        //To show the background transparent gradient
+        val fillPath =
+            android.graphics.Path(straightLinePath.asAndroidPath()).asComposePath().apply {
+                lineTo(size.width - spacePerData, size.height - spacingFromLeft)
+                lineTo(spacingFromLeft, size.height - spacingFromLeft)
+                close()
+            }
+
+        drawPath(
+            path = fillPath,
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    transparentGraphColor,
+                    Color.Transparent,
+                ),
+                endY = size.height - spacingFromLeft,
+            ),
+        )
+
+    }
+}
+
 @DevicePreviews
 @Composable
 fun DetailsScreenPopulated(
@@ -312,10 +564,21 @@ fun DetailsScreenPopulated(
     NtTheme {
         NtBackground {
             DetailsTransferScreen(
-                detailsTransferUiState = DetailsTransferUiState.Success(userTransferResources),
+                detailsTransferUiState = DetailsTransferUiState.Success(
+                    userTransferResources,
+                    userTransferResources.sortedBy { it.publishDate }.map {
+                        DataPoint(
+                            date = shortcutDate(
+                                dateFormatted(
+                                    publishDate = it.publishDate,
+                                ),
+                            ),
+                            price = priceToFloat(it.price), bitmap = null,
+                        )
+                    },
+                ),
                 showBackButton = true,
                 onBackClick = {},
-                onBookmarkChanged = { _, _ -> },
             )
         }
     }
@@ -330,7 +593,6 @@ fun DetailsScreenLoading() {
                 detailsTransferUiState = DetailsTransferUiState.Loading,
                 showBackButton = true,
                 onBackClick = {},
-                onBookmarkChanged = { _, _ -> },
             )
         }
     }

@@ -1,9 +1,18 @@
 package pl.nowinkitransferowe.feature.details.transfers
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.ImageLoader
+import coil.request.ErrorResult
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -20,12 +29,17 @@ import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.model.UserTransferResource
 import pl.nowinkitransferowe.core.model.mapToUserTransferResources
+import pl.nowinkitransferowe.core.network.BuildConfig
+import pl.nowinkitransferowe.feature.details.transfers.Util.dateFormatted
+import pl.nowinkitransferowe.feature.details.transfers.Util.priceToFloat
+import pl.nowinkitransferowe.feature.details.transfers.Util.shortcutDate
 import pl.nowinkitransferowe.feature.details.transfers.navigation.LINKED_TRANSFER_RESOURCE_ID
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailsTransferViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    @ApplicationContext private val context: Context,
     private val userDataRepository: UserDataRepository,
     transferRepository: TransferRepository,
 ) : ViewModel() {
@@ -43,9 +57,10 @@ class DetailsTransferViewModel @Inject constructor(
             }
         }.flatMapLatest { transferRepository.getTransferResourceByName(it.name) }
         .combine(userDataRepository.userData) { transferResources, userData ->
-            transferResources.mapToUserTransferResources(userData)
+            val userTransferResource = transferResources.mapToUserTransferResources(userData)
+            Pair(userTransferResource, getChartDataPoint(userTransferResource))
         }.onEach {
-            it.onEach { item ->
+            it.first.onEach { item ->
                 if (!item.hasBeenViewed) {
                     setTransferResourceViewed(item.id, true)
                 }
@@ -54,7 +69,7 @@ class DetailsTransferViewModel @Inject constructor(
         .map { result ->
             when (result) {
                 is Result.Success -> {
-                    DetailsTransferUiState.Success(result.data)
+                    DetailsTransferUiState.Success(result.data.first, result.data.second)
                 }
 
                 is Result.Loading -> {
@@ -81,6 +96,49 @@ class DetailsTransferViewModel @Inject constructor(
             userDataRepository.setTransferResourceViewed(transferResourceId, viewed)
         }
     }
+
+    private suspend fun getChartDataPoint(userTransferResource: List<UserTransferResource>): List<DataPoint> {
+        val dataPoints = mutableListOf<DataPoint>()
+        userTransferResource.sortedBy { it.id.toInt() }.forEach {
+            val date = shortcutDate(dateFormatted(it.publishDate))
+            val price = priceToFloat(it.price)
+            val imageLoader = ImageLoader(context)
+            val request = ImageRequest.Builder(context)
+                .data("${BuildConfig.IMAGES_URL}${it.clubToImg}".toUri())
+                .allowHardware(false)
+                .build()
+            when (val result = imageLoader.execute(request)) {
+                is ErrorResult -> {
+                    dataPoints.add(
+                        DataPoint(
+                            date = date,
+                            price = price,
+                            null,
+                        ),
+                    )
+                }
+
+                is SuccessResult -> {
+                    val bitmapDrawable = result.drawable as BitmapDrawable
+                    val scaledBitmap =
+                        Bitmap.createScaledBitmap(bitmapDrawable.bitmap, 80, 80, false)
+                    dataPoints.add(
+                        DataPoint(
+                            date = date,
+                            price = price,
+                            scaledBitmap,
+                        ),
+                    )
+                }
+            }
+        }
+        return dataPoints
+
+    }
+
+
+
+
 }
 
 private fun AnalyticsHelper.logTransferDeepLinkOpen(newsResourceId: String) =
@@ -97,9 +155,16 @@ private fun AnalyticsHelper.logTransferDeepLinkOpen(newsResourceId: String) =
     )
 
 sealed interface DetailsTransferUiState {
-    data class Success(val userTransferResource: List<UserTransferResource>) :
+    data class Success(
+        val userTransferResource: List<UserTransferResource>,
+        val dataPoints: List<DataPoint>,
+    ) :
         DetailsTransferUiState
 
     data object Error : DetailsTransferUiState
     data object Loading : DetailsTransferUiState
 }
+data class DataPoint(val date: String, val price: Float, val bitmap: Bitmap?)
+
+
+

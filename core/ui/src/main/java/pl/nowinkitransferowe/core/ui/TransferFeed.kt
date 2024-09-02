@@ -33,6 +33,9 @@ import pl.nowinkitransferowe.core.model.UserTransferResource
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyStaggeredGridScope.transferFeed(
     feedState: TransferFeedUiState,
+    highlightSelectedTransfer: Boolean = false,
+    onTransferSelected: (String) -> Unit = {},
+    selectedTransferId: String? = null,
     onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
     onTransferResourceViewed: (String) -> Unit,
     onTransferClick: (String) -> Unit = {},
@@ -50,11 +53,14 @@ fun LazyStaggeredGridScope.transferFeed(
                 TransferResourceCardExpanded(
                     userTransferResource = userTransferResource,
                     isBookmarked = userTransferResource.isSaved,
+                    selectedTransferId = selectedTransferId,
+                    highlightSelectedTransfer = highlightSelectedTransfer,
                     onClick = {
-                        onTransferClick(userTransferResource.id)
                         analyticsHelper.logTransferResourceOpened(
                             transferResourceId = userTransferResource.id,
                         )
+                        onTransferSelected(userTransferResource.id)
+                        onTransferClick(userTransferResource.id)
                         onTransferResourceViewed(userTransferResource.id)
                     },
                     hasBeenViewed = userTransferResource.hasBeenViewed,
