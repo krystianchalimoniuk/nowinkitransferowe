@@ -400,7 +400,7 @@ fun LineChart(
             .asAndroidBitmap()
     val defaultScaledBitmap = Bitmap.createScaledBitmap(defaultBitmap, 80, 80, false)
     val spacingFromLeft = 80f
-    val graphColor = Color.Green // color for your graph
+    val graphColor = MaterialTheme.colorScheme.onPrimaryContainer // color for your graph
     val transparentGraphColor = remember { graphColor.copy(alpha = 0.5f) }
     val upperValue = remember { (data.maxOfOrNull { it.price })?.roundToInt() ?: 0 }
     val lowerValue = remember { 0 }

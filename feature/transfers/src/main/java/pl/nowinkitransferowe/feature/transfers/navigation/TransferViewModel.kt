@@ -49,6 +49,17 @@ class TransferViewModel @Inject constructor(
     private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
     val page: StateFlow<Int> = _page.asStateFlow()
 
+
+    val unreadTransfers: StateFlow<List<String>> =
+        userTransferResourceRepository.observeAll()
+            .map { transferResources ->
+                transferResources.filter { !it.hasBeenViewed }.map { it.id }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = arrayListOf(),
+            )
+
     val selectedTransferId: StateFlow<String?> =
         savedStateHandle.getStateFlow(LINKED_TRANSFER_RESOURCE_ID, null)
 
@@ -106,9 +117,11 @@ class TransferViewModel @Inject constructor(
         }
     }
 
-    fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean) {
+    fun setTransferResourcesViewed(transferResourceIds: List<String>, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setTransferResourceViewed(transferResourceId, viewed)
+            transferResourceIds.forEach {
+                userDataRepository.setTransferResourceViewed(it, viewed)
+            }
         }
     }
 

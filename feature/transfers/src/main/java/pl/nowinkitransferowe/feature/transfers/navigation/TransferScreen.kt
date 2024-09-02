@@ -42,6 +42,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,7 +57,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
+import pl.nowinkitransferowe.core.designsystem.component.NtButton
 import pl.nowinkitransferowe.core.designsystem.component.NtOverlayLoadingWheel
+import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.scrollbar.DraggableScrollbar
 import pl.nowinkitransferowe.core.designsystem.scrollbar.rememberDraggableScroller
 import pl.nowinkitransferowe.core.designsystem.scrollbar.scrollbarState
@@ -81,8 +85,10 @@ fun TransferRoute(
     val page by viewModel.page.collectAsStateWithLifecycle()
     val transfersCounts by viewModel.transfersCount.collectAsStateWithLifecycle()
     val selectedTransferId by viewModel.selectedTransferId.collectAsStateWithLifecycle()
+    val unreadTransfers by viewModel.unreadTransfers.collectAsStateWithLifecycle()
     TransferScreen(
         modifier = modifier,
+        unreadTransfers = unreadTransfers,
         onTransferClick = onTransferClick,
         isSyncing = isSyncing,
         feedState = feedState,
@@ -90,7 +96,7 @@ fun TransferRoute(
         selectedTransferId = selectedTransferId,
         onTransferSelected = viewModel::onTransferClick,
         onTransferResourcesCheckedChanged = viewModel::updateTransferResourceSaved,
-        onTransferResourceViewed = { viewModel.setTransferResourceViewed(it, true) },
+        onTransferResourceViewed = { viewModel.setTransferResourcesViewed(it, true) },
         loadNextPage = { viewModel.loadNextPage(page = page, transferCount = transfersCounts) },
     )
 }
@@ -98,6 +104,7 @@ fun TransferRoute(
 @Composable
 internal fun TransferScreen(
     modifier: Modifier = Modifier,
+    unreadTransfers: List<String> = arrayListOf(),
     onTransferClick: (String) -> Unit,
     isSyncing: Boolean,
     feedState: TransferFeedUiState,
@@ -105,7 +112,7 @@ internal fun TransferScreen(
     selectedTransferId: String? = null,
     onTransferSelected: (String) -> Unit = {},
     onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onTransferResourceViewed: (String) -> Unit,
+    onTransferResourceViewed: (List<String>) -> Unit,
     loadNextPage: () -> Unit,
 ) {
     val isFeedLoading = feedState is TransferFeedUiState.Loading
@@ -146,6 +153,26 @@ internal fun TransferScreen(
                 .testTag("transfers:feed"),
             state = state,
         ) {
+
+            item {
+                AnimatedVisibility(visible = unreadTransfers.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.padding(end = 16.dp),
+                        horizontalAlignment = Alignment.End,
+                    ) {
+                        NtButton(
+                            onClick = {onTransferResourceViewed(unreadTransfers)},
+                            text = { Text(stringResource(R.string.feature_transfers_mark_as_read)) },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = NtIcons.MarkAsRead,
+                                    contentDescription = "Mark all as read",
+                                )
+                            },
+                        )
+                    }
+                }
+            }
             transferFeed(
                 feedState = feedState,
                 selectedTransferId = selectedTransferId,

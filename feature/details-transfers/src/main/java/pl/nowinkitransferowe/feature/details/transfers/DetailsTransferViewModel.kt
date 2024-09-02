@@ -168,4 +168,5 @@ sealed interface DetailsTransferUiState {
     data object Error : DetailsTransferUiState
     data object Loading : DetailsTransferUiState
 }
+
 data class DataPoint(val date: String, val price: Float, val bitmap: Bitmap?)

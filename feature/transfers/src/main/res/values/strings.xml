@@ -21,5 +21,6 @@
     <string name="feature_transfers_navigate_up">Nawiguj wyżej</string>
     <string name="feature_transfers_onboarding_guidance_title">Czym jesteś zainteresowany?</string>
     <string name="feature_transfers_onboarding_guidance_subtitle">Zmiany katogorii, które obserwujesz pojawią się tu. Zacznij obserwować aby coś się pojawiło.</string>
+    <string name="feature_transfers_mark_as_read">Oznacz jako przeczytane</string>
 
 </resources>

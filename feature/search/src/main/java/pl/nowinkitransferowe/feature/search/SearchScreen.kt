@@ -126,7 +126,7 @@ internal fun SearchScreen(
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit = { _, _ -> },
     onNewsResourceViewed: (String) -> Unit = {},
     onTransferResourcesCheckedChanged: (String, Boolean) -> Unit = { _, _ -> },
-    onTransferResourceViewed: (String) -> Unit = {},
+    onTransferResourceViewed: (List<String>) -> Unit = {},
     onBackClick: () -> Unit = {},
     onTopicClick: (String) -> Unit = {},
     onNewsClick: (String) -> Unit = {},
@@ -253,7 +253,7 @@ private fun SearchResultBody(
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onTransferResourceViewed: (String) -> Unit,
+    onTransferResourceViewed: (List<String>) -> Unit,
 ) {
     val state = rememberLazyStaggeredGridState()
     Box(
