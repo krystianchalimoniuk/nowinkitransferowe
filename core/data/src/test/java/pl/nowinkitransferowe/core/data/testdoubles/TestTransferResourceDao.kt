@@ -39,7 +39,6 @@ class TestTransferResourceDao : TransferResourceDao {
             transferResourceList.filter { it.name == name }
         }
 
-
     override fun getTransferResources(
         useFilterTransferIds: Boolean,
         filterTransferIds: Set<String>,

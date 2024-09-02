@@ -79,7 +79,6 @@ fun LazyStaggeredGridScope.transferFeed(
     }
 }
 
-
 /**
  * A sealed hierarchy describing the state of the feed of news resources.
  */

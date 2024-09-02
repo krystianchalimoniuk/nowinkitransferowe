@@ -24,7 +24,6 @@ import androidx.navigation.compose.composable
 const val TRANSFERS_ROUTE = "transfers_route"
 const val LINKED_TRANSFER_RESOURCE_ID = "linkedTransferResourceId"
 
-
 fun NavController.navigateToTransfer(navOptions: NavOptions) = navigate(TRANSFERS_ROUTE, navOptions)
 
 fun NavGraphBuilder.transferScreen(

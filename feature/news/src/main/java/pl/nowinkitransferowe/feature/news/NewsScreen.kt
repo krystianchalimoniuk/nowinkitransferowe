@@ -110,7 +110,6 @@ internal fun NewsScreen(
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onNewsSelected: (String?) -> Unit,
-
 ) {
     val isFeedLoading = feedState is NewsFeedUiState.Loading
 

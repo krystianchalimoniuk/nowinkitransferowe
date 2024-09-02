@@ -62,7 +62,6 @@ internal class OfflineFirstTransferRepository @Inject constructor(
         transferResourceDao.getTransferResourcesByName(name)
             .map { it.map(TransferResourceEntity::asExternalModel) }
 
-
     override fun getCount(): Flow<Int> = transferResourceDao.getCount()
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {

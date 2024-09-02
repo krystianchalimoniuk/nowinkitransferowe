@@ -31,4 +31,4 @@ data class TransferResource(
     val season: String,
     val publishDate: Instant,
 
-    )
+)

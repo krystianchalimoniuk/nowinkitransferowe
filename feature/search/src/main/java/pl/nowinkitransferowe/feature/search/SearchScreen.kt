@@ -110,7 +110,7 @@ internal fun SearchRoute(
         onBackClick = onBackClick,
         onTopicClick = searchViewModel::onSearchQueryChanged,
         onNewsClick = onNewsClick,
-        onTransferClick = onTransferClick
+        onTransferClick = onTransferClick,
     )
 }
 
@@ -131,8 +131,7 @@ internal fun SearchScreen(
     onTopicClick: (String) -> Unit = {},
     onNewsClick: (String) -> Unit = {},
     onTransferClick: (String) -> Unit = {},
-
-    ) {
+) {
     TrackScreenViewEvent(screenName = "Search")
     Column(modifier = modifier) {
         Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
@@ -185,7 +184,7 @@ internal fun SearchScreen(
                         onSearchTriggered = onSearchTriggered,
                         onTopicClick = onTopicClick,
                         onNewsClick = onNewsClick,
-                        onTransferClick =onTransferClick,
+                        onTransferClick = onTransferClick,
                         onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
                         onNewsResourceViewed = onNewsResourceViewed,
                         onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
@@ -289,7 +288,7 @@ private fun SearchResultBody(
                     feedState = TransferFeedUiState.Success(feed = transferResources),
                     onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
                     onTransferResourceViewed = onTransferResourceViewed,
-                    onTransferClick = onTransferClick
+                    onTransferClick = onTransferClick,
                 )
             }
 

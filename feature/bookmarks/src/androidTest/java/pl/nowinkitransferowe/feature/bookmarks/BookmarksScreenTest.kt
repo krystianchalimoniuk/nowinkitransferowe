@@ -65,6 +65,7 @@ class BookmarksScreenTest {
                 onNewsClick = {},
                 onTransferResourceViewed = {},
                 onNewsResourceViewed = {},
+                onTransferClick = {},
             )
         }
 
@@ -94,6 +95,7 @@ class BookmarksScreenTest {
                 onNewsResourceViewed = {},
                 onTransferResourceViewed = {},
                 onNewsClick = {},
+                onTransferClick = {},
             )
         }
 
@@ -175,6 +177,7 @@ class BookmarksScreenTest {
                 onNewsResourceViewed = {},
                 onTransferResourceViewed = {},
                 onNewsClick = {},
+                onTransferClick = {},
             )
         }
 
@@ -222,6 +225,7 @@ class BookmarksScreenTest {
                 onNewsResourceViewed = {},
                 onTransferResourceViewed = {},
                 onNewsClick = {},
+                onTransferClick = {},
             )
         }
 
@@ -258,6 +262,7 @@ class BookmarksScreenTest {
                 onTopicClick = {},
                 onNewsResourceViewed = {},
                 onTransferResourceViewed = {},
+                onTransferClick = {},
             )
         }
 
@@ -291,6 +296,7 @@ class BookmarksScreenTest {
                     onNewsClick = {},
                     onNewsResourceViewed = {},
                     onTransferResourceViewed = {},
+                    onTransferClick = {},
                     clearUndoState = {
                         undoStateCleared = true
                     },

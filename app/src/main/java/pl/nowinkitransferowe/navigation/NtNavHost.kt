@@ -64,7 +64,7 @@ fun NtNavHost(
 //        popExitTransition = popExitTransition,
         modifier = modifier,
 
-        ) {
+    ) {
         newsListDetailScreen(
             onTopicClick = navController::navigateToSearch,
         )

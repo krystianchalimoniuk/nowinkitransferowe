@@ -22,7 +22,6 @@ import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toInstant
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -174,5 +173,5 @@ private fun testTransferResource(
     price = "",
     url = "",
     season = "",
-    publishDate = Instant.fromEpochMilliseconds(millisSinceEpoch)
+    publishDate = Instant.fromEpochMilliseconds(millisSinceEpoch),
 )

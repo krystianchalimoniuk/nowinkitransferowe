@@ -66,7 +66,6 @@ import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
 import pl.nowinkitransferowe.core.designsystem.component.NtNavigationSuiteScaffold
 import pl.nowinkitransferowe.core.designsystem.component.NtTopAppBar
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
-import pl.nowinkitransferowe.core.designsystem.theme.GradientColors
 import pl.nowinkitransferowe.core.designsystem.theme.LocalGradientColors
 import pl.nowinkitransferowe.feature.settings.SettingsDialog
 import pl.nowinkitransferowe.navigation.NtNavHost

@@ -16,7 +16,6 @@
 
 package pl.nowinkitransferowe.core.database
 
-
 import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
 

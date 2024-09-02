@@ -45,7 +45,7 @@ data class TransferResourceEntity(
     val clubToImg: String,
     val price: String,
     val url: String,
-    @ColumnInfo(name ="publish_date")
+    @ColumnInfo(name = "publish_date")
     val publishDate: Instant?,
     val season: String?,
 )

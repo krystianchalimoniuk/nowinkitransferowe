@@ -378,12 +378,12 @@ private fun shouldUseDarkTheme(
 fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDarkTheme: Boolean) {
     val width = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
     val socialMediaJsScript = "<style>iframe {" +
-            "        display: block;" +
-            "        max-width:100%;" +
-            "        }  </style>" + "<style>img{display: inline; height: auto; max-width: 100%;}</style>" +
-            "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');" +
-            "</script>" +
-            "<script>" + " <script async defer src=\"//platform.instagram.com/en_US/embeds.js\"></script>"
+        "        display: block;" +
+        "        max-width:100%;" +
+        "        }  </style>" + "<style>img{display: inline; height: auto; max-width: 100%;}</style>" +
+        "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');" +
+        "</script>" +
+        "<script>" + " <script async defer src=\"//platform.instagram.com/en_US/embeds.js\"></script>"
     val fontSize = "<body style=\"font-size:110%"
     val fontColor = ";color:white"
     val htmlStyle = StringBuilder().append(width).append(socialMediaJsScript).append(fontSize)
@@ -443,7 +443,7 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
                 )
             },
 
-            )
+        )
     }
 
     LaunchedEffect(Unit) {

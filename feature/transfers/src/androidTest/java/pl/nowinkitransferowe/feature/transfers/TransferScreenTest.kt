@@ -44,11 +44,9 @@ class TransferScreenTest {
             TransferScreen(
                 isSyncing = false,
                 feedState = TransferFeedUiState.Loading,
-                onCleanBackStack = {},
-                onDeepLinkOpened = {},
                 onTransferResourceViewed = {},
                 onTransferResourcesCheckedChanged = { _, _ -> },
-                deepLinkedUserTransferResource = null,
+                onTransferClick = {},
                 loadNextPage = {},
             )
         }
@@ -66,11 +64,9 @@ class TransferScreenTest {
             TransferScreen(
                 isSyncing = true,
                 feedState = TransferFeedUiState.Success(emptyList()),
-                onCleanBackStack = {},
-                onDeepLinkOpened = {},
+                onTransferClick = {},
                 onTransferResourceViewed = {},
                 onTransferResourcesCheckedChanged = { _, _ -> },
-                deepLinkedUserTransferResource = null,
                 loadNextPage = {},
             )
         }
@@ -88,11 +84,9 @@ class TransferScreenTest {
             TransferScreen(
                 isSyncing = false,
                 feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
-                onCleanBackStack = {},
-                onDeepLinkOpened = {},
+                onTransferClick = {},
                 onTransferResourceViewed = {},
                 onTransferResourcesCheckedChanged = { _, _ -> },
-                deepLinkedUserTransferResource = null,
                 loadNextPage = {},
             )
         }
@@ -128,11 +122,9 @@ class TransferScreenTest {
             TransferScreen(
                 isSyncing = false,
                 feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
-                onCleanBackStack = {},
-                onDeepLinkOpened = {},
+                onTransferClick = {},
                 onTransferResourceViewed = {},
                 onTransferResourcesCheckedChanged = { _, _ -> },
-                deepLinkedUserTransferResource = null,
                 loadNextPage = {},
             )
         }

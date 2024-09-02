@@ -350,7 +350,7 @@ private fun BookmarksGridPreview(
             onTransferResourceViewed = {},
             onNewsClick = {},
             onTopicClick = {},
-            onTransferClick = {}
+            onTransferClick = {},
         )
     }
 }

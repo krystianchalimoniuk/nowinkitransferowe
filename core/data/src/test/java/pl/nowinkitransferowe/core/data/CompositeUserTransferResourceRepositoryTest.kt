@@ -95,7 +95,7 @@ val sampleTransferResources: List<TransferResource> = listOf(
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "2",
@@ -108,7 +108,7 @@ val sampleTransferResources: List<TransferResource> = listOf(
         price = "nie ujawniono",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "3",
@@ -121,6 +121,6 @@ val sampleTransferResources: List<TransferResource> = listOf(
         price = "0,5 mln \u20ac",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
 )

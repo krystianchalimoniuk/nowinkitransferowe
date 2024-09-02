@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.feature.details.transfers
 
 import android.graphics.Bitmap
@@ -6,7 +22,6 @@ import android.graphics.Typeface
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,29 +38,51 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asAndroidPath
+import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.component.NtBackground
+import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
@@ -55,30 +92,7 @@ import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferListItemCard
 import pl.nowinkitransferowe.core.ui.UserTransfersResourcePreviewParameterProvider
-import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.remember
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.sp
 import pl.nowinkitransferowe.core.ui.dateFormatted
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.asAndroidPath
-import androidx.compose.ui.graphics.asComposePath
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
-import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
 import pl.nowinkitransferowe.feature.details.transfers.Util.calculateMaxTransferValue
 import pl.nowinkitransferowe.feature.details.transfers.Util.calculateTransferSum
 import pl.nowinkitransferowe.feature.details.transfers.Util.hasMoreThanTwoCashTransfers
@@ -106,7 +120,6 @@ fun DetailsTransferRoute(
             )
         }
     }
-
 }
 
 @VisibleForTesting
@@ -165,7 +178,6 @@ fun DetailsTransferBody(
     dataPoints: List<DataPoint>,
     state: LazyListState,
 ) {
-
     Column(modifier = Modifier.testTag("content")) {
         Box(
             modifier = Modifier.padding(8.dp),
@@ -269,8 +281,8 @@ fun DetailsTransferBody(
 
                             Spacer(modifier = Modifier.height(60.dp))
                             LineChart(
-                                data
-                                = dataPoints,
+                                data =
+                                dataPoints,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(150.dp)
@@ -281,13 +293,11 @@ fun DetailsTransferBody(
                             Spacer(modifier = Modifier.height(90.dp))
                         }
                     }
-
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun TransfersResourceFootballerName(
@@ -380,7 +390,6 @@ private fun DetailsTransferToolbar(
     }
 }
 
-
 @Composable
 fun LineChart(
     modifier: Modifier = Modifier,
@@ -391,13 +400,13 @@ fun LineChart(
             .asAndroidBitmap()
     val defaultScaledBitmap = Bitmap.createScaledBitmap(defaultBitmap, 80, 80, false)
     val spacingFromLeft = 80f
-    val graphColor = Color.Blue   //color for your graph
+    val graphColor = Color.Green // color for your graph
     val transparentGraphColor = remember { graphColor.copy(alpha = 0.5f) }
     val upperValue = remember { (data.maxOfOrNull { it.price })?.roundToInt() ?: 0 }
     val lowerValue = remember { 0 }
     val density = LocalDensity.current
     val materialColor = MaterialTheme.colorScheme.inverseSurface
-    //paint for the text shown in data values
+    // paint for the text shown in data values
     val textPaint = remember(density) {
         Paint().apply {
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
@@ -407,13 +416,11 @@ fun LineChart(
         }
     }
 
-
-
     Canvas(modifier = modifier) {
         val spacePerData = (size.width - spacingFromLeft) / data.size
 
-        //loop through each index by step of 1
-        //data shown horizontally
+        // loop through each index by step of 1
+        // data shown horizontally
         (data.indices step 1).forEach { i ->
             val date = data[i].date
             val bitmap = data[i].bitmap ?: defaultScaledBitmap
@@ -424,7 +431,7 @@ fun LineChart(
                     size.height,
                     textPaint,
 
-                    )
+                )
                 drawImage(
                     image = bitmap.asImageBitmap(),
                     topLeft = Offset(
@@ -435,9 +442,8 @@ fun LineChart(
             }
         }
 
-
         val priceStep = (upperValue - lowerValue) / 5f
-        //data shown vertically
+        // data shown vertically
         (0..5).forEachIndexed { index, i ->
             drawContext.canvas.nativeCanvas.apply {
                 drawText(
@@ -461,8 +467,7 @@ fun LineChart(
             }
         }
 
-
-        //Vertical line
+        // Vertical line
         drawLine(
             start = Offset(spacingFromLeft, size.height - spacingFromLeft),
             end = Offset(spacingFromLeft, 0f - spacingFromLeft - 50),
@@ -470,7 +475,7 @@ fun LineChart(
             strokeWidth = 4f,
         )
 
-        //Horizontal line
+        // Horizontal line
         drawLine(
             start = Offset(spacingFromLeft, size.height - spacingFromLeft),
             end = Offset(size.width - 40f, size.height - spacingFromLeft),
@@ -478,11 +483,11 @@ fun LineChart(
             strokeWidth = 4f,
         )
 
-        //Use this to show straight line path
+        // Use this to show straight line path
         val straightLinePath = Path().apply {
             val height = size.height
 
-            //loop through index only not value
+            // loop through index only not value
             data.indices.forEach { i ->
                 val info = data[i]
                 val x1 = spacingFromLeft + i * spacePerData
@@ -497,11 +502,11 @@ fun LineChart(
                     color = materialColor,
                     radius = 5f,
                     center = Offset(x1, y1),
-                ) //Uncomment it to see the end points
+                ) // Uncomment it to see the end points
             }
         }
 
-        //Use this to show curved path
+        // Use this to show curved path
         var medX: Float
         var medY: Float
         Path().apply {
@@ -521,16 +526,15 @@ fun LineChart(
                     medX = (x1 + x2) / 2f
                     medY = (y1 + y2) / 2f
                     quadraticTo(x1 = x1, y1 = y1, x2 = medX, y2 = medY)
-
                 }
 
-                //drawCircle(color = Color.White, radius = 5f, center = Offset(x1,y1))
-                //drawCircle(color = Color.Magenta, radius = 9f, center = Offset(medX,medY))
-                //drawCircle(color = Color.Blue, radius = 7f, center = Offset(x2,y2))  //Uncomment these to see the control Points
+                // drawCircle(color = Color.White, radius = 5f, center = Offset(x1,y1))
+                // drawCircle(color = Color.Magenta, radius = 9f, center = Offset(medX,medY))
+                // drawCircle(color = Color.Blue, radius = 7f, center = Offset(x2,y2))  //Uncomment these to see the control Points
             }
         }
 
-        //Now draw path on canvas
+        // Now draw path on canvas
         drawPath(
             path = straightLinePath,
             color = graphColor,
@@ -540,7 +544,7 @@ fun LineChart(
             ),
         )
 
-        //To show the background transparent gradient
+        // To show the background transparent gradient
         val fillPath =
             android.graphics.Path(straightLinePath.asAndroidPath()).asComposePath().apply {
                 lineTo(size.width - spacePerData, size.height - spacingFromLeft)
@@ -558,7 +562,6 @@ fun LineChart(
                 endY = size.height - spacingFromLeft,
             ),
         )
-
     }
 }
 
@@ -580,7 +583,8 @@ fun DetailsScreenPopulated(
                                     publishDate = it.publishDate,
                                 ),
                             ),
-                            price = priceToFloat(it.price), bitmap = null,
+                            price = priceToFloat(it.price),
+                            bitmap = null,
                         )
                     },
                 ),

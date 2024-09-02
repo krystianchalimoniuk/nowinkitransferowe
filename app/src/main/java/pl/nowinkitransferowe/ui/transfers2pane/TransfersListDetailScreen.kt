@@ -150,7 +150,7 @@ internal fun TransfersListDetailScreen(
             AnimatedPane {
                 TransferRoute(
                     onTransferClick = ::onTransferClickShowDetailPane,
-                    highlightSelectedTransfer = listDetailNavigator.isDetailPaneVisible()
+                    highlightSelectedTransfer = listDetailNavigator.isDetailPaneVisible(),
                 )
             }
         },

@@ -25,7 +25,7 @@ import pl.nowinkitransferowe.core.model.TransferResource
  */
 data class TransferResourceQuery(
     val filterTransferIds: Set<String>? = null,
-    val footballerName: String? = null
+    val footballerName: String? = null,
 )
 
 /**

@@ -303,7 +303,7 @@ fun NotificationDot(
 }
 
 @Composable
-fun dateFormatted(publishDate: Instant,style: FormatStyle = FormatStyle.MEDIUM): String = DateTimeFormatter
+fun dateFormatted(publishDate: Instant, style: FormatStyle = FormatStyle.MEDIUM): String = DateTimeFormatter
     .ofLocalizedDate(style)
     .withLocale(Locale.getDefault())
     .withZone(LocalTimeZone.current.toJavaZoneId())

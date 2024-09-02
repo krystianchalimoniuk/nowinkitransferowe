@@ -82,7 +82,6 @@ class FakeTransferRepository @Inject constructor(
             )
         }
 
-
     override fun getCount(): Flow<Int> = flow {
         emit(
             datasource.getTransferResources().size,

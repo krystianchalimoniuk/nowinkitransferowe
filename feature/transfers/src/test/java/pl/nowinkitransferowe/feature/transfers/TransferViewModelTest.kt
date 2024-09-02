@@ -227,7 +227,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "2",
@@ -240,7 +240,7 @@ class TransferViewModelTest {
             price = "nie ujawniono",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "3",
@@ -253,7 +253,7 @@ class TransferViewModelTest {
             price = "0,5 mln \u20ac",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "4",
@@ -266,7 +266,7 @@ class TransferViewModelTest {
             price = "34,5 mln €",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "5",
@@ -279,7 +279,7 @@ class TransferViewModelTest {
             price = "5 mln €",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "6",
@@ -292,7 +292,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "7",
@@ -305,7 +305,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "8",
@@ -318,7 +318,7 @@ class TransferViewModelTest {
             price = "wypożyczenie",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "9",
@@ -331,7 +331,7 @@ class TransferViewModelTest {
             price = "wypożyczenie",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "10",
@@ -344,7 +344,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
     )
 }

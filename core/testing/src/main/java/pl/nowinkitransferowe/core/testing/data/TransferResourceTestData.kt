@@ -31,7 +31,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "2",
@@ -44,7 +44,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "nie ujawniono",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "3",
@@ -57,7 +57,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "0,5 mln \u20ac",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "4",
@@ -70,7 +70,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "34,5 mln €",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "5",
@@ -83,7 +83,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "5 mln €",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "6",
@@ -96,7 +96,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "7",
@@ -109,7 +109,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "8",
@@ -122,7 +122,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "wypożyczenie",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "9",
@@ -135,7 +135,7 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "wypożyczenie",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
     TransferResource(
         id = "10",
@@ -148,6 +148,6 @@ val transferResourceTestData: List<TransferResource> = listOf(
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant()
+        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
     ),
 )
