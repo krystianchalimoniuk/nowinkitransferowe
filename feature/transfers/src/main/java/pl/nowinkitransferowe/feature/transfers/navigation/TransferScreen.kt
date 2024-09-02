@@ -153,7 +153,6 @@ internal fun TransferScreen(
                 .testTag("transfers:feed"),
             state = state,
         ) {
-
             item {
                 AnimatedVisibility(visible = unreadTransfers.isNotEmpty()) {
                     Column(
@@ -161,7 +160,7 @@ internal fun TransferScreen(
                         horizontalAlignment = Alignment.End,
                     ) {
                         NtButton(
-                            onClick = {onTransferResourceViewed(unreadTransfers)},
+                            onClick = { onTransferResourceViewed(unreadTransfers) },
                             text = { Text(stringResource(R.string.feature_transfers_mark_as_read)) },
                             leadingIcon = {
                                 Icon(

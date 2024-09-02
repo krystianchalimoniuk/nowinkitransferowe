@@ -49,7 +49,6 @@ class TransferViewModel @Inject constructor(
     private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
     val page: StateFlow<Int> = _page.asStateFlow()
 
-
     val unreadTransfers: StateFlow<List<String>> =
         userTransferResourceRepository.observeAll()
             .map { transferResources ->
