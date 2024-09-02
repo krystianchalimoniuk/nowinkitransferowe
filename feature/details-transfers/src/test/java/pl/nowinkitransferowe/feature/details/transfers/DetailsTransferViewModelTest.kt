@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.toInstant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -87,7 +88,7 @@ class DetailsTransferViewModelTest {
                     userData = emptyUserData,
                 ).copy(hasBeenViewed = true)
             }.take(1),
-            dataPoints = arrayListOf(DataPoint(date = "paź 22", price = 0.0f, bitmap = null)),
+            dataPoints = arrayListOf(DataPoint(date = Util.shortcutDate(Util.dateFormatted(("2022-10-06T23:00:00.000Z".toInstant()))), price = 0.0f, bitmap = null)),
         )
         assertEquals(expected = expected, actual = viewModel.detailsTransferUiState.value)
         collectJob.cancel()
