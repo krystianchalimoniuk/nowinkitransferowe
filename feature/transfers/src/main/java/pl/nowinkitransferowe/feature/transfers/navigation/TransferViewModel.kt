@@ -118,9 +118,7 @@ class TransferViewModel @Inject constructor(
 
     fun setTransferResourcesViewed(transferResourceIds: List<String>, viewed: Boolean) {
         viewModelScope.launch {
-            transferResourceIds.forEach {
-                userDataRepository.setTransferResourceViewed(it, viewed)
-            }
+            userDataRepository.setTransferResourceViewed(transferResourceIds, viewed)
         }
     }
 

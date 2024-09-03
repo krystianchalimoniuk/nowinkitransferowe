@@ -106,6 +106,24 @@ class TestUserDataRepository : UserDataRepository {
         }
     }
 
+    override suspend fun setTransferResourceViewed(
+        transferResourceIds: List<String>,
+        viewed: Boolean,
+    ) {
+        currentUserData.let { current ->
+            _userData.tryEmit(
+                current.copy(
+                    viewedTransferResources =
+                    if (viewed) {
+                        current.viewedNewsResources + transferResourceIds
+                    } else {
+                        current.viewedTransferResources - transferResourceIds.toSet()
+                    },
+                ),
+            )
+        }
+    }
+
     override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         currentUserData.let { current ->
             _userData.tryEmit(current.copy(darkThemeConfig = darkThemeConfig))

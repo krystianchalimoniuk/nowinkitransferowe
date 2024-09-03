@@ -54,6 +54,13 @@ class FakeUserDataRepository @Inject constructor(
         ntPreferencesDataSource.setTransferResourceViewed(transferResourceId, viewed)
     }
 
+    override suspend fun setTransferResourceViewed(
+        transferResourceIds: List<String>,
+        viewed: Boolean,
+    ) {
+        ntPreferencesDataSource.setTransferResourcesViewed(transferResourceIds, viewed)
+    }
+
     override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         ntPreferencesDataSource.setDarkThemeConfig(darkThemeConfig)
     }

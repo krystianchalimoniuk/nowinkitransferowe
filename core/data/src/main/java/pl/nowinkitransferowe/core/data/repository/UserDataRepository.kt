@@ -48,6 +48,11 @@ interface UserDataRepository {
     suspend fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean)
 
     /**
+     * Updates the viewed status for a transfer resource
+     */
+    suspend fun setTransferResourceViewed(transferResourceIds: List<String>, viewed: Boolean)
+
+    /**
      * Sets the desired dark theme config.
      */
     suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig)
