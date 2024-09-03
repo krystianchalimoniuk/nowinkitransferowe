@@ -91,8 +91,8 @@ class SearchViewModelTest {
     fun emptyResultIsReturned_withNotMatchingQuery() = runTest {
         val collectJob =
             launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
-
         viewModel.onSearchQueryChanged("XXX")
+
         searchContentsRepository.addNewsResources(newsResourcesTestData)
         searchContentsRepository.addTransferResources(transferResourceTestData)
 

@@ -20,13 +20,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -38,9 +36,7 @@ import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.domain.GetRecentSearchQueriesUseCase
 import pl.nowinkitransferowe.core.domain.GetSearchContentUseCase
 import pl.nowinkitransferowe.core.model.UserSearchResult
-import java.net.URLDecoder
 import javax.inject.Inject
-import kotlin.text.Charsets.UTF_8
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -53,20 +49,8 @@ class SearchViewModel @Inject constructor(
     private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel() {
 
-    val searchQuery =
-        savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = "").map { query ->
-            if (query.isNullOrEmpty()) {
-                ""
-            } else {
-                URLDecoder.decode(query, UTF_8.name())
-            }
-        }
-            .flowOn(Dispatchers.IO)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = "",
-            )
+    val searchQuery: StateFlow<String?> =
+        savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = "")
 
     val searchResultUiState: StateFlow<SearchResultUiState> =
         searchContentsRepository.getSearchContentsCount()
@@ -75,7 +59,7 @@ class SearchViewModel @Inject constructor(
                     flowOf(SearchResultUiState.SearchNotReady)
                 } else {
                     searchQuery.flatMapLatest { query ->
-                        if (query.length < SEARCH_QUERY_MIN_LENGTH) {
+                        if (query == null || query.length < SEARCH_QUERY_MIN_LENGTH) {
                             flowOf(SearchResultUiState.EmptyQuery)
                         } else {
                             getSearchContentsUseCase(query)

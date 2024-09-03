@@ -82,6 +82,8 @@ import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import pl.nowinkitransferowe.core.ui.newsFeed
 import pl.nowinkitransferowe.core.ui.transferFeed
+import java.net.URLDecoder
+import kotlin.text.Charsets.UTF_8
 import pl.nowinkitransferowe.feature.search.R as searchR
 
 @Composable
@@ -95,9 +97,14 @@ internal fun SearchRoute(
     val recentSearchQueriesUiState by searchViewModel.recentSearchQueriesUiState.collectAsStateWithLifecycle()
     val searchResultUiState by searchViewModel.searchResultUiState.collectAsStateWithLifecycle()
     val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
+    val query = if (searchQuery == null) {
+        ""
+    } else {
+        URLDecoder.decode(searchQuery, UTF_8.name())
+    }
     SearchScreen(
         modifier = modifier,
-        searchQuery = searchQuery,
+        searchQuery = query,
         recentSearchesUiState = recentSearchQueriesUiState,
         searchResultUiState = searchResultUiState,
         onSearchQueryChanged = searchViewModel::onSearchQueryChanged,
