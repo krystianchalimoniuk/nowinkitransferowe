@@ -65,6 +65,23 @@ class FakeTransferRepository @Inject constructor(
             )
         }
 
+    override fun getTransferResource(id: String): Flow<TransferResource> =
+        flow {
+            emit(
+                datasource.getTransferResources().first { it.id == id.toInt() }.asEntity()
+                    .asExternalModel(),
+            )
+        }
+
+    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> =
+        flow {
+            emit(
+                datasource.getTransferResources().filter { it.name == name }
+                    .map(NetworkTransferResource::asEntity)
+                    .map(TransferResourceEntity::asExternalModel),
+            )
+        }
+
     override fun getCount(): Flow<Int> = flow {
         emit(
             datasource.getTransferResources().size,

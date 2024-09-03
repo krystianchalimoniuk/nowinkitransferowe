@@ -83,6 +83,7 @@ fun NewsRoute(
     val newsCounts by viewModel.newsCount.collectAsStateWithLifecycle()
 
     NewsScreen(
+        modifier = modifier,
         isSyncing = isSyncing,
         feedState = feedState,
         onNewsClick = onNewsClick,
@@ -93,12 +94,12 @@ fun NewsRoute(
         onNewsResourcesCheckedChanged = viewModel::updateNewsResourceSaved,
         onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
         onNewsSelected = viewModel::onNewsClick,
-        modifier = modifier,
     )
 }
 
 @Composable
 internal fun NewsScreen(
+    modifier: Modifier = Modifier,
     isSyncing: Boolean,
     feedState: NewsFeedUiState,
     selectedNewsId: String? = null,
@@ -109,7 +110,6 @@ internal fun NewsScreen(
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onNewsSelected: (String?) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val isFeedLoading = feedState is NewsFeedUiState.Loading
 

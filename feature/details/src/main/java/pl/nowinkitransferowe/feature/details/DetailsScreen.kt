@@ -207,13 +207,15 @@ private fun DetailsToolbar(
                 category = userNewsResource.category.serializedName,
             ),
         )
-        IconButton(onClick = {
-            startActivity(
-                context,
-                shareIntent,
-                null,
-            )
-        }) {
+        IconButton(
+            onClick = {
+                startActivity(
+                    context,
+                    shareIntent,
+                    null,
+                )
+            },
+        ) {
             Icon(
                 imageVector = NtIcons.Share,
                 contentDescription = stringResource(id = pl.nowinkitransferowe.core.ui.R.string.core_ui_share),
@@ -452,7 +454,7 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
 
 @DevicePreviews
 @Composable
-fun TopicScreenPopulated(
+fun DetailsScreenPopulated(
     @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
     userNewsResources: List<UserNewsResource>,
 ) {

@@ -33,9 +33,12 @@ import pl.nowinkitransferowe.core.model.UserTransferResource
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyStaggeredGridScope.transferFeed(
     feedState: TransferFeedUiState,
+    highlightSelectedTransfer: Boolean = false,
+    onTransferSelected: (String) -> Unit = {},
+    selectedTransferId: String? = null,
     onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onTransferResourceViewed: (String) -> Unit,
-    onTransferClick: () -> Unit = {},
+    onTransferResourceViewed: (List<String>) -> Unit,
+    onTransferClick: (String) -> Unit = {},
 ) {
     when (feedState) {
         TransferFeedUiState.Loading -> Unit
@@ -50,12 +53,15 @@ fun LazyStaggeredGridScope.transferFeed(
                 TransferResourceCardExpanded(
                     userTransferResource = userTransferResource,
                     isBookmarked = userTransferResource.isSaved,
+                    selectedTransferId = selectedTransferId,
+                    highlightSelectedTransfer = highlightSelectedTransfer,
                     onClick = {
-                        onTransferClick()
-                        analyticsHelper.logNewsResourceOpened(
-                            newsResourceId = userTransferResource.id,
+                        analyticsHelper.logTransferResourceOpened(
+                            transferResourceId = userTransferResource.id,
                         )
-                        onTransferResourceViewed(userTransferResource.id)
+                        onTransferSelected(userTransferResource.id)
+                        onTransferClick(userTransferResource.id)
+                        onTransferResourceViewed(arrayListOf(userTransferResource.id))
                     },
                     hasBeenViewed = userTransferResource.hasBeenViewed,
                     onToggleBookmark = {
@@ -73,15 +79,6 @@ fun LazyStaggeredGridScope.transferFeed(
     }
 }
 
-// fun launchCustomChromeTab(context: Context, uri: Uri, @ColorInt toolbarColor: Int) {
-//    val customTabBarColor = CustomTabColorSchemeParams.Builder()
-//        .setToolbarColor(toolbarColor).build()
-//    val customTabsIntent = CustomTabsIntent.Builder()
-//        .setDefaultColorSchemeParams(customTabBarColor)
-//        .build()
-//
-//    customTabsIntent.launchUrl(context, uri)
-// }
 /**
  * A sealed hierarchy describing the state of the feed of news resources.
  */

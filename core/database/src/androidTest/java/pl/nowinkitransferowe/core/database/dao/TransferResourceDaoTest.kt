@@ -21,6 +21,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Instant
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -171,4 +172,6 @@ private fun testTransferResource(
     footballerImg = "",
     price = "",
     url = "",
+    season = "",
+    publishDate = Instant.fromEpochMilliseconds(millisSinceEpoch),
 )

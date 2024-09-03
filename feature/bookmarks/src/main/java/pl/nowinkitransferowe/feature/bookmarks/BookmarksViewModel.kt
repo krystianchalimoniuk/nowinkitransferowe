@@ -100,9 +100,11 @@ class BookmarksViewModel @Inject constructor(
         }
     }
 
-    fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean) {
+    fun setTransferResourceViewed(transferResourceIds: List<String>, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setTransferResourceViewed(transferResourceId, viewed)
+            transferResourceIds.forEach {
+                userDataRepository.setTransferResourceViewed(it, viewed)
+            }
         }
     }
 

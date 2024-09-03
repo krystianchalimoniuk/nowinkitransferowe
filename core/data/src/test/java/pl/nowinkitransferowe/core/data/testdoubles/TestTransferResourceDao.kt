@@ -29,6 +29,15 @@ import pl.nowinkitransferowe.core.database.model.TransferResourceEntity
 class TestTransferResourceDao : TransferResourceDao {
 
     private val entitiesStateFlow = MutableStateFlow(emptyList<TransferResourceEntity>())
+    override fun getTransferResource(transferId: String): Flow<TransferResourceEntity> =
+        entitiesStateFlow.map { transferResourceList ->
+            transferResourceList.first { it.id == transferId }
+        }
+
+    override fun getTransferResourcesByName(name: String): Flow<List<TransferResourceEntity>> =
+        entitiesStateFlow.map { transferResourceList ->
+            transferResourceList.filter { it.name == name }
+        }
 
     override fun getTransferResources(
         useFilterTransferIds: Boolean,
@@ -45,7 +54,10 @@ class TestTransferResourceDao : TransferResourceDao {
                 result
             }
 
-    override fun getTransferResourcesPages(limit: Int, offset: Int): Flow<List<TransferResourceEntity>> =
+    override fun getTransferResourcesPages(
+        limit: Int,
+        offset: Int,
+    ): Flow<List<TransferResourceEntity>> =
         entitiesStateFlow
             .map { resources ->
                 resources.take(limit)

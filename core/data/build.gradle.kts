@@ -35,6 +35,8 @@ dependencies {
     api(projects.core.database)
     api(projects.core.datastore)
     api(projects.core.network)
+    implementation(libs.coil.kt)
+
 
     implementation(projects.core.analytics)
     implementation(projects.core.notifications)

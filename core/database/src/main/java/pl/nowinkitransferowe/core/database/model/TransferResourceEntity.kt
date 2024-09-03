@@ -19,10 +19,12 @@ package pl.nowinkitransferowe.core.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.datetime.Instant
+import kotlinx.datetime.toInstant
 import pl.nowinkitransferowe.core.model.TransferResource
 
 /**
- * Defines an NT news resource.
+ * Defines an NT transfer resource.
  */
 @Entity(
     tableName = "transfer_resources",
@@ -43,6 +45,10 @@ data class TransferResourceEntity(
     val clubToImg: String,
     val price: String,
     val url: String,
+    @ColumnInfo(name = "publish_date")
+    val publishDate: Instant?,
+    val season: String?,
 )
 
-fun TransferResourceEntity.asExternalModel() = TransferResource(id, name, footballerImg, clubFrom, clubFromImg, clubTo, clubToImg, price, url)
+fun TransferResourceEntity.asExternalModel() =
+    TransferResource(id, name, footballerImg, clubFrom, clubFromImg, clubTo, clubToImg, price, url, season ?: "23/24", publishDate ?: "2024-08-30T14:00:00.000Z".toInstant())

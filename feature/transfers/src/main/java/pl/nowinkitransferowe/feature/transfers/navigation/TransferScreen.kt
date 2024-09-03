@@ -42,6 +42,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,7 +57,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
+import pl.nowinkitransferowe.core.designsystem.component.NtButton
 import pl.nowinkitransferowe.core.designsystem.component.NtOverlayLoadingWheel
+import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.scrollbar.DraggableScrollbar
 import pl.nowinkitransferowe.core.designsystem.scrollbar.rememberDraggableScroller
 import pl.nowinkitransferowe.core.designsystem.scrollbar.scrollbarState
@@ -70,46 +74,47 @@ import pl.nowinkitransferowe.core.ui.transferFeed
 import pl.nowinkitransferowe.feature.transfers.R
 
 @Composable
-internal fun TransferRoute(
+fun TransferRoute(
     modifier: Modifier = Modifier,
-    onCleanBackStack: () -> Unit,
     viewModel: TransferViewModel = hiltViewModel(),
+    onTransferClick: (String) -> Unit,
+    highlightSelectedTransfer: Boolean = false,
 ) {
     val feedState by viewModel.feedUiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
-    val deepLinkedUserTransferResource by viewModel.deepLinkedTransferResource.collectAsStateWithLifecycle()
     val page by viewModel.page.collectAsStateWithLifecycle()
     val transfersCounts by viewModel.transfersCount.collectAsStateWithLifecycle()
+    val selectedTransferId by viewModel.selectedTransferId.collectAsStateWithLifecycle()
+    val unreadTransfers by viewModel.unreadTransfers.collectAsStateWithLifecycle()
     TransferScreen(
+        modifier = modifier,
+        unreadTransfers = unreadTransfers,
+        onTransferClick = onTransferClick,
         isSyncing = isSyncing,
         feedState = feedState,
-        deepLinkedUserTransferResource = deepLinkedUserTransferResource,
-        onDeepLinkOpened = viewModel::onDeepLinkOpened,
-        onCleanBackStack = onCleanBackStack,
+        highlightSelectedTransfer = highlightSelectedTransfer,
+        selectedTransferId = selectedTransferId,
+        onTransferSelected = viewModel::onTransferClick,
         onTransferResourcesCheckedChanged = viewModel::updateTransferResourceSaved,
-        onTransferResourceViewed = { viewModel.setTransferResourceViewed(it, true) },
+        onTransferResourceViewed = { viewModel.setTransferResourcesViewed(it, true) },
         loadNextPage = { viewModel.loadNextPage(page = page, transferCount = transfersCounts) },
-        modifier = modifier,
     )
 }
 
 @Composable
 internal fun TransferScreen(
+    modifier: Modifier = Modifier,
+    unreadTransfers: List<String> = arrayListOf(),
+    onTransferClick: (String) -> Unit,
     isSyncing: Boolean,
     feedState: TransferFeedUiState,
-    deepLinkedUserTransferResource: UserTransferResource?,
-    onDeepLinkOpened: (String) -> Unit,
-    onCleanBackStack: () -> Unit,
+    highlightSelectedTransfer: Boolean = false,
+    selectedTransferId: String? = null,
+    onTransferSelected: (String) -> Unit = {},
     onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onTransferResourceViewed: (String) -> Unit,
+    onTransferResourceViewed: (List<String>) -> Unit,
     loadNextPage: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
-    DeepLinkEffect(
-        deepLinkedUserTransferResource,
-        onDeepLinkOpened,
-        onCleanBackStack,
-    )
     val isFeedLoading = feedState is TransferFeedUiState.Loading
 
     // This code should be called when the UI is ready for use and relates to Time To Full Display.
@@ -148,10 +153,33 @@ internal fun TransferScreen(
                 .testTag("transfers:feed"),
             state = state,
         ) {
+            item {
+                AnimatedVisibility(visible = unreadTransfers.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.padding(end = 16.dp),
+                        horizontalAlignment = Alignment.End,
+                    ) {
+                        NtButton(
+                            onClick = { onTransferResourceViewed(unreadTransfers) },
+                            text = { Text(stringResource(R.string.feature_transfers_mark_as_read)) },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = NtIcons.MarkAsRead,
+                                    contentDescription = "Mark all as read",
+                                )
+                            },
+                        )
+                    }
+                }
+            }
             transferFeed(
                 feedState = feedState,
+                selectedTransferId = selectedTransferId,
+                highlightSelectedTransfer = highlightSelectedTransfer,
+                onTransferSelected = onTransferSelected,
                 onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
                 onTransferResourceViewed = onTransferResourceViewed,
+                onTransferClick = onTransferClick,
             )
 
             item(span = StaggeredGridItemSpan.FullLine, contentType = "bottomSpacing") {
@@ -202,22 +230,6 @@ internal fun TransferScreen(
     TrackScreenViewEvent(screenName = "Transfer")
 }
 
-@Composable
-private fun DeepLinkEffect(
-    userTransferResource: UserTransferResource?,
-    onDeepLinkOpened: (String) -> Unit,
-    onCleanBackStack: () -> Unit,
-) {
-    LaunchedEffect(userTransferResource) {
-        if (userTransferResource == null) {
-            return@LaunchedEffect
-        } else {
-            onDeepLinkOpened(userTransferResource.id)
-            onCleanBackStack()
-        }
-    }
-}
-
 private fun feedItemsSize(
     feedState: TransferFeedUiState,
 ): Int {
@@ -234,13 +246,11 @@ private fun feedItemsSize(
 fun TransferScreenLoading() {
     NtTheme {
         TransferScreen(
+            onTransferClick = {},
             isSyncing = false,
             feedState = TransferFeedUiState.Loading,
-            deepLinkedUserTransferResource = null,
             onTransferResourcesCheckedChanged = { _, _ -> },
             onTransferResourceViewed = {},
-            onDeepLinkOpened = {},
-            onCleanBackStack = {},
             loadNextPage = {},
         )
     }
@@ -254,15 +264,13 @@ fun TransferScreenPopulatedAndLoading(
 ) {
     NtTheme {
         TransferScreen(
+            onTransferClick = {},
             isSyncing = true,
             feedState = TransferFeedUiState.Success(
                 feed = userTransferResources,
             ),
-            deepLinkedUserTransferResource = null,
             onTransferResourcesCheckedChanged = { _, _ -> },
             onTransferResourceViewed = {},
-            onDeepLinkOpened = {},
-            onCleanBackStack = {},
             loadNextPage = {},
         )
     }

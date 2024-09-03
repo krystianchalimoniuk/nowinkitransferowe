@@ -26,6 +26,7 @@ import pl.nowinkitransferowe.core.data.repository.RecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
+import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.data.test.repository.FakeNewsRepository
@@ -72,4 +73,7 @@ internal interface TestDataModule {
 
     @Binds
     fun binds(impl: DefaultZoneIdTimeZoneMonitor): TimeZoneMonitor
+
+    @Binds
+    fun bindsImageDownloader(impl: FakeImageDownloader): ImageDownloader
 }

@@ -47,6 +47,17 @@ fun AnalyticsHelper.logNewsResourceOpened(newsResourceId: String) {
     )
 }
 
+fun AnalyticsHelper.logTransferResourceOpened(transferResourceId: String) {
+    logEvent(
+        event = AnalyticsEvent(
+            type = "transfer_resource_opened",
+            extras = listOf(
+                AnalyticsEvent.Param("opened_transfer_resource", transferResourceId),
+            ),
+        ),
+    )
+}
+
 /**
  * A side-effect which records a screen view event.
  */

@@ -66,7 +66,6 @@ import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
 import pl.nowinkitransferowe.core.designsystem.component.NtNavigationSuiteScaffold
 import pl.nowinkitransferowe.core.designsystem.component.NtTopAppBar
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
-import pl.nowinkitransferowe.core.designsystem.theme.GradientColors
 import pl.nowinkitransferowe.core.designsystem.theme.LocalGradientColors
 import pl.nowinkitransferowe.feature.settings.SettingsDialog
 import pl.nowinkitransferowe.navigation.NtNavHost
@@ -79,17 +78,12 @@ fun NtApp(
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val shouldShowGradientBackground =
-        appState.currentTopLevelDestination == TopLevelDestination.NEWS
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
 
     NtBackground(modifier = modifier) {
         NtGradientBackground(
-            gradientColors = if (shouldShowGradientBackground) {
-                LocalGradientColors.current
-            } else {
-                GradientColors()
-            },
+            gradientColors =
+            LocalGradientColors.current,
         ) {
             val snackbarHostState = remember { SnackbarHostState() }
 

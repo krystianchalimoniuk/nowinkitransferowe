@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.toInstant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -225,6 +226,8 @@ class TransferViewModelTest {
             clubFromImg = "stockportcounty_herbb.png",
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "2",
@@ -236,6 +239,8 @@ class TransferViewModelTest {
             clubFromImg = "malmo_herbb.png",
             price = "nie ujawniono",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "3",
@@ -247,6 +252,8 @@ class TransferViewModelTest {
             clubFromImg = "saintetiennenw2_herbb.png",
             price = "0,5 mln \u20ac",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "4",
@@ -258,6 +265,8 @@ class TransferViewModelTest {
             clubFromImg = "sociedad_herbb.png",
             price = "34,5 mln €",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "5",
@@ -269,6 +278,8 @@ class TransferViewModelTest {
             clubFromImg = "marsylia_herbb.png",
             price = "5 mln €",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "6",
@@ -280,6 +291,8 @@ class TransferViewModelTest {
             clubFromImg = "braga_herbb.png",
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "7",
@@ -291,6 +304,8 @@ class TransferViewModelTest {
             clubFromImg = "chelsea_herbb.png",
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "8",
@@ -302,6 +317,8 @@ class TransferViewModelTest {
             clubFromImg = "napolinowe_herbb.png",
             price = "wypożyczenie",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "9",
@@ -313,6 +330,8 @@ class TransferViewModelTest {
             clubFromImg = "liverpool_herbb.png",
             price = "wypożyczenie",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
         TransferResource(
             id = "10",
@@ -324,6 +343,8 @@ class TransferViewModelTest {
             clubFromImg = "kisvarda_herbb.jpg",
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
+            season = "23/24",
+            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
         ),
     )
 }

@@ -39,4 +39,6 @@ data class NetworkTransferResource(
     val price: String,
     @SerialName("link")
     val link: String,
+    @SerialName("created_at")
+    val publishDate: String,
 )

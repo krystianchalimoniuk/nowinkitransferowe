@@ -81,6 +81,7 @@ import pl.nowinkitransferowe.core.ui.transferFeed
 @Composable
 internal fun BookmarksRoute(
     onNewsClick: (String) -> Unit,
+    onTransferClick: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
@@ -98,6 +99,7 @@ internal fun BookmarksRoute(
         removeFromTransferBookmarks = viewModel::removeFromSavedTransferResources,
         onTransferResourceViewed = { viewModel.setTransferResourceViewed(it, true) },
         onNewsClick = onNewsClick,
+        onTransferClick = onTransferClick,
         onTopicClick = onTopicClick,
         modifier = modifier,
         shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoNewsBookmark,
@@ -118,8 +120,9 @@ internal fun BookmarksScreen(
     removeFromNewsBookmarks: (String) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     removeFromTransferBookmarks: (String) -> Unit,
-    onTransferResourceViewed: (String) -> Unit,
+    onTransferResourceViewed: (List<String>) -> Unit,
     onNewsClick: (String) -> Unit,
+    onTransferClick: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     shouldDisplayUndoBookmark: Boolean = false,
@@ -158,7 +161,9 @@ internal fun BookmarksScreen(
             removeFromTransferBookmarks = removeFromTransferBookmarks,
             onTransferResourceViewed = onTransferResourceViewed,
             onNewsClick = onNewsClick,
+            onTransferClick = onTransferClick,
             onTopicClick = onTopicClick,
+
         )
     }
     TrackScreenViewEvent(screenName = "Saved")
@@ -171,9 +176,10 @@ fun BookmarksGrid(
     removeFromNewsBookmarks: (String) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     removeFromTransferBookmarks: (String) -> Unit,
-    onTransferResourceViewed: (String) -> Unit,
+    onTransferResourceViewed: (List<String>) -> Unit,
     onNewsClick: (String) -> Unit,
     onTopicClick: (String) -> Unit,
+    onTransferClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollableState = rememberLazyStaggeredGridState()
@@ -231,7 +237,7 @@ fun BookmarksGrid(
                 transferFeedState,
                 onTransferResourcesCheckedChanged = { id, _ -> removeFromTransferBookmarks(id) },
                 onTransferResourceViewed = onTransferResourceViewed,
-                onTransferClick = {},
+                onTransferClick = onTransferClick,
             )
             item(span = StaggeredGridItemSpan.FullLine) {
                 Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
@@ -344,6 +350,7 @@ private fun BookmarksGridPreview(
             onTransferResourceViewed = {},
             onNewsClick = {},
             onTopicClick = {},
+            onTransferClick = {},
         )
     }
 }

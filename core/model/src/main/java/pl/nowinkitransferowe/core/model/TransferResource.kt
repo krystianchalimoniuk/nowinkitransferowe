@@ -16,6 +16,8 @@
 
 package pl.nowinkitransferowe.core.model
 
+import kotlinx.datetime.Instant
+
 data class TransferResource(
     val id: String,
     val name: String,
@@ -26,4 +28,7 @@ data class TransferResource(
     val clubToImg: String,
     val price: String,
     val url: String,
+    val season: String,
+    val publishDate: Instant,
+
 )

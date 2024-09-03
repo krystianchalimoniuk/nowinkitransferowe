@@ -47,6 +47,16 @@ class TestTransferRepository : TransferRepository {
             transferResources.take(limit)
         }
 
+    override fun getTransferResource(id: String): Flow<TransferResource> =
+        transferResourcesFlow.map { transferResources ->
+            transferResources.first { it.id == id }
+        }
+
+    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> =
+        transferResourcesFlow.map { transferResources ->
+            transferResources.filter { it.name == name }
+        }
+
     override fun getCount(): Flow<Int> =
         transferResourcesFlow.map { transferResources ->
             transferResources.count()

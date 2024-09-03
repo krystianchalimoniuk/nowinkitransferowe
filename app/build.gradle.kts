@@ -30,8 +30,8 @@ plugins {
 android {
     defaultConfig {
         applicationId = "pl.nowinkitransferowe"
-        versionCode = 10
-        versionName = "3.0.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
+        versionCode = 11
+        versionName = "3.1.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
         // Custom test runner to set up Hilt dependency graph
         testInstrumentationRunner = "pl.nowinkitransferowe.core.testing.NtTestRunner"
@@ -78,7 +78,7 @@ dependencies {
     implementation(projects.feature.details)
     implementation(projects.feature.search)
     implementation(projects.feature.settings)
-
+    implementation(projects.feature.detailsTransfers)
     implementation(projects.core.common)
     implementation(projects.core.ui)
     implementation(projects.core.designsystem)

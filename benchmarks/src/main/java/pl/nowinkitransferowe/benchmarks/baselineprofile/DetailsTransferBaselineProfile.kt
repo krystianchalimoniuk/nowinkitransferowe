@@ -20,15 +20,16 @@ import androidx.benchmark.macro.junit4.BaselineProfileRule
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.benchmarks.PACKAGE_NAME
-import pl.nowinkitransferowe.benchmarks.details.detailsScrollFeedDownUp
-import pl.nowinkitransferowe.benchmarks.details.goToDetailsScreen
+import pl.nowinkitransferowe.benchmarks.details.transfers.detailsTransferScrollFeedDownUp
+import pl.nowinkitransferowe.benchmarks.details.transfers.goToDetailsTransferScreen
+import pl.nowinkitransferowe.benchmarks.details.transfers.goToTransfersScreen
 import pl.nowinkitransferowe.benchmarks.news.newsWaitForContent
 import pl.nowinkitransferowe.benchmarks.startActivityAndAllowNotifications
 
 /**
- * Baseline Profile of the "Interests" screen
+ * Baseline Profile of the "DetailsTransfer" screen
  */
-class DetailsBaselineProfile {
+class DetailsTransferBaselineProfile {
     @get:Rule
     val baselineProfileRule = BaselineProfileRule()
 
@@ -37,7 +38,8 @@ class DetailsBaselineProfile {
         baselineProfileRule.collect(PACKAGE_NAME) {
             startActivityAndAllowNotifications()
             newsWaitForContent()
-            goToDetailsScreen()
-            detailsScrollFeedDownUp()
+            goToTransfersScreen()
+            goToDetailsTransferScreen()
+            detailsTransferScrollFeedDownUp()
         }
 }
