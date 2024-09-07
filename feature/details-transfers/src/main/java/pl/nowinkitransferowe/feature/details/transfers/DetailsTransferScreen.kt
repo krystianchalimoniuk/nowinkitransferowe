@@ -95,7 +95,7 @@ import pl.nowinkitransferowe.core.ui.UserTransfersResourcePreviewParameterProvid
 import pl.nowinkitransferowe.core.ui.dateFormatted
 import pl.nowinkitransferowe.feature.details.transfers.Util.calculateMaxTransferValue
 import pl.nowinkitransferowe.feature.details.transfers.Util.calculateTransferSum
-import pl.nowinkitransferowe.feature.details.transfers.Util.hasMoreThanTwoCashTransfers
+import pl.nowinkitransferowe.feature.details.transfers.Util.hasMoreThanOrEqualTwoCashTransfers
 import pl.nowinkitransferowe.feature.details.transfers.Util.priceToFloat
 import pl.nowinkitransferowe.feature.details.transfers.Util.shortcutDate
 import java.util.Locale
@@ -266,7 +266,7 @@ fun DetailsTransferBody(
                             )
                         }
                         Spacer(modifier = Modifier.height(10.dp))
-                        if (hasMoreThanTwoCashTransfers(userTransferResources.map { it.price })) {
+                        if (hasMoreThanOrEqualTwoCashTransfers(userTransferResources.map { it.price })) {
                             TransfersResourceChartTitle(
                                 label = stringResource(R.string.feature_details_transfers_transfers_value),
                                 Modifier.padding(horizontal = 8.dp),

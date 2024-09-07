@@ -50,7 +50,7 @@ object Util {
         return 0f
     }
 
-    fun hasMoreThanTwoCashTransfers(prices: List<String>): Boolean {
+    fun hasMoreThanOrEqualTwoCashTransfers(prices: List<String>): Boolean {
         var cashTransfersSum = 0
         prices.forEach {
             val priceInFloat = priceToFloat(it)
@@ -92,7 +92,7 @@ object Util {
         style: FormatStyle = FormatStyle.MEDIUM,
     ): String = DateTimeFormatter
         .ofLocalizedDate(style)
-        .withLocale(Locale.getDefault())
+        .withLocale(Locale.forLanguageTag("pl"))
         .withZone(ZoneId.of("Europe/Warsaw"))
         .format(publishDate.toJavaInstant())
 }
