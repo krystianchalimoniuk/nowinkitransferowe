@@ -38,6 +38,7 @@ import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.model.UserTransferResource
 import pl.nowinkitransferowe.core.model.mapToUserTransferResources
+import pl.nowinkitransferowe.core.network.BuildConfig
 import pl.nowinkitransferowe.feature.details.transfers.Util.dateFormatted
 import pl.nowinkitransferowe.feature.details.transfers.Util.priceToFloat
 import pl.nowinkitransferowe.feature.details.transfers.Util.shortcutDate
@@ -103,7 +104,7 @@ class DetailsTransferViewModel @Inject constructor(
         userTransferResource.sortedBy { it.id.toInt() }.forEach {
             val date = shortcutDate(dateFormatted(it.publishDate))
             val price = priceToFloat(it.price)
-            val bitmap = imageDownloader.loadImage(it.clubToImg)
+            val bitmap = imageDownloader.loadImage("${BuildConfig.IMAGES_URL}${it.clubToImg}")
             val scaledBitmap =
                 bitmap?.let { it1 -> Bitmap.createScaledBitmap(it1, 80, 80, false) }
             dataPoints.add(

@@ -25,7 +25,8 @@ import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import dagger.hilt.android.qualifiers.ApplicationContext
-import pl.nowinkitransferowe.core.network.BuildConfig
+import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
+import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,22 +37,35 @@ interface ImageDownloader {
 @Singleton
 internal class DefaultImageDownLoader @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val analyticsHelper: AnalyticsHelper,
 ) : ImageDownloader {
 
     override suspend fun loadImage(url: String): Bitmap? {
         val imageLoader = ImageLoader(context)
         val request = ImageRequest.Builder(context)
-            .data("${BuildConfig.IMAGES_URL}$url".toUri())
+            .data(url.toUri())
             .allowHardware(false)
             .build()
 
         return when (val result = imageLoader.execute(request)) {
             is ErrorResult -> {
+                analyticsHelper.logDownloadImageError(
+                    AnalyticsEvent.Param(
+                        "error",
+                        result.throwable.toString(),
+                    ),
+                )
                 null
             }
+
             is SuccessResult -> {
                 (result.drawable as BitmapDrawable).bitmap
             }
         }
     }
 }
+
+internal fun AnalyticsHelper.logDownloadImageError(param: AnalyticsEvent.Param) =
+    logEvent(
+        AnalyticsEvent(type = "coil_download_image_error", extras = listOf(param)),
+    )

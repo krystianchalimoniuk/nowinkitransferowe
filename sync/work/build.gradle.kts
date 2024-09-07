@@ -32,7 +32,6 @@ dependencies {
     implementation(libs.androidx.tracing.ktx)
     implementation(libs.androidx.work.ktx)
     implementation(libs.hilt.ext.work)
-    implementation(libs.coil.kt)
     implementation(projects.core.analytics)
     implementation(projects.core.data)
     implementation(projects.core.notifications)

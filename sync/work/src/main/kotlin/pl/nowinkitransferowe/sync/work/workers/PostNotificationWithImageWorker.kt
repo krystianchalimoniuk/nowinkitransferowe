@@ -17,8 +17,6 @@
 package pl.nowinkitransferowe.sync.work.workers
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
-import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
 import androidx.work.Constraints
@@ -29,19 +27,15 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import coil.ImageLoader
-import coil.request.ErrorResult
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.common.network.Dispatcher
 import pl.nowinkitransferowe.core.common.network.NtDispatchers
+import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.core.model.GeneralNotificationResource
 import pl.nowinkitransferowe.core.notifications.Notifier
@@ -56,6 +50,7 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
     private val notifier: Notifier,
     private val analyticsHelper: AnalyticsHelper,
     private val ntPreferencesDataSource: NtPreferencesDataSource,
+    private val imageDownloader: ImageDownloader,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun getForegroundInfo(): ForegroundInfo =
@@ -115,30 +110,14 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
         url: String,
         imageUrl: String,
     ) {
-        val imageLoader = ImageLoader(appContext)
-        val request = ImageRequest.Builder(appContext)
-            .data(imageUrl.toUri())
-            .allowHardware(false)
-            .build()
-
-        when (val result = imageLoader.execute(request)) {
-            is ErrorResult -> {
-                analyticsHelper.logDownloadImageError(
-                    AnalyticsEvent.Param(
-                        "error",
-                        result.throwable.toString(),
-                    ),
-                )
-                postNotificationWithoutImage(id, title, description, url)
-            }
-
-            is SuccessResult -> {
-                val bitmapDrawable = result.drawable as BitmapDrawable
-                notifier.postGeneralNotification(
-                    GeneralNotificationResource(id, title, description, url),
-                    bitmap = bitmapDrawable.bitmap,
-                )
-            }
+        val bitmap = imageDownloader.loadImage(imageUrl)
+        if (bitmap == null) {
+            postNotificationWithoutImage(id, title, description, url)
+        } else {
+            notifier.postGeneralNotification(
+                GeneralNotificationResource(id, title, description, url),
+                bitmap = bitmap,
+            )
         }
     }
 

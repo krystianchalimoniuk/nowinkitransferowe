@@ -45,10 +45,6 @@ internal fun AnalyticsHelper.logEmptyNotification() =
     logEvent(
         AnalyticsEvent(type = "notification_title_and_description_is_empty"),
     )
-internal fun AnalyticsHelper.logDownloadImageError(param: AnalyticsEvent.Param) =
-    logEvent(
-        AnalyticsEvent(type = "coil_download_image_error", extras = listOf(param)),
-    )
 
 internal fun AnalyticsHelper.logPostNotificationWithImageFinished() {
     logEvent(
