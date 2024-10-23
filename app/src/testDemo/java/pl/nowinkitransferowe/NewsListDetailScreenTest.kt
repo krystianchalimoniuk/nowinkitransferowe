@@ -1,28 +1,14 @@
-/*
- * Copyright 2024 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package pl.nowinkitransferowe.news2pane
+package pl.nowinkitransferowe
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.material3.adaptive.Posture
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.ui.test.DeviceConfigurationOverride
 import androidx.compose.ui.test.ForcedSize
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -34,84 +20,72 @@ import androidx.window.core.layout.WindowSizeClass
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.NewsResource
-import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
-import pl.nowinkitransferowe.stringResource
+import pl.nowinkitransferowe.feature.details.R
 import pl.nowinkitransferowe.ui.news2pane.NewsListDetailScreen
 import pl.nowinkitransferowe.uitesthiltmanifest.HiltComponentActivity
 import javax.inject.Inject
+import kotlin.properties.ReadOnlyProperty
 import kotlin.test.assertTrue
-import pl.nowinkitransferowe.feature.details.R as FeatureDetailsR
+
+private const val EXPANDED_WIDTH = "w1200dp-h840dp"
+private const val COMPACT_WIDTH = "w412dp-h915dp"
 
 @HiltAndroidTest
+@RunWith(RobolectricTestRunner::class)
+@Config(application = HiltTestApplication::class)
 class NewsListDetailScreenTest {
+
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue
     @get:Rule(order = 1)
-    val tmpFolder: TemporaryFolder = TemporaryFolder.builder().assureDeletion().build()
-
-    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
 
-    @get:Rule(order = 4)
-    val postNotificationsPermission = GrantPostNotificationsPermissionRule()
 
     @Inject
     lateinit var newsRepository: NewsRepository
 
-    // The strings used for matching in these tests.
-    private val placeholderText by composeTestRule.stringResource(FeatureDetailsR.string.feature_details_select_an_news)
-    private val listPaneTag = "news:feed"
-
-    private val NewsResource.testTag
-        get() = "news:${this.id}"
-
-    // Overrides for device sizes.
-    private enum class TestDeviceConfig(widthDp: Float, heightDp: Float) {
-        Compact(412f, 915f),
-        Expanded(1200f, 840f),
-        ;
-
-        val sizeOverride = DeviceConfigurationOverride.ForcedSize(DpSize(widthDp.dp, heightDp.dp))
-        val adaptiveInfo = WindowAdaptiveInfo(
-            windowSizeClass = WindowSizeClass.compute(widthDp, heightDp),
-            windowPosture = Posture(),
-        )
-    }
-
-    @Before
-    fun setup() {
-        hiltRule.inject()
-    }
 
     /** Convenience function for getting all news during tests, */
     private fun getNews(): List<NewsResource> = runBlocking {
         newsRepository.getNewsResources().first()
     }
 
+    // The strings used for matching in these tests.
+    private val placeholderText by composeTestRule.stringResource(R.string.feature_details_select_an_news)
+    private val listPaneTag = "news:feed"
+
+    private val NewsResource.testTag
+        get() = "news:${this.id}"
+
+    @Before
+    fun setup() {
+        hiltRule.inject()
+    }
+
     @Test
+    @Config(qualifiers = EXPANDED_WIDTH)
     fun expandedWidth_initialState_showsTwoPanesWithPlaceholder() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Expanded) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
                         NtTheme {
                             NewsListDetailScreen(
-                                windowAdaptiveInfo = adaptiveInfo,
                                 onTopicClick = {},
                             )
-                        }
-                    }
+
                 }
             }
 
@@ -121,18 +95,14 @@ class NewsListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = COMPACT_WIDTH)
     fun compactWidth_initialState_showsListPane() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Compact) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
                         NtTheme {
                             NewsListDetailScreen(
-                                windowAdaptiveInfo = adaptiveInfo,
                                 onTopicClick = {},
                             )
-                        }
-                    }
                 }
             }
 
@@ -142,18 +112,14 @@ class NewsListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = EXPANDED_WIDTH)
     fun expandedWidth_newsSelected_updatesDetailPane() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Expanded) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
                         NtTheme {
                             NewsListDetailScreen(
-                                windowAdaptiveInfo = adaptiveInfo,
                                 onTopicClick = {},
                             )
-                        }
-                    }
                 }
             }
 
@@ -167,16 +133,14 @@ class NewsListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = COMPACT_WIDTH)
     fun compactWidth_newsSelected_showsNewsDetailPane() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Compact) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
                         NtTheme {
-                            NewsListDetailScreen(windowAdaptiveInfo = adaptiveInfo, onTopicClick = {})
+                            NewsListDetailScreen(
+                                onTopicClick = {})
                         }
-                    }
-                }
             }
 
             val firstNews = getNews().first()
@@ -189,27 +153,26 @@ class NewsListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = EXPANDED_WIDTH)
     fun expandedWidth_backPressFromTopicDetail_leavesInterests() {
         var unhandledBackPress = false
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Expanded) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
                         NtTheme {
                             // Back press should not be handled by the two pane layout, and thus
                             // "fall through" to this BackHandler.
                             BackHandler {
                                 unhandledBackPress = true
                             }
-                            NewsListDetailScreen(windowAdaptiveInfo = adaptiveInfo, onTopicClick = {})
+                            NewsListDetailScreen(
+                                onTopicClick = {})
                         }
-                    }
-                }
             }
 
             val firstNews = getNews().first()
             onNodeWithText(firstNews.title).performClick()
 
+            waitForIdle()
             Espresso.pressBack()
 
             assertTrue(unhandledBackPress)
@@ -217,21 +180,19 @@ class NewsListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = COMPACT_WIDTH)
     fun compactWidth_backPressFromTopicDetail_showsListPane() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Compact) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
                         NtTheme {
-                            NewsListDetailScreen(windowAdaptiveInfo = adaptiveInfo, onTopicClick = {})
+                            NewsListDetailScreen(
+                                onTopicClick = {})
                         }
-                    }
-                }
             }
 
             val firstNews = getNews().first()
             onNodeWithText(firstNews.title).performClick()
-
+            waitForIdle()
             Espresso.pressBack()
 
             onNodeWithTag(listPaneTag).assertIsDisplayed()
@@ -240,3 +201,7 @@ class NewsListDetailScreenTest {
         }
     }
 }
+private fun AndroidComposeTestRule<*, *>.stringResource(
+    @StringRes resId: Int,
+): ReadOnlyProperty<Any, String> =
+    ReadOnlyProperty { _, _ -> activity.getString(resId) }
