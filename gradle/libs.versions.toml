@@ -182,18 +182,17 @@ room = { id = "androidx.room", version.ref = "room" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 
 # Plugins defined by this project
-nowinkitransferowe-android-application = { id = "nowinkitransferowe.android.application", version = "unspecified" }
-nowinkitransferowe-android-application-compose = { id = "nowinkitransferowe.android.application.compose", version = "unspecified" }
-nowinkitransferowe-android-application-firebase = { id = "nowinkitransferowe.android.application.firebase", version = "unspecified" }
-nowinkitransferowe-android-application-flavors = { id = "nowinkitransferowe.android.application.flavors", version = "unspecified" }
-nowinkitransferowe-android-application-jacoco = { id = "nowinkitransferowe.android.application.jacoco", version = "unspecified" }
-nowinkitransferowe-android-feature = { id = "nowinkitransferowe.android.feature", version = "unspecified" }
-nowinkitransferowe-android-library = { id = "nowinkitransferowe.android.library", version = "unspecified" }
-nowinkitransferowe-android-library-compose = { id = "nowinkitransferowe.android.library.compose", version = "unspecified" }
-nowinkitransferowe-android-library-jacoco = { id = "nowinkitransferowe.android.library.jacoco", version = "unspecified" }
-nowinkitransferowe-android-lint = { id = "nowinkitransferowe.android.lint", version = "unspecified" }
-nowinkitransferowe-android-room = { id = "nowinkitransferowe.android.room", version = "unspecified" }
-nowinkitransferowe-android-test = { id = "nowinkitransferowe.android.test", version = "unspecified" }
-nowinkitransferowe-hilt = { id = "nowinkitransferowe.hilt", version = "unspecified" }
-nowinkitransferowe-jvm-library = { id = "nowinkitransferowe.jvm.library", version = "unspecified" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+nowinkitransferowe-android-application = { id = "nowinkitransferowe.android.application" }
+nowinkitransferowe-android-application-compose = { id = "nowinkitransferowe.android.application.compose" }
+nowinkitransferowe-android-application-firebase = { id = "nowinkitransferowe.android.application.firebase" }
+nowinkitransferowe-android-application-flavors = { id = "nowinkitransferowe.android.application.flavors" }
+nowinkitransferowe-android-application-jacoco = { id = "nowinkitransferowe.android.application.jacoco" }
+nowinkitransferowe-android-feature = { id = "nowinkitransferowe.android.feature" }
+nowinkitransferowe-android-library = { id = "nowinkitransferowe.android.library" }
+nowinkitransferowe-android-library-compose = { id = "nowinkitransferowe.android.library.compose" }
+nowinkitransferowe-android-library-jacoco = { id = "nowinkitransferowe.android.library.jacoco" }
+nowinkitransferowe-android-lint = { id = "nowinkitransferowe.android.lint" }
+nowinkitransferowe-android-room = { id = "nowinkitransferowe.android.room" }
+nowinkitransferowe-android-test = { id = "nowinkitransferowe.android.test" }
+nowinkitransferowe-hilt = { id = "nowinkitransferowe.hilt" }
+nowinkitransferowe-jvm-library = { id = "nowinkitransferowe.jvm.library" }
