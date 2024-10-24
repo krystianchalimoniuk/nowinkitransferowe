@@ -18,6 +18,7 @@ package pl.nowinkitransferowe.core.model
 
 import kotlinx.datetime.Instant
 
+@ConsistentCopyVisibility
 data class UserTransferResource(
     val id: String,
     val name: String,
