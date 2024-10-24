@@ -78,15 +78,12 @@ class NewsViewModelTest {
     fun stateIsLoadingWhenAppIsSyncingWithNoNews() = runTest {
         syncManager.setSyncing(true)
 
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
+       backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
 
         assertEquals(
             true,
             viewModel.isSyncing.value,
         )
-
-        collectJob.cancel()
     }
 
     @Test
@@ -109,7 +106,7 @@ class NewsViewModelTest {
 
     @Test
     fun newsResourceSelectionUpdatesAfterLoading() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.feedState.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedState.collect() }
         val userData = emptyUserData
         newsRepository.sendNewsResources(sampleNewsResources)
 
@@ -137,12 +134,11 @@ class NewsViewModelTest {
             viewModel.feedState.value,
         )
 
-        collectJob.cancel()
     }
 
     @Test
     fun whenLoadNexPageFunctionIsCalled_newsResourcesUpdates() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.feedState.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedState.collect() }
         val userData = emptyUserData
         newsRepository.sendNewsResources(sampleNewsResources)
         val bookmarkedNewsResourceId = "2"
@@ -173,7 +169,6 @@ class NewsViewModelTest {
             viewModel.feedState.value,
         )
 
-        collectJob.cancel()
     }
 
     val sampleNewsResources = listOf(

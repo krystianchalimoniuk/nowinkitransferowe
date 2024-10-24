@@ -73,15 +73,12 @@ class TransferViewModelTest {
     fun stateIsLoadingWhenAppIsSyncingWithNoTransfers() = runTest {
         syncManager.setSyncing(true)
 
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
+       backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
 
         assertEquals(
             true,
             viewModel.isSyncing.value,
         )
-
-        collectJob.cancel()
     }
 
     @Test
@@ -104,7 +101,7 @@ class TransferViewModelTest {
 
     @Test
     fun transferResourcesUpdatesAfterLoading() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
         val userData = emptyUserData
         transferRepository.sendTransferResources(sampleTransferResources)
 
@@ -128,13 +125,11 @@ class TransferViewModelTest {
             ),
         )
         assertEquals(expected, viewModel.feedUiState.value)
-
-        collectJob.cancel()
     }
 
     @Test
     fun whenLoadNexPageFunctionIsCalled_transferResourcesUpdates() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
         val userData = emptyUserData
         transferRepository.sendTransferResources(sampleTransferResources)
         val bookmarkedTransferResourceId = "2"
@@ -163,7 +158,6 @@ class TransferViewModelTest {
         )
         assertEquals(expected = expected, actual = viewModel.feedUiState.value)
 
-        collectJob.cancel()
     }
 
 
