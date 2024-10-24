@@ -26,4 +26,6 @@
     <string name="core_ui_topic_chip_content_description_when_not_followed">%1$s nie jest obserwowany</string>
     <string name="core_ui_topic_chip_content_description">Topic: %1$s</string>
     <string name="core_ui_card_tap_action">Otwórz szczegóły</string>
+    <string name="core_ui_feed_sharing">Udostępnianie feedu</string>
+    <string name="core_ui_feed_sharing_data">%1$s: %2$s</string>
 </resources>
