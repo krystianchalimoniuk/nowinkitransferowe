@@ -16,7 +16,7 @@
 
 package pl.nowinkitransferowe.core.testing.data
 
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.UserData
@@ -46,7 +46,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -62,7 +62,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "nie ujawniono",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -78,7 +78,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "0,5 mln \u20ac",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -94,7 +94,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "34,5 mln €",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -110,7 +110,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "5 mln €",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -126,7 +126,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -142,7 +142,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -158,7 +158,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "wypożyczenie",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -174,7 +174,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "wypożyczenie",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -190,7 +190,7 @@ val userTransferResourcesTestData: List<UserTransferResource> = UserData(
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),

@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,7 +33,6 @@ import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
-import pl.nowinkitransferowe.core.testing.util.TestAnalyticsHelper
 import pl.nowinkitransferowe.core.testing.util.TestSyncManager
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import pl.nowinkitransferowe.feature.transfers.navigation.TransferViewModel
@@ -44,7 +43,6 @@ class TransferViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val syncManager = TestSyncManager()
-    private val analyticsHelper = TestAnalyticsHelper()
     private val userDataRepository = TestUserDataRepository()
     private val transferRepository = TestTransferRepository()
 
@@ -63,7 +61,6 @@ class TransferViewModelTest {
             savedStateHandle = savedStateHandle,
             userDataRepository = userDataRepository,
             userTransferResourceRepository = userTransferResourceRepository,
-            analyticsHelper = analyticsHelper,
         )
     }
 
@@ -182,7 +179,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "2",
@@ -195,7 +192,7 @@ class TransferViewModelTest {
             price = "nie ujawniono",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "3",
@@ -208,7 +205,7 @@ class TransferViewModelTest {
             price = "0,5 mln \u20ac",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "4",
@@ -221,7 +218,7 @@ class TransferViewModelTest {
             price = "34,5 mln €",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "5",
@@ -234,7 +231,7 @@ class TransferViewModelTest {
             price = "5 mln €",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "6",
@@ -247,7 +244,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "7",
@@ -260,7 +257,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "8",
@@ -273,7 +270,7 @@ class TransferViewModelTest {
             price = "wypożyczenie",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "9",
@@ -286,7 +283,7 @@ class TransferViewModelTest {
             price = "wypożyczenie",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "10",
@@ -299,7 +296,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
     )
 }

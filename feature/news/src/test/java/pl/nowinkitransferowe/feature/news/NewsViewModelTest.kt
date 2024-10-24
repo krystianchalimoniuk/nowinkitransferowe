@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -183,7 +183,7 @@ class NewsViewModelTest {
             description = "<p><strong>Imię i nazwisko:<\\/strong> Vitor Roque<\\/p>\\r\\n<p><strong>Poprzedni klub:<\\/strong> Athletico Paranaense<\\/p>\\r\\n<p><strong>Nowy klub:<\\/strong> FC Barcelona<\\/p>\\r\\n<p><strong>Kwota transferu:<\\/strong> 40 mln euro<\\/p>\\r\\n<p><strong>Długość kontraktu:<\\/strong> do 30 czerwca 2027 roku<\\/p>\\r\\n<p>&nbsp;<\\/p>\\r\\n<center>\\r\\n<blockquote class=\\\"twitter-tweet\\\">\\r\\n<p dir=\\\"ltr\\\" lang=\\\"en\\\">Lookin good, Vitor \uD83D\uDC4D <a href=\\\"https:\\/\\/t.co\\/qkFbK9sdBD\\\">pic.twitter.com\\/qkFbK9sdBD<\\/a><\\/p>\\r\\n&mdash; FC Barcelona (@FCBarcelona) <a href=\\\"https:\\/\\/twitter.com\\/FCBarcelona\\/status\\/1740002656180216260?ref_src=twsrc%5Etfw\\\">December 27, 2023<\\/a><\\/blockquote>\\r\\n<\\/center>",
             category = NewsCategory.ITALY,
             isImportant = true,
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             author = "Redakcja",
             photoSrc = "Inter Miami CF",
             src = "Inter Miami CF",
@@ -203,7 +203,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "FC Barcelona",
             src = "FC Barcelona",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "barcelonanw2.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
@@ -219,7 +219,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "Bayern Monachium",
             src = "Bayern Monachium",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "barcelonanw2.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
@@ -235,7 +235,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "Al-Ittihad",
             src = "Al-Ittihad",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "barcelonanw2.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
@@ -251,7 +251,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "Aston Villa",
             src = "Aston Villa",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "astonvillanw.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
@@ -267,7 +267,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "Manchester United",
             src = "Manchester United",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "manunitednw.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
@@ -283,7 +283,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "Manchester City",
             src = "Manchester City",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "mancitynw.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
@@ -299,7 +299,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "AC Milan",
             src = "AC Milan",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "milannw.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
@@ -315,7 +315,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "Gaziantep FK",
             src = "Gaziantep FK",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "gaziantepnw.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
@@ -331,7 +331,7 @@ class NewsViewModelTest {
             author = "Redakcja",
             photoSrc = "Real Madryt",
             src = "Real Madryt",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             imageUrl = "gaziantepnw.jpg",
             authPic = "123.jpg",
             authTwitter = "https:\\/\\/twitter.com\\/Nowinkitransfer",
