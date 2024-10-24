@@ -18,6 +18,7 @@ package pl.nowinkitransferowe.ui.transfers2pane
 
 import android.content.Intent
 import androidx.activity.compose.BackHandler
+import androidx.annotation.Keep
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -40,40 +41,33 @@ import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import kotlinx.serialization.Serializable
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_URI_PATTERN
 import pl.nowinkitransferowe.feature.details.transfers.DetailsTransferPlaceholder
-import pl.nowinkitransferowe.feature.details.transfers.navigation.DETAILS_TRANSFER_ROUTE
-import pl.nowinkitransferowe.feature.details.transfers.navigation.createDetailsTransferRoute
+import pl.nowinkitransferowe.feature.details.transfers.navigation.DetailTransferRoute
 import pl.nowinkitransferowe.feature.details.transfers.navigation.detailsTransferScreen
 import pl.nowinkitransferowe.feature.details.transfers.navigation.navigateToTransferDetails
-import pl.nowinkitransferowe.feature.transfers.navigation.LINKED_TRANSFER_RESOURCE_ID
-import pl.nowinkitransferowe.feature.transfers.navigation.TRANSFERS_ROUTE
 import pl.nowinkitransferowe.feature.transfers.navigation.TransferRoute
 import java.util.UUID
 
-private const val DETAIL_PANE_NAVHOST_ROUTE = "detail_transfer_pane_route"
-private const val DEEP_LINK_URI_PATTERN =
-    "http://nowinkitransferowe.pl/transfer/{$LINKED_TRANSFER_RESOURCE_ID}"
+@Serializable
+internal object TransferPlaceholderRoute
+
+// TODO: Remove @Keep when https://issuetracker.google.com/353898971 is fixed
+@Serializable
+@Keep
+internal object DetailTransferPaneNavHostRoute
 
 fun NavGraphBuilder.transferListDetailScreen() {
-    composable(
-        route = TRANSFERS_ROUTE,
+    composable<TransferRoute>(
         deepLinks = listOf(
             navDeepLink {
-                uriPattern = DEEP_LINK_URI_PATTERN
+                uriPattern = DEEP_LINK_TRANSFER_URI_PATTERN
                 action = Intent.ACTION_VIEW
-            },
-        ),
-        arguments = listOf(
-            navArgument(LINKED_TRANSFER_RESOURCE_ID) {
-                type = NavType.StringType
-                defaultValue = null
-                nullable = true
             },
         ),
     ) {
@@ -115,8 +109,9 @@ internal fun TransfersListDetailScreen(
         listDetailNavigator.navigateBack()
     }
 
-    var nestedNavHostStartDestination by remember {
-        mutableStateOf(selectedTransferId?.let(::createDetailsTransferRoute) ?: DETAILS_TRANSFER_ROUTE)
+    var nestedNavHostStartRoute by remember {
+        val route = selectedTransferId?.let { DetailTransferRoute(transferId = it) } ?: TransferPlaceholderRoute
+        mutableStateOf(route)
     }
     var nestedNavKey by rememberSaveable(
         stateSaver = Saver({ it.toString() }, UUID::fromString),
@@ -133,11 +128,11 @@ internal fun TransfersListDetailScreen(
             // If the detail pane was visible, then use the nestedNavController navigate call
             // directly
             nestedNavController.navigateToTransferDetails(transferId) {
-                popUpTo(DETAIL_PANE_NAVHOST_ROUTE)
+                popUpTo<DetailTransferPaneNavHostRoute>()
             }
         } else {
             // Otherwise, recreate the NavHost entirely, and start at the new destination
-            nestedNavHostStartDestination = createDetailsTransferRoute(transferId)
+            nestedNavHostStartRoute = DetailTransferRoute(transferId = transferId)
             nestedNavKey = UUID.randomUUID()
         }
         listDetailNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
@@ -159,14 +154,13 @@ internal fun TransfersListDetailScreen(
                 key(nestedNavKey) {
                     NavHost(
                         navController = nestedNavController,
-                        startDestination = nestedNavHostStartDestination,
-                        route = DETAIL_PANE_NAVHOST_ROUTE,
-                    ) {
+                        startDestination = nestedNavHostStartRoute,
+                        route = DetailTransferPaneNavHostRoute::class,                    ) {
                         detailsTransferScreen(
                             showBackButton = !listDetailNavigator.isListPaneVisible(),
                             onBackClick = listDetailNavigator::navigateBack,
                         )
-                        composable(route = DETAILS_TRANSFER_ROUTE) {
+                        composable<TransferPlaceholderRoute> {
                             DetailsTransferPlaceholder()
                         }
                     }

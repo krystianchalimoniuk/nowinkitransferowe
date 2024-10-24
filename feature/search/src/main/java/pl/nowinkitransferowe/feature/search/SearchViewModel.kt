@@ -19,6 +19,7 @@ package pl.nowinkitransferowe.feature.search
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +37,7 @@ import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.domain.GetRecentSearchQueriesUseCase
 import pl.nowinkitransferowe.core.domain.GetSearchContentUseCase
 import pl.nowinkitransferowe.core.model.UserSearchResult
+import pl.nowinkitransferowe.feature.search.navigation.SearchRoute
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,8 +51,9 @@ class SearchViewModel @Inject constructor(
     private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel() {
 
+   private val searchRoute: SearchRoute = savedStateHandle.toRoute<SearchRoute>()
     val searchQuery: StateFlow<String?> =
-        savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = "")
+        savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = searchRoute.searchQuery)
 
     val searchResultUiState: StateFlow<SearchResultUiState> =
         searchContentsRepository.getSearchContentsCount()

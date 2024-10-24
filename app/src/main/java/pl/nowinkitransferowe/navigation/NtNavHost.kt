@@ -32,7 +32,7 @@ import pl.nowinkitransferowe.feature.details.navigation.detailsScreen
 import pl.nowinkitransferowe.feature.details.navigation.navigateToDetails
 import pl.nowinkitransferowe.feature.details.transfers.navigation.detailsTransferScreen
 import pl.nowinkitransferowe.feature.details.transfers.navigation.navigateToTransferDetails
-import pl.nowinkitransferowe.feature.news.navigation.NEWS_ROUTE
+import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
 import pl.nowinkitransferowe.feature.search.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.navigation.searchScreen
 import pl.nowinkitransferowe.ui.NtAppState
@@ -51,13 +51,11 @@ fun NtNavHost(
     appState: NtAppState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
-    startDestination: String = NEWS_ROUTE,
 ) {
     val navController = appState.navController
     NavHost(
-
         navController = navController,
-        startDestination = startDestination,
+        startDestination = NewsRoute(null),
 //        enterTransition = enterTransition,
 //        exitTransition = exitTransition,
 //        popEnterTransition = popEnterTransition,

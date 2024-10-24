@@ -20,12 +20,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import kotlinx.serialization.Serializable
 import pl.nowinkitransferowe.feature.bookmarks.BookmarksRoute
 
-const val BOOKMARKS_ROUTE = "bookmarks_route"
+@Serializable object BookmarksRoute
 
 fun NavController.navigateToBookmarks(navOptions: NavOptions) =
-    navigate(BOOKMARKS_ROUTE, navOptions)
+    navigate(BookmarksRoute, navOptions)
 
 fun NavGraphBuilder.bookmarksScreen(
     onNewsClick: (String) -> Unit,
@@ -33,7 +34,7 @@ fun NavGraphBuilder.bookmarksScreen(
     onTopicClick: (String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
-    composable(route = BOOKMARKS_ROUTE) {
+    composable<BookmarksRoute> {
         BookmarksRoute(
             onNewsClick = onNewsClick,
             onTransferClick = onTransferClick,

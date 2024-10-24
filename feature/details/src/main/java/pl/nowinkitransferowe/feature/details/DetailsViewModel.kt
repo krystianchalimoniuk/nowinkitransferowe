@@ -19,24 +19,22 @@ package pl.nowinkitransferowe.feature.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
-import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.common.result.Result
 import pl.nowinkitransferowe.core.common.result.asResult
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.feature.details.navigation.LINKED_NEWS_RESOURCE_ID
+import pl.nowinkitransferowe.feature.details.navigation.DetailNewsRoute
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,24 +44,18 @@ class DetailsViewModel @Inject constructor(
     newsRepository: NewsRepository,
 ) : ViewModel() {
 
-    val newsId: String = savedStateHandle[LINKED_NEWS_RESOURCE_ID] ?: ""
-    val detailsUiState = savedStateHandle.getStateFlow<String?>(
-        key = LINKED_NEWS_RESOURCE_ID,
-        null,
-    )
-        .flatMapLatest { newsResourceId ->
-            if (newsResourceId == null) {
-                flowOf()
-            } else {
-                newsRepository.getNewsResource(newsResourceId)
-            }
-        }.combine(userDataRepository.userData) { newsResource, userData ->
-            UserNewsResource(newsResource, userData)
-        }.onEach {
-            if (!it.hasBeenViewed) {
-                setNewsResourceViewed(it.id, true)
-            }
-        }.asResult()
+    val newsResourceId: String = savedStateHandle.toRoute<DetailNewsRoute>().newsId
+    val detailsUiState = if (newsResourceId == null) {
+        flowOf()
+    } else {
+        newsRepository.getNewsResource(newsResourceId)
+    }.combine(userDataRepository.userData) { newsResource, userData ->
+        UserNewsResource(newsResource, userData)
+    }.onEach {
+        if (!it.hasBeenViewed) {
+            setNewsResourceViewed(it.id, true)
+        }
+    }.asResult()
         .map { result ->
             when (result) {
                 is Result.Success -> {
@@ -94,19 +86,6 @@ class DetailsViewModel @Inject constructor(
         }
     }
 }
-
-private fun AnalyticsHelper.logNewsDeepLinkOpen(newsResourceId: String) =
-    logEvent(
-        AnalyticsEvent(
-            type = "news_deep_link_opened",
-            extras = listOf(
-                AnalyticsEvent.Param(
-                    key = LINKED_NEWS_RESOURCE_ID,
-                    value = newsResourceId,
-                ),
-            ),
-        ),
-    )
 
 sealed interface DetailsUiState {
     data class Success(val userNewsResource: UserNewsResource) : DetailsUiState

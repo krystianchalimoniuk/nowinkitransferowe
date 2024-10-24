@@ -18,19 +18,22 @@ package pl.nowinkitransferowe.ui.news2pane
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
-import pl.nowinkitransferowe.feature.details.navigation.LINKED_NEWS_RESOURCE_ID
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_RESOURCE_ID_KEY
+import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
 import javax.inject.Inject
 
 @HiltViewModel
 class News2PaneViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private val route = savedStateHandle.toRoute<NewsRoute>()
     val selectedNewsId: StateFlow<String?> =
-        savedStateHandle.getStateFlow(LINKED_NEWS_RESOURCE_ID, savedStateHandle[LINKED_NEWS_RESOURCE_ID])
+        savedStateHandle.getStateFlow(key =DEEP_LINK_NEWS_RESOURCE_ID_KEY, initialValue = route.initialNewsId)
 
     fun onNewsClick(newsId: String?) {
-        savedStateHandle[LINKED_NEWS_RESOURCE_ID] = newsId
+        savedStateHandle[DEEP_LINK_NEWS_RESOURCE_ID_KEY] = newsId
     }
 }

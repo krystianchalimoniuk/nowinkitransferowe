@@ -26,7 +26,6 @@ import kotlinx.datetime.toInstant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.UserTransferResource
@@ -37,11 +36,8 @@ import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import pl.nowinkitransferowe.core.testing.util.TestAnalyticsHelper
 import pl.nowinkitransferowe.core.testing.util.TestSyncManager
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
-import pl.nowinkitransferowe.feature.transfers.navigation.LINKED_TRANSFER_RESOURCE_ID
 import pl.nowinkitransferowe.feature.transfers.navigation.TransferViewModel
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class TransferViewModelTest {
     @get:Rule
@@ -173,47 +169,6 @@ class TransferViewModelTest {
         collectJob.cancel()
     }
 
-    @Test
-    fun deepLinkedTransferResourceIsFetchedAndResetAfterViewing() = runTest {
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.deepLinkedTransferResource.collect() }
-
-        transferRepository.sendTransferResources(sampleTransferResources)
-        userDataRepository.setUserData(emptyUserData)
-        savedStateHandle[LINKED_TRANSFER_RESOURCE_ID] = sampleTransferResources.first().id
-
-        assertEquals(
-            expected = UserTransferResource(
-                transferResource = sampleTransferResources.first(),
-                userData = emptyUserData,
-            ),
-            actual = viewModel.deepLinkedTransferResource.value,
-        )
-
-        viewModel.onDeepLinkOpened(
-            transferResourceId = sampleTransferResources.first().id,
-        )
-
-        assertNull(
-            viewModel.deepLinkedTransferResource.value,
-        )
-
-        assertTrue(
-            analyticsHelper.hasLogged(
-                AnalyticsEvent(
-                    type = "transfer_deep_link_opened",
-                    extras = listOf(
-                        AnalyticsEvent.Param(
-                            key = LINKED_TRANSFER_RESOURCE_ID,
-                            value = sampleTransferResources.first().id,
-                        ),
-                    ),
-                ),
-            ),
-        )
-
-        collectJob.cancel()
-    }
 
     val sampleTransferResources = listOf(
         TransferResource(

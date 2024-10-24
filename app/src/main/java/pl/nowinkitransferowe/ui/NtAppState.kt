@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -40,12 +41,9 @@ import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.ui.TrackDisposableJank
-import pl.nowinkitransferowe.feature.bookmarks.navigation.BOOKMARKS_ROUTE
 import pl.nowinkitransferowe.feature.bookmarks.navigation.navigateToBookmarks
-import pl.nowinkitransferowe.feature.news.navigation.NEWS_ROUTE
 import pl.nowinkitransferowe.feature.news.navigation.navigateToNews
 import pl.nowinkitransferowe.feature.search.navigation.navigateToSearch
-import pl.nowinkitransferowe.feature.transfers.navigation.TRANSFERS_ROUTE
 import pl.nowinkitransferowe.feature.transfers.navigation.navigateToTransfer
 import pl.nowinkitransferowe.navigation.TopLevelDestination
 
@@ -91,11 +89,10 @@ class NtAppState(
             .currentBackStackEntryAsState().value?.destination
 
     val currentTopLevelDestination: TopLevelDestination?
-        @Composable get() = when (currentDestination?.route) {
-            NEWS_ROUTE -> TopLevelDestination.NEWS
-            TRANSFERS_ROUTE -> TopLevelDestination.TRANSFERS
-            BOOKMARKS_ROUTE -> TopLevelDestination.BOOKMARKS
-            else -> null
+        @Composable get() {
+            return TopLevelDestination.entries.firstOrNull { topLevelDestination ->
+                currentDestination?.hasRoute(route = topLevelDestination.route) ?: false
+            }
         }
 
     val isOffline = networkMonitor.isOnline
@@ -166,8 +163,8 @@ class NtAppState(
             }
 
             when (topLevelDestination) {
-                TopLevelDestination.NEWS -> navController.navigateToNews(topLevelNavOptions)
-                TopLevelDestination.TRANSFERS -> navController.navigateToTransfer(topLevelNavOptions)
+                TopLevelDestination.NEWS -> navController.navigateToNews(null, topLevelNavOptions)
+                TopLevelDestination.TRANSFERS -> navController.navigateToTransfer(null, topLevelNavOptions)
                 TopLevelDestination.BOOKMARKS -> navController.navigateToBookmarks(
                     topLevelNavOptions,
                 )

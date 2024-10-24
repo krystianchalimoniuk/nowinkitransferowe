@@ -59,6 +59,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import pl.nowinkitransferowe.R
 import pl.nowinkitransferowe.core.designsystem.component.NtBackground
@@ -70,6 +71,7 @@ import pl.nowinkitransferowe.core.designsystem.theme.LocalGradientColors
 import pl.nowinkitransferowe.feature.settings.SettingsDialog
 import pl.nowinkitransferowe.navigation.NtNavHost
 import pl.nowinkitransferowe.navigation.TopLevelDestination
+import kotlin.reflect.KClass
 import pl.nowinkitransferowe.feature.settings.R as settingsR
 
 @Composable
@@ -141,7 +143,7 @@ internal fun NtApp(
             appState.topLevelDestinations.forEach { destination ->
                 val hasUnread = unreadDestinations.contains(destination)
                 val selected = currentDestination
-                    .isTopLevelDestinationInHierarchy(destination)
+                    .isRouteInHierarchy(destination.route)
                 item(
                     selected = selected,
                     onClick = { appState.navigateToTopLevelDestination(destination) },
@@ -189,8 +191,10 @@ internal fun NtApp(
             ) {
                 // Show the top app bar on top level destinations.
                 val destination = appState.currentTopLevelDestination
-                val shouldShowTopAppBar = destination != null
+                var shouldShowTopAppBar = false
+
                 if (destination != null) {
+                    shouldShowTopAppBar = true
                     NtTopAppBar(
                         titleRes = destination.titleTextId,
                         navigationIcon = NtIcons.Search,
@@ -259,7 +263,7 @@ private fun Modifier.notificationDot(): Modifier =
         }
     }
 
-private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
+private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
     this?.hierarchy?.any {
-        it.route?.contains(destination.name, true) ?: false
+        it.hasRoute(route)
     } ?: false

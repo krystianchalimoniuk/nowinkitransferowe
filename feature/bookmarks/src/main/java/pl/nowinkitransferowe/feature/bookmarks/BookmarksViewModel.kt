@@ -66,18 +66,6 @@ class BookmarksViewModel @Inject constructor(
                 initialValue = TransferFeedUiState.Loading,
             )
 
-//    val bookmarkUIState: StateFlow<BookmarkUiState> =
-//        combine(
-//            userNewsResourceRepository.observeAllBookmarked(),
-//            userTransferResourceRepository.observeAllBookmarked()
-//        ) { news, transfers ->
-//            BookmarkUiState.Success(news, transfers)
-//        }.stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(5_000),
-//            initialValue = BookmarkUiState.Loading
-//        )
-
     fun removeFromSavedNewsResources(newsResourceId: String) {
         viewModelScope.launch {
             shouldDisplayUndoNewsBookmark = true

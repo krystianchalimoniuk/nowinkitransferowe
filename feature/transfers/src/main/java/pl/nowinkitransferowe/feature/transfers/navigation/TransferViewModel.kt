@@ -19,6 +19,7 @@ package pl.nowinkitransferowe.feature.transfers.navigation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,6 +36,7 @@ import pl.nowinkitransferowe.core.data.repository.TransferResourceQuery
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_RESOURCE_ID_KEY
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import javax.inject.Inject
 
@@ -42,7 +44,6 @@ import javax.inject.Inject
 class TransferViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     syncManager: SyncManager,
-    private val analyticsHelper: AnalyticsHelper,
     userTransferResourceRepository: UserTransferResourceRepository,
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
@@ -59,8 +60,9 @@ class TransferViewModel @Inject constructor(
                 initialValue = arrayListOf(),
             )
 
+    private val transferRoute: TransferRoute = savedStateHandle.toRoute()
     val selectedTransferId: StateFlow<String?> =
-        savedStateHandle.getStateFlow(LINKED_TRANSFER_RESOURCE_ID, null)
+        savedStateHandle.getStateFlow(DEEP_LINK_TRANSFER_RESOURCE_ID_KEY, initialValue = transferRoute.initialTransferId)
 
     val transfersCount = userTransferResourceRepository.getCount().stateIn(
         scope = viewModelScope,
@@ -68,27 +70,6 @@ class TransferViewModel @Inject constructor(
         initialValue = 0,
     )
 
-    val deepLinkedTransferResource = savedStateHandle.getStateFlow<String?>(
-        key = LINKED_TRANSFER_RESOURCE_ID,
-        null,
-    )
-        .flatMapLatest { transfersResourceId ->
-            if (transfersResourceId == null) {
-                flowOf(emptyList())
-            } else {
-                userTransferResourceRepository.observeAll(
-                    TransferResourceQuery(
-                        filterTransferIds = setOf(transfersResourceId),
-                    ),
-                )
-            }
-        }
-        .map { it.firstOrNull() }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
-        )
 
     val feedUiState: StateFlow<TransferFeedUiState> = _page.flatMapLatest {
         userTransferResourceRepository.observeAllPages(
@@ -131,20 +112,7 @@ class TransferViewModel @Inject constructor(
     }
 
     fun onTransferClick(transferId: String?) {
-        savedStateHandle[LINKED_TRANSFER_RESOURCE_ID] = transferId
-    }
-
-    fun onDeepLinkOpened(transferResourceId: String) {
-        if (transferResourceId == deepLinkedTransferResource.value?.id) {
-            savedStateHandle[LINKED_TRANSFER_RESOURCE_ID] = null
-        }
-        analyticsHelper.logTransferDeepLinkOpen(transferResourceId = transferResourceId)
-        viewModelScope.launch {
-            userDataRepository.setTransferResourceViewed(
-                transferResourceId = transferResourceId,
-                viewed = true,
-            )
-        }
+        savedStateHandle[DEEP_LINK_TRANSFER_RESOURCE_ID_KEY] = transferId
     }
 
     companion object {
@@ -152,15 +120,3 @@ class TransferViewModel @Inject constructor(
     }
 }
 
-private fun AnalyticsHelper.logTransferDeepLinkOpen(transferResourceId: String) =
-    logEvent(
-        AnalyticsEvent(
-            type = "transfer_deep_link_opened",
-            extras = listOf(
-                AnalyticsEvent.Param(
-                    key = LINKED_TRANSFER_RESOURCE_ID,
-                    value = transferResourceId,
-                ),
-            ),
-        ),
-    )

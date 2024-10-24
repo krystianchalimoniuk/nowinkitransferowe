@@ -56,8 +56,17 @@ private const val NEWS_NOTIFICATION_GROUP = "NEWS_NOTIFICATIONS"
 private const val TRANSFER_NOTIFICATION_GROUP = "TRANSFER_NOTIFICATIONS"
 private const val GENERAL_NOTIFICATION_GROUP = "GENERAL_NOTIFICATIONS"
 private const val DEEP_LINK_SCHEME_AND_HOST = "http://nowinkitransferowe.pl"
-private const val NEWS_PATH = "news"
-private const val TRANSFER_PATH = "transfer"
+private const val DEEP_LINK_NEWS_PATH = "news"
+private const val DEEP_LINK_TRANSFER_PATH = "transfer"
+private const val DEEP_LINK_NEWS_BASE_PATH = "$DEEP_LINK_SCHEME_AND_HOST/$DEEP_LINK_NEWS_PATH"
+private const val DEEP_LINK_TRANSFER_BASE_PATH = "$DEEP_LINK_SCHEME_AND_HOST/$DEEP_LINK_TRANSFER_PATH"
+const val DEEP_LINK_NEWS_RESOURCE_ID_KEY = "linkedNewsResourceId"
+const val DEEP_LINK_TRANSFER_RESOURCE_ID_KEY = "linkedTransferResourceId"
+const val DEEP_LINK_NEWS_URI_PATTERN = "$DEEP_LINK_NEWS_BASE_PATH/{$DEEP_LINK_NEWS_RESOURCE_ID_KEY}"
+const val DEEP_LINK_TRANSFER_URI_PATTERN = "$DEEP_LINK_TRANSFER_BASE_PATH/{$DEEP_LINK_TRANSFER_RESOURCE_ID_KEY}"
+
+
+
 
 /**
  * Implementation of [Notifier] that displays notifications in the system tray.
@@ -344,6 +353,6 @@ private fun Context.generalNotificationPendingIntent(generalNotificationResource
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
 
-private fun NewsResource.newsDeepLinkUri() = "$DEEP_LINK_SCHEME_AND_HOST/$NEWS_PATH/$id".toUri()
+private fun NewsResource.newsDeepLinkUri() = "$DEEP_LINK_NEWS_BASE_PATH/$id".toUri()
 private fun TransferResource.transferDeepLinkUri() =
-    "$DEEP_LINK_SCHEME_AND_HOST/$TRANSFER_PATH/$id".toUri()
+    "$DEEP_LINK_TRANSFER_BASE_PATH/$id".toUri()

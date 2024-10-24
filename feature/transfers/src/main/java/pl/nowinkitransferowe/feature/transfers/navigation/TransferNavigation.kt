@@ -17,22 +17,14 @@
 package pl.nowinkitransferowe.feature.transfers.navigation
 
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
+import kotlinx.serialization.Serializable
 
-const val TRANSFERS_ROUTE = "transfers_route"
-const val LINKED_TRANSFER_RESOURCE_ID = "linkedTransferResourceId"
+@Serializable
+data class TransferRoute(
+    // The ID of the topic which will be initially selected at this destination
+    val initialTransferId: String? = null,
+)
 
-fun NavController.navigateToTransfer(navOptions: NavOptions) = navigate(TRANSFERS_ROUTE, navOptions)
-
-fun NavGraphBuilder.transferScreen(
-    onCleanBackStack: () -> Unit,
-    onTransferClick: (String) -> Unit,
-) {
-    composable(
-        route = TRANSFERS_ROUTE,
-    ) {
-        TransferRoute(onTransferClick = onTransferClick)
-    }
-}
+fun NavController.navigateToTransfer(initialTransferId: String?, navOptions: NavOptions) =
+    navigate(TransferRoute(initialTransferId), navOptions)
