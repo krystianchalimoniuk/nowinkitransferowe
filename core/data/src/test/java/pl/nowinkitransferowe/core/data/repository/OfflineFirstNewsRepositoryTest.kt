@@ -33,7 +33,8 @@ import pl.nowinkitransferowe.core.data.testdoubles.TestNtNetworkDataSource
 import pl.nowinkitransferowe.core.database.model.NewsResourceEntity
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
-import pl.nowinkitransferowe.core.datastoretest.testUserPreferencesDataStore
+import pl.nowinkitransferowe.core.datastoreproto.UserPreferences
+import pl.nowinkitransferowe.core.datastoretest.InMemoryDataStore
 import pl.nowinkitransferowe.core.model.NewsResource
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
@@ -65,7 +66,7 @@ class OfflineFirstNewsRepositoryTest {
     @Before
     fun setup() {
         ntPreferencesDataSource = NtPreferencesDataSource(
-            tmpFolder.testUserPreferencesDataStore(TestScope(UnconfinedTestDispatcher())),
+            InMemoryDataStore(UserPreferences.getDefaultInstance()),
         )
         newsResourceDao = TestNewsResourceDao()
         network = TestNtNetworkDataSource()

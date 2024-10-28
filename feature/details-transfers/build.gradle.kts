@@ -26,6 +26,7 @@ android {
 dependencies {
     implementation(projects.core.data)
     testImplementation(projects.core.testing)
+    testImplementation(libs.robolectric)
 
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)

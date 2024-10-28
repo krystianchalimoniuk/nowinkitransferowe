@@ -18,7 +18,6 @@ package pl.nowinkitransferowe.core.model
 
 import kotlinx.datetime.Instant
 
-@ConsistentCopyVisibility
 data class UserNewsResource internal constructor(
     val id: String,
     val title: String,
