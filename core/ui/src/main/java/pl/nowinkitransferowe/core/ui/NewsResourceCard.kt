@@ -99,18 +99,18 @@ fun NewsResourceCardExpanded(
     onTopicClick: (String) -> Unit,
 ) {
     val clickActionLabel = stringResource(R.string.core_ui_card_tap_action)
-    val sharingLabel = stringResource(R.string.core_ui_feed_sharing)
-    val sharingContent = stringResource(
-        R.string.core_ui_feed_sharing_data,
-        userNewsResource.title,
-        userNewsResource.link,
-    )
-
-    val dragAndDropFlags = if (VERSION.SDK_INT >= VERSION_CODES.N) {
-        View.DRAG_FLAG_GLOBAL
-    } else {
-        0
-    }
+//    val sharingLabel = stringResource(R.string.core_ui_feed_sharing)
+//    val sharingContent = stringResource(
+//        R.string.core_ui_feed_sharing_data,
+//        userNewsResource.title,
+//        userNewsResource.link,
+//    )
+//
+//    val dragAndDropFlags = if (VERSION.SDK_INT >= VERSION_CODES.N) {
+//        View.DRAG_FLAG_GLOBAL
+//    } else {
+//        0
+//    }
     val isSelected = highlightSelectedNews && userNewsResource.id == selectedNewsId
 
     OutlinedCard(
@@ -143,25 +143,22 @@ fun NewsResourceCardExpanded(
                             userNewsResource.title,
                             modifier = Modifier
                                 .fillMaxWidth((.8f))
-                                .dragAndDropSource {
-                                    detectTapGestures(
-                                        onLongPress = {
-                                            startTransfer(
-                                                DragAndDropTransferData(
-                                                    ClipData.newPlainText(
-                                                        sharingLabel,
-                                                        sharingContent,
-                                                    ),
-                                                    flags = dragAndDropFlags,
-                                                ),
-                                            )
-                                        },
-                                    )
-                                },
+//                                .dragAndDropSource {
+//                                    detectTapGestures(
+//                                        onLongPress = {
+//                                            startTransfer(
+//                                                DragAndDropTransferData(
+//                                                    ClipData.newPlainText(
+//                                                        sharingLabel,
+//                                                        sharingContent,
+//                                                    ),
+//                                                    flags = dragAndDropFlags,
+//                                                ),
+//                                            )
+//                                        },
+//                                    )
+//                                },
                         )
-                        Spacer(modifier = Modifier.weight(1f))
-                        BookmarkButton(isBookmarked, onToggleBookmark)
-
                         Spacer(modifier = Modifier.weight(1f))
                         BookmarkButton(isBookmarked, onToggleBookmark)
                     }

@@ -61,23 +61,15 @@ class NavigationTest {
     val hiltRule = HiltAndroidRule(this)
 
     /**
-     * Create a temporary folder used to create a Data Store file. This guarantees that
-     * the file is removed in between each test, preventing a crash.
-     */
-    @BindValue
-    @get:Rule(order = 1)
-    val tmpFolder: TemporaryFolder = TemporaryFolder.builder().assureDeletion().build()
-
-    /**
      * Grant [android.Manifest.permission.POST_NOTIFICATIONS] permission.
      */
-    @get:Rule(order = 2)
+    @get:Rule(order = 1)
     val postNotificationsPermission = GrantPostNotificationsPermissionRule()
 
     /**
      * Use the primary activity to initialize the app normally.
      */
-    @get:Rule(order = 3)
+    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
