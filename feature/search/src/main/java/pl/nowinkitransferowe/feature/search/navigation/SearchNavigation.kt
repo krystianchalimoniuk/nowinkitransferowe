@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
 import pl.nowinkitransferowe.feature.search.SearchRoute
 
 @Serializable data class SearchRoute(
-    val searchQuery: String? = null
+    val searchQuery: String? = null,
 )
 
 fun NavController.navigateToSearch(query: String?, navOptions: NavOptions? = null) =
@@ -37,7 +37,7 @@ fun NavGraphBuilder.searchScreen(
 ) {
     // TODO: Handle back stack for each top-level destination. At the moment each top-level
     // destination may have own search screen's back stack.
-    composable<SearchRoute>{
+    composable<SearchRoute> {
         SearchRoute(
             onBackClick = onBackClick,
             onNewsClick = onNewsClick,

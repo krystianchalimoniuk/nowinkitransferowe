@@ -155,7 +155,8 @@ internal fun TransfersListDetailScreen(
                     NavHost(
                         navController = nestedNavController,
                         startDestination = nestedNavHostStartRoute,
-                        route = DetailTransferPaneNavHostRoute::class,                    ) {
+                        route = DetailTransferPaneNavHostRoute::class,
+                    ) {
                         detailsTransferScreen(
                             showBackButton = !listDetailNavigator.isListPaneVisible(),
                             onBackClick = listDetailNavigator::navigateBack,

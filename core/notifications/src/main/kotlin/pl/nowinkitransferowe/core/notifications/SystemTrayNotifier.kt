@@ -65,9 +65,6 @@ const val DEEP_LINK_TRANSFER_RESOURCE_ID_KEY = "linkedTransferResourceId"
 const val DEEP_LINK_NEWS_URI_PATTERN = "$DEEP_LINK_NEWS_BASE_PATH/{$DEEP_LINK_NEWS_RESOURCE_ID_KEY}"
 const val DEEP_LINK_TRANSFER_URI_PATTERN = "$DEEP_LINK_TRANSFER_BASE_PATH/{$DEEP_LINK_TRANSFER_RESOURCE_ID_KEY}"
 
-
-
-
 /**
  * Implementation of [Notifier] that displays notifications in the system tray.
  */

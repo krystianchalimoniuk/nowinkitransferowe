@@ -82,12 +82,11 @@ class SearchViewModelTest {
         viewModel.onSearchQueryChanged("")
 
         assertEquals(SearchResultUiState.EmptyQuery, viewModel.searchResultUiState.value)
-
     }
 
     @Test
     fun emptyResultIsReturned_withNotMatchingQuery() = runTest {
-            backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
         viewModel.onSearchQueryChanged("XXX")
 
         searchContentsRepository.addNewsResources(newsResourcesTestData)
@@ -99,8 +98,7 @@ class SearchViewModelTest {
 
     @Test
     fun recentSearches_verifyUiStateIsSuccess() = runTest {
-
-            backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.recentSearchQueriesUiState.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.recentSearchQueriesUiState.collect() }
         viewModel.onSearchTriggered("kotlin")
 
         val result = viewModel.recentSearchQueriesUiState.value
@@ -109,13 +107,11 @@ class SearchViewModelTest {
 
     @Test
     fun searchNotReady_withNoFtsTableEntity() = runTest {
-
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
 
         viewModel.onSearchQueryChanged("")
 
         assertEquals(SearchResultUiState.SearchNotReady, viewModel.searchResultUiState.value)
-
     }
 
     @Test

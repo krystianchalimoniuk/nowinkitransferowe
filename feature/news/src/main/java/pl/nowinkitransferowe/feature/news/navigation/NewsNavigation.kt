@@ -29,4 +29,3 @@ fun NavController.navigateToNews(
     initialNewsId: String? = null,
     navOptions: NavOptions? = null,
 ) = navigate(route = NewsRoute(initialNewsId), navOptions)
-

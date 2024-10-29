@@ -70,7 +70,6 @@ import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalGradientColors
 import pl.nowinkitransferowe.feature.settings.SettingsDialog
 import pl.nowinkitransferowe.navigation.NtNavHost
-import pl.nowinkitransferowe.navigation.TopLevelDestination
 import kotlin.reflect.KClass
 import pl.nowinkitransferowe.feature.settings.R as settingsR
 

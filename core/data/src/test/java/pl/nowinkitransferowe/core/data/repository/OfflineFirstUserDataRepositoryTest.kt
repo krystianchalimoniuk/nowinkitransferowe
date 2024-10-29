@@ -48,7 +48,7 @@ class OfflineFirstUserDataRepositoryTest {
     @Before
     fun setup() {
         ntPreferencesDataSource = NtPreferencesDataSource(
-            InMemoryDataStore(UserPreferences.getDefaultInstance())
+            InMemoryDataStore(UserPreferences.getDefaultInstance()),
         )
 
         subject = OfflineFirstUserDataRepository(

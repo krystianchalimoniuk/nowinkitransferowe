@@ -1,11 +1,23 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
-import androidx.compose.material3.adaptive.Posture
-import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.ui.test.DeviceConfigurationOverride
-import androidx.compose.ui.test.ForcedSize
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
@@ -13,11 +25,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
 import androidx.test.espresso.Espresso
-import androidx.window.core.layout.WindowSizeClass
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -26,7 +34,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -54,10 +61,8 @@ class NewsListDetailScreenTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
 
-
     @Inject
     lateinit var newsRepository: NewsRepository
-
 
     /** Convenience function for getting all news during tests, */
     private fun getNews(): List<NewsResource> = runBlocking {
@@ -81,11 +86,10 @@ class NewsListDetailScreenTest {
     fun expandedWidth_initialState_showsTwoPanesWithPlaceholder() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            NewsListDetailScreen(
-                                onTopicClick = {},
-                            )
-
+                NtTheme {
+                    NewsListDetailScreen(
+                        onTopicClick = {},
+                    )
                 }
             }
 
@@ -99,10 +103,10 @@ class NewsListDetailScreenTest {
     fun compactWidth_initialState_showsListPane() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            NewsListDetailScreen(
-                                onTopicClick = {},
-                            )
+                NtTheme {
+                    NewsListDetailScreen(
+                        onTopicClick = {},
+                    )
                 }
             }
 
@@ -116,10 +120,10 @@ class NewsListDetailScreenTest {
     fun expandedWidth_newsSelected_updatesDetailPane() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            NewsListDetailScreen(
-                                onTopicClick = {},
-                            )
+                NtTheme {
+                    NewsListDetailScreen(
+                        onTopicClick = {},
+                    )
                 }
             }
 
@@ -137,10 +141,11 @@ class NewsListDetailScreenTest {
     fun compactWidth_newsSelected_showsNewsDetailPane() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            NewsListDetailScreen(
-                                onTopicClick = {})
-                        }
+                NtTheme {
+                    NewsListDetailScreen(
+                        onTopicClick = {},
+                    )
+                }
             }
 
             val firstNews = getNews().first()
@@ -158,15 +163,16 @@ class NewsListDetailScreenTest {
         var unhandledBackPress = false
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            // Back press should not be handled by the two pane layout, and thus
-                            // "fall through" to this BackHandler.
-                            BackHandler {
-                                unhandledBackPress = true
-                            }
-                            NewsListDetailScreen(
-                                onTopicClick = {})
-                        }
+                NtTheme {
+                    // Back press should not be handled by the two pane layout, and thus
+                    // "fall through" to this BackHandler.
+                    BackHandler {
+                        unhandledBackPress = true
+                    }
+                    NewsListDetailScreen(
+                        onTopicClick = {},
+                    )
+                }
             }
 
             val firstNews = getNews().first()
@@ -184,10 +190,11 @@ class NewsListDetailScreenTest {
     fun compactWidth_backPressFromTopicDetail_showsListPane() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            NewsListDetailScreen(
-                                onTopicClick = {})
-                        }
+                NtTheme {
+                    NewsListDetailScreen(
+                        onTopicClick = {},
+                    )
+                }
             }
 
             val firstNews = getNews().first()

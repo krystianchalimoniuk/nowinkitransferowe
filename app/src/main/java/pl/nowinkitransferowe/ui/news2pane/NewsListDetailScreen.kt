@@ -45,15 +45,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import kotlinx.serialization.Serializable
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_URI_PATTERN
 import pl.nowinkitransferowe.feature.details.DetailPlaceholder
+import pl.nowinkitransferowe.feature.details.navigation.DetailNewsRoute
 import pl.nowinkitransferowe.feature.details.navigation.detailsScreen
 import pl.nowinkitransferowe.feature.details.navigation.navigateToDetails
 import pl.nowinkitransferowe.feature.news.NewsRoute
-import java.util.UUID
-import kotlinx.serialization.Serializable
-import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_URI_PATTERN
-import pl.nowinkitransferowe.feature.details.navigation.DetailNewsRoute
 import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
+import java.util.UUID
 
 @Serializable internal object NewsPlaceholderRoute
 

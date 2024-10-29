@@ -26,13 +26,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
-import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
-import pl.nowinkitransferowe.core.data.repository.TransferResourceQuery
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
@@ -69,7 +65,6 @@ class TransferViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = 0,
     )
-
 
     val feedUiState: StateFlow<TransferFeedUiState> = _page.flatMapLatest {
         userTransferResourceRepository.observeAllPages(
@@ -119,4 +114,3 @@ class TransferViewModel @Inject constructor(
         const val PAGE_SIZE = 5
     }
 }
-

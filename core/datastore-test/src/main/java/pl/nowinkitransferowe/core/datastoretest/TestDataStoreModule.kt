@@ -17,14 +17,10 @@
 package pl.nowinkitransferowe.core.datastoretest
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.DataStoreFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import kotlinx.coroutines.CoroutineScope
-import org.junit.rules.TemporaryFolder
-import pl.nowinkitransferowe.core.common.network.di.ApplicationScope
 import pl.nowinkitransferowe.core.datastore.UserPreferencesSerializer
 import pl.nowinkitransferowe.core.datastore.di.DataStoreModule
 import pl.nowinkitransferowe.core.datastoreproto.UserPreferences

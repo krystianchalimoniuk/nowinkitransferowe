@@ -31,7 +31,7 @@ class News2PaneViewModel @Inject constructor(
 ) : ViewModel() {
     private val route = savedStateHandle.toRoute<NewsRoute>()
     val selectedNewsId: StateFlow<String?> =
-        savedStateHandle.getStateFlow(key =DEEP_LINK_NEWS_RESOURCE_ID_KEY, initialValue = route.initialNewsId)
+        savedStateHandle.getStateFlow(key = DEEP_LINK_NEWS_RESOURCE_ID_KEY, initialValue = route.initialNewsId)
 
     fun onNewsClick(newsId: String?) {
         savedStateHandle[DEEP_LINK_NEWS_RESOURCE_ID_KEY] = newsId

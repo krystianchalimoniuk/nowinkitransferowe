@@ -59,7 +59,6 @@ class TransferListDetailScreenTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
 
-
     @Inject
     lateinit var transferRepository: TransferRepository
 
@@ -75,7 +74,6 @@ class TransferListDetailScreenTest {
     private val TransferResource.testTag
         get() = "transfer:${this.id}"
 
-
     @Before
     fun setup() {
         hiltRule.inject()
@@ -86,8 +84,8 @@ class TransferListDetailScreenTest {
     fun expandedWidth_initialState_showsTwoPanesWithPlaceholder() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            TransfersListDetailScreen()
+                NtTheme {
+                    TransfersListDetailScreen()
                 }
             }
 
@@ -101,9 +99,8 @@ class TransferListDetailScreenTest {
     fun compactWidth_initialState_showsListPane() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            TransfersListDetailScreen(
-                            )
+                NtTheme {
+                    TransfersListDetailScreen()
                 }
             }
 
@@ -117,9 +114,9 @@ class TransferListDetailScreenTest {
     fun expandedWidth_transferSelected_updatesDetailPane() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            TransfersListDetailScreen()
-                        }
+                NtTheme {
+                    TransfersListDetailScreen()
+                }
             }
 
             val firstTransfers = getTransfers().first()
@@ -136,9 +133,9 @@ class TransferListDetailScreenTest {
     fun compactWidth_transferSelected_showsTransferDetailPane() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            TransfersListDetailScreen()
-                        }
+                NtTheme {
+                    TransfersListDetailScreen()
+                }
             }
 
             val firstTransfers = getTransfers().first()
@@ -156,14 +153,14 @@ class TransferListDetailScreenTest {
         var unhandledBackPress = false
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            // Back press should not be handled by the two pane layout, and thus
-                            // "fall through" to this BackHandler.
-                            BackHandler {
-                                unhandledBackPress = true
-                            }
-                            TransfersListDetailScreen()
-                        }
+                NtTheme {
+                    // Back press should not be handled by the two pane layout, and thus
+                    // "fall through" to this BackHandler.
+                    BackHandler {
+                        unhandledBackPress = true
+                    }
+                    TransfersListDetailScreen()
+                }
             }
 
             val firstTransfers = getTransfers().first()
@@ -180,9 +177,9 @@ class TransferListDetailScreenTest {
     fun compactWidth_backPressFromTransferDetail_showsListPane() {
         composeTestRule.apply {
             setContent {
-                        NtTheme {
-                            TransfersListDetailScreen()
-                        }
+                NtTheme {
+                    TransfersListDetailScreen()
+                }
             }
 
             val firstTransfers = getTransfers().first()

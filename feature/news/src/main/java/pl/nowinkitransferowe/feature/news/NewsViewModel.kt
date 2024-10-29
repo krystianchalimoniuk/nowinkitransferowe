@@ -46,7 +46,6 @@ class NewsViewModel @Inject constructor(
     private val userNewsResourceRepository: UserNewsResourceRepository,
 ) : ViewModel() {
 
-
     private val newsRoute: NewsRoute = savedStateHandle.toRoute()
     val selectedNewsId: StateFlow<String?> =
         savedStateHandle.getStateFlow(DEEP_LINK_NEWS_RESOURCE_ID_KEY, newsRoute.initialNewsId)

@@ -50,7 +50,9 @@ data class TransferResourceEntity(
 )
 
 fun TransferResourceEntity.asExternalModel() =
-    TransferResource(id, name, footballerImg, clubFrom, clubFromImg, clubTo, clubToImg, price, url, season ?: "23/24", publishDate ?: Instant.parse(
-        "2024-08-30T14:00:00.000Z"
-    )
+    TransferResource(
+        id, name, footballerImg, clubFrom, clubFromImg, clubTo, clubToImg, price, url, season ?: "23/24",
+        publishDate ?: Instant.parse(
+            "2024-08-30T14:00:00.000Z",
+        ),
     )

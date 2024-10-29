@@ -30,9 +30,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import pl.nowinkitransferowe.core.data.repository.CompositeUserNewsResourceRepository
 import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_RESOURCE_ID_KEY
 import pl.nowinkitransferowe.core.testing.data.newsResourcesTestData
-import pl.nowinkitransferowe.core.testing.data.transferResourceTestData
 import pl.nowinkitransferowe.core.testing.repository.TestNewsRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData

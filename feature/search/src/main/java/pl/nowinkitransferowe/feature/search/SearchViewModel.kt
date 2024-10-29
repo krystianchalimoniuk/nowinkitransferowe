@@ -51,7 +51,7 @@ class SearchViewModel @Inject constructor(
     private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel() {
 
-   private val searchRoute: SearchRoute = savedStateHandle.toRoute<SearchRoute>()
+    private val searchRoute: SearchRoute = savedStateHandle.toRoute<SearchRoute>()
     val searchQuery: StateFlow<String?> =
         savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = searchRoute.searchQuery)
 

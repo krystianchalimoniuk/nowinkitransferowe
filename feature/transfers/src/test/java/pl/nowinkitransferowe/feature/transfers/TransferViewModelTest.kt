@@ -73,7 +73,7 @@ class TransferViewModelTest {
     fun stateIsLoadingWhenAppIsSyncingWithNoTransfers() = runTest {
         syncManager.setSyncing(true)
 
-       backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
 
         assertEquals(
             true,
@@ -157,9 +157,7 @@ class TransferViewModelTest {
             ),
         )
         assertEquals(expected = expected, actual = viewModel.feedUiState.value)
-
     }
-
 
     val sampleTransferResources = listOf(
         TransferResource(

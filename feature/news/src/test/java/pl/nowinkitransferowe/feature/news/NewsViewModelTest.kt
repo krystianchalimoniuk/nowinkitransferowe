@@ -78,7 +78,7 @@ class NewsViewModelTest {
     fun stateIsLoadingWhenAppIsSyncingWithNoNews() = runTest {
         syncManager.setSyncing(true)
 
-       backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
 
         assertEquals(
             true,
@@ -133,7 +133,6 @@ class NewsViewModelTest {
             expected,
             viewModel.feedState.value,
         )
-
     }
 
     @Test
@@ -168,7 +167,6 @@ class NewsViewModelTest {
             ),
             viewModel.feedState.value,
         )
-
     }
 
     val sampleNewsResources = listOf(

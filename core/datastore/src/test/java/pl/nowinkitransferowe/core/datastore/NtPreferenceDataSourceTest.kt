@@ -40,7 +40,8 @@ class NtPreferenceDataSourceTest {
     @Before
     fun setup() {
         subject = NtPreferencesDataSource(
-            InMemoryDataStore(UserPreferences.getDefaultInstance())        )
+            InMemoryDataStore(UserPreferences.getDefaultInstance()),
+        )
     }
 
     @Test

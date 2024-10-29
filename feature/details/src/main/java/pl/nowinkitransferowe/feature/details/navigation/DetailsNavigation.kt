@@ -37,7 +37,6 @@ fun NavController.navigateToDetails(
     }
 }
 
-
 fun NavGraphBuilder.detailsScreen(
     showBackButton: Boolean,
     onBackClick: () -> Unit,

@@ -57,9 +57,9 @@ class DetailsTransferViewModelTest {
     private val transferRepository = TestTransferRepository()
     private val imageDownloader = TestImageDownloader()
 
-
     private lateinit var viewModel: DetailsTransferViewModel
     private val savedStateHandle: SavedStateHandle = SavedStateHandle(route = DetailTransferRoute(transferId = transferResourceTestData.first().id))
+
     @Before
     fun setup() {
         viewModel = DetailsTransferViewModel(
@@ -102,12 +102,15 @@ class DetailsTransferViewModelTest {
                 DataPoint(
                     date = Util.shortcutDate(
                         Util.dateFormatted(
-                            (Instant.parse(
-                                "2022-10-06T23:00:00.000Z",
-                            )),
+                            (
+                                Instant.parse(
+                                    "2022-10-06T23:00:00.000Z",
+                                )
+                                ),
                         ),
                     ),
-                    price = 0.0f, bitmap = null,
+                    price = 0.0f,
+                    bitmap = null,
                 ),
             ),
         )

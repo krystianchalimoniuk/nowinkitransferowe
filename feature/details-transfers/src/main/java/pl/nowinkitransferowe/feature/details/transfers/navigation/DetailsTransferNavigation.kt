@@ -23,7 +23,6 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import pl.nowinkitransferowe.feature.details.transfers.DetailsTransferRoute
 
-
 @Serializable
 data class DetailTransferRoute(
     val transferId: String,
@@ -33,17 +32,16 @@ fun NavController.navigateToTransferDetails(
     transferId: String,
     navOptions: NavOptionsBuilder.() -> Unit = {},
 ) {
-    navigate(route= DetailTransferRoute(transferId)) {
+    navigate(route = DetailTransferRoute(transferId)) {
         navOptions()
     }
 }
-
 
 fun NavGraphBuilder.detailsTransferScreen(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
 ) {
-    composable<DetailTransferRoute>{
+    composable<DetailTransferRoute> {
         DetailsTransferRoute(
             showBackButton = showBackButton,
             onBackClick = onBackClick,

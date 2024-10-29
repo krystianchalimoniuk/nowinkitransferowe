@@ -127,15 +127,15 @@ class TransferScreenTest {
     fun feed_whenLoadNextPageExecuted_showsFeedWithNewItems() {
         composeTestRule.setContent {
             Box {
-            TransferScreen(
-                isSyncing = false,
-                feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
-                onTransferClick = {},
-                onTransferResourceViewed = {},
-                onTransferResourcesCheckedChanged = { _, _ -> },
-                loadNextPage = {},
-            )
-                }
+                TransferScreen(
+                    isSyncing = false,
+                    feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
+                    onTransferClick = {},
+                    onTransferResourceViewed = {},
+                    onTransferResourcesCheckedChanged = { _, _ -> },
+                    loadNextPage = {},
+                )
+            }
         }
 
         composeTestRule
