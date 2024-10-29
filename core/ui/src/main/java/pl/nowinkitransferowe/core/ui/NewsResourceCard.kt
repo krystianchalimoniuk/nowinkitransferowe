@@ -16,16 +16,10 @@
 
 package pl.nowinkitransferowe.core.ui
 
-import android.content.ClipData
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
-import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.draganddrop.dragAndDropSource
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,7 +47,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -142,7 +135,7 @@ fun NewsResourceCardExpanded(
                         NewsResourceTitle(
                             userNewsResource.title,
                             modifier = Modifier
-                                .fillMaxWidth((.8f))
+                                .fillMaxWidth((.8f)),
 //                                .dragAndDropSource {
 //                                    detectTapGestures(
 //                                        onLongPress = {
