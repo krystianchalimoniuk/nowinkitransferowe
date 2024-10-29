@@ -26,6 +26,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import pl.nowinkitransferowe.benchmarks.BaselineProfileMetrics
 import pl.nowinkitransferowe.benchmarks.PACKAGE_NAME
 import pl.nowinkitransferowe.benchmarks.allowNotifications
 import pl.nowinkitransferowe.benchmarks.news.newsWaitForContent
@@ -58,7 +59,7 @@ class StartupBenchmark {
 
     private fun startup(compilationMode: CompilationMode) = benchmarkRule.measureRepeated(
         packageName = PACKAGE_NAME,
-        metrics = listOf(StartupTimingMetric()),
+        metrics = BaselineProfileMetrics.allMetrics,
         compilationMode = compilationMode,
         // More iterations result in higher statistical significance.
         iterations = 20,
