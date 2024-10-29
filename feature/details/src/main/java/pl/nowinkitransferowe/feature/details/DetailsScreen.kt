@@ -98,7 +98,7 @@ internal fun DetailsRoute(
 ) {
     val detailsUiState by viewModel.detailsUiState.collectAsStateWithLifecycle()
     val darkThemeConfig by viewModel.darkThemeConfig.collectAsStateWithLifecycle()
-    TrackScreenViewEvent(screenName = "News: ${viewModel.newsId}")
+    TrackScreenViewEvent(screenName = "News: ${viewModel.newsResourceId}")
     DetailsScreen(
         detailsUiState = detailsUiState,
         showBackButton = showBackButton,
@@ -106,7 +106,7 @@ internal fun DetailsRoute(
         onTopicClick = onTopicClick,
         onBookmarkChanged = viewModel::bookmarkNews,
         darkThemeConfig = darkThemeConfig,
-        modifier = modifier.testTag("news:${viewModel.newsId}"),
+        modifier = modifier.testTag("news:${viewModel.newsResourceId}"),
     )
 }
 

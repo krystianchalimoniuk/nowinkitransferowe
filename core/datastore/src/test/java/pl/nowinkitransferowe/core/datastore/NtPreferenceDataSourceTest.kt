@@ -24,7 +24,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import pl.nowinkitransferowe.core.datastoretest.testUserPreferencesDataStore
+import pl.nowinkitransferowe.core.datastoreproto.UserPreferences
+import pl.nowinkitransferowe.core.datastoretest.InMemoryDataStore
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -39,7 +40,7 @@ class NtPreferenceDataSourceTest {
     @Before
     fun setup() {
         subject = NtPreferencesDataSource(
-            tmpFolder.testUserPreferencesDataStore(TestScope(UnconfinedTestDispatcher())),
+            InMemoryDataStore(UserPreferences.getDefaultInstance()),
         )
     }
 

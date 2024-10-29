@@ -22,11 +22,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.UserTransferResource
@@ -34,21 +33,16 @@ import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
-import pl.nowinkitransferowe.core.testing.util.TestAnalyticsHelper
 import pl.nowinkitransferowe.core.testing.util.TestSyncManager
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
-import pl.nowinkitransferowe.feature.transfers.navigation.LINKED_TRANSFER_RESOURCE_ID
 import pl.nowinkitransferowe.feature.transfers.navigation.TransferViewModel
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class TransferViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val syncManager = TestSyncManager()
-    private val analyticsHelper = TestAnalyticsHelper()
     private val userDataRepository = TestUserDataRepository()
     private val transferRepository = TestTransferRepository()
 
@@ -67,7 +61,6 @@ class TransferViewModelTest {
             savedStateHandle = savedStateHandle,
             userDataRepository = userDataRepository,
             userTransferResourceRepository = userTransferResourceRepository,
-            analyticsHelper = analyticsHelper,
         )
     }
 
@@ -80,15 +73,12 @@ class TransferViewModelTest {
     fun stateIsLoadingWhenAppIsSyncingWithNoTransfers() = runTest {
         syncManager.setSyncing(true)
 
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
 
         assertEquals(
             true,
             viewModel.isSyncing.value,
         )
-
-        collectJob.cancel()
     }
 
     @Test
@@ -111,7 +101,7 @@ class TransferViewModelTest {
 
     @Test
     fun transferResourcesUpdatesAfterLoading() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
         val userData = emptyUserData
         transferRepository.sendTransferResources(sampleTransferResources)
 
@@ -135,13 +125,11 @@ class TransferViewModelTest {
             ),
         )
         assertEquals(expected, viewModel.feedUiState.value)
-
-        collectJob.cancel()
     }
 
     @Test
     fun whenLoadNexPageFunctionIsCalled_transferResourcesUpdates() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
         val userData = emptyUserData
         transferRepository.sendTransferResources(sampleTransferResources)
         val bookmarkedTransferResourceId = "2"
@@ -169,50 +157,6 @@ class TransferViewModelTest {
             ),
         )
         assertEquals(expected = expected, actual = viewModel.feedUiState.value)
-
-        collectJob.cancel()
-    }
-
-    @Test
-    fun deepLinkedTransferResourceIsFetchedAndResetAfterViewing() = runTest {
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.deepLinkedTransferResource.collect() }
-
-        transferRepository.sendTransferResources(sampleTransferResources)
-        userDataRepository.setUserData(emptyUserData)
-        savedStateHandle[LINKED_TRANSFER_RESOURCE_ID] = sampleTransferResources.first().id
-
-        assertEquals(
-            expected = UserTransferResource(
-                transferResource = sampleTransferResources.first(),
-                userData = emptyUserData,
-            ),
-            actual = viewModel.deepLinkedTransferResource.value,
-        )
-
-        viewModel.onDeepLinkOpened(
-            transferResourceId = sampleTransferResources.first().id,
-        )
-
-        assertNull(
-            viewModel.deepLinkedTransferResource.value,
-        )
-
-        assertTrue(
-            analyticsHelper.hasLogged(
-                AnalyticsEvent(
-                    type = "transfer_deep_link_opened",
-                    extras = listOf(
-                        AnalyticsEvent.Param(
-                            key = LINKED_TRANSFER_RESOURCE_ID,
-                            value = sampleTransferResources.first().id,
-                        ),
-                    ),
-                ),
-            ),
-        )
-
-        collectJob.cancel()
     }
 
     val sampleTransferResources = listOf(
@@ -227,7 +171,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "2",
@@ -240,7 +184,7 @@ class TransferViewModelTest {
             price = "nie ujawniono",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "3",
@@ -253,7 +197,7 @@ class TransferViewModelTest {
             price = "0,5 mln \u20ac",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "4",
@@ -266,7 +210,7 @@ class TransferViewModelTest {
             price = "34,5 mln €",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "5",
@@ -279,7 +223,7 @@ class TransferViewModelTest {
             price = "5 mln €",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "6",
@@ -292,7 +236,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "7",
@@ -305,7 +249,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "8",
@@ -318,7 +262,7 @@ class TransferViewModelTest {
             price = "wypożyczenie",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "9",
@@ -331,7 +275,7 @@ class TransferViewModelTest {
             price = "wypożyczenie",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
         TransferResource(
             id = "10",
@@ -344,7 +288,7 @@ class TransferViewModelTest {
             price = "za darmo",
             url = "6592/Inne/nowinki-transferowe-na-zywo-",
             season = "23/24",
-            publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
         ),
     )
 }

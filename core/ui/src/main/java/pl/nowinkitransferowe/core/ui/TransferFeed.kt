@@ -72,7 +72,7 @@ fun LazyStaggeredGridScope.transferFeed(
                     },
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
-                        .animateItemPlacement(),
+                        .animateItem(),
                 )
             }
         }

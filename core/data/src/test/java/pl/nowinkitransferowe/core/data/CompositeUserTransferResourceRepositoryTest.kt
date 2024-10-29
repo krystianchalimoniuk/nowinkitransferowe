@@ -18,7 +18,7 @@ package pl.nowinkitransferowe.core.data
 
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.Instant
 import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
 import pl.nowinkitransferowe.core.model.TransferResource
@@ -95,7 +95,7 @@ val sampleTransferResources: List<TransferResource> = listOf(
         price = "za darmo",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+        publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
     ),
     TransferResource(
         id = "2",
@@ -108,7 +108,7 @@ val sampleTransferResources: List<TransferResource> = listOf(
         price = "nie ujawniono",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+        publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
     ),
     TransferResource(
         id = "3",
@@ -121,6 +121,6 @@ val sampleTransferResources: List<TransferResource> = listOf(
         price = "0,5 mln \u20ac",
         url = "6592/Inne/nowinki-transferowe-na-zywo-",
         season = "23/24",
-        publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+        publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
     ),
 )

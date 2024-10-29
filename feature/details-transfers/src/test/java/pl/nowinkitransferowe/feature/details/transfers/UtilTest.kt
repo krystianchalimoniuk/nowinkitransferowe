@@ -17,7 +17,7 @@
 package pl.nowinkitransferowe.feature.details.transfers
 
 import androidx.collection.floatListOf
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.Instant
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -78,9 +78,9 @@ class UtilTest {
     )
 
     private val sampleDatesList = arrayListOf(
-        "2022-10-06T23:00:00.000Z".toInstant(),
-        "2021-05-02T10:00:00.000Z".toInstant(),
-        "2024-04-12T02:00:00.000Z".toInstant(),
-        "2018-12-22T11:00:00.000Z".toInstant(),
+        Instant.parse("2022-10-06T23:00:00.000Z"),
+        Instant.parse("2021-05-02T10:00:00.000Z"),
+        Instant.parse("2024-04-12T02:00:00.000Z"),
+        Instant.parse("2018-12-22T11:00:00.000Z"),
     )
 }

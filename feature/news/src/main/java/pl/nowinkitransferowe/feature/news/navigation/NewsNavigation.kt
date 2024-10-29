@@ -17,20 +17,15 @@
 package pl.nowinkitransferowe.feature.news.navigation
 
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
-import pl.nowinkitransferowe.feature.news.NewsRoute
+import kotlinx.serialization.Serializable
 
-const val NEWS_ROUTE = "news_route"
-const val LINKED_NEWS_RESOURCE_ID = "linkedNewsResourceId"
+@Serializable data class NewsRoute(
+    // The ID of the news which will be initially selected at this destination
+    val initialNewsId: String? = null,
+)
 
-fun NavController.navigateToNews(navOptions: NavOptions) = navigate(NEWS_ROUTE, navOptions)
-
-fun NavGraphBuilder.newsScreen(onNewsClick: (String) -> Unit, onTopicClick: (String) -> Unit) {
-    composable(
-        route = NEWS_ROUTE,
-    ) {
-        NewsRoute(onNewsClick, onTopicClick)
-    }
-}
+fun NavController.navigateToNews(
+    initialNewsId: String? = null,
+    navOptions: NavOptions? = null,
+) = navigate(route = NewsRoute(initialNewsId), navOptions)

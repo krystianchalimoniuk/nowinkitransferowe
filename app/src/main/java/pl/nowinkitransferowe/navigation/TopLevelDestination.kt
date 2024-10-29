@@ -16,9 +16,14 @@
 
 package pl.nowinkitransferowe.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import pl.nowinkitransferowe.R
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
+import pl.nowinkitransferowe.feature.bookmarks.navigation.BookmarksRoute
+import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
+import pl.nowinkitransferowe.feature.transfers.navigation.TransferRoute
+import kotlin.reflect.KClass
 import pl.nowinkitransferowe.feature.bookmarks.R as bookmarksR
 import pl.nowinkitransferowe.feature.news.R as newsR
 import pl.nowinkitransferowe.feature.transfers.R as transferR
@@ -31,25 +36,29 @@ import pl.nowinkitransferowe.feature.transfers.R as transferR
 enum class TopLevelDestination(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val iconTextId: Int,
-    val titleTextId: Int,
+    @StringRes val iconTextId: Int,
+    @StringRes val titleTextId: Int,
+    val route: KClass<*>,
 ) {
     NEWS(
         selectedIcon = NtIcons.Upcoming,
         unselectedIcon = NtIcons.UpcomingBorder,
         iconTextId = newsR.string.feature_news_title,
         titleTextId = R.string.app_name,
+        route = NewsRoute::class,
     ),
     TRANSFERS(
         selectedIcon = NtIcons.Arrows,
         unselectedIcon = NtIcons.ArrowsBorder,
         iconTextId = transferR.string.feature_transfers_title,
         titleTextId = transferR.string.feature_transfers_title,
+        route = TransferRoute::class,
     ),
     BOOKMARKS(
         selectedIcon = NtIcons.Bookmarks,
         unselectedIcon = NtIcons.BookmarksBorder,
         iconTextId = bookmarksR.string.feature_bookmarks_title,
         titleTextId = bookmarksR.string.feature_bookmarks_title,
+        route = BookmarksRoute::class,
     ),
 }

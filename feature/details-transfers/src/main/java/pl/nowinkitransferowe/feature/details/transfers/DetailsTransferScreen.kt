@@ -109,14 +109,14 @@ fun DetailsTransferRoute(
     viewModel: DetailsTransferViewModel = hiltViewModel(),
 ) {
     val detailsTransferUiState by viewModel.detailsTransferUiState.collectAsStateWithLifecycle()
-    TrackScreenViewEvent(screenName = "Transfer: ${viewModel.transferId}")
+    TrackScreenViewEvent(screenName = "Transfer: ${viewModel.transferResourceId}")
     NtBackground {
         NtGradientBackground {
             DetailsTransferScreen(
                 detailsTransferUiState = detailsTransferUiState,
                 showBackButton = showBackButton,
                 onBackClick = onBackClick,
-                modifier = modifier.testTag("transfer:${viewModel.transferId}"),
+                modifier = modifier.testTag("transfer:${viewModel.transferResourceId}"),
             )
         }
     }

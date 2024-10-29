@@ -18,6 +18,7 @@ package pl.nowinkitransferowe.ui.news2pane
 
 import android.content.Intent
 import androidx.activity.compose.BackHandler
+import androidx.annotation.Keep
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -40,40 +41,32 @@ import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import kotlinx.serialization.Serializable
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_URI_PATTERN
 import pl.nowinkitransferowe.feature.details.DetailPlaceholder
-import pl.nowinkitransferowe.feature.details.navigation.DETAILS_ROUTE
-import pl.nowinkitransferowe.feature.details.navigation.LINKED_NEWS_RESOURCE_ID
-import pl.nowinkitransferowe.feature.details.navigation.createDetailsRoute
+import pl.nowinkitransferowe.feature.details.navigation.DetailNewsRoute
 import pl.nowinkitransferowe.feature.details.navigation.detailsScreen
 import pl.nowinkitransferowe.feature.details.navigation.navigateToDetails
 import pl.nowinkitransferowe.feature.news.NewsRoute
-import pl.nowinkitransferowe.feature.news.navigation.NEWS_ROUTE
+import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
 import java.util.UUID
 
-private const val DETAIL_PANE_NAVHOST_ROUTE = "detail_pane_route"
-private const val DEEP_LINK_URI_PATTERN =
-    "http://nowinkitransferowe.pl/news/{$LINKED_NEWS_RESOURCE_ID}"
+@Serializable internal object NewsPlaceholderRoute
+
+// TODO: Remove @Keep when https://issuetracker.google.com/353898971 is fixed
+@Keep
+@Serializable internal object DetailNewsPaneNavHostRoute
 
 fun NavGraphBuilder.newsListDetailScreen(onTopicClick: (String) -> Unit) {
-    composable(
-        route = NEWS_ROUTE,
+    composable<NewsRoute>(
         deepLinks = listOf(
             navDeepLink {
-                uriPattern = DEEP_LINK_URI_PATTERN
+                uriPattern = DEEP_LINK_NEWS_URI_PATTERN
                 action = Intent.ACTION_VIEW
-            },
-        ),
-        arguments = listOf(
-            navArgument(LINKED_NEWS_RESOURCE_ID) {
-                type = NavType.StringType
-                defaultValue = null
-                nullable = true
             },
         ),
     ) {
@@ -118,8 +111,9 @@ internal fun NewsListDetailScreen(
         listDetailNavigator.navigateBack()
     }
 
-    var nestedNavHostStartDestination by remember {
-        mutableStateOf(selectedNewsId?.let(::createDetailsRoute) ?: DETAILS_ROUTE)
+    var nestedNavHostStartRoute by remember {
+        val route = selectedNewsId?.let { DetailNewsRoute(newsId = it) } ?: NewsPlaceholderRoute
+        mutableStateOf(route)
     }
     var nestedNavKey by rememberSaveable(
         stateSaver = Saver({ it.toString() }, UUID::fromString),
@@ -136,11 +130,11 @@ internal fun NewsListDetailScreen(
             // If the detail pane was visible, then use the nestedNavController navigate call
             // directly
             nestedNavController.navigateToDetails(newsId) {
-                popUpTo(DETAIL_PANE_NAVHOST_ROUTE)
+                popUpTo<DetailNewsPaneNavHostRoute>()
             }
         } else {
             // Otherwise, recreate the NavHost entirely, and start at the new destination
-            nestedNavHostStartDestination = createDetailsRoute(newsId)
+            nestedNavHostStartRoute = DetailNewsRoute(newsId = newsId)
             nestedNavKey = UUID.randomUUID()
         }
         listDetailNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
@@ -163,15 +157,15 @@ internal fun NewsListDetailScreen(
                 key(nestedNavKey) {
                     NavHost(
                         navController = nestedNavController,
-                        startDestination = nestedNavHostStartDestination,
-                        route = DETAIL_PANE_NAVHOST_ROUTE,
+                        startDestination = nestedNavHostStartRoute,
+                        route = DetailNewsPaneNavHostRoute::class,
                     ) {
                         detailsScreen(
                             showBackButton = !listDetailNavigator.isListPaneVisible(),
                             onBackClick = listDetailNavigator::navigateBack,
                             onTopicClick = onTopicClick,
                         )
-                        composable(route = DETAILS_ROUTE) {
+                        composable<NewsPlaceholderRoute> {
                             DetailPlaceholder()
                         }
                     }

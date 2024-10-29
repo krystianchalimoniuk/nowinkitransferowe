@@ -17,7 +17,7 @@
 package pl.nowinkitransferowe.core.ui
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.UserData
@@ -59,7 +59,7 @@ object TransfersPreviewParameterData {
                 price = "za darmo",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -75,7 +75,7 @@ object TransfersPreviewParameterData {
                 price = "nie ujawniono",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),
@@ -91,7 +91,7 @@ object TransfersPreviewParameterData {
                 price = "0,5 mln \u20ac",
                 url = "6592/Inne/nowinki-transferowe-na-zywo-",
                 season = "23/24",
-                publishDate = "2022-10-06T23:00:00.000Z".toInstant(),
+                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
             ),
             userData = userData,
         ),

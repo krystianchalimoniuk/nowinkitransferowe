@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.feature.transfers
 
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
@@ -41,14 +42,16 @@ class TransferScreenTest {
     @Test
     fun circularProgressIndicator_whenScreenIsLoading_exists() {
         composeTestRule.setContent {
-            TransferScreen(
-                isSyncing = false,
-                feedState = TransferFeedUiState.Loading,
-                onTransferResourceViewed = {},
-                onTransferResourcesCheckedChanged = { _, _ -> },
-                onTransferClick = {},
-                loadNextPage = {},
-            )
+            Box {
+                TransferScreen(
+                    isSyncing = false,
+                    feedState = TransferFeedUiState.Loading,
+                    onTransferResourceViewed = {},
+                    onTransferResourcesCheckedChanged = { _, _ -> },
+                    onTransferClick = {},
+                    loadNextPage = {},
+                )
+            }
         }
 
         composeTestRule
@@ -61,14 +64,16 @@ class TransferScreenTest {
     @Test
     fun circularProgressIndicator_whenScreenIsSyncing_exists() {
         composeTestRule.setContent {
-            TransferScreen(
-                isSyncing = true,
-                feedState = TransferFeedUiState.Success(emptyList()),
-                onTransferClick = {},
-                onTransferResourceViewed = {},
-                onTransferResourcesCheckedChanged = { _, _ -> },
-                loadNextPage = {},
-            )
+            Box {
+                TransferScreen(
+                    isSyncing = true,
+                    feedState = TransferFeedUiState.Success(emptyList()),
+                    onTransferClick = {},
+                    onTransferResourceViewed = {},
+                    onTransferResourcesCheckedChanged = { _, _ -> },
+                    loadNextPage = {},
+                )
+            }
         }
 
         composeTestRule
@@ -81,14 +86,16 @@ class TransferScreenTest {
     @Test
     fun feed_whenLoaded_showsFeed() {
         composeTestRule.setContent {
-            TransferScreen(
-                isSyncing = false,
-                feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
-                onTransferClick = {},
-                onTransferResourceViewed = {},
-                onTransferResourcesCheckedChanged = { _, _ -> },
-                loadNextPage = {},
-            )
+            Box {
+                TransferScreen(
+                    isSyncing = false,
+                    feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
+                    onTransferClick = {},
+                    onTransferResourceViewed = {},
+                    onTransferResourcesCheckedChanged = { _, _ -> },
+                    loadNextPage = {},
+                )
+            }
         }
 
         composeTestRule
@@ -119,14 +126,16 @@ class TransferScreenTest {
     @Test
     fun feed_whenLoadNextPageExecuted_showsFeedWithNewItems() {
         composeTestRule.setContent {
-            TransferScreen(
-                isSyncing = false,
-                feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
-                onTransferClick = {},
-                onTransferResourceViewed = {},
-                onTransferResourcesCheckedChanged = { _, _ -> },
-                loadNextPage = {},
-            )
+            Box {
+                TransferScreen(
+                    isSyncing = false,
+                    feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
+                    onTransferClick = {},
+                    onTransferResourceViewed = {},
+                    onTransferResourcesCheckedChanged = { _, _ -> },
+                    loadNextPage = {},
+                )
+            }
         }
 
         composeTestRule

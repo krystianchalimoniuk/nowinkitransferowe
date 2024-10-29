@@ -20,7 +20,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toInstant
 import pl.nowinkitransferowe.core.model.TransferResource
 
 /**
@@ -51,4 +50,9 @@ data class TransferResourceEntity(
 )
 
 fun TransferResourceEntity.asExternalModel() =
-    TransferResource(id, name, footballerImg, clubFrom, clubFromImg, clubTo, clubToImg, price, url, season ?: "23/24", publishDate ?: "2024-08-30T14:00:00.000Z".toInstant())
+    TransferResource(
+        id, name, footballerImg, clubFrom, clubFromImg, clubTo, clubToImg, price, url, season ?: "23/24",
+        publishDate ?: Instant.parse(
+            "2024-08-30T14:00:00.000Z",
+        ),
+    )

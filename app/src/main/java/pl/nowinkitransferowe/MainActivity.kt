@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var userTransferResourceRepository: UserTransferResourceRepository
 
-    val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()

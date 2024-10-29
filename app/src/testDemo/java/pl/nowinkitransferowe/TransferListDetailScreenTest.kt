@@ -14,59 +14,58 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.transfer2pane
+package pl.nowinkitransferowe
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.material3.adaptive.Posture
-import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.ui.test.DeviceConfigurationOverride
-import androidx.compose.ui.test.ForcedSize
+import androidx.annotation.StringRes
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
 import androidx.test.espresso.Espresso
-import androidx.window.core.layout.WindowSizeClass
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.TransferResource
-import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
-import pl.nowinkitransferowe.stringResource
 import pl.nowinkitransferowe.ui.transfers2pane.TransfersListDetailScreen
 import pl.nowinkitransferowe.uitesthiltmanifest.HiltComponentActivity
 import javax.inject.Inject
+import kotlin.properties.ReadOnlyProperty
 import kotlin.test.assertTrue
 
+private const val EXPANDED_WIDTH = "w1200dp-h840dp"
+private const val COMPACT_WIDTH = "w412dp-h915dp"
+
 @HiltAndroidTest
+@RunWith(RobolectricTestRunner::class)
+@Config(application = HiltTestApplication::class)
 class TransferListDetailScreenTest {
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue
     @get:Rule(order = 1)
-    val tmpFolder: TemporaryFolder = TemporaryFolder.builder().assureDeletion().build()
-
-    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
-
-    @get:Rule(order = 4)
-    val postNotificationsPermission = GrantPostNotificationsPermissionRule()
 
     @Inject
     lateinit var transferRepository: TransferRepository
+
+    /** Convenience function for getting all transfer during tests, */
+    private fun getTransfers(): List<TransferResource> = runBlocking {
+        transferRepository.getTransferResources().first()
+    }
 
     // The strings used for matching in these tests.
     private val placeholderText by composeTestRule.stringResource(pl.nowinkitransferowe.feature.details.transfers.R.string.feature_details_transfers_select_a_transfer)
@@ -75,41 +74,18 @@ class TransferListDetailScreenTest {
     private val TransferResource.testTag
         get() = "transfer:${this.id}"
 
-    // Overrides for device sizes.
-    private enum class TestDeviceConfig(widthDp: Float, heightDp: Float) {
-        Compact(412f, 915f),
-        Expanded(1200f, 840f),
-        ;
-
-        val sizeOverride = DeviceConfigurationOverride.ForcedSize(DpSize(widthDp.dp, heightDp.dp))
-        val adaptiveInfo = WindowAdaptiveInfo(
-            windowSizeClass = WindowSizeClass.compute(widthDp, heightDp),
-            windowPosture = Posture(),
-        )
-    }
-
     @Before
     fun setup() {
         hiltRule.inject()
     }
 
-    /** Convenience function for getting all transfer during tests, */
-    private fun getTransfers(): List<TransferResource> = runBlocking {
-        transferRepository.getTransferResources().first()
-    }
-
     @Test
+    @Config(qualifiers = EXPANDED_WIDTH)
     fun expandedWidth_initialState_showsTwoPanesWithPlaceholder() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Expanded) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
-                        NtTheme {
-                            TransfersListDetailScreen(
-                                windowAdaptiveInfo = adaptiveInfo,
-                            )
-                        }
-                    }
+                NtTheme {
+                    TransfersListDetailScreen()
                 }
             }
 
@@ -119,17 +95,12 @@ class TransferListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = COMPACT_WIDTH)
     fun compactWidth_initialState_showsListPane() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Compact) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
-                        NtTheme {
-                            TransfersListDetailScreen(
-                                windowAdaptiveInfo = adaptiveInfo,
-                            )
-                        }
-                    }
+                NtTheme {
+                    TransfersListDetailScreen()
                 }
             }
 
@@ -139,17 +110,12 @@ class TransferListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = EXPANDED_WIDTH)
     fun expandedWidth_transferSelected_updatesDetailPane() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Expanded) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
-                        NtTheme {
-                            TransfersListDetailScreen(
-                                windowAdaptiveInfo = adaptiveInfo,
-                            )
-                        }
-                    }
+                NtTheme {
+                    TransfersListDetailScreen()
                 }
             }
 
@@ -163,15 +129,12 @@ class TransferListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = COMPACT_WIDTH)
     fun compactWidth_transferSelected_showsTransferDetailPane() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Compact) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
-                        NtTheme {
-                            TransfersListDetailScreen(windowAdaptiveInfo = adaptiveInfo)
-                        }
-                    }
+                NtTheme {
+                    TransfersListDetailScreen()
                 }
             }
 
@@ -185,27 +148,24 @@ class TransferListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = EXPANDED_WIDTH)
     fun expandedWidth_backPressFromTransferDetail_leavesInterests() {
         var unhandledBackPress = false
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Expanded) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
-                        NtTheme {
-                            // Back press should not be handled by the two pane layout, and thus
-                            // "fall through" to this BackHandler.
-                            BackHandler {
-                                unhandledBackPress = true
-                            }
-                            TransfersListDetailScreen(windowAdaptiveInfo = adaptiveInfo)
-                        }
+                NtTheme {
+                    // Back press should not be handled by the two pane layout, and thus
+                    // "fall through" to this BackHandler.
+                    BackHandler {
+                        unhandledBackPress = true
                     }
+                    TransfersListDetailScreen()
                 }
             }
 
             val firstTransfers = getTransfers().first()
             onNodeWithText(firstTransfers.name).performClick()
-
+            waitForIdle()
             Espresso.pressBack()
 
             assertTrue(unhandledBackPress)
@@ -213,21 +173,18 @@ class TransferListDetailScreenTest {
     }
 
     @Test
+    @Config(qualifiers = COMPACT_WIDTH)
     fun compactWidth_backPressFromTransferDetail_showsListPane() {
         composeTestRule.apply {
             setContent {
-                with(TestDeviceConfig.Compact) {
-                    DeviceConfigurationOverride(override = sizeOverride) {
-                        NtTheme {
-                            TransfersListDetailScreen(windowAdaptiveInfo = adaptiveInfo)
-                        }
-                    }
+                NtTheme {
+                    TransfersListDetailScreen()
                 }
             }
 
             val firstTransfers = getTransfers().first()
             onNodeWithText(firstTransfers.name).performClick()
-
+            waitForIdle()
             Espresso.pressBack()
 
             onNodeWithTag(listPaneTag).assertIsDisplayed()
@@ -236,3 +193,8 @@ class TransferListDetailScreenTest {
         }
     }
 }
+
+private fun AndroidComposeTestRule<*, *>.stringResource(
+    @StringRes resId: Int,
+): ReadOnlyProperty<Any, String> =
+    ReadOnlyProperty { _, _ -> activity.getString(resId) }

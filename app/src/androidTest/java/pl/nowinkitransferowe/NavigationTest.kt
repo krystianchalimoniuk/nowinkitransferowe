@@ -31,7 +31,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoActivityResumedException
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
@@ -39,7 +38,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
 import javax.inject.Inject
@@ -61,23 +59,15 @@ class NavigationTest {
     val hiltRule = HiltAndroidRule(this)
 
     /**
-     * Create a temporary folder used to create a Data Store file. This guarantees that
-     * the file is removed in between each test, preventing a crash.
-     */
-    @BindValue
-    @get:Rule(order = 1)
-    val tmpFolder: TemporaryFolder = TemporaryFolder.builder().assureDeletion().build()
-
-    /**
      * Grant [android.Manifest.permission.POST_NOTIFICATIONS] permission.
      */
-    @get:Rule(order = 2)
+    @get:Rule(order = 1)
     val postNotificationsPermission = GrantPostNotificationsPermissionRule()
 
     /**
      * Use the primary activity to initialize the app normally.
      */
-    @get:Rule(order = 3)
+    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject

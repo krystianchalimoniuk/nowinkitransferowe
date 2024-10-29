@@ -18,19 +18,22 @@ package pl.nowinkitransferowe.ui.transfers2pane
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
-import pl.nowinkitransferowe.feature.transfers.navigation.LINKED_TRANSFER_RESOURCE_ID
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_RESOURCE_ID_KEY
+import pl.nowinkitransferowe.feature.transfers.navigation.TransferRoute
 import javax.inject.Inject
 
 @HiltViewModel
 class Transfers2PaneViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private val route = savedStateHandle.toRoute<TransferRoute>()
     val selectedTransferId: StateFlow<String?> =
-        savedStateHandle.getStateFlow(LINKED_TRANSFER_RESOURCE_ID, savedStateHandle[LINKED_TRANSFER_RESOURCE_ID])
+        savedStateHandle.getStateFlow(DEEP_LINK_TRANSFER_RESOURCE_ID_KEY, route.initialTransferId)
 
     fun onTransferClick(transferId: String?) {
-        savedStateHandle[LINKED_TRANSFER_RESOURCE_ID] = transferId
+        savedStateHandle[DEEP_LINK_TRANSFER_RESOURCE_ID_KEY] = transferId
     }
 }

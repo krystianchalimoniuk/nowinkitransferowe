@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.feature.news
 
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
@@ -41,16 +42,18 @@ class NewsScreenTest {
     @Test
     fun circularProgressIndicator_whenScreenIsLoading_exists() {
         composeTestRule.setContent {
-            NewsScreen(
-                isSyncing = false,
-                feedState = NewsFeedUiState.Loading,
-                onNewsClick = {},
-                onTopicClick = {},
-                loadNextPage = {},
-                onNewsResourcesCheckedChanged = { _, _ -> },
-                onNewsSelected = {},
-                onNewsResourceViewed = {},
-            )
+            Box {
+                NewsScreen(
+                    isSyncing = false,
+                    feedState = NewsFeedUiState.Loading,
+                    onNewsClick = {},
+                    onTopicClick = {},
+                    loadNextPage = {},
+                    onNewsResourcesCheckedChanged = { _, _ -> },
+                    onNewsSelected = {},
+                    onNewsResourceViewed = {},
+                )
+            }
         }
 
         composeTestRule
@@ -63,16 +66,18 @@ class NewsScreenTest {
     @Test
     fun circularProgressIndicator_whenScreenIsSyncing_exists() {
         composeTestRule.setContent {
-            NewsScreen(
-                isSyncing = true,
-                feedState = NewsFeedUiState.Success(emptyList()),
-                onNewsClick = {},
-                onTopicClick = {},
-                loadNextPage = {},
-                onNewsResourcesCheckedChanged = { _, _ -> },
-                onNewsSelected = {},
-                onNewsResourceViewed = {},
-            )
+            Box {
+                NewsScreen(
+                    isSyncing = true,
+                    feedState = NewsFeedUiState.Success(emptyList()),
+                    onNewsClick = {},
+                    onTopicClick = {},
+                    loadNextPage = {},
+                    onNewsResourcesCheckedChanged = { _, _ -> },
+                    onNewsSelected = {},
+                    onNewsResourceViewed = {},
+                )
+            }
         }
 
         composeTestRule
@@ -85,16 +90,18 @@ class NewsScreenTest {
     @Test
     fun feed_whenLoaded_showsFeed() {
         composeTestRule.setContent {
-            NewsScreen(
-                isSyncing = false,
-                feedState = NewsFeedUiState.Success(feed = userNewsResourcesTestData),
-                onNewsClick = {},
-                onTopicClick = {},
-                loadNextPage = {},
-                onNewsResourcesCheckedChanged = { _, _ -> },
-                onNewsSelected = {},
-                onNewsResourceViewed = {},
-            )
+            Box {
+                NewsScreen(
+                    isSyncing = false,
+                    feedState = NewsFeedUiState.Success(feed = userNewsResourcesTestData),
+                    onNewsClick = {},
+                    onTopicClick = {},
+                    loadNextPage = {},
+                    onNewsResourcesCheckedChanged = { _, _ -> },
+                    onNewsSelected = {},
+                    onNewsResourceViewed = {},
+                )
+            }
         }
 
         composeTestRule
@@ -125,16 +132,18 @@ class NewsScreenTest {
     @Test
     fun feed_whenLoadNextPageExecuted_showsFeedWithNewItems() {
         composeTestRule.setContent {
-            NewsScreen(
-                isSyncing = false,
-                feedState = NewsFeedUiState.Success(feed = userNewsResourcesTestData),
-                onNewsClick = {},
-                onTopicClick = {},
-                loadNextPage = {},
-                onNewsResourcesCheckedChanged = { _, _ -> },
-                onNewsSelected = {},
-                onNewsResourceViewed = {},
-            )
+            Box {
+                NewsScreen(
+                    isSyncing = false,
+                    feedState = NewsFeedUiState.Success(feed = userNewsResourcesTestData),
+                    onNewsClick = {},
+                    onTopicClick = {},
+                    loadNextPage = {},
+                    onNewsResourcesCheckedChanged = { _, _ -> },
+                    onNewsSelected = {},
+                    onNewsResourceViewed = {},
+                )
+            }
         }
 
         composeTestRule

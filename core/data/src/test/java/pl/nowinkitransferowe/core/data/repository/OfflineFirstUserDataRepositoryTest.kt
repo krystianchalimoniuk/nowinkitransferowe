@@ -27,7 +27,8 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import pl.nowinkitransferowe.core.analytics.NoOpAnalyticsHelper
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
-import pl.nowinkitransferowe.core.datastoretest.testUserPreferencesDataStore
+import pl.nowinkitransferowe.core.datastoreproto.UserPreferences
+import pl.nowinkitransferowe.core.datastoretest.InMemoryDataStore
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserData
 import kotlin.test.assertEquals
@@ -47,7 +48,7 @@ class OfflineFirstUserDataRepositoryTest {
     @Before
     fun setup() {
         ntPreferencesDataSource = NtPreferencesDataSource(
-            tmpFolder.testUserPreferencesDataStore(TestScope(UnconfinedTestDispatcher())),
+            InMemoryDataStore(UserPreferences.getDefaultInstance()),
         )
 
         subject = OfflineFirstUserDataRepository(

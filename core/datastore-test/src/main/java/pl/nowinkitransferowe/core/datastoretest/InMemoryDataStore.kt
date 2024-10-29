@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    alias(libs.plugins.nowinkitransferowe.android.feature)
-    alias(libs.plugins.nowinkitransferowe.android.library.compose)
-    alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
-}
 
-android {
-    namespace = "pl.nowinkitransferowe.feature.details.transfers"
-}
+package pl.nowinkitransferowe.core.datastoretest
 
-dependencies {
-    implementation(projects.core.data)
-    testImplementation(projects.core.testing)
-    testImplementation(libs.robolectric)
+import androidx.datastore.core.DataStore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.updateAndGet
 
-    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
-    androidTestImplementation(projects.core.testing)
+class InMemoryDataStore<T>(initialValue: T) : DataStore<T> {
+    override val data = MutableStateFlow(initialValue)
+    override suspend fun updateData(
+        transform: suspend (it: T) -> T,
+    ) = data.updateAndGet { transform(it) }
 }
