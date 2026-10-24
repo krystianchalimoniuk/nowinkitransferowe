@@ -99,7 +99,7 @@ internal enum class PluginType(val id: String, val ref: String, val style: Strin
         style = "fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000",
     ),
     AndroidFeature(
-        id = "nowinkitransferowe.android.feature",
+        id = "nowinkitransferowe.android.feature.impl",
         ref = "android-feature",
         style = "fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000",
     ),

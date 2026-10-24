@@ -41,10 +41,10 @@ import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.ui.TrackDisposableJank
-import pl.nowinkitransferowe.feature.bookmarks.navigation.navigateToBookmarks
-import pl.nowinkitransferowe.feature.news.navigation.navigateToNews
-import pl.nowinkitransferowe.feature.search.navigation.navigateToSearch
-import pl.nowinkitransferowe.feature.transfers.navigation.navigateToTransfer
+import pl.nowinkitransferowe.feature.bookmarks.api.navigation.navigateToBookmarks
+import pl.nowinkitransferowe.feature.news.api.navigation.navigateToNews
+import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
+import pl.nowinkitransferowe.feature.transfers.api.navigation.navigateToTransfer
 import pl.nowinkitransferowe.navigation.TopLevelDestination
 
 @Composable

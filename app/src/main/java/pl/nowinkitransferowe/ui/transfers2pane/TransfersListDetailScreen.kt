@@ -49,9 +49,10 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_URI_PATTERN
 import pl.nowinkitransferowe.feature.details.transfers.DetailsTransferPlaceholder
-import pl.nowinkitransferowe.feature.details.transfers.navigation.DetailTransferRoute
+import pl.nowinkitransferowe.feature.details.transfers.api.navigation.DetailTransferRoute
+import pl.nowinkitransferowe.feature.details.transfers.api.navigation.navigateToTransferDetails
 import pl.nowinkitransferowe.feature.details.transfers.navigation.detailsTransferScreen
-import pl.nowinkitransferowe.feature.details.transfers.navigation.navigateToTransferDetails
+import pl.nowinkitransferowe.feature.transfers.api.navigation.TransferRoute
 import pl.nowinkitransferowe.feature.transfers.navigation.TransferRoute
 import java.util.UUID
 

@@ -11,19 +11,46 @@ config:
     nodePlacementStrategy: SIMPLE
 ---
 graph TB
+  subgraph :feature
+    direction TB
+    subgraph :feature:settings
+      direction TB
+      :feature:settings:impl[impl]:::android-feature
+    end
+    subgraph :feature:news
+      direction TB
+      :feature:news:api[api]:::android-library
+      :feature:news:impl[impl]:::android-feature
+    end
+    subgraph :feature:transfers
+      direction TB
+      :feature:transfers:api[api]:::android-library
+      :feature:transfers:impl[impl]:::android-feature
+    end
+    subgraph :feature:bookmarks
+      direction TB
+      :feature:bookmarks:api[api]:::android-library
+      :feature:bookmarks:impl[impl]:::android-feature
+    end
+    subgraph :feature:details
+      direction TB
+      :feature:details:api[api]:::android-library
+      :feature:details:impl[impl]:::android-feature
+    end
+    subgraph :feature:search
+      direction TB
+      :feature:search:api[api]:::android-library
+      :feature:search:impl[impl]:::android-feature
+    end
+    subgraph :feature:details-transfers
+      direction TB
+      :feature:details-transfers:api[api]:::android-library
+      :feature:details-transfers:impl[impl]:::android-feature
+    end
+  end
   subgraph :sync
     direction TB
     :sync:work[work]:::android-library
-  end
-  subgraph :feature
-    direction TB
-    :feature:bookmarks[bookmarks]:::android-feature
-    :feature:details[details]:::android-feature
-    :feature:details-transfers[details-transfers]:::android-feature
-    :feature:news[news]:::android-feature
-    :feature:search[search]:::android-feature
-    :feature:settings[settings]:::android-feature
-    :feature:transfers[transfers]:::android-feature
   end
   subgraph :core
     direction TB
@@ -51,13 +78,19 @@ graph TB
   :app -.-> :core:model
   :app -.-> :core:notifications
   :app -.-> :core:ui
-  :app -.-> :feature:bookmarks
-  :app -.-> :feature:details
-  :app -.-> :feature:details-transfers
-  :app -.-> :feature:news
-  :app -.-> :feature:search
-  :app -.-> :feature:settings
-  :app -.-> :feature:transfers
+  :app -.-> :feature:bookmarks:api
+  :app -.-> :feature:bookmarks:impl
+  :app -.-> :feature:details-transfers:api
+  :app -.-> :feature:details-transfers:impl
+  :app -.-> :feature:details:api
+  :app -.-> :feature:details:impl
+  :app -.-> :feature:news:api
+  :app -.-> :feature:news:impl
+  :app -.-> :feature:search:api
+  :app -.-> :feature:search:impl
+  :app -.-> :feature:settings:impl
+  :app -.-> :feature:transfers:api
+  :app -.-> :feature:transfers:impl
   :app -.-> :sync:work
   :benchmarks -.->|testedApks| :app
   :core:data -.-> :core:analytics
@@ -79,32 +112,38 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
-  :feature:bookmarks -.-> :core:data
-  :feature:bookmarks -.-> :core:designsystem
-  :feature:bookmarks -.-> :core:ui
-  :feature:details -.-> :core:data
-  :feature:details -.-> :core:designsystem
-  :feature:details -.-> :core:ui
-  :feature:details-transfers -.-> :core:data
-  :feature:details-transfers -.-> :core:designsystem
-  :feature:details-transfers -.-> :core:ui
-  :feature:news -.-> :core:data
-  :feature:news -.-> :core:designsystem
-  :feature:news -.-> :core:domain
-  :feature:news -.-> :core:notifications
-  :feature:news -.-> :core:ui
-  :feature:search -.-> :core:data
-  :feature:search -.-> :core:designsystem
-  :feature:search -.-> :core:domain
-  :feature:search -.-> :core:ui
-  :feature:settings -.-> :core:data
-  :feature:settings -.-> :core:designsystem
-  :feature:settings -.-> :core:ui
-  :feature:transfers -.-> :core:data
-  :feature:transfers -.-> :core:designsystem
-  :feature:transfers -.-> :core:domain
-  :feature:transfers -.-> :core:notifications
-  :feature:transfers -.-> :core:ui
+  :feature:bookmarks:impl -.-> :core:data
+  :feature:bookmarks:impl -.-> :core:designsystem
+  :feature:bookmarks:impl -.-> :core:ui
+  :feature:bookmarks:impl -.-> :feature:bookmarks:api
+  :feature:details-transfers:impl -.-> :core:data
+  :feature:details-transfers:impl -.-> :core:designsystem
+  :feature:details-transfers:impl -.-> :core:ui
+  :feature:details-transfers:impl -.-> :feature:details-transfers:api
+  :feature:details:impl -.-> :core:data
+  :feature:details:impl -.-> :core:designsystem
+  :feature:details:impl -.-> :core:ui
+  :feature:details:impl -.-> :feature:details:api
+  :feature:news:impl -.-> :core:data
+  :feature:news:impl -.-> :core:designsystem
+  :feature:news:impl -.-> :core:domain
+  :feature:news:impl -.-> :core:notifications
+  :feature:news:impl -.-> :core:ui
+  :feature:news:impl -.-> :feature:news:api
+  :feature:search:impl -.-> :core:data
+  :feature:search:impl -.-> :core:designsystem
+  :feature:search:impl -.-> :core:domain
+  :feature:search:impl -.-> :core:ui
+  :feature:search:impl -.-> :feature:search:api
+  :feature:settings:impl -.-> :core:data
+  :feature:settings:impl -.-> :core:designsystem
+  :feature:settings:impl -.-> :core:ui
+  :feature:transfers:impl -.-> :core:data
+  :feature:transfers:impl -.-> :core:designsystem
+  :feature:transfers:impl -.-> :core:domain
+  :feature:transfers:impl -.-> :core:notifications
+  :feature:transfers:impl -.-> :core:ui
+  :feature:transfers:impl -.-> :feature:transfers:api
   :sync:work -.-> :core:analytics
   :sync:work -.-> :core:data
   :sync:work -.-> :core:notifications

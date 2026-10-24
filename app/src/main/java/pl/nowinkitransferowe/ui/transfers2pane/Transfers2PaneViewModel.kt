@@ -22,7 +22,7 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_RESOURCE_ID_KEY
-import pl.nowinkitransferowe.feature.transfers.navigation.TransferRoute
+import pl.nowinkitransferowe.feature.transfers.api.navigation.TransferRoute
 import javax.inject.Inject
 
 @HiltViewModel

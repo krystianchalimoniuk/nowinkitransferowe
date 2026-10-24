@@ -49,11 +49,11 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_URI_PATTERN
 import pl.nowinkitransferowe.feature.details.DetailPlaceholder
-import pl.nowinkitransferowe.feature.details.navigation.DetailNewsRoute
+import pl.nowinkitransferowe.feature.details.api.navigation.DetailNewsRoute
+import pl.nowinkitransferowe.feature.details.api.navigation.navigateToDetails
 import pl.nowinkitransferowe.feature.details.navigation.detailsScreen
-import pl.nowinkitransferowe.feature.details.navigation.navigateToDetails
 import pl.nowinkitransferowe.feature.news.NewsRoute
-import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
+import pl.nowinkitransferowe.feature.news.api.navigation.NewsRoute
 import java.util.UUID
 
 @Serializable internal object NewsPlaceholderRoute

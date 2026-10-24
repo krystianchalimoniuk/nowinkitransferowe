@@ -201,7 +201,8 @@ nowinkitransferowe-android-application-compose = { id = "nowinkitransferowe.andr
 nowinkitransferowe-android-application-firebase = { id = "nowinkitransferowe.android.application.firebase" }
 nowinkitransferowe-android-application-flavors = { id = "nowinkitransferowe.android.application.flavors" }
 nowinkitransferowe-android-application-jacoco = { id = "nowinkitransferowe.android.application.jacoco" }
-nowinkitransferowe-android-feature = { id = "nowinkitransferowe.android.feature" }
+nowinkitransferowe-android-feature-api = { id = "nowinkitransferowe.android.feature.api" }
+nowinkitransferowe-android-feature-impl = { id = "nowinkitransferowe.android.feature.impl" }
 nowinkitransferowe-android-library = { id = "nowinkitransferowe.android.library" }
 nowinkitransferowe-android-library-compose = { id = "nowinkitransferowe.android.library.compose" }
 nowinkitransferowe-android-library-jacoco = { id = "nowinkitransferowe.android.library.jacoco" }

@@ -20,9 +20,9 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import pl.nowinkitransferowe.R
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
-import pl.nowinkitransferowe.feature.bookmarks.navigation.BookmarksRoute
-import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
-import pl.nowinkitransferowe.feature.transfers.navigation.TransferRoute
+import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksRoute
+import pl.nowinkitransferowe.feature.news.api.navigation.NewsRoute
+import pl.nowinkitransferowe.feature.transfers.api.navigation.TransferRoute
 import kotlin.reflect.KClass
 import pl.nowinkitransferowe.feature.bookmarks.R as bookmarksR
 import pl.nowinkitransferowe.feature.news.R as newsR

@@ -22,7 +22,7 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_RESOURCE_ID_KEY
-import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
+import pl.nowinkitransferowe.feature.news.api.navigation.NewsRoute
 import javax.inject.Inject
 
 @HiltViewModel

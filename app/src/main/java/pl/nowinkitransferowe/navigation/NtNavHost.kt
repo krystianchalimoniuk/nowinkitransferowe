@@ -28,12 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import pl.nowinkitransferowe.feature.bookmarks.navigation.bookmarksScreen
+import pl.nowinkitransferowe.feature.details.api.navigation.navigateToDetails
 import pl.nowinkitransferowe.feature.details.navigation.detailsScreen
-import pl.nowinkitransferowe.feature.details.navigation.navigateToDetails
+import pl.nowinkitransferowe.feature.details.transfers.api.navigation.navigateToTransferDetails
 import pl.nowinkitransferowe.feature.details.transfers.navigation.detailsTransferScreen
-import pl.nowinkitransferowe.feature.details.transfers.navigation.navigateToTransferDetails
-import pl.nowinkitransferowe.feature.news.navigation.NewsRoute
-import pl.nowinkitransferowe.feature.search.navigation.navigateToSearch
+import pl.nowinkitransferowe.feature.news.api.navigation.NewsRoute
+import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.navigation.searchScreen
 import pl.nowinkitransferowe.ui.NtAppState
 import pl.nowinkitransferowe.ui.news2pane.newsListDetailScreen
