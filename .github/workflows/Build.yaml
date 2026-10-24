@@ -214,6 +214,9 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          # The "default" API 26 image crashes in Compose SlotWriter on activity destroy;
+          # google_apis matches real devices better and passes locally (arm64)
+          target: google_apis
           arch: x86_64
           disable-animations: true
           disk-size: 6000M
