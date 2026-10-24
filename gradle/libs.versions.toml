@@ -45,6 +45,7 @@ kotlinxCoroutines = "1.10.1"
 kotlinxDatetime = "0.6.1"
 kotlinxSerializationJson = "1.8.0"
 ksp = "2.3.4"
+ktlint = "1.4.0"
 moduleGraph = "2.7.1"
 okhttp = "4.12.0"
 protobuf = "4.29.2"
@@ -54,6 +55,7 @@ retrofitKotlinxSerializationJson = "1.0.0"
 robolectric = "4.16"
 roborazzi = "1.56.0"
 room = "2.8.3"
+spotless = "8.3.0"
 truth = "1.4.4"
 turbine = "1.2.0"
 
@@ -157,6 +159,7 @@ firebase-performance-gradlePlugin = { group = "com.google.firebase", name = "per
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -177,6 +180,7 @@ module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "module
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 room = { id = "androidx.room", version.ref = "room" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 # Plugins defined by this project
 nowinkitransferowe-android-application = { id = "nowinkitransferowe.android.application" }
@@ -193,3 +197,4 @@ nowinkitransferowe-android-room = { id = "nowinkitransferowe.android.room" }
 nowinkitransferowe-android-test = { id = "nowinkitransferowe.android.test" }
 nowinkitransferowe-hilt = { id = "nowinkitransferowe.hilt" }
 nowinkitransferowe-jvm-library = { id = "nowinkitransferowe.jvm.library" }
+nowinkitransferowe-root = { id = "nowinkitransferowe.root" }

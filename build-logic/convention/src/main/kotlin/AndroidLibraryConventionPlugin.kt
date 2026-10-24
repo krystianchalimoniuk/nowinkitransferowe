@@ -20,6 +20,7 @@ import pl.nowinkitransferowe.convention.configureFlavors
 import pl.nowinkitransferowe.convention.configureGradleManagedDevices
 import pl.nowinkitransferowe.convention.configureKotlinAndroid
 import pl.nowinkitransferowe.convention.configurePrintApksTask
+import pl.nowinkitransferowe.convention.configureSpotlessForAndroid
 import pl.nowinkitransferowe.convention.disableUnnecessaryAndroidTests
 import pl.nowinkitransferowe.convention.libs
 import org.gradle.api.Plugin
@@ -52,6 +53,7 @@ abstract class AndroidLibraryConventionPlugin : Plugin<Project> {
                 configurePrintApksTask(this)
                 disableUnnecessaryAndroidTests(target)
             }
+            configureSpotlessForAndroid()
             dependencies {
                 "androidTestImplementation"(libs.findLibrary("kotlin.test").get())
                 "testImplementation"(libs.findLibrary("kotlin.test").get())

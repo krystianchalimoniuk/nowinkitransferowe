@@ -45,6 +45,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.room.gradlePlugin)
+    compileOnly(libs.spotless.gradlePlugin)
     implementation(libs.truth)
     lintChecks(libs.androidx.lint.gradle)
 }
@@ -113,6 +114,10 @@ gradlePlugin {
         register("jvmLibrary") {
             id = libs.plugins.nowinkitransferowe.jvm.library.get().pluginId
             implementationClass = "JvmLibraryConventionPlugin"
+        }
+        register("root") {
+            id = libs.plugins.nowinkitransferowe.root.get().pluginId
+            implementationClass = "RootPlugin"
         }
     }
 }

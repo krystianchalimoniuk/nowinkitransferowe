@@ -20,6 +20,7 @@ import pl.nowinkitransferowe.convention.configureBadgingTasks
 import pl.nowinkitransferowe.convention.configureGradleManagedDevices
 import pl.nowinkitransferowe.convention.configureKotlinAndroid
 import pl.nowinkitransferowe.convention.configurePrintApksTask
+import pl.nowinkitransferowe.convention.configureSpotlessForAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -42,6 +43,7 @@ abstract class AndroidApplicationConventionPlugin : Plugin<Project> {
                 configurePrintApksTask(this)
                 configureBadgingTasks(this)
             }
+            configureSpotlessForAndroid()
         }
     }
 }

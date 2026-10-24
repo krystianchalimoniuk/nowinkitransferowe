@@ -15,6 +15,7 @@
  */
 
 import pl.nowinkitransferowe.convention.configureKotlinJvm
+import pl.nowinkitransferowe.convention.configureSpotlessForJvm
 import pl.nowinkitransferowe.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -28,6 +29,7 @@ abstract class JvmLibraryConventionPlugin : Plugin<Project> {
             apply(plugin = "nowinkitransferowe.android.lint")
 
             configureKotlinJvm()
+            configureSpotlessForJvm()
             dependencies {
                 "testImplementation"(libs.findLibrary("kotlin.test").get())
             }
