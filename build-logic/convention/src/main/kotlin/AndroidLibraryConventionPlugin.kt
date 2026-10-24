@@ -4,7 +4,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.kotlin
 import pl.nowinkitransferowe.convention.configureFlavors
 import pl.nowinkitransferowe.convention.configureKotlinAndroid
 import pl.nowinkitransferowe.convention.configurePrintApksTask
@@ -23,7 +22,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = 34
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
                 defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 testOptions.animationsDisabled = true
                 configureFlavors(this)
@@ -37,8 +37,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 disableUnnecessaryAndroidTests(target)
             }
             dependencies {
-                add("androidTestImplementation", kotlin("test"))
-                add("testImplementation", kotlin("test"))
+                add("androidTestImplementation", libs.findLibrary("kotlin.test").get())
+                add("testImplementation", libs.findLibrary("kotlin.test").get())
 
                 add("implementation", libs.findLibrary("androidx.tracing.ktx").get())
             }

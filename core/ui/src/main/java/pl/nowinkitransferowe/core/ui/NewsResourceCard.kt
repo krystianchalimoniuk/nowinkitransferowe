@@ -229,7 +229,7 @@ fun NewsResourceHeaderImage(
     headerImageUrl: String?,
     height: Dp = 180.dp,
 ) {
-    val imageBaseUrl = "http://nowinkitransferowe.pl/Images/"
+    val imageBaseUrl = "https://nowinkitransferowe.pl/Images/"
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
     val imageLoader = rememberAsyncImagePainter(

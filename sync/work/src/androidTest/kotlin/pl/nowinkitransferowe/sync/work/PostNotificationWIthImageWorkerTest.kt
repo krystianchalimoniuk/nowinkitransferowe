@@ -53,7 +53,7 @@ class PostNotificationWIthImageWorkerTest {
     @Test
     fun testSyncWork() {
         // Create request
-        val request = PostNotificationWithImageWorker.startUpPostNotificationWithImageWorker(id = 1, title = "Title", description = "description", url = "http://nowinkitransferowe.pl", imageUrl = "http://nowinkitransferowe.pl/Images/mobile_app.png")
+        val request = PostNotificationWithImageWorker.startUpPostNotificationWithImageWorker(id = 1, title = "Title", description = "description", url = "https://nowinkitransferowe.pl", imageUrl = "https://nowinkitransferowe.pl/Images/mobile_app.png")
 
         val workManager = WorkManager.getInstance(context)
         val testDriver = WorkManagerTestInitHelper.getTestDriver(context)!!
@@ -65,12 +65,12 @@ class PostNotificationWIthImageWorkerTest {
         val preRunWorkInfo = workManager.getWorkInfoById(request.id).get()
 
         // Assert
-        assertEquals(WorkInfo.State.ENQUEUED, preRunWorkInfo.state)
+        assertEquals(WorkInfo.State.ENQUEUED, preRunWorkInfo?.state)
 
         // Tells the testing framework that the constraints have been met
         testDriver.setAllConstraintsMet(request.id)
 
         val postRequirementWorkInfo = workManager.getWorkInfoById(request.id).get()
-        assertEquals(WorkInfo.State.RUNNING, postRequirementWorkInfo.state)
+        assertEquals(WorkInfo.State.RUNNING, postRequirementWorkInfo?.state)
     }
 }

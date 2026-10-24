@@ -48,7 +48,8 @@ enum class NewsCategory(
 
 fun String?.asNewsCategoryType() = when (this) {
     null -> NewsCategory.UNKNOWN
-    else -> NewsCategory.values()
-        .firstOrNull { type -> type.serializedName == this }
-        ?: NewsCategory.UNKNOWN
+    else ->
+        NewsCategory.entries
+            .firstOrNull { type -> type.serializedName == this }
+            ?: NewsCategory.UNKNOWN
 }

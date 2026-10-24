@@ -37,6 +37,7 @@ import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNull
 
 class SearchViewModelTest {
 
@@ -103,6 +104,26 @@ class SearchViewModelTest {
 
         val result = viewModel.recentSearchQueriesUiState.value
         assertIs<RecentSearchQueriesUiState.Success>(result)
+    }
+
+    @Test
+    fun emptySearchText_isNotAddedToRecentSearches() = runTest {
+        viewModel.onSearchTriggered("")
+
+        val recentSearchQuery = getRecentQueryUseCase().first().firstOrNull()
+
+        assertNull(recentSearchQuery)
+    }
+
+    @Test
+    fun searchTextWithSpacesAndOneLetter_isEmptyQuery() = runTest {
+        searchContentsRepository.addNewsResources(newsResourcesTestData)
+        searchContentsRepository.addTransferResources(transferResourceTestData)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
+
+        viewModel.onSearchQueryChanged("   a")
+
+        assertEquals(SearchResultUiState.EmptyQuery, viewModel.searchResultUiState.value)
     }
 
     @Test

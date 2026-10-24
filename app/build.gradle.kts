@@ -31,14 +31,11 @@ plugins {
 android {
     defaultConfig {
         applicationId = "pl.nowinkitransferowe"
-        versionCode = 12
-        versionName = "3.1.1" // X.Y.Z; X = Major, Y = minor, Z = Patch level
+        versionCode = 13
+        versionName = "3.2.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
         // Custom test runner to set up Hilt dependency graph
         testInstrumentationRunner = "pl.nowinkitransferowe.core.testing.NtTestRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
@@ -124,7 +121,7 @@ dependencies {
     testDemoImplementation(libs.roborazzi)
     testDemoImplementation(projects.core.screenshotTesting)
 
-    androidTestImplementation(kotlin("test"))
+    androidTestImplementation(libs.kotlin.test)
     androidTestImplementation(projects.core.testing)
     androidTestImplementation(projects.core.dataTest)
     androidTestImplementation(projects.core.datastoreTest)

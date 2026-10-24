@@ -4,6 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.exclude
 import pl.nowinkitransferowe.convention.libs
 
 class AndroidApplicationFirebaseConventionPlugin : Plugin<Project> {
@@ -19,7 +20,16 @@ class AndroidApplicationFirebaseConventionPlugin : Plugin<Project> {
                 val bom = libs.findLibrary("firebase-bom").get()
                 add("implementation", platform(bom))
                 "implementation"(libs.findLibrary("firebase.analytics").get())
-                "implementation"(libs.findLibrary("firebase.performance").get())
+                "implementation"(libs.findLibrary("firebase.performance").get()) {
+                    /*
+                    Exclusion of protobuf / protolite dependencies is necessary as the
+                    datastore-proto brings in protobuf dependencies. These are the source of truth
+                    for NowinkiTransferowe.
+                    That's why the duplicate classes from below dependencies are excluded.
+                    */
+                    exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+                    exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+                }
                 "implementation"(libs.findLibrary("firebase.crashlytics").get())
             }
 
