@@ -167,6 +167,8 @@ jobs:
 
     timeout-minutes: 55
     strategy:
+      # Run every API level even when another one fails
+      fail-fast: false
       matrix:
         api-level: [26, 34]
 
