@@ -53,7 +53,7 @@ class PostNotificationWIthImageWorkerTest {
     @Test
     fun testSyncWork() {
         // Create request
-        val request = PostNotificationWithImageWorker.startUpPostNotificationWithImageWorker(id = 1, title = "Title", description = "description", url = "http://nowinkitransferowe.pl", imageUrl = "http://nowinkitransferowe.pl/Images/mobile_app.png")
+        val request = PostNotificationWithImageWorker.startUpPostNotificationWithImageWorker(id = 1, title = "Title", description = "description", url = "https://nowinkitransferowe.pl", imageUrl = "https://nowinkitransferowe.pl/Images/mobile_app.png")
 
         val workManager = WorkManager.getInstance(context)
         val testDriver = WorkManagerTestInitHelper.getTestDriver(context)!!
