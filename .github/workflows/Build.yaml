@@ -159,6 +159,12 @@ jobs:
 
   androidTest:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      # Needed by madrapps/jacoco-report to comment coverage on the PR
+      pull-requests: write
+
     timeout-minutes: 55
     strategy:
       matrix:
