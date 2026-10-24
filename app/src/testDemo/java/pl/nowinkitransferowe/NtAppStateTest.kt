@@ -33,8 +33,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.TimeZone
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,6 +47,8 @@ import pl.nowinkitransferowe.core.testing.util.TestNetworkMonitor
 import pl.nowinkitransferowe.core.testing.util.TestTimeZoneMonitor
 import pl.nowinkitransferowe.ui.NtAppState
 import pl.nowinkitransferowe.ui.rememberNtAppState
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Tests [NtAppState].
@@ -157,7 +157,7 @@ class NtAppStateTest {
         val changedTz = TimeZone.of("Europe/Prague")
         backgroundScope.launch { state.currentTimeZone.collect() }
         timeZoneMonitor.setTimeZone(changedTz)
-        kotlin.test.assertEquals(
+        assertEquals(
             changedTz,
             state.currentTimeZone.value,
         )

@@ -17,12 +17,12 @@
 package pl.nowinkitransferowe.core.data
 
 import kotlinx.datetime.Instant
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.UserData
 import pl.nowinkitransferowe.core.model.UserTransferResource
+import kotlin.test.assertEquals
 
 class UserTransferResourceTest {
 

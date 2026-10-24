@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,6 +33,7 @@ import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
+import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class BookmarksViewModelTest {
@@ -78,7 +78,7 @@ class BookmarksViewModelTest {
         userDataRepository.setNewsResourceBookmarked(newsResourcesTestData[0].id, true)
         val item = viewModel.newsFeedUiState.value
         assertIs<NewsFeedUiState.Success>(item)
-        kotlin.test.assertEquals(item.feed.size, 1)
+        assertEquals(item.feed.size, 1)
 
         collectJob.cancel()
     }
@@ -95,7 +95,7 @@ class BookmarksViewModelTest {
         // Verify list of saved resources is now empty
         val item = viewModel.newsFeedUiState.value
         assertIs<NewsFeedUiState.Success>(item)
-        kotlin.test.assertEquals(item.feed.size, 0)
+        assertEquals(item.feed.size, 0)
 
         collectJob.cancel()
     }
@@ -108,7 +108,7 @@ class BookmarksViewModelTest {
         userDataRepository.setTransferResourceBookmarked(transferResourceTestData[0].id, true)
         val item = viewModel.transferFeedUiState.value
         assertIs<TransferFeedUiState.Success>(item)
-        kotlin.test.assertEquals(item.feed.size, 1)
+        assertEquals(item.feed.size, 1)
 
         collectJob.cancel()
     }
@@ -125,7 +125,7 @@ class BookmarksViewModelTest {
         // Verify list of saved resources is now empty
         val item = viewModel.transferFeedUiState.value
         assertIs<TransferFeedUiState.Success>(item)
-        kotlin.test.assertEquals(item.feed.size, 0)
+        assertEquals(item.feed.size, 0)
 
         collectJob.cancel()
     }
