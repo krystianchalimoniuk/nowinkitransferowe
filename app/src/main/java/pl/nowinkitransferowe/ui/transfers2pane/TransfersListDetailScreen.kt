@@ -17,17 +17,16 @@
 package pl.nowinkitransferowe.ui.transfers2pane
 
 import android.content.Intent
-import androidx.activity.compose.BackHandler
 import androidx.annotation.Keep
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldDestinationItem
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
+import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
@@ -35,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -45,6 +45,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_URI_PATTERN
 import pl.nowinkitransferowe.feature.details.transfers.DetailsTransferPlaceholder
@@ -105,9 +106,7 @@ internal fun TransfersListDetailScreen(
             },
         ),
     )
-    BackHandler(listDetailNavigator.canNavigateBack()) {
-        listDetailNavigator.navigateBack()
-    }
+    val coroutineScope = rememberCoroutineScope()
 
     var nestedNavHostStartRoute by remember {
         val route = selectedTransferId?.let { DetailTransferRoute(transferId = it) } ?: TransferPlaceholderRoute
@@ -135,12 +134,13 @@ internal fun TransfersListDetailScreen(
             nestedNavHostStartRoute = DetailTransferRoute(transferId = transferId)
             nestedNavKey = UUID.randomUUID()
         }
-        listDetailNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+        coroutineScope.launch {
+            listDetailNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+        }
     }
 
-    ListDetailPaneScaffold(
-        value = listDetailNavigator.scaffoldValue,
-        directive = listDetailNavigator.scaffoldDirective,
+    NavigableListDetailPaneScaffold(
+        navigator = listDetailNavigator,
         listPane = {
             AnimatedPane {
                 TransferRoute(
@@ -159,7 +159,11 @@ internal fun TransfersListDetailScreen(
                     ) {
                         detailsTransferScreen(
                             showBackButton = !listDetailNavigator.isListPaneVisible(),
-                            onBackClick = listDetailNavigator::navigateBack,
+                            onBackClick = {
+                                coroutineScope.launch {
+                                    listDetailNavigator.navigateBack()
+                                }
+                            },
                         )
                         composable<TransferPlaceholderRoute> {
                             DetailsTransferPlaceholder()
