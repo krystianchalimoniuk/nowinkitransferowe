@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.nowinkitransferowe.util
+package pl.nowinkitransferowe.util
 
 import android.util.Log
 import androidx.profileinstaller.ProfileVerifier

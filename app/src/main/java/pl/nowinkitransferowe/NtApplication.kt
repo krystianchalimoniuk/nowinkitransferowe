@@ -20,8 +20,8 @@ import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import dagger.hilt.android.HiltAndroidApp
-import pl.nowinkitransferowe.nowinkitransferowe.util.ProfileVerifierLogger
 import pl.nowinkitransferowe.sync.work.initializers.Sync
+import pl.nowinkitransferowe.util.ProfileVerifierLogger
 import javax.inject.Inject
 
 /**
