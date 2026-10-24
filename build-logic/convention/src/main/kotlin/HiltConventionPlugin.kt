@@ -10,6 +10,8 @@ class HiltConventionPlugin : Plugin<Project> {
             pluginManager.apply("com.google.devtools.ksp")
             dependencies {
                 add("ksp", libs.findLibrary("hilt.compiler").get())
+                // Hilt needs a kotlin-metadata-jvm that can read metadata of the current Kotlin version
+                add("ksp", libs.findLibrary("kotlin.metadata").get())
             }
 
             // Add support for Jvm Module, base on org.jetbrains.kotlin.jvm
