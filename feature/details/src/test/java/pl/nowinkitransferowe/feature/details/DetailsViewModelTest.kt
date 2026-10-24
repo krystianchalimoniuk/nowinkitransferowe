@@ -97,8 +97,10 @@ class DetailsViewModelTest {
         val expected = DetailsUiState.Success(
             userNewsResource = UserNewsResource(
                 newsResource = newsResourcesTestData[0],
-                userData = emptyUserData,
-            ).copy(hasBeenViewed = true),
+                userData = emptyUserData.copy(
+                    viewedNewsResources = setOf(newsResourcesTestData[0].id),
+                ),
+            ),
         )
         assertEquals(expected = expected, actual = viewModel.detailsUiState.value)
         collectJob.cancel()

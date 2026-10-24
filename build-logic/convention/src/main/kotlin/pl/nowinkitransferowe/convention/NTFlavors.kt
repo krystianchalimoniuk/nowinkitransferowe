@@ -14,25 +14,28 @@ enum class FlavorDimension {
 // purposes, or from a production backend server which supplies up-to-date, real content.
 // These two product flavors reflect this behaviour.
 @Suppress("EnumEntryName")
-enum class NiaFlavor(val dimension: FlavorDimension, val applicationIdSuffix: String? = null) {
+enum class NtFlavor(val dimension: FlavorDimension, val applicationIdSuffix: String? = null) {
     demo(FlavorDimension.contentType, applicationIdSuffix = ".demo"),
-    prod(FlavorDimension.contentType)
+    prod(FlavorDimension.contentType),
 }
 
 fun configureFlavors(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
-    flavorConfigurationBlock: ProductFlavor.(flavor: NiaFlavor) -> Unit = {}
+    flavorConfigurationBlock: ProductFlavor.(flavor: NtFlavor) -> Unit = {},
 ) {
     commonExtension.apply {
-        flavorDimensions += FlavorDimension.contentType.name
+        FlavorDimension.values().forEach { flavorDimension ->
+            flavorDimensions += flavorDimension.name
+        }
+
         productFlavors {
-            NiaFlavor.values().forEach {
-                create(it.name) {
-                    dimension = it.dimension.name
-                    flavorConfigurationBlock(this, it)
+            NtFlavor.values().forEach { niaFlavor ->
+                register(niaFlavor.name) {
+                    dimension = niaFlavor.dimension.name
+                    flavorConfigurationBlock(this, niaFlavor)
                     if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
-                        if (it.applicationIdSuffix != null) {
-                            applicationIdSuffix = it.applicationIdSuffix
+                        if (niaFlavor.applicationIdSuffix != null) {
+                            applicationIdSuffix = niaFlavor.applicationIdSuffix
                         }
                     }
                 }

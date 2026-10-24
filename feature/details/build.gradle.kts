@@ -21,6 +21,7 @@ plugins {
 
 android {
     namespace = "pl.nowinkitransferowe.feature.details"
+    testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {

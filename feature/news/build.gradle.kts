@@ -23,6 +23,7 @@ plugins {
 
 android {
     namespace = "pl.nowinkitransferowe.feature.news"
+    testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
