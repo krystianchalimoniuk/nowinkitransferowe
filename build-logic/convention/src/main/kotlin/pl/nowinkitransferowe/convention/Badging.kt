@@ -26,7 +26,6 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
-import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
@@ -38,6 +37,7 @@ import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.gradle.process.ExecOperations
+import org.gradle.work.DisableCachingByDefault
 import javax.inject.Inject
 
 @CacheableTask
@@ -104,6 +104,27 @@ abstract class CheckBadgingTask : DefaultTask() {
     }
 }
 
+/**
+ * Copies the generated badging to the golden file. A [org.gradle.api.tasks.Copy] into the project
+ * directory would declare the whole directory as output, which Gradle 9 rejects as overlapping
+ * with the inputs of other tasks.
+ */
+@DisableCachingByDefault(because = "Copying a single file is not worth caching")
+abstract class UpdateBadgingTask : DefaultTask() {
+
+    @get:PathSensitive(PathSensitivity.NONE)
+    @get:InputFile
+    abstract val generatedBadging: RegularFileProperty
+
+    @get:OutputFile
+    abstract val goldenBadging: RegularFileProperty
+
+    @TaskAction
+    fun taskAction() {
+        generatedBadging.get().asFile.copyTo(goldenBadging.get().asFile, overwrite = true)
+    }
+}
+
 private fun String.capitalized() = replaceFirstChar {
     if (it.isLowerCase()) it.titlecase() else it.toString()
 }
@@ -126,9 +147,9 @@ fun Project.configureBadgingTasks(
             }
 
         val updateBadgingTaskName = "update${capitalizedVariantName}Badging"
-        tasks.register<Copy>(updateBadgingTaskName) {
-            from(generateBadging.map(GenerateBadgingTask::badging))
-            into(project.layout.projectDirectory)
+        tasks.register<UpdateBadgingTask>(updateBadgingTaskName) {
+            generatedBadging = generateBadging.flatMap(GenerateBadgingTask::badging)
+            goldenBadging = project.layout.projectDirectory.file("${variant.name}-badging.txt")
         }
 
         val checkBadgingTaskName = "check${capitalizedVariantName}Badging"
