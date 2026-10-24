@@ -53,7 +53,6 @@ retrofitKotlinxSerializationJson = "1.0.0"
 robolectric = "4.16"
 roborazzi = "1.51.0"
 room = "2.8.3"
-secrets = "2.0.1"
 truth = "1.4.4"
 turbine = "1.2.0"
 
@@ -173,7 +172,6 @@ module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "module
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 room = { id = "androidx.room", version.ref = "room" }
-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 
 # Plugins defined by this project
 nowinkitransferowe-android-application = { id = "nowinkitransferowe.android.application" }
