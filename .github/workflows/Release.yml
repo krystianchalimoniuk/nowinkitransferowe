@@ -75,3 +75,11 @@ jobs:
         with:
           name: Signed app bundle
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      # Upload to Play Console together with the APK to deobfuscate crash and ANR reports
+      - name: Upload R8 mapping file
+        uses: actions/upload-artifact@v4
+        with:
+          name: R8 mapping file
+          path: app/build/outputs/mapping/prodRelease/mapping.txt
+          if-no-files-found: error
