@@ -205,18 +205,14 @@ private fun ColumnScope.NotificationPanel(
     }
 }
 
-fun checkIfNotificationsAllowed(context: Context): Boolean {
-    return NotificationManagerCompat.from(context).areNotificationsEnabled()
-}
+fun checkIfNotificationsAllowed(context: Context): Boolean = NotificationManagerCompat.from(context).areNotificationsEnabled()
 
-fun checkNotificationChannelEnabled(context: Context): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channel = manager.getNotificationChannel("update_channel")
-        channel?.importance != NotificationManager.IMPORTANCE_NONE
-    } else {
-        true
-    }
+fun checkNotificationChannelEnabled(context: Context): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val channel = manager.getNotificationChannel("update_channel")
+    channel?.importance != NotificationManager.IMPORTANCE_NONE
+} else {
+    true
 }
 
 // [ColumnScope] is used for using the [ColumnScope.AnimatedVisibility] extension overload composable.

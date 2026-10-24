@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import pl.nowinkitransferowe.convention.configureSpotlessForRootProject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import pl.nowinkitransferowe.convention.configureSpotlessForRootProject
 
 abstract class RootPlugin : Plugin<Project> {
     override fun apply(target: Project) {

@@ -33,17 +33,16 @@ class TestSearchContentsRepository : SearchContentsRepository {
 
     override suspend fun populateFtsData() = Unit
 
-    override fun searchContents(searchQuery: String): Flow<SearchResult> =
-        combine(cachedTransferResources, cachedNewsResources) { transfers, news ->
-            SearchResult(
-                transferResources = transfers.filter {
-                    searchQuery in it.name
-                },
-                newsResources = news.filter {
-                    searchQuery in it.title || searchQuery in it.topics
-                },
-            )
-        }
+    override fun searchContents(searchQuery: String): Flow<SearchResult> = combine(cachedTransferResources, cachedNewsResources) { transfers, news ->
+        SearchResult(
+            transferResources = transfers.filter {
+                searchQuery in it.name
+            },
+            newsResources = news.filter {
+                searchQuery in it.title || searchQuery in it.topics
+            },
+        )
+    }
 
     override fun getSearchContentsCount(): Flow<Int> = combine(cachedTransferResources, cachedNewsResources) { transfers, news -> transfers.size + news.size }
 
@@ -51,6 +50,5 @@ class TestSearchContentsRepository : SearchContentsRepository {
     fun addTransferResources(transferResources: List<TransferResource>) = cachedTransferResources.update { it + transferResources }
 
     @TestOnly
-    fun addNewsResources(newsResources: List<NewsResource>) =
-        cachedNewsResources.update { it + newsResources }
+    fun addNewsResources(newsResources: List<NewsResource>) = cachedNewsResources.update { it + newsResources }
 }

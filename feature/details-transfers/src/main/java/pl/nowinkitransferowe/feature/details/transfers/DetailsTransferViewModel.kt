@@ -113,8 +113,7 @@ sealed interface DetailsTransferUiState {
     data class Success(
         val userTransferResource: List<UserTransferResource>,
         val dataPoints: List<DataPoint>,
-    ) :
-        DetailsTransferUiState
+    ) : DetailsTransferUiState
 
     data object Error : DetailsTransferUiState
     data object Loading : DetailsTransferUiState

@@ -122,42 +122,41 @@ class NewsResourceDaoTest {
     }
 
     @Test
-    fun newsResourceDao_deletes_items_by_ids() =
-        runTest {
-            val newsResourceEntities = listOf(
-                testTransfersResource(
-                    id = "0",
-                    millisSinceEpoch = 0,
-                ),
-                testTransfersResource(
-                    id = "1",
-                    millisSinceEpoch = 3,
-                ),
-                testTransfersResource(
-                    id = "2",
-                    millisSinceEpoch = 1,
-                ),
-                testTransfersResource(
-                    id = "3",
-                    millisSinceEpoch = 2,
-                ),
-            )
-            newsResourceDao.upsertNewsResources(newsResourceEntities)
+    fun newsResourceDao_deletes_items_by_ids() = runTest {
+        val newsResourceEntities = listOf(
+            testTransfersResource(
+                id = "0",
+                millisSinceEpoch = 0,
+            ),
+            testTransfersResource(
+                id = "1",
+                millisSinceEpoch = 3,
+            ),
+            testTransfersResource(
+                id = "2",
+                millisSinceEpoch = 1,
+            ),
+            testTransfersResource(
+                id = "3",
+                millisSinceEpoch = 2,
+            ),
+        )
+        newsResourceDao.upsertNewsResources(newsResourceEntities)
 
-            val (toDelete, toKeep) = newsResourceEntities.partition { it.id.toInt() % 2 == 0 }
+        val (toDelete, toKeep) = newsResourceEntities.partition { it.id.toInt() % 2 == 0 }
 
-            newsResourceDao.deleteNewsResources(
-                toDelete.map(NewsResourceEntity::id),
-            )
+        newsResourceDao.deleteNewsResources(
+            toDelete.map(NewsResourceEntity::id),
+        )
 
-            kotlin.test.assertEquals(
-                toKeep.map(NewsResourceEntity::id)
-                    .toSet(),
-                newsResourceDao.getNewsResources().first()
-                    .map { it.id }
-                    .toSet(),
-            )
-        }
+        kotlin.test.assertEquals(
+            toKeep.map(NewsResourceEntity::id)
+                .toSet(),
+            newsResourceDao.getNewsResources().first()
+                .map { it.id }
+                .toSet(),
+        )
+    }
 }
 private fun testTransfersResource(
     id: String = "0",

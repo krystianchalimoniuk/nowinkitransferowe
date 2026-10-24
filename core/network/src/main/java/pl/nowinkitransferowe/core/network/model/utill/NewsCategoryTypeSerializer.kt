@@ -26,12 +26,10 @@ import pl.nowinkitransferowe.core.model.NewsCategory
 import pl.nowinkitransferowe.core.model.asNewsCategoryType
 
 object NewsCategoryTypeSerializer : KSerializer<NewsCategory> {
-    override fun deserialize(decoder: Decoder): NewsCategory =
-        decoder.decodeString().asNewsCategoryType()
+    override fun deserialize(decoder: Decoder): NewsCategory = decoder.decodeString().asNewsCategoryType()
 
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor(serialName = "category", kind = PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: NewsCategory) =
-        encoder.encodeString(value.serializedName)
+    override fun serialize(encoder: Encoder, value: NewsCategory) = encoder.encodeString(value.serializedName)
 }

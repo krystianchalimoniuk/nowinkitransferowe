@@ -333,5 +333,4 @@ fun DebugVisibleWindowInsets(
 @Composable
 private fun DpRect.toInsets() = toInsets(LocalDensity.current)
 
-private fun DpRect.toInsets(density: Density) =
-    Insets.of(with(density) { toRect() }.roundToIntRect().toAndroidRect())
+private fun DpRect.toInsets(density: Density) = Insets.of(with(density) { toRect() }.roundToIntRect().toAndroidRect())

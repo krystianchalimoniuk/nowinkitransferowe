@@ -98,11 +98,10 @@ internal class DefaultSearchContentsRepository @Inject constructor(
         }
     }
 
-    override fun getSearchContentsCount(): Flow<Int> =
-        combine(
-            newsResourceFtsDao.getCount(),
-            transferResourceFtsDao.getCount(),
-        ) { newsResourceCount, topicsCount ->
-            newsResourceCount + topicsCount
-        }
+    override fun getSearchContentsCount(): Flow<Int> = combine(
+        newsResourceFtsDao.getCount(),
+        transferResourceFtsDao.getCount(),
+    ) { newsResourceCount, topicsCount ->
+        newsResourceCount + topicsCount
+    }
 }

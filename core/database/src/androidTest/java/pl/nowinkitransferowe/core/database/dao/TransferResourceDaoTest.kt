@@ -121,42 +121,41 @@ class TransferResourceDaoTest {
     }
 
     @Test
-    fun newsResourceDao_deletes_items_by_ids() =
-        runTest {
-            val transfersResourceEntities = listOf(
-                testTransferResource(
-                    id = "0",
-                    millisSinceEpoch = 0,
-                ),
-                testTransferResource(
-                    id = "1",
-                    millisSinceEpoch = 3,
-                ),
-                testTransferResource(
-                    id = "2",
-                    millisSinceEpoch = 1,
-                ),
-                testTransferResource(
-                    id = "3",
-                    millisSinceEpoch = 2,
-                ),
-            )
-            transferResourceDao.upsertTransferResources(transfersResourceEntities)
+    fun newsResourceDao_deletes_items_by_ids() = runTest {
+        val transfersResourceEntities = listOf(
+            testTransferResource(
+                id = "0",
+                millisSinceEpoch = 0,
+            ),
+            testTransferResource(
+                id = "1",
+                millisSinceEpoch = 3,
+            ),
+            testTransferResource(
+                id = "2",
+                millisSinceEpoch = 1,
+            ),
+            testTransferResource(
+                id = "3",
+                millisSinceEpoch = 2,
+            ),
+        )
+        transferResourceDao.upsertTransferResources(transfersResourceEntities)
 
-            val (toDelete, toKeep) = transfersResourceEntities.partition { it.id.toInt() % 2 == 0 }
+        val (toDelete, toKeep) = transfersResourceEntities.partition { it.id.toInt() % 2 == 0 }
 
-            transferResourceDao.deleteTransferResources(
-                toDelete.map(TransferResourceEntity::id),
-            )
+        transferResourceDao.deleteTransferResources(
+            toDelete.map(TransferResourceEntity::id),
+        )
 
-            kotlin.test.assertEquals(
-                toKeep.map(TransferResourceEntity::id)
-                    .toSet(),
-                transferResourceDao.getTransferResources().first()
-                    .map { it.id }
-                    .toSet(),
-            )
-        }
+        kotlin.test.assertEquals(
+            toKeep.map(TransferResourceEntity::id)
+                .toSet(),
+            transferResourceDao.getTransferResources().first()
+                .map { it.id }
+                .toSet(),
+        )
+    }
 }
 
 private fun testTransferResource(

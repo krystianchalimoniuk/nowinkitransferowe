@@ -28,6 +28,5 @@ import javax.inject.Inject
 internal class NoOpNotifier @Inject constructor() : Notifier {
     override fun postNewsNotifications(newsResources: List<NewsResource>) = Unit
     override fun postTransferNotifications(transferResource: List<TransferResource>) = Unit
-    override fun postGeneralNotification(generalNotificationResource: GeneralNotificationResource, bitmap: Bitmap?) =
-        Unit
+    override fun postGeneralNotification(generalNotificationResource: GeneralNotificationResource, bitmap: Bitmap?) = Unit
 }

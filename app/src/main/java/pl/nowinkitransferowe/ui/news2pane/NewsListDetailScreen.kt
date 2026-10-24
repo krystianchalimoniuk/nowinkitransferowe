@@ -180,9 +180,7 @@ internal fun NewsListDetailScreen(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun <T> ThreePaneScaffoldNavigator<T>.isListPaneVisible(): Boolean =
-    scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
+private fun <T> ThreePaneScaffoldNavigator<T>.isListPaneVisible(): Boolean = scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun <T> ThreePaneScaffoldNavigator<T>.isDetailPaneVisible(): Boolean =
-    scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
+private fun <T> ThreePaneScaffoldNavigator<T>.isDetailPaneVisible(): Boolean = scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded

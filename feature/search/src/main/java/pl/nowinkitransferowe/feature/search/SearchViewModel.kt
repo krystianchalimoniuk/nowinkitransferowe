@@ -145,13 +145,12 @@ class SearchViewModel @Inject constructor(
     }
 }
 
-private fun AnalyticsHelper.logEventSearchTriggered(query: String) =
-    logEvent(
-        event = AnalyticsEvent(
-            type = SEARCH_QUERY,
-            extras = listOf(element = AnalyticsEvent.Param(key = SEARCH_QUERY, value = query)),
-        ),
-    )
+private fun AnalyticsHelper.logEventSearchTriggered(query: String) = logEvent(
+    event = AnalyticsEvent(
+        type = SEARCH_QUERY,
+        extras = listOf(element = AnalyticsEvent.Param(key = SEARCH_QUERY, value = query)),
+    ),
+)
 
 /** Minimum length where search query is considered as [SearchResultUiState.EmptyQuery] */
 private const val SEARCH_QUERY_MIN_LENGTH = 2

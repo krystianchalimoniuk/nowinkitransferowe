@@ -27,8 +27,7 @@ import pl.nowinkitransferowe.feature.search.SearchRoute
     val searchQuery: String? = null,
 )
 
-fun NavController.navigateToSearch(query: String?, navOptions: NavOptions? = null) =
-    navigate(SearchRoute(query), navOptions)
+fun NavController.navigateToSearch(query: String?, navOptions: NavOptions? = null) = navigate(SearchRoute(query), navOptions)
 
 fun NavGraphBuilder.searchScreen(
     onBackClick: () -> Unit,

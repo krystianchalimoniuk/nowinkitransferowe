@@ -90,15 +90,11 @@ class RetrofitNtNetwork @Inject constructor(
             .create(RetrofitNtNetworkApi::class.java)
     }
 
-    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> =
-        networkApi.getTransfers(ids = ids)
+    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> = networkApi.getTransfers(ids = ids)
 
-    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> =
-        networkApi.getNews(ids = ids)
+    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> = networkApi.getNews(ids = ids)
 
-    override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> =
-        networkApi.getNewsResourcesChangeList(after = after)
+    override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> = networkApi.getNewsResourcesChangeList(after = after)
 
-    override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> =
-        networkApi.getTransfersChangeList(after = after)
+    override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> = networkApi.getTransfersChangeList(after = after)
 }

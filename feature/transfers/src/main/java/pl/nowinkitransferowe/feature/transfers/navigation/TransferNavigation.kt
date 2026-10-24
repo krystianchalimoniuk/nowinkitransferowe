@@ -26,5 +26,4 @@ data class TransferRoute(
     val initialTransferId: String? = null,
 )
 
-fun NavController.navigateToTransfer(initialTransferId: String?, navOptions: NavOptions) =
-    navigate(TransferRoute(initialTransferId), navOptions)
+fun NavController.navigateToTransfer(initialTransferId: String?, navOptions: NavOptions) = navigate(TransferRoute(initialTransferId), navOptions)

@@ -25,8 +25,7 @@ import pl.nowinkitransferowe.feature.bookmarks.BookmarksRoute
 
 @Serializable object BookmarksRoute
 
-fun NavController.navigateToBookmarks(navOptions: NavOptions) =
-    navigate(BookmarksRoute, navOptions)
+fun NavController.navigateToBookmarks(navOptions: NavOptions) = navigate(BookmarksRoute, navOptions)
 
 fun NavGraphBuilder.bookmarksScreen(
     onNewsClick: (String) -> Unit,

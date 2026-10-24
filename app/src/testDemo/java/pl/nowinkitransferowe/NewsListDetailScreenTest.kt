@@ -210,5 +210,4 @@ class NewsListDetailScreenTest {
 }
 private fun AndroidComposeTestRule<*, *>.stringResource(
     @StringRes resId: Int,
-): ReadOnlyProperty<Any, String> =
-    ReadOnlyProperty { _, _ -> activity.getString(resId) }
+): ReadOnlyProperty<Any, String> = ReadOnlyProperty { _, _ -> activity.getString(resId) }

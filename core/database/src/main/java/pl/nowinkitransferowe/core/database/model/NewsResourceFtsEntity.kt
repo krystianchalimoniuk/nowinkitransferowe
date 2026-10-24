@@ -35,9 +35,8 @@ data class NewsResourceFtsEntity(
 
 )
 
-fun NewsResourceEntity.asFtsEntity() =
-    NewsResourceFtsEntity(
-        newsResourceId = id,
-        title = title,
-        topics = topics,
-    )
+fun NewsResourceEntity.asFtsEntity() = NewsResourceFtsEntity(
+    newsResourceId = id,
+    title = title,
+    topics = topics,
+)

@@ -38,22 +38,18 @@ class DemoNtNetworkDataSource @Inject constructor(
     private val networkJson: Json,
     private val assets: DemoAssetManager = JvmUnitTestDemoAssetManager,
 ) : NtNetworkDataSource {
-    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> =
-        withContext(ioDispatcher) {
-            assets.open(TRANSFERS_ASSET).use(networkJson::decodeFromStream)
-        }
+    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> = withContext(ioDispatcher) {
+        assets.open(TRANSFERS_ASSET).use(networkJson::decodeFromStream)
+    }
 
     @OptIn(ExperimentalSerializationApi::class)
-    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> =
-        withContext(ioDispatcher) {
-            assets.open(NEWS_ASSET).use(networkJson::decodeFromStream)
-        }
+    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> = withContext(ioDispatcher) {
+        assets.open(NEWS_ASSET).use(networkJson::decodeFromStream)
+    }
 
-    override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> =
-        getNewsResources().mapToChangeList(NetworkNewsResource::id)
+    override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> = getNewsResources().mapToChangeList(NetworkNewsResource::id)
 
-    override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> =
-        getTransferResources().mapToChangeList(NetworkTransferResource::id)
+    override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> = getTransferResources().mapToChangeList(NetworkTransferResource::id)
 
     companion object {
         private const val NEWS_ASSET = "news.json"

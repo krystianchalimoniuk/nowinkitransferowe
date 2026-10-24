@@ -234,36 +234,34 @@ private fun getShareIntent(url: String): Intent {
 }
 
 @Composable
-private fun prepareUrl(id: String, title: String, category: String) =
-    "${BuildConfig.BASE_URL}$id/${
-        category.replace(
-            " ",
-            "-",
-        )
-    }/${escapeTitle(title = title)}"
+private fun prepareUrl(id: String, title: String, category: String) = "${BuildConfig.BASE_URL}$id/${
+    category.replace(
+        " ",
+        "-",
+    )
+}/${escapeTitle(title = title)}"
 
 @Composable
-private fun escapeTitle(title: String): String =
-    title.lowercase()
-        .replace(" ", "-")
-        .replace("!", "-")
-        .replace(":", "")
-        .replace("?", "-")
-        .replace(",", "")
-        .replace("ą", "a")
-        .replace("ć", "c")
-        .replace("ę", "e")
-        .replace("ł", "l")
-        .replace("ń", "n")
-        .replace("ó", "o")
-        .replace("ś", "s")
-        .replace("ż", "z")
-        .replace("ź", "z")
-        .replace("'", "")
-        .replace("(", "")
-        .replace(")", "")
-        .replace("[", "")
-        .replace("]", "")
+private fun escapeTitle(title: String): String = title.lowercase()
+    .replace(" ", "-")
+    .replace("!", "-")
+    .replace(":", "")
+    .replace("?", "-")
+    .replace(",", "")
+    .replace("ą", "a")
+    .replace("ć", "c")
+    .replace("ę", "e")
+    .replace("ł", "l")
+    .replace("ń", "n")
+    .replace("ó", "o")
+    .replace("ś", "s")
+    .replace("ż", "z")
+    .replace("ź", "z")
+    .replace("'", "")
+    .replace("(", "")
+    .replace(")", "")
+    .replace("[", "")
+    .replace("]", "")
 
 @Composable
 private fun DetailsBody(
@@ -366,12 +364,11 @@ fun NewsResourceDetailsTitle(
 @Composable
 private fun shouldUseDarkTheme(
     darkThemeConfig: DarkThemeConfig,
-): Boolean =
-    when (darkThemeConfig) {
-        DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
-        DarkThemeConfig.LIGHT -> false
-        DarkThemeConfig.DARK -> true
-    }
+): Boolean = when (darkThemeConfig) {
+    DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+    DarkThemeConfig.LIGHT -> false
+    DarkThemeConfig.DARK -> true
+}
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable

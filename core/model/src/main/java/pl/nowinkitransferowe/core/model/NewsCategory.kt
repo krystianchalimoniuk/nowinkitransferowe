@@ -37,12 +37,10 @@ enum class NewsCategory(
     UNKNOWN("Unknown", ""),
     ;
 
-    fun combineNameWithEmoji(): String {
-        return if (emojiString.isNotEmpty()) {
-            this.serializedName + " " + this.emojiString
-        } else {
-            this.serializedName
-        }
+    fun combineNameWithEmoji(): String = if (emojiString.isNotEmpty()) {
+        this.serializedName + " " + this.emojiString
+    } else {
+        this.serializedName
     }
 }
 
