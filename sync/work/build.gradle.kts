@@ -42,5 +42,6 @@ dependencies {
     androidTestImplementation(libs.androidx.work.testing)
     androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(libs.kotlinx.coroutines.guava)
+    androidTestImplementation(projects.core.datastoreTest)
     androidTestImplementation(projects.core.testing)
 }
