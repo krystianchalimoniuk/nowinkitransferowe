@@ -144,7 +144,7 @@ fun DetailsTransferScreen(
                 DetailsTransferUiState.Loading ->
                     NtLoadingWheel(
                         modifier = modifier,
-                        contentDesc = stringResource(id = R.string.feature_details_transfers_loading),
+                        contentDesc = stringResource(id = R.string.feature_details_transfers_impl_loading),
                     )
 
                 DetailsTransferUiState.Error -> {
@@ -217,23 +217,23 @@ fun DetailsTransferBody(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_details_transfers_list_label_season),
+                                label = stringResource(id = R.string.feature_details_transfers_impl_list_label_season),
                                 modifier = Modifier.weight(.12f),
                             )
                             TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_details_transfers_list_label_date),
+                                label = stringResource(id = R.string.feature_details_transfers_impl_list_label_date),
                                 modifier = Modifier.weight(.14f),
                             )
                             TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_details_transfers_list_label_club_from),
+                                label = stringResource(id = R.string.feature_details_transfers_impl_list_label_club_from),
                                 modifier = Modifier.weight(.32f),
                             )
                             TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_details_transfers_list_label_club_to),
+                                label = stringResource(id = R.string.feature_details_transfers_impl_list_label_club_to),
                                 modifier = Modifier.weight(.32f),
                             )
                             TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_details_transfers_list_label_price),
+                                label = stringResource(id = R.string.feature_details_transfers_impl_list_label_price),
                                 modifier = Modifier.weight(.1f),
                             )
                         }
@@ -258,7 +258,7 @@ fun DetailsTransferBody(
                                 .fillMaxWidth()
                                 .padding(vertical = 32.dp, horizontal = 8.dp),
                         ) {
-                            TransfersResourceTransferListLabel(label = stringResource(id = R.string.feature_details_transfers_list_label_total_transfer_amount))
+                            TransfersResourceTransferListLabel(label = stringResource(id = R.string.feature_details_transfers_impl_list_label_total_transfer_amount))
                             TransfersResourceTransferListLabel(
                                 label = calculateTransferSum(
                                     userTransferResources.map { it.price },
@@ -268,11 +268,11 @@ fun DetailsTransferBody(
                         Spacer(modifier = Modifier.height(10.dp))
                         if (hasMoreThanOrEqualTwoCashTransfers(userTransferResources.map { it.price })) {
                             TransfersResourceChartTitle(
-                                label = stringResource(R.string.feature_details_transfers_transfers_value),
+                                label = stringResource(R.string.feature_details_transfers_impl_transfers_value),
                                 Modifier.padding(horizontal = 8.dp),
                             )
                             TransfersResourceMaxTransferValue(
-                                label = stringResource(R.string.feature_details_transfers_max_transfer_value),
+                                label = stringResource(R.string.feature_details_transfers_impl_max_transfer_value),
                                 value = calculateMaxTransferValue(prices = userTransferResources.map { it.price }),
                                 modifier = Modifier
                                     .align(Alignment.End)

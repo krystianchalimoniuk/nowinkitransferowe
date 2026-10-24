@@ -58,7 +58,7 @@ class NewsScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_news_loading),
+                composeTestRule.activity.resources.getString(R.string.feature_news_impl_loading),
             )
             .assertExists()
     }
@@ -82,7 +82,7 @@ class NewsScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_news_loading),
+                composeTestRule.activity.resources.getString(R.string.feature_news_impl_loading),
             )
             .assertExists()
     }

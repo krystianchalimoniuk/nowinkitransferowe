@@ -56,7 +56,7 @@ class TransferScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_transfers_loading),
+                composeTestRule.activity.resources.getString(R.string.feature_transfers_impl_loading),
             )
             .assertExists()
     }
@@ -78,7 +78,7 @@ class TransferScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_transfers_loading),
+                composeTestRule.activity.resources.getString(R.string.feature_transfers_impl_loading),
             )
             .assertExists()
     }

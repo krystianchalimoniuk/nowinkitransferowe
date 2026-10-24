@@ -15,6 +15,6 @@
      limitations under the License.
 -->
 <resources>
-    <string name="feature_details_loading">Ładuje nowinkę</string>
-    <string name="feature_details_select_an_news">Wybierz nowinkę</string>
+    <string name="feature_details_impl_loading">Ładuje nowinkę</string>
+    <string name="feature_details_impl_select_an_news">Wybierz nowinkę</string>
 </resources>

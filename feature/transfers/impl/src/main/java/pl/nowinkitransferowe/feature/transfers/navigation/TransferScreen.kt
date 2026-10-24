@@ -161,7 +161,7 @@ internal fun TransferScreen(
                     ) {
                         NtButton(
                             onClick = { onTransferResourceViewed(unreadTransfers) },
-                            text = { Text(stringResource(R.string.feature_transfers_mark_as_read)) },
+                            text = { Text(stringResource(R.string.feature_transfers_impl_mark_as_read)) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = NtIcons.MarkAsRead,
@@ -201,7 +201,7 @@ internal fun TransferScreen(
                 targetOffsetY = { fullHeight -> -fullHeight },
             ) + fadeOut(),
         ) {
-            val loadingContentDescription = stringResource(id = R.string.feature_transfers_loading)
+            val loadingContentDescription = stringResource(id = R.string.feature_transfers_impl_loading)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

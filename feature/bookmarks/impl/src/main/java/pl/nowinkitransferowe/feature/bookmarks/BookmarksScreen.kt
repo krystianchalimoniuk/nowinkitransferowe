@@ -129,8 +129,8 @@ internal fun BookmarksScreen(
     undoBookmarkRemoval: () -> Unit = {},
     clearUndoState: () -> Unit = {},
 ) {
-    val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_removed)
-    val undoText = stringResource(id = R.string.feature_bookmarks_undo)
+    val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_impl_removed)
+    val undoText = stringResource(id = R.string.feature_bookmarks_impl_undo)
 
     val itemsAvailable = feedItemsSize(newsFeedState, transferFeedState)
 
@@ -204,7 +204,7 @@ fun BookmarksGrid(
                     Text(
                         text = buildAnnotatedString {
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(stringResource(id = R.string.feature_bookmarks_news))
+                                append(stringResource(id = R.string.feature_bookmarks_impl_news))
                             }
                         },
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -226,7 +226,7 @@ fun BookmarksGrid(
                     Text(
                         text = buildAnnotatedString {
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(stringResource(id = R.string.feature_bookmarks_transfers))
+                                append(stringResource(id = R.string.feature_bookmarks_impl_transfers))
                             }
                         },
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -283,7 +283,7 @@ private fun LoadingState(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .wrapContentSize()
             .testTag("bookmarks:loading"),
-        contentDesc = stringResource(id = R.string.feature_bookmarks_loading),
+        contentDesc = stringResource(id = R.string.feature_bookmarks_impl_loading),
     )
 }
 
@@ -300,7 +300,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         val iconTint = LocalTintTheme.current.iconTint
         Image(
             modifier = Modifier.fillMaxWidth(),
-            painter = painterResource(id = R.drawable.feature_bookmarks_img_empty_bookmarks),
+            painter = painterResource(id = R.drawable.feature_bookmarks_impl_img_empty_bookmarks),
             colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
             contentDescription = null,
         )
@@ -308,7 +308,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            text = stringResource(id = R.string.feature_bookmarks_empty_error),
+            text = stringResource(id = R.string.feature_bookmarks_impl_empty_error),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium,
@@ -318,7 +318,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = stringResource(id = R.string.feature_bookmarks_empty_description),
+            text = stringResource(id = R.string.feature_bookmarks_impl_empty_description),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,

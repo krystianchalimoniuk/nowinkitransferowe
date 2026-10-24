@@ -74,14 +74,14 @@ class NavigationTest {
     lateinit var newsRepository: NewsRepository
 
     // The strings used for matching in these tests
-    private val navigateUp by composeTestRule.stringResource(NewsR.string.feature_news_navigate_up)
-    private val news by composeTestRule.stringResource(NewsR.string.feature_news_title)
-    private val transfers by composeTestRule.stringResource(TransfersR.string.feature_transfers_title)
-    private val darkMode by composeTestRule.stringResource(SettingsR.string.feature_settings_dark_mode_config_dark)
+    private val navigateUp by composeTestRule.stringResource(NewsR.string.feature_news_impl_navigate_up)
+    private val news by composeTestRule.stringResource(NewsR.string.feature_news_impl_title)
+    private val transfers by composeTestRule.stringResource(TransfersR.string.feature_transfers_impl_title)
+    private val darkMode by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_dark_mode_config_dark)
     private val appName by composeTestRule.stringResource(R.string.app_name)
-    private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_title)
-    private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_top_app_bar_action_icon_description)
-    private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
+    private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_impl_title)
+    private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_top_app_bar_action_icon_description)
+    private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_dismiss_dialog_button_text)
 
     @Before
     fun setup() = hiltRule.inject()

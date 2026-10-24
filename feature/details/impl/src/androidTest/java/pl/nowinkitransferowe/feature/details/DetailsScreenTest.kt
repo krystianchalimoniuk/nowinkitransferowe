@@ -45,7 +45,7 @@ class DetailsScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_details_loading),
+                composeTestRule.activity.resources.getString(R.string.feature_details_impl_loading),
             )
             .assertExists()
     }

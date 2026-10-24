@@ -120,7 +120,7 @@ fun SettingsDialog(
         onDismissRequest = { onDismiss() },
         title = {
             Text(
-                text = stringResource(string.feature_settings_title),
+                text = stringResource(string.feature_settings_impl_title),
                 style = MaterialTheme.typography.titleLarge,
             )
         },
@@ -130,7 +130,7 @@ fun SettingsDialog(
                 when (settingsUiState) {
                     SettingsUiState.Loading -> {
                         Text(
-                            text = stringResource(string.feature_settings_loading),
+                            text = stringResource(string.feature_settings_impl_loading),
                             modifier = Modifier.padding(vertical = 16.dp),
                         )
                     }
@@ -159,7 +159,7 @@ fun SettingsDialog(
         },
         confirmButton = {
             Text(
-                text = stringResource(string.feature_settings_dismiss_dialog_button_text),
+                text = stringResource(string.feature_settings_impl_dismiss_dialog_button_text),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -183,20 +183,20 @@ private fun ColumnScope.NotificationPanel(
         remember { mutableStateOf(checkNotificationChannelEnabled(context)) }
     AnimatedVisibility(visible = isNotificationsAllowed.value && isNotificationChannelEnabled.value) {
         Column {
-            SettingsDialogSectionTitle(text = stringResource(string.feature_settings_notification_preference))
+            SettingsDialogSectionTitle(text = stringResource(string.feature_settings_impl_notification_preference))
             Column {
                 SettingsDialogNotificationSwitchRow(
-                    text = stringResource(id = string.feature_settings_notification_channel_news),
+                    text = stringResource(id = string.feature_settings_impl_notification_channel_news),
                     checked = settings.isNewsNotificationsAllowed,
                     onCheckedChange = onChangeNewsNotificationsPreference,
                 )
                 SettingsDialogNotificationSwitchRow(
-                    text = stringResource(id = string.feature_settings_notification_channel_transfers),
+                    text = stringResource(id = string.feature_settings_impl_notification_channel_transfers),
                     checked = settings.isTransfersNotificationsAllowed,
                     onCheckedChange = onChangeTransfersNotificationsPreference,
                 )
                 SettingsDialogNotificationSwitchRow(
-                    text = stringResource(id = string.feature_settings_notification_channel_general),
+                    text = stringResource(id = string.feature_settings_impl_notification_channel_general),
                     checked = settings.isGeneralNotificationsAllowed,
                     onCheckedChange = onChangeGeneralNotificationsPreference,
                 )
@@ -225,35 +225,35 @@ private fun ColumnScope.SettingsPanel(
 ) {
     AnimatedVisibility(supportDynamicColor) {
         Column {
-            SettingsDialogSectionTitle(text = stringResource(string.feature_settings_dynamic_color_preference))
+            SettingsDialogSectionTitle(text = stringResource(string.feature_settings_impl_dynamic_color_preference))
             Column(Modifier.selectableGroup()) {
                 SettingsDialogThemeChooserRow(
-                    text = stringResource(string.feature_settings_dynamic_color_yes),
+                    text = stringResource(string.feature_settings_impl_dynamic_color_yes),
                     selected = settings.useDynamicColor,
                     onClick = { onChangeDynamicColorPreference(true) },
                 )
                 SettingsDialogThemeChooserRow(
-                    text = stringResource(string.feature_settings_dynamic_color_no),
+                    text = stringResource(string.feature_settings_impl_dynamic_color_no),
                     selected = !settings.useDynamicColor,
                     onClick = { onChangeDynamicColorPreference(false) },
                 )
             }
         }
     }
-    SettingsDialogSectionTitle(text = stringResource(string.feature_settings_dark_mode_preference))
+    SettingsDialogSectionTitle(text = stringResource(string.feature_settings_impl_dark_mode_preference))
     Column(Modifier.selectableGroup()) {
         SettingsDialogThemeChooserRow(
-            text = stringResource(string.feature_settings_dark_mode_config_system_default),
+            text = stringResource(string.feature_settings_impl_dark_mode_config_system_default),
             selected = settings.darkThemeConfig == DarkThemeConfig.FOLLOW_SYSTEM,
             onClick = { onChangeDarkThemeConfig(DarkThemeConfig.FOLLOW_SYSTEM) },
         )
         SettingsDialogThemeChooserRow(
-            text = stringResource(string.feature_settings_dark_mode_config_light),
+            text = stringResource(string.feature_settings_impl_dark_mode_config_light),
             selected = settings.darkThemeConfig == DarkThemeConfig.LIGHT,
             onClick = { onChangeDarkThemeConfig(DarkThemeConfig.LIGHT) },
         )
         SettingsDialogThemeChooserRow(
-            text = stringResource(string.feature_settings_dark_mode_config_dark),
+            text = stringResource(string.feature_settings_impl_dark_mode_config_dark),
             selected = settings.darkThemeConfig == DarkThemeConfig.DARK,
             onClick = { onChangeDarkThemeConfig(DarkThemeConfig.DARK) },
         )
@@ -337,7 +337,7 @@ fun SettingsDialogNotificationSwitchRow(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SocialMediaPanel() {
-    SettingsDialogSectionTitle(text = stringResource(string.feature_settings_social_media_panel))
+    SettingsDialogSectionTitle(text = stringResource(string.feature_settings_impl_social_media_panel))
     Spacer(modifier = Modifier.height(16.dp))
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(
@@ -353,7 +353,7 @@ private fun SocialMediaPanel() {
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            contentDescription = stringResource(id = string.feature_settings_instagram_content_description),
+            contentDescription = stringResource(id = string.feature_settings_impl_instagram_content_description),
         )
         NtIconButton(
             onClick = { uriHandler.openUri(X_URL) },
@@ -361,7 +361,7 @@ private fun SocialMediaPanel() {
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            contentDescription = stringResource(id = string.feature_settings_x_content_description),
+            contentDescription = stringResource(id = string.feature_settings_impl_x_content_description),
         )
         NtIconButton(
             onClick = { uriHandler.openUri(FACEBOOK_URL) },
@@ -369,7 +369,7 @@ private fun SocialMediaPanel() {
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            contentDescription = stringResource(id = string.feature_settings_facebook_content_description),
+            contentDescription = stringResource(id = string.feature_settings_impl_facebook_content_description),
         )
         NtIconButton(
             onClick = { uriHandler.openUri(WWW_URL) },
@@ -377,7 +377,7 @@ private fun SocialMediaPanel() {
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            contentDescription = stringResource(id = string.feature_settings_www_content_description),
+            contentDescription = stringResource(id = string.feature_settings_impl_www_content_description),
         )
     }
     Spacer(modifier = Modifier.height(16.dp))
@@ -397,7 +397,7 @@ private fun LinksPanel() {
         NtTextButton(
             onClick = { uriHandler.openUri(PRIVACY_POLICY_URL) },
         ) {
-            Text(text = stringResource(string.feature_settings_privacy_policy))
+            Text(text = stringResource(string.feature_settings_impl_privacy_policy))
         }
         val context = LocalContext.current
         NtTextButton(
@@ -405,7 +405,7 @@ private fun LinksPanel() {
                 context.startActivity(Intent(context, OssLicensesMenuActivity::class.java))
             },
         ) {
-            Text(text = stringResource(string.feature_settings_licenses))
+            Text(text = stringResource(string.feature_settings_impl_licenses))
         }
     }
 }

@@ -54,7 +54,7 @@ class SettingsDialogTest {
         }
 
         composeTestRule
-            .onNodeWithText(getString(R.string.feature_settings_loading))
+            .onNodeWithText(getString(R.string.feature_settings_impl_loading))
             .assertExists()
     }
 
@@ -81,22 +81,22 @@ class SettingsDialogTest {
         }
 
         // Check that all the possible settings are displayed.
-        composeTestRule.onNodeWithText(getString(R.string.feature_settings_notification_channel_news)).assertExists()
-        composeTestRule.onNodeWithText(getString(R.string.feature_settings_notification_channel_transfers)).assertExists()
-        composeTestRule.onNodeWithText(getString(R.string.feature_settings_notification_channel_general)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_notification_channel_news)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_notification_channel_transfers)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_notification_channel_general)).assertExists()
 
         composeTestRule.onNodeWithText(
-            getString(R.string.feature_settings_dark_mode_config_system_default),
+            getString(R.string.feature_settings_impl_dark_mode_config_system_default),
         ).assertExists()
-        composeTestRule.onNodeWithText(getString(R.string.feature_settings_dark_mode_config_light)).assertExists()
-        composeTestRule.onNodeWithText(getString(R.string.feature_settings_dark_mode_config_dark)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_dark_mode_config_light)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_dark_mode_config_dark)).assertExists()
 
         // Check that the correct settings are selected.
 
-        composeTestRule.onNodeWithTag(getString(R.string.feature_settings_notification_channel_news)).assertIsOn()
-        composeTestRule.onNodeWithTag(getString(R.string.feature_settings_notification_channel_transfers)).assertIsOn()
-        composeTestRule.onNodeWithTag(getString(R.string.feature_settings_notification_channel_general)).assertIsOn()
-        composeTestRule.onNodeWithText(getString(R.string.feature_settings_dark_mode_config_dark)).assertIsSelected()
+        composeTestRule.onNodeWithTag(getString(R.string.feature_settings_impl_notification_channel_news)).assertIsOn()
+        composeTestRule.onNodeWithTag(getString(R.string.feature_settings_impl_notification_channel_transfers)).assertIsOn()
+        composeTestRule.onNodeWithTag(getString(R.string.feature_settings_impl_notification_channel_general)).assertIsOn()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_dark_mode_config_dark)).assertIsSelected()
     }
 
     @Test
@@ -120,10 +120,10 @@ class SettingsDialogTest {
                 onChangeGeneralNotificationsPreference = {},
             )
         }
-        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_instagram_content_description)).assertExists()
-        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_x_content_description)).assertExists()
-        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_facebook_content_description)).assertExists()
-        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_www_content_description)).assertExists()
+        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_impl_instagram_content_description)).assertExists()
+        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_impl_x_content_description)).assertExists()
+        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_impl_facebook_content_description)).assertExists()
+        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_impl_www_content_description)).assertExists()
     }
 
     @Test
@@ -148,7 +148,7 @@ class SettingsDialogTest {
             )
         }
 
-        composeTestRule.onNodeWithText(getString(R.string.feature_settings_privacy_policy)).assertExists()
-        composeTestRule.onNodeWithText(getString(R.string.feature_settings_licenses)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_privacy_policy)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_licenses)).assertExists()
     }
 }

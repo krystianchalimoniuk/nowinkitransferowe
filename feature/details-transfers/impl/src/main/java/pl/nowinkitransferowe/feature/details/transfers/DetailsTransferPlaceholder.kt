@@ -50,12 +50,12 @@ fun DetailsTransferPlaceholder(modifier: Modifier = Modifier) {
             ),
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.feature_details_transfers_ic_detail_placeholder),
+                painter = painterResource(id = R.drawable.feature_details_transfers_impl_ic_detail_placeholder),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
             )
             Text(
-                text = stringResource(id = R.string.feature_details_transfers_select_a_transfer),
+                text = stringResource(id = R.string.feature_details_transfers_impl_select_a_transfer),
                 style = MaterialTheme.typography.titleLarge,
             )
         }

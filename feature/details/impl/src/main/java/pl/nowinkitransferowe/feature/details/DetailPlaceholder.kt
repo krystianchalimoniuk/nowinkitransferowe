@@ -50,12 +50,12 @@ fun DetailPlaceholder(modifier: Modifier = Modifier) {
             ),
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.feature_details_ic_detail_placeholder),
+                painter = painterResource(id = R.drawable.feature_details_impl_ic_detail_placeholder),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
             )
             Text(
-                text = stringResource(id = R.string.feature_details_select_an_news),
+                text = stringResource(id = R.string.feature_details_impl_select_an_news),
                 style = MaterialTheme.typography.titleLarge,
             )
         }

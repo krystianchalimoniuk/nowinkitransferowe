@@ -15,12 +15,12 @@
      limitations under the License.
 -->
 <resources>
-    <string name="feature_bookmarks_title">Zapisane</string>
-    <string name="feature_bookmarks_loading">Pobieram zapisane…</string>
-    <string name="feature_bookmarks_empty_error">Brak zapisanych nowinek i transferów</string>
-    <string name="feature_bookmarks_empty_description">Zapisane zakładki bedą wyświetlone tutaj\ndo przeczytania później</string>
-    <string name="feature_bookmarks_removed">Zakładka usunięta</string>
-    <string name="feature_bookmarks_undo">COFNIJ</string>
-    <string name="feature_bookmarks_news">Nowinki</string>
-    <string name="feature_bookmarks_transfers">Transfery</string>
+    <string name="feature_bookmarks_impl_title">Zapisane</string>
+    <string name="feature_bookmarks_impl_loading">Pobieram zapisane…</string>
+    <string name="feature_bookmarks_impl_empty_error">Brak zapisanych nowinek i transferów</string>
+    <string name="feature_bookmarks_impl_empty_description">Zapisane zakładki bedą wyświetlone tutaj\ndo przeczytania później</string>
+    <string name="feature_bookmarks_impl_removed">Zakładka usunięta</string>
+    <string name="feature_bookmarks_impl_undo">COFNIJ</string>
+    <string name="feature_bookmarks_impl_news">Nowinki</string>
+    <string name="feature_bookmarks_impl_transfers">Transfery</string>
 </resources>

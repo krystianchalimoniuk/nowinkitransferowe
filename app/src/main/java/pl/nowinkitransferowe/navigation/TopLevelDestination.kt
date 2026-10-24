@@ -43,22 +43,22 @@ enum class TopLevelDestination(
     NEWS(
         selectedIcon = NtIcons.Upcoming,
         unselectedIcon = NtIcons.UpcomingBorder,
-        iconTextId = newsR.string.feature_news_title,
+        iconTextId = newsR.string.feature_news_impl_title,
         titleTextId = R.string.app_name,
         route = NewsRoute::class,
     ),
     TRANSFERS(
         selectedIcon = NtIcons.Arrows,
         unselectedIcon = NtIcons.ArrowsBorder,
-        iconTextId = transferR.string.feature_transfers_title,
-        titleTextId = transferR.string.feature_transfers_title,
+        iconTextId = transferR.string.feature_transfers_impl_title,
+        titleTextId = transferR.string.feature_transfers_impl_title,
         route = TransferRoute::class,
     ),
     BOOKMARKS(
         selectedIcon = NtIcons.Bookmarks,
         unselectedIcon = NtIcons.BookmarksBorder,
-        iconTextId = bookmarksR.string.feature_bookmarks_title,
-        titleTextId = bookmarksR.string.feature_bookmarks_title,
+        iconTextId = bookmarksR.string.feature_bookmarks_impl_title,
+        titleTextId = bookmarksR.string.feature_bookmarks_impl_title,
         route = BookmarksRoute::class,
     ),
 }

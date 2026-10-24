@@ -170,7 +170,7 @@ internal fun NewsScreen(
                 targetOffsetY = { fullHeight -> -fullHeight },
             ) + fadeOut(),
         ) {
-            val loadingContentDescription = stringResource(id = R.string.feature_news_loading)
+            val loadingContentDescription = stringResource(id = R.string.feature_news_impl_loading)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

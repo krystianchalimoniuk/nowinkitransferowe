@@ -68,7 +68,7 @@ class TransferListDetailScreenTest {
     }
 
     // The strings used for matching in these tests.
-    private val placeholderText by composeTestRule.stringResource(pl.nowinkitransferowe.feature.details.transfers.R.string.feature_details_transfers_select_a_transfer)
+    private val placeholderText by composeTestRule.stringResource(pl.nowinkitransferowe.feature.details.transfers.R.string.feature_details_transfers_impl_select_a_transfer)
     private val listPaneTag = "transfers:feed"
 
     private val TransferResource.testTag

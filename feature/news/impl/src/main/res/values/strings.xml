@@ -15,11 +15,11 @@
      limitations under the License.
 -->
 <resources>
-    <string name="feature_news_title">Nowinki</string>
-    <string name="feature_news_done">Gotowane</string>
-    <string name="feature_news_loading">Ładowanie nowinek…</string>
-    <string name="feature_news_navigate_up">Nawiguj wyżej</string>
-    <string name="feature_news_onboarding_guidance_title">Czym jesteś zainteresowany?</string>
-    <string name="feature_news_onboarding_guidance_subtitle">Zmiany katogorii, które obserwujesz pojawią się tu. Zacznij obserwować aby coś się pojawiło.</string>
+    <string name="feature_news_impl_title">Nowinki</string>
+    <string name="feature_news_impl_done">Gotowane</string>
+    <string name="feature_news_impl_loading">Ładowanie nowinek…</string>
+    <string name="feature_news_impl_navigate_up">Nawiguj wyżej</string>
+    <string name="feature_news_impl_onboarding_guidance_title">Czym jesteś zainteresowany?</string>
+    <string name="feature_news_impl_onboarding_guidance_subtitle">Zmiany katogorii, które obserwujesz pojawią się tu. Zacznij obserwować aby coś się pojawiło.</string>
 
 </resources>

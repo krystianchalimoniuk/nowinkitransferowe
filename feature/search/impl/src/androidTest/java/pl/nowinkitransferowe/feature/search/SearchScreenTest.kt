@@ -62,12 +62,12 @@ class SearchScreenTest {
     @Before
     fun setup() {
         composeTestRule.activity.apply {
-            clearSearchContentDesc = getString(R.string.feature_search_clear_search_text_content_desc)
-            clearRecentSearchesContentDesc = getString(R.string.feature_search_clear_recent_searches_content_desc)
-            transfersString = getString(R.string.feature_search_transfers)
-            newsString = getString(R.string.feature_search_news)
-            tryAnotherSearchString = getString(R.string.feature_search_result_not_found, "")
-            searchNotReadyString = getString(R.string.feature_search_not_ready)
+            clearSearchContentDesc = getString(R.string.feature_search_impl_clear_search_text_content_desc)
+            clearRecentSearchesContentDesc = getString(R.string.feature_search_impl_clear_recent_searches_content_desc)
+            transfersString = getString(R.string.feature_search_impl_transfers)
+            newsString = getString(R.string.feature_search_impl_news)
+            tryAnotherSearchString = getString(R.string.feature_search_impl_result_not_found, "")
+            searchNotReadyString = getString(R.string.feature_search_impl_not_ready)
         }
     }
 

@@ -209,11 +209,11 @@ internal fun NtApp(
                         titleRes = destination.titleTextId,
                         navigationIcon = NtIcons.Search,
                         navigationIconContentDescription = stringResource(
-                            id = settingsR.string.feature_settings_top_app_bar_navigation_icon_description,
+                            id = settingsR.string.feature_settings_impl_top_app_bar_navigation_icon_description,
                         ),
                         actionIcon = NtIcons.Settings,
                         actionIconContentDescription = stringResource(
-                            id = settingsR.string.feature_settings_top_app_bar_action_icon_description,
+                            id = settingsR.string.feature_settings_impl_top_app_bar_action_icon_description,
                         ),
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color.Transparent,

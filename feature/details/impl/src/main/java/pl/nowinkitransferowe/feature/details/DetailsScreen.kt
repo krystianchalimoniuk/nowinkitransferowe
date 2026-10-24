@@ -137,7 +137,7 @@ internal fun DetailsScreen(
                 DetailsUiState.Loading ->
                     NtLoadingWheel(
                         modifier = modifier,
-                        contentDesc = stringResource(id = R.string.feature_details_loading),
+                        contentDesc = stringResource(id = R.string.feature_details_impl_loading),
                     )
 
                 DetailsUiState.Error -> {
@@ -400,7 +400,7 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
                 .height(500.dp),
             horizontalArrangement = Arrangement.Center,
         ) {
-            NtLoadingWheel(contentDesc = stringResource(id = R.string.feature_details_loading))
+            NtLoadingWheel(contentDesc = stringResource(id = R.string.feature_details_impl_loading))
         }
     }
     AnimatedVisibility(

@@ -70,7 +70,7 @@ class NewsListDetailScreenTest {
     }
 
     // The strings used for matching in these tests.
-    private val placeholderText by composeTestRule.stringResource(R.string.feature_details_select_an_news)
+    private val placeholderText by composeTestRule.stringResource(R.string.feature_details_impl_select_an_news)
     private val listPaneTag = "news:feed"
 
     private val NewsResource.testTag

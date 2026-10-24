@@ -15,16 +15,16 @@
      limitations under the License.
 -->
 <resources>
-    <string name="feature_search_title">Szukaj</string>
-    <string name="feature_search_clear_search_text_content_desc">Wyczyść wyszukiwanie</string>
-    <string name="feature_search_result_not_found">Przepraszamy, wyszukiwanie nie zostało odnalezione \"%1$s\"</string>
-    <string name="feature_search_not_ready">Przepraszamy ciągłe procesujemy bazę wyszukiwania. Wróć później</string>
-    <string name="feature_search_try_another_search">Wypróbuj inne zapytanie</string>
-    <string name="feature_search_interests">Zainteresowania</string>
-    <string name="feature_search_to_browse_topics"> wyszukaj kategorie</string>
-    <string name="feature_search_topics">Kategorie</string>
-    <string name="feature_search_news">Nowinki</string>
-    <string name="feature_search_transfers">Transfery</string>
-    <string name="feature_search_recent_searches">Ostatnie wyszukiwania</string>
-    <string name="feature_search_clear_recent_searches_content_desc">Wyczyść wyszukiwanie</string>
+    <string name="feature_search_impl_title">Szukaj</string>
+    <string name="feature_search_impl_clear_search_text_content_desc">Wyczyść wyszukiwanie</string>
+    <string name="feature_search_impl_result_not_found">Przepraszamy, wyszukiwanie nie zostało odnalezione \"%1$s\"</string>
+    <string name="feature_search_impl_not_ready">Przepraszamy ciągłe procesujemy bazę wyszukiwania. Wróć później</string>
+    <string name="feature_search_impl_try_another_search">Wypróbuj inne zapytanie</string>
+    <string name="feature_search_impl_interests">Zainteresowania</string>
+    <string name="feature_search_impl_to_browse_topics"> wyszukaj kategorie</string>
+    <string name="feature_search_impl_topics">Kategorie</string>
+    <string name="feature_search_impl_news">Nowinki</string>
+    <string name="feature_search_impl_transfers">Transfery</string>
+    <string name="feature_search_impl_recent_searches">Ostatnie wyszukiwania</string>
+    <string name="feature_search_impl_clear_recent_searches_content_desc">Wyczyść wyszukiwanie</string>
 </resources>

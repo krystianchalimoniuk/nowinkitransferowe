@@ -40,7 +40,7 @@ class DetailsTransferScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_details_transfers_loading),
+                composeTestRule.activity.resources.getString(R.string.feature_details_transfers_impl_loading),
             )
             .assertExists()
     }
