@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 plugins {
-    alias(libs.plugins.nowinkitransferowe.android.library)
+    alias(libs.plugins.nowinkitransferowe.jvm.library)
     alias(libs.plugins.protobuf)
-}
-
-android {
-    namespace = "pl.nowinkitransferowe.core.datastoreproto"
 }
 
 // Setup protobuf configuration, generating lite Java and Kotlin classes
@@ -28,9 +24,9 @@ protobuf {
         artifact = libs.protobuf.protoc.get().toString()
     }
     generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
-                register("java") {
+        all().configureEach {
+            builtins {
+                named("java") {
                     option("lite")
                 }
                 register("kotlin") {
@@ -38,14 +34,6 @@ protobuf {
                 }
             }
         }
-    }
-}
-
-androidComponents.beforeVariants {
-    android.sourceSets.register(it.name) {
-        val buildDir = layout.buildDirectory.get().asFile
-        java.srcDir(buildDir.resolve("generated/source/proto/${it.name}/java"))
-        kotlin.srcDir(buildDir.resolve("generated/source/proto/${it.name}/kotlin"))
     }
 }
 
