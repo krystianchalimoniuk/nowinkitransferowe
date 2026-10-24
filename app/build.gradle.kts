@@ -31,8 +31,8 @@ plugins {
 android {
     defaultConfig {
         applicationId = "pl.nowinkitransferowe"
-        versionCode = 12
-        versionName = "3.1.1" // X.Y.Z; X = Major, Y = minor, Z = Patch level
+        versionCode = 13
+        versionName = "3.2.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
         // Custom test runner to set up Hilt dependency graph
         testInstrumentationRunner = "pl.nowinkitransferowe.core.testing.NtTestRunner"
