@@ -17,6 +17,8 @@
 package pl.nowinkitransferowe.core.network.demo
 
 import JvmUnitTestDemoAssetManager
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.N
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -28,6 +30,7 @@ import pl.nowinkitransferowe.core.network.NtNetworkDataSource
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
 import pl.nowinkitransferowe.core.network.model.NetworkTransferResource
+import java.io.BufferedReader
 import javax.inject.Inject
 
 /**
@@ -38,18 +41,29 @@ class DemoNtNetworkDataSource @Inject constructor(
     private val networkJson: Json,
     private val assets: DemoAssetManager = JvmUnitTestDemoAssetManager,
 ) : NtNetworkDataSource {
-    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> = withContext(ioDispatcher) {
-        assets.open(TRANSFERS_ASSET).use(networkJson::decodeFromStream)
-    }
+    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> = getDemoDataFromJson(TRANSFERS_ASSET)
 
-    @OptIn(ExperimentalSerializationApi::class)
-    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> = withContext(ioDispatcher) {
-        assets.open(NEWS_ASSET).use(networkJson::decodeFromStream)
-    }
+    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> = getDemoDataFromJson(NEWS_ASSET)
 
     override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> = getNewsResources().mapToChangeList(NetworkNewsResource::id)
 
     override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> = getTransferResources().mapToChangeList(NetworkTransferResource::id)
+
+    /**
+     * Get Demo data form a [fileName] Json file.
+     */
+    @OptIn(ExperimentalSerializationApi::class)
+    private suspend inline fun <reified T> getDemoDataFromJson(fileName: String): List<T> = withContext(ioDispatcher) {
+        assets.open(fileName).use { inputStream ->
+            if (SDK_INT >= N) {
+                networkJson.decodeFromStream(inputStream)
+            } // https://github.com/Kotlin/kotlinx.serialization/issues/2457#issuecomment-1786923342
+            else {
+                inputStream.bufferedReader().use(BufferedReader::readText)
+                    .let(networkJson::decodeFromString)
+            }
+        }
+    }
 
     companion object {
         private const val NEWS_ASSET = "news.json"
