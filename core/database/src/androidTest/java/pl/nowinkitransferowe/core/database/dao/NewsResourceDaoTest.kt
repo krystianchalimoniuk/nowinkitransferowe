@@ -16,37 +16,15 @@
 
 package pl.nowinkitransferowe.core.database.dao
 
-import android.content.Context
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
-import pl.nowinkitransferowe.core.database.NtDatabase
 import pl.nowinkitransferowe.core.database.model.NewsResourceEntity
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.model.NewsCategory
 
-class NewsResourceDaoTest {
-
-    private lateinit var newsResourceDao: NewsResourceDao
-    private lateinit var db: NtDatabase
-
-    @Before
-    fun createDb() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(
-            context,
-            NtDatabase::class.java,
-        ).build()
-        newsResourceDao = db.newsResourceDao()
-    }
-
-    @After
-    fun closeDb() = db.close()
+internal class NewsResourceDaoTest : DatabaseTest() {
 
     @Test
     fun newsResourceDao_fetches_items_by_descending_publish_date() = runTest {
