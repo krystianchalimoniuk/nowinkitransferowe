@@ -36,9 +36,6 @@ android {
 
         // Custom test runner to set up Hilt dependency graph
         testInstrumentationRunner = "pl.nowinkitransferowe.core.testing.NtTestRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
