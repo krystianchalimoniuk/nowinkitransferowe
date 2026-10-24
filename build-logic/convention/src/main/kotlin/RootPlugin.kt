@@ -16,11 +16,21 @@
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.configuration.BuildFeatures
+import pl.nowinkitransferowe.convention.configureGraphTasks
 import pl.nowinkitransferowe.convention.configureSpotlessForRootProject
+import javax.inject.Inject
 
 abstract class RootPlugin : Plugin<Project> {
+    @get:Inject abstract val buildFeatures: BuildFeatures
+
     override fun apply(target: Project) {
         require(target.path == ":")
+        if (!buildFeatures.isIsolatedProjectsEnabled()) {
+            target.subprojects { configureGraphTasks() }
+        }
         target.configureSpotlessForRootProject()
     }
 }
+
+private fun BuildFeatures.isIsolatedProjectsEnabled(): Boolean = isolatedProjects.active.getOrElse(false)
