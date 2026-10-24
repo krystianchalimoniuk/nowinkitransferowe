@@ -26,6 +26,8 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.composable
 import androidx.navigation.createGraph
 import androidx.navigation.testing.TestNavHostController
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -35,6 +37,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import pl.nowinkitransferowe.core.data.repository.CompositeUserNewsResourceRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
 import pl.nowinkitransferowe.core.testing.repository.TestNewsRepository
@@ -47,10 +52,10 @@ import pl.nowinkitransferowe.ui.rememberNtAppState
 
 /**
  * Tests [NtAppState].
- *
- * Note: This could become an unit test if Robolectric is added to the project and the Context
- * is faked.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(application = HiltTestApplication::class)
+@HiltAndroidTest
 class NtAppStateTest {
 
     @get:Rule
