@@ -215,7 +215,7 @@ internal fun NtApp(
                         actionIconContentDescription = stringResource(
                             id = settingsR.string.feature_settings_top_app_bar_action_icon_description,
                         ),
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color.Transparent,
                         ),
                         onActionClick = {
