@@ -28,6 +28,9 @@ android {
 
 dependencies {
     implementation(projects.feature.news.api)
+    implementation(projects.feature.details.api)
+    implementation(projects.feature.search.api)
+    implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(libs.accompanist.permissions)
     implementation(projects.core.data)
     implementation(projects.core.domain)

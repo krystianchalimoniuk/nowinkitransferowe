@@ -17,10 +17,11 @@
 package pl.nowinkitransferowe.feature.details.transfers
 
 import android.graphics.Bitmap
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -40,18 +41,15 @@ import pl.nowinkitransferowe.core.network.BuildConfig
 import pl.nowinkitransferowe.feature.details.transfers.Util.dateFormatted
 import pl.nowinkitransferowe.feature.details.transfers.Util.priceToFloat
 import pl.nowinkitransferowe.feature.details.transfers.Util.shortcutDate
-import pl.nowinkitransferowe.feature.details.transfers.api.navigation.DetailTransferRoute
-import javax.inject.Inject
 
-@HiltViewModel
-class DetailsTransferViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = DetailsTransferViewModel.Factory::class)
+class DetailsTransferViewModel @AssistedInject constructor(
     private val userDataRepository: UserDataRepository,
     transferRepository: TransferRepository,
     private val imageDownloader: ImageDownloader,
+    @Assisted val transferResourceId: String,
 ) : ViewModel() {
 
-    val transferResourceId: String = savedStateHandle.toRoute<DetailTransferRoute>().transferId
     val detailsTransferUiState =
         transferRepository.getTransferResource(transferResourceId)
             .flatMapLatest { transferRepository.getTransferResourceByName(it.name) }
@@ -106,6 +104,11 @@ class DetailsTransferViewModel @Inject constructor(
             )
         }
         return dataPoints
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(transferResourceId: String): DetailsTransferViewModel
     }
 }
 

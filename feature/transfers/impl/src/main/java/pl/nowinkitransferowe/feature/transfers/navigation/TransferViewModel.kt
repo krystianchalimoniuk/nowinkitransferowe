@@ -19,7 +19,6 @@ package pl.nowinkitransferowe.feature.transfers.navigation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,9 +31,7 @@ import kotlinx.coroutines.launch
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
-import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_RESOURCE_ID_KEY
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
-import pl.nowinkitransferowe.feature.transfers.api.navigation.TransferRoute
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,9 +54,8 @@ class TransferViewModel @Inject constructor(
                 initialValue = arrayListOf(),
             )
 
-    private val transferRoute: TransferRoute = savedStateHandle.toRoute()
     val selectedTransferId: StateFlow<String?> =
-        savedStateHandle.getStateFlow(DEEP_LINK_TRANSFER_RESOURCE_ID_KEY, initialValue = transferRoute.initialTransferId)
+        savedStateHandle.getStateFlow(SELECTED_TRANSFER_ID_KEY, initialValue = null)
 
     val transfersCount = userTransferResourceRepository.getCount().stateIn(
         scope = viewModelScope,
@@ -108,10 +104,12 @@ class TransferViewModel @Inject constructor(
     }
 
     fun onTransferClick(transferId: String?) {
-        savedStateHandle[DEEP_LINK_TRANSFER_RESOURCE_ID_KEY] = transferId
+        savedStateHandle[SELECTED_TRANSFER_ID_KEY] = transferId
     }
 
     companion object {
         const val PAGE_SIZE = 5
     }
 }
+
+private const val SELECTED_TRANSFER_ID_KEY = "selectedTransferId"

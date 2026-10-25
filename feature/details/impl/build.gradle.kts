@@ -26,6 +26,8 @@ android {
 
 dependencies {
     implementation(projects.feature.details.api)
+    implementation(projects.feature.search.api)
+    implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(projects.core.data)
 
     testImplementation(projects.core.testing)

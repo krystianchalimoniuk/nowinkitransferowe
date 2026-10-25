@@ -35,6 +35,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.metrics.performance.JankStats
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.deeplink.DeepLinkRequest
+import androidx.navigation3.runtime.deeplink.DeepLinkUri
+import androidx.navigation3.runtime.deeplink.UriDeepLinkMatcher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -49,12 +53,39 @@ import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_URI_PATTERN
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_URI_PATTERN
 import pl.nowinkitransferowe.core.ui.LocalTimeZone
+import pl.nowinkitransferowe.feature.details.api.navigation.DetailsNewsNavKey
+import pl.nowinkitransferowe.feature.details.transfers.api.navigation.DetailsTransferNavKey
+import pl.nowinkitransferowe.feature.news.api.navigation.NewsNavKey
+import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import pl.nowinkitransferowe.ui.NtApp
 import pl.nowinkitransferowe.ui.rememberNtAppState
 import javax.inject.Inject
 
 private const val TAG = "MainActivity"
+
+private val newsDeepLinkMatcher = UriDeepLinkMatcher(
+    uriPattern = DeepLinkUri(DEEP_LINK_NEWS_URI_PATTERN),
+    serializer = DetailsNewsNavKey.serializer(),
+)
+
+private val transferDeepLinkMatcher = UriDeepLinkMatcher(
+    uriPattern = DeepLinkUri(DEEP_LINK_TRANSFER_URI_PATTERN),
+    serializer = DetailsTransferNavKey.serializer(),
+)
+
+/**
+ * Returns the keys to navigate to for a deep link: the top level destination first, so going back
+ * from the details shows the list.
+ */
+private fun deepLinkKeys(uri: String): List<NavKey> {
+    val request = DeepLinkRequest(uri)
+    newsDeepLinkMatcher.match(request)?.let { return listOf(NewsNavKey, it.key) }
+    transferDeepLinkMatcher.match(request)?.let { return listOf(TransfersNavKey, it.key) }
+    return emptyList()
+}
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -112,6 +143,12 @@ class MainActivity : ComponentActivity() {
         // This also sets up the initial system bar style based on the platform theme
         enableEdgeToEdge()
 
+        val deepLinkKeys = if (savedInstanceState == null) {
+            intent.data?.let { uri -> deepLinkKeys(uri.toString()) }.orEmpty()
+        } else {
+            emptyList()
+        }
+
         setContent {
             val darkTheme = shouldUseDarkTheme(uiState)
 
@@ -150,7 +187,7 @@ class MainActivity : ComponentActivity() {
                     darkTheme = darkTheme,
                     disableDynamicTheming = shouldDisableDynamicTheming(uiState),
                 ) {
-                    NtApp(appState)
+                    NtApp(appState, deepLinkKeys = deepLinkKeys)
                 }
             }
         }

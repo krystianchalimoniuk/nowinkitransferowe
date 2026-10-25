@@ -25,6 +25,9 @@ android {
 
 dependencies {
     implementation(projects.feature.bookmarks.api)
+    implementation(projects.feature.details.api)
+    implementation(projects.feature.detailsTransfers.api)
+    implementation(projects.feature.search.api)
     implementation(projects.core.data)
 
     testImplementation(projects.core.testing)

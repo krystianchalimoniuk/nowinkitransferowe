@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.feature.transfers.api.navigation
+package pl.nowinkitransferowe.feature.details.api.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+import pl.nowinkitransferowe.core.navigation.Navigator
 
 @Serializable
-data class TransferRoute(
-    // The ID of the topic which will be initially selected at this destination
-    val initialTransferId: String? = null,
-)
+data class DetailsNewsNavKey(val newsId: String) : NavKey
 
-fun NavController.navigateToTransfer(initialTransferId: String?, navOptions: NavOptions) = navigate(TransferRoute(initialTransferId), navOptions)
+fun Navigator.navigateToNewsDetails(newsId: String) {
+    navigate(DetailsNewsNavKey(newsId))
+}

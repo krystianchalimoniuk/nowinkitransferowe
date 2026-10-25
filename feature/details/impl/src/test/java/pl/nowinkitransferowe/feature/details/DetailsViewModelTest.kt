@@ -16,8 +16,6 @@
 
 package pl.nowinkitransferowe.feature.details
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.testing.invoke
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -35,7 +33,6 @@ import pl.nowinkitransferowe.core.testing.repository.TestNewsRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
-import pl.nowinkitransferowe.feature.details.api.navigation.DetailNewsRoute
 import kotlin.test.assertEquals
 
 /**
@@ -61,15 +58,14 @@ class DetailsViewModelTest {
         userDataRepository = userDataRepository,
     )
 
-    private val savedStateHandle: SavedStateHandle = SavedStateHandle(route = DetailNewsRoute(newsId = newsResourcesTestData.first().id))
     private lateinit var viewModel: DetailsViewModel
 
     @Before
     fun setup() {
         viewModel = DetailsViewModel(
-            savedStateHandle = savedStateHandle,
             userDataRepository = userDataRepository,
             newsRepository = newsRepository,
+            newsResourceId = newsResourcesTestData.first().id,
         )
     }
 

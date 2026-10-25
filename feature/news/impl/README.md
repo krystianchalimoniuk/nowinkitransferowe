@@ -18,6 +18,14 @@ graph TB
       :feature:news:api[api]:::android-library
       :feature:news:impl[impl]:::android-feature
     end
+    subgraph :feature:details
+      direction TB
+      :feature:details:api[api]:::android-library
+    end
+    subgraph :feature:search
+      direction TB
+      :feature:search:api[api]:::android-library
+    end
   end
   subgraph :core
     direction TB
@@ -30,6 +38,7 @@ graph TB
     :core:designsystem[designsystem]:::android-library
     :core:domain[domain]:::android-library
     :core:model[model]:::jvm-library
+    :core:navigation[navigation]:::android-library
     :core:network[network]:::android-library
     :core:notifications[notifications]:::android-library
     :core:ui[ui]:::android-library
@@ -54,12 +63,17 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
+  :feature:details:api --> :core:navigation
+  :feature:news:api --> :core:navigation
   :feature:news:impl -.-> :core:data
   :feature:news:impl -.-> :core:designsystem
   :feature:news:impl -.-> :core:domain
   :feature:news:impl -.-> :core:notifications
   :feature:news:impl -.-> :core:ui
+  :feature:news:impl -.-> :feature:details:api
   :feature:news:impl -.-> :feature:news:api
+  :feature:news:impl -.-> :feature:search:api
+  :feature:search:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;

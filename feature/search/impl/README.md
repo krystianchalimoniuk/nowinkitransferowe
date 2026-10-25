@@ -18,6 +18,14 @@ graph TB
       :feature:search:api[api]:::android-library
       :feature:search:impl[impl]:::android-feature
     end
+    subgraph :feature:details
+      direction TB
+      :feature:details:api[api]:::android-library
+    end
+    subgraph :feature:details-transfers
+      direction TB
+      :feature:details-transfers:api[api]:::android-library
+    end
   end
   subgraph :core
     direction TB
@@ -30,6 +38,7 @@ graph TB
     :core:designsystem[designsystem]:::android-library
     :core:domain[domain]:::android-library
     :core:model[model]:::jvm-library
+    :core:navigation[navigation]:::android-library
     :core:network[network]:::android-library
     :core:notifications[notifications]:::android-library
     :core:ui[ui]:::android-library
@@ -54,10 +63,15 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
+  :feature:details-transfers:api --> :core:navigation
+  :feature:details:api --> :core:navigation
+  :feature:search:api --> :core:navigation
   :feature:search:impl -.-> :core:data
   :feature:search:impl -.-> :core:designsystem
   :feature:search:impl -.-> :core:domain
   :feature:search:impl -.-> :core:ui
+  :feature:search:impl -.-> :feature:details-transfers:api
+  :feature:search:impl -.-> :feature:details:api
   :feature:search:impl -.-> :feature:search:api
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;

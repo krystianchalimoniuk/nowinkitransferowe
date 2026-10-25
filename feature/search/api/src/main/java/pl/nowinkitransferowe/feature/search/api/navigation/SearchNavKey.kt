@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.feature.news.api.navigation
+package pl.nowinkitransferowe.feature.search.api.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+import pl.nowinkitransferowe.core.navigation.Navigator
 
-@Serializable data class NewsRoute(
-    // The ID of the news which will be initially selected at this destination
-    val initialNewsId: String? = null,
-)
+@Serializable
+data class SearchNavKey(
+    // The query the search screen starts with
+    val searchQuery: String? = null,
+) : NavKey
 
-fun NavController.navigateToNews(
-    initialNewsId: String? = null,
-    navOptions: NavOptions? = null,
-) = navigate(route = NewsRoute(initialNewsId), navOptions)
+fun Navigator.navigateToSearch(searchQuery: String? = null) {
+    navigate(SearchNavKey(searchQuery))
+}

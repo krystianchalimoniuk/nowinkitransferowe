@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.feature.details.transfers.navigation
+package pl.nowinkitransferowe.feature.news.api.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import pl.nowinkitransferowe.feature.details.transfers.DetailsTransferRoute
-import pl.nowinkitransferowe.feature.details.transfers.api.navigation.DetailTransferRoute
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.detailsTransferScreen(
-    showBackButton: Boolean,
-    onBackClick: () -> Unit,
-) {
-    composable<DetailTransferRoute> {
-        DetailsTransferRoute(
-            showBackButton = showBackButton,
-            onBackClick = onBackClick,
-        )
-    }
-}
+@Serializable
+object NewsNavKey : NavKey

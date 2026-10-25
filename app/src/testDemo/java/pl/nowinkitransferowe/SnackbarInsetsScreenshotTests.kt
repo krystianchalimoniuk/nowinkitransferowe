@@ -82,6 +82,7 @@ import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.screenshottesting.DefaultRoborazziOptions
+import pl.nowinkitransferowe.feature.bookmarks.navigation.LocalSnackbarHostState
 import pl.nowinkitransferowe.ui.NtApp
 import pl.nowinkitransferowe.ui.rememberNtAppState
 import pl.nowinkitransferowe.uitesthiltmanifest.HiltComponentActivity
@@ -257,20 +258,21 @@ class SnackbarInsetsScreenshotTests {
                                     userTransferResourceRepository = userTransferResourceRepository,
                                     timeZoneMonitor = timeZoneMonitor,
                                 )
-                                NtApp(
-                                    appState = appState,
-                                    snackbarHostState = snackbarHostState,
-                                    showSettingsDialog = false,
-                                    onSettingsDismissed = {},
-                                    onTopAppBarActionClick = {},
-                                    windowAdaptiveInfo = WindowAdaptiveInfo(
-                                        windowSizeClass = WindowSizeClass.compute(
-                                            maxWidth.value,
-                                            maxHeight.value,
+                                CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
+                                    NtApp(
+                                        appState = appState,
+                                        showSettingsDialog = false,
+                                        onSettingsDismissed = {},
+                                        onTopAppBarActionClick = {},
+                                        windowAdaptiveInfo = WindowAdaptiveInfo(
+                                            windowSizeClass = WindowSizeClass.compute(
+                                                maxWidth.value,
+                                                maxHeight.value,
+                                            ),
+                                            windowPosture = Posture(),
                                         ),
-                                        windowPosture = Posture(),
-                                    ),
-                                )
+                                    )
+                                }
                                 DebugVisibleWindowInsets()
                             }
                         }

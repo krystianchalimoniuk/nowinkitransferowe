@@ -35,6 +35,7 @@ import pl.nowinkitransferowe.core.testing.repository.TestSearchContentsRepositor
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
+import pl.nowinkitransferowe.feature.search.api.navigation.SearchNavKey
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNull
@@ -65,6 +66,7 @@ class SearchViewModelTest {
             recentSearchRepository = recentSearchRepository,
             userDataRepository = userDataRepository,
             analyticsHelper = NoOpAnalyticsHelper(),
+            navKey = SearchNavKey(),
         )
         userDataRepository.setUserData(emptyUserData)
     }

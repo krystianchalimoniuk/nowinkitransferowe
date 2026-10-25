@@ -25,6 +25,8 @@ android {
 
 dependencies {
     implementation(projects.feature.transfers.api)
+    implementation(projects.feature.detailsTransfers.api)
+    implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(libs.accompanist.permissions)
     implementation(projects.core.data)
     implementation(projects.core.domain)

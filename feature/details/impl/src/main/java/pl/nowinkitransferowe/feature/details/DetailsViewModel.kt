@@ -16,10 +16,11 @@
 
 package pl.nowinkitransferowe.feature.details
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -34,17 +35,14 @@ import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.feature.details.api.navigation.DetailNewsRoute
-import javax.inject.Inject
 
-@HiltViewModel
-class DetailsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = DetailsViewModel.Factory::class)
+class DetailsViewModel @AssistedInject constructor(
     private val userDataRepository: UserDataRepository,
     newsRepository: NewsRepository,
+    @Assisted val newsResourceId: String,
 ) : ViewModel() {
 
-    val newsResourceId: String = savedStateHandle.toRoute<DetailNewsRoute>().newsId
     val detailsUiState = if (newsResourceId == null) {
         flowOf()
     } else {
@@ -84,6 +82,11 @@ class DetailsViewModel @Inject constructor(
         viewModelScope.launch {
             userDataRepository.setNewsResourceViewed(newsResourceId, viewed)
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(newsResourceId: String): DetailsViewModel
     }
 }
 

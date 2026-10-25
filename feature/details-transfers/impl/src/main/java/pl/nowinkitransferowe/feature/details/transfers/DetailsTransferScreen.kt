@@ -79,7 +79,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.component.NtBackground
 import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
@@ -106,7 +105,7 @@ fun DetailsTransferRoute(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DetailsTransferViewModel = hiltViewModel(),
+    viewModel: DetailsTransferViewModel,
 ) {
     val detailsTransferUiState by viewModel.detailsTransferUiState.collectAsStateWithLifecycle()
     TrackScreenViewEvent(screenName = "Transfer: ${viewModel.transferResourceId}")

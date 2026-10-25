@@ -16,8 +16,6 @@
 
 package pl.nowinkitransferowe.feature.details.transfers
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.testing.invoke
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -35,7 +33,6 @@ import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import pl.nowinkitransferowe.core.testing.util.TestImageDownloader
-import pl.nowinkitransferowe.feature.details.transfers.api.navigation.DetailTransferRoute
 import kotlin.test.assertEquals
 
 /**
@@ -58,15 +55,14 @@ class DetailsTransferViewModelTest {
     private val imageDownloader = TestImageDownloader()
 
     private lateinit var viewModel: DetailsTransferViewModel
-    private val savedStateHandle: SavedStateHandle = SavedStateHandle(route = DetailTransferRoute(transferId = transferResourceTestData.first().id))
 
     @Before
     fun setup() {
         viewModel = DetailsTransferViewModel(
-            savedStateHandle = savedStateHandle,
             userDataRepository = userDataRepository,
             transferRepository = transferRepository,
             imageDownloader = imageDownloader,
+            transferResourceId = transferResourceTestData.first().id,
         )
     }
 

@@ -63,6 +63,7 @@ graph TB
     :core:designsystem[designsystem]:::android-library
     :core:domain[domain]:::android-library
     :core:model[model]:::jvm-library
+    :core:navigation[navigation]:::android-library
     :core:network[network]:::android-library
     :core:notifications[notifications]:::android-library
     :core:ui[ui]:::android-library
@@ -76,6 +77,7 @@ graph TB
   :app -.-> :core:data
   :app -.-> :core:designsystem
   :app -.-> :core:model
+  :app -.-> :core:navigation
   :app -.-> :core:notifications
   :app -.-> :core:ui
   :app -.-> :feature:bookmarks:api
@@ -112,37 +114,52 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
+  :feature:bookmarks:api --> :core:navigation
   :feature:bookmarks:impl -.-> :core:data
   :feature:bookmarks:impl -.-> :core:designsystem
   :feature:bookmarks:impl -.-> :core:ui
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
+  :feature:bookmarks:impl -.-> :feature:details-transfers:api
+  :feature:bookmarks:impl -.-> :feature:details:api
+  :feature:bookmarks:impl -.-> :feature:search:api
+  :feature:details-transfers:api --> :core:navigation
   :feature:details-transfers:impl -.-> :core:data
   :feature:details-transfers:impl -.-> :core:designsystem
   :feature:details-transfers:impl -.-> :core:ui
   :feature:details-transfers:impl -.-> :feature:details-transfers:api
+  :feature:details:api --> :core:navigation
   :feature:details:impl -.-> :core:data
   :feature:details:impl -.-> :core:designsystem
   :feature:details:impl -.-> :core:ui
   :feature:details:impl -.-> :feature:details:api
+  :feature:details:impl -.-> :feature:search:api
+  :feature:news:api --> :core:navigation
   :feature:news:impl -.-> :core:data
   :feature:news:impl -.-> :core:designsystem
   :feature:news:impl -.-> :core:domain
   :feature:news:impl -.-> :core:notifications
   :feature:news:impl -.-> :core:ui
+  :feature:news:impl -.-> :feature:details:api
   :feature:news:impl -.-> :feature:news:api
+  :feature:news:impl -.-> :feature:search:api
+  :feature:search:api --> :core:navigation
   :feature:search:impl -.-> :core:data
   :feature:search:impl -.-> :core:designsystem
   :feature:search:impl -.-> :core:domain
   :feature:search:impl -.-> :core:ui
+  :feature:search:impl -.-> :feature:details-transfers:api
+  :feature:search:impl -.-> :feature:details:api
   :feature:search:impl -.-> :feature:search:api
   :feature:settings:impl -.-> :core:data
   :feature:settings:impl -.-> :core:designsystem
   :feature:settings:impl -.-> :core:ui
+  :feature:transfers:api --> :core:navigation
   :feature:transfers:impl -.-> :core:data
   :feature:transfers:impl -.-> :core:designsystem
   :feature:transfers:impl -.-> :core:domain
   :feature:transfers:impl -.-> :core:notifications
   :feature:transfers:impl -.-> :core:ui
+  :feature:transfers:impl -.-> :feature:details-transfers:api
   :feature:transfers:impl -.-> :feature:transfers:api
   :sync:work -.-> :core:analytics
   :sync:work -.-> :core:data

@@ -18,6 +18,18 @@ graph TB
       :feature:bookmarks:api[api]:::android-library
       :feature:bookmarks:impl[impl]:::android-feature
     end
+    subgraph :feature:details
+      direction TB
+      :feature:details:api[api]:::android-library
+    end
+    subgraph :feature:details-transfers
+      direction TB
+      :feature:details-transfers:api[api]:::android-library
+    end
+    subgraph :feature:search
+      direction TB
+      :feature:search:api[api]:::android-library
+    end
   end
   subgraph :core
     direction TB
@@ -29,6 +41,7 @@ graph TB
     :core:datastore-proto[datastore-proto]:::jvm-library
     :core:designsystem[designsystem]:::android-library
     :core:model[model]:::jvm-library
+    :core:navigation[navigation]:::android-library
     :core:network[network]:::android-library
     :core:notifications[notifications]:::android-library
     :core:ui[ui]:::android-library
@@ -51,10 +64,17 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
+  :feature:bookmarks:api --> :core:navigation
   :feature:bookmarks:impl -.-> :core:data
   :feature:bookmarks:impl -.-> :core:designsystem
   :feature:bookmarks:impl -.-> :core:ui
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
+  :feature:bookmarks:impl -.-> :feature:details-transfers:api
+  :feature:bookmarks:impl -.-> :feature:details:api
+  :feature:bookmarks:impl -.-> :feature:search:api
+  :feature:details-transfers:api --> :core:navigation
+  :feature:details:api --> :core:navigation
+  :feature:search:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;

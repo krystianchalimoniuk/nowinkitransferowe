@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.feature.search.api.navigation
+package pl.nowinkitransferowe.feature.bookmarks.api.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-@Serializable data class SearchRoute(
-    val searchQuery: String? = null,
-)
-
-fun NavController.navigateToSearch(query: String?, navOptions: NavOptions? = null) = navigate(SearchRoute(query), navOptions)
+@Serializable
+object BookmarksNavKey : NavKey

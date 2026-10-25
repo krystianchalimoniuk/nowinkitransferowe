@@ -25,6 +25,8 @@ android {
 
 dependencies {
     implementation(projects.feature.search.api)
+    implementation(projects.feature.details.api)
+    implementation(projects.feature.detailsTransfers.api)
     implementation(projects.core.data)
     implementation(projects.core.domain)
     implementation(projects.core.ui)

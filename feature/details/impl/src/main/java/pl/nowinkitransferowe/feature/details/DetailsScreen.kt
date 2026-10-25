@@ -65,7 +65,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat.startActivity
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import pl.nowinkitransferowe.core.designsystem.component.NtBackground
@@ -94,7 +93,7 @@ internal fun DetailsRoute(
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DetailsViewModel = hiltViewModel(),
+    viewModel: DetailsViewModel,
 ) {
     val detailsUiState by viewModel.detailsUiState.collectAsStateWithLifecycle()
     val darkThemeConfig by viewModel.darkThemeConfig.collectAsStateWithLifecycle()

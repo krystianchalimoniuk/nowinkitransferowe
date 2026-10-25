@@ -19,7 +19,6 @@ package pl.nowinkitransferowe.feature.news
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,9 +32,7 @@ import kotlinx.coroutines.launch
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserNewsResourceRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
-import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_RESOURCE_ID_KEY
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
-import pl.nowinkitransferowe.feature.news.api.navigation.NewsRoute
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,9 +43,8 @@ class NewsViewModel @Inject constructor(
     private val userNewsResourceRepository: UserNewsResourceRepository,
 ) : ViewModel() {
 
-    private val newsRoute: NewsRoute = savedStateHandle.toRoute()
     val selectedNewsId: StateFlow<String?> =
-        savedStateHandle.getStateFlow(DEEP_LINK_NEWS_RESOURCE_ID_KEY, newsRoute.initialNewsId)
+        savedStateHandle.getStateFlow(SELECTED_NEWS_ID_KEY, null)
 
     private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
     val page: StateFlow<Int> = _page.asStateFlow()
@@ -89,7 +85,7 @@ class NewsViewModel @Inject constructor(
     }
 
     fun onNewsClick(newsId: String?) {
-        savedStateHandle[DEEP_LINK_NEWS_RESOURCE_ID_KEY] = newsId
+        savedStateHandle[SELECTED_NEWS_ID_KEY] = newsId
     }
 
     fun loadNextPage(page: Int, newsCount: Int) {
@@ -102,5 +98,6 @@ class NewsViewModel @Inject constructor(
 
     companion object {
         const val INITIAL_PAGE_SIZE = 5
+        private const val SELECTED_NEWS_ID_KEY = "selectedNewsId"
     }
 }

@@ -19,7 +19,9 @@ package pl.nowinkitransferowe.feature.search
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,11 +39,10 @@ import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.domain.GetRecentSearchQueriesUseCase
 import pl.nowinkitransferowe.core.domain.GetSearchContentUseCase
 import pl.nowinkitransferowe.core.model.UserSearchResult
-import pl.nowinkitransferowe.feature.search.api.navigation.SearchRoute
-import javax.inject.Inject
+import pl.nowinkitransferowe.feature.search.api.navigation.SearchNavKey
 
-@HiltViewModel
-class SearchViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = SearchViewModel.Factory::class)
+class SearchViewModel @AssistedInject constructor(
     getSearchContentsUseCase: GetSearchContentUseCase,
     recentSearchQueriesUseCase: GetRecentSearchQueriesUseCase,
     private val searchContentsRepository: SearchContentsRepository,
@@ -49,11 +50,11 @@ class SearchViewModel @Inject constructor(
     private val userDataRepository: UserDataRepository,
     private val savedStateHandle: SavedStateHandle,
     private val analyticsHelper: AnalyticsHelper,
+    @Assisted navKey: SearchNavKey,
 ) : ViewModel() {
 
-    private val searchRoute: SearchRoute = savedStateHandle.toRoute<SearchRoute>()
     val searchQuery: StateFlow<String?> =
-        savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = searchRoute.searchQuery)
+        savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = navKey.searchQuery)
 
     val searchResultUiState: StateFlow<SearchResultUiState> =
         searchContentsRepository.getSearchContentsCount()
@@ -142,6 +143,11 @@ class SearchViewModel @Inject constructor(
                 userDataRepository.setTransferResourceViewed(it, viewed)
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(navKey: SearchNavKey): SearchViewModel
     }
 }
 

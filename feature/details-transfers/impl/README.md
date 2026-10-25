@@ -29,6 +29,7 @@ graph TB
     :core:datastore-proto[datastore-proto]:::jvm-library
     :core:designsystem[designsystem]:::android-library
     :core:model[model]:::jvm-library
+    :core:navigation[navigation]:::android-library
     :core:network[network]:::android-library
     :core:notifications[notifications]:::android-library
     :core:ui[ui]:::android-library
@@ -51,6 +52,7 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
+  :feature:details-transfers:api --> :core:navigation
   :feature:details-transfers:impl -.-> :core:data
   :feature:details-transfers:impl -.-> :core:designsystem
   :feature:details-transfers:impl -.-> :core:ui

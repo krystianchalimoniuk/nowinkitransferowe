@@ -21,8 +21,3 @@ plugins {
 android {
     namespace = "pl.nowinkitransferowe.feature.bookmarks.api"
 }
-
-dependencies {
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.kotlinx.serialization.json)
-}

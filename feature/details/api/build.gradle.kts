@@ -21,8 +21,3 @@ plugins {
 android {
     namespace = "pl.nowinkitransferowe.feature.details.api"
 }
-
-dependencies {
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.kotlinx.serialization.json)
-}

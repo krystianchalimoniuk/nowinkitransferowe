@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.feature.bookmarks.api.navigation
+package pl.nowinkitransferowe.feature.details.transfers.api.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+import pl.nowinkitransferowe.core.navigation.Navigator
 
-@Serializable object BookmarksRoute
+@Serializable
+data class DetailsTransferNavKey(val transferId: String) : NavKey
 
-fun NavController.navigateToBookmarks(navOptions: NavOptions) = navigate(BookmarksRoute, navOptions)
+fun Navigator.navigateToTransferDetails(transferId: String) {
+    navigate(DetailsTransferNavKey(transferId))
+}
