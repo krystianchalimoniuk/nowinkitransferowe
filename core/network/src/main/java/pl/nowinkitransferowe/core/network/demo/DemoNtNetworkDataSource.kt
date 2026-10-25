@@ -17,8 +17,6 @@
 package pl.nowinkitransferowe.core.network.demo
 
 import JvmUnitTestDemoAssetManager
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.N
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -30,7 +28,6 @@ import pl.nowinkitransferowe.core.network.NtNetworkDataSource
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
 import pl.nowinkitransferowe.core.network.model.NetworkTransferResource
-import java.io.BufferedReader
 import javax.inject.Inject
 
 /**
@@ -55,13 +52,7 @@ class DemoNtNetworkDataSource @Inject constructor(
     @OptIn(ExperimentalSerializationApi::class)
     private suspend inline fun <reified T> getDemoDataFromJson(fileName: String): List<T> = withContext(ioDispatcher) {
         assets.open(fileName).use { inputStream ->
-            if (SDK_INT >= N) {
-                networkJson.decodeFromStream(inputStream)
-            } // https://github.com/Kotlin/kotlinx.serialization/issues/2457#issuecomment-1786923342
-            else {
-                inputStream.bufferedReader().use(BufferedReader::readText)
-                    .let(networkJson::decodeFromString)
-            }
+            networkJson.decodeFromStream(inputStream)
         }
     }
 
