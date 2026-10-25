@@ -52,29 +52,23 @@ class TestNtNetworkDataSource : NtNetworkDataSource {
             .mapToChangeList(idGetter = NetworkNewsResource::id),
     )
 
-    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> =
-        allTransferResources.matchIds(
-            ids = ids?.split(","),
-            idGetter = { networkTransferResource -> networkTransferResource.id.toString() },
-        )
+    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> = allTransferResources.matchIds(
+        ids = ids?.split(","),
+        idGetter = { networkTransferResource -> networkTransferResource.id.toString() },
+    )
 
-    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> =
-        allNewsResources.matchIds(
-            ids = ids?.split(","),
-            idGetter = { networkNewsResource -> networkNewsResource.id.toString() },
-        )
+    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> = allNewsResources.matchIds(
+        ids = ids?.split(","),
+        idGetter = { networkNewsResource -> networkNewsResource.id.toString() },
+    )
 
-    override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> =
-        changeLists.getValue(CollectionType.TransferResources).after(after)
+    override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> = changeLists.getValue(CollectionType.TransferResources).after(after)
 
-    override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> =
-        changeLists.getValue(CollectionType.NewsResources).after(after)
+    override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> = changeLists.getValue(CollectionType.NewsResources).after(after)
 
-    fun latestChangeListVersion(collectionType: CollectionType) =
-        changeLists.getValue(collectionType).first().changeListVersion
+    fun latestChangeListVersion(collectionType: CollectionType) = changeLists.getValue(collectionType).first().changeListVersion
 
-    fun changeListsAfter(collectionType: CollectionType, version: Int) =
-        changeLists.getValue(collectionType).after(version)
+    fun changeListsAfter(collectionType: CollectionType, version: Int) = changeLists.getValue(collectionType).after(version)
 
     /**
      * Edits the change list for the backing [collectionType] for the given [id] mimicking

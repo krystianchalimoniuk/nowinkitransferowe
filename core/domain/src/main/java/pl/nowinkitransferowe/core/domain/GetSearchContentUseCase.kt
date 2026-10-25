@@ -37,25 +37,23 @@ class GetSearchContentUseCase @Inject constructor(
 
     operator fun invoke(
         searchQuery: String,
-    ): Flow<UserSearchResult> =
-        searchContentsRepository.searchContents(searchQuery)
-            .mapToUserSearchResult(userDataRepository.userData)
+    ): Flow<UserSearchResult> = searchContentsRepository.searchContents(searchQuery)
+        .mapToUserSearchResult(userDataRepository.userData)
 }
 
-private fun Flow<SearchResult>.mapToUserSearchResult(userDataStream: Flow<UserData>): Flow<UserSearchResult> =
-    combine(userDataStream) { searchResult, userData ->
-        UserSearchResult(
-            transferResources = searchResult.transferResources.map { transfer ->
-                UserTransferResource(
-                    transferResource = transfer,
-                    userData = userData,
-                )
-            },
-            newsResources = searchResult.newsResources.map { news ->
-                UserNewsResource(
-                    newsResource = news,
-                    userData = userData,
-                )
-            },
-        )
-    }
+private fun Flow<SearchResult>.mapToUserSearchResult(userDataStream: Flow<UserData>): Flow<UserSearchResult> = combine(userDataStream) { searchResult, userData ->
+    UserSearchResult(
+        transferResources = searchResult.transferResources.map { transfer ->
+            UserTransferResource(
+                transferResource = transfer,
+                userData = userData,
+            )
+        },
+        newsResources = searchResult.newsResources.map { news ->
+            UserNewsResource(
+                newsResource = news,
+                userData = userData,
+            )
+        },
+    )
+}

@@ -17,14 +17,14 @@
 package pl.nowinkitransferowe.core.data
 
 import kotlinx.datetime.Instant
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.NewsCategory
 import pl.nowinkitransferowe.core.model.NewsResource
 import pl.nowinkitransferowe.core.model.UserData
 import pl.nowinkitransferowe.core.model.UserNewsResource
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class UserNewsResourceTest {
 

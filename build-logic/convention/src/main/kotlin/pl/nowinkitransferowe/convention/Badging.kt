@@ -1,9 +1,24 @@
+/*
+ * Copyright 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.convention
 
-import com.android.SdkConstants
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.Aapt2
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.BaseExtension
 import com.google.common.truth.Truth.assertWithMessage
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -11,7 +26,6 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
-import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
@@ -19,12 +33,11 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.gradle.process.ExecOperations
-import java.io.File
+import org.gradle.work.DisableCachingByDefault
 import javax.inject.Inject
 
 @CacheableTask
@@ -84,10 +97,31 @@ abstract class CheckBadgingTask : DefaultTask() {
     fun taskAction() {
         assertWithMessage(
             "Generated badging is different from golden badging! " +
-                    "If this change is intended, run ./gradlew ${updateBadgingTaskName.get()}",
+                "If this change is intended, run ./gradlew ${updateBadgingTaskName.get()}",
         )
             .that(generatedBadging.get().asFile.readText())
             .isEqualTo(goldenBadging.get().asFile.readText())
+    }
+}
+
+/**
+ * Copies the generated badging to the golden file. A [org.gradle.api.tasks.Copy] into the project
+ * directory would declare the whole directory as output, which Gradle 9 rejects as overlapping
+ * with the inputs of other tasks.
+ */
+@DisableCachingByDefault(because = "Copying a single file is not worth caching")
+abstract class UpdateBadgingTask : DefaultTask() {
+
+    @get:PathSensitive(PathSensitivity.NONE)
+    @get:InputFile
+    abstract val generatedBadging: RegularFileProperty
+
+    @get:OutputFile
+    abstract val goldenBadging: RegularFileProperty
+
+    @TaskAction
+    fun taskAction() {
+        generatedBadging.get().asFile.copyTo(goldenBadging.get().asFile, overwrite = true)
     }
 }
 
@@ -96,7 +130,6 @@ private fun String.capitalized() = replaceFirstChar {
 }
 
 fun Project.configureBadgingTasks(
-    baseExtension: BaseExtension,
     componentsExtension: ApplicationAndroidComponentsExtension,
 ) {
     // Registers a callback to be called, when a new variant is configured
@@ -107,37 +140,27 @@ fun Project.configureBadgingTasks(
         val generateBadging =
             tasks.register<GenerateBadgingTask>(generateBadgingTaskName) {
                 apk = variant.artifacts.get(SingleArtifact.APK_FROM_BUNDLE)
-
-                aapt2Executable = File(
-                    baseExtension.sdkDirectory,
-                    "${SdkConstants.FD_BUILD_TOOLS}/" +
-                            "${baseExtension.buildToolsVersion}/" +
-                            SdkConstants.FN_AAPT2,
-                )
-
-
+                aapt2Executable = componentsExtension.sdkComponents.aapt2.flatMap(Aapt2::executable)
                 badging = project.layout.buildDirectory.file(
                     "outputs/apk_from_bundle/${variant.name}/${variant.name}-badging.txt",
                 )
-
             }
 
         val updateBadgingTaskName = "update${capitalizedVariantName}Badging"
-        tasks.register<Copy>(updateBadgingTaskName) {
-            from(generateBadging.get().badging)
-            into(project.layout.projectDirectory)
+        tasks.register<UpdateBadgingTask>(updateBadgingTaskName) {
+            generatedBadging = generateBadging.flatMap(GenerateBadgingTask::badging)
+            goldenBadging = project.layout.projectDirectory.file("${variant.name}-badging.txt")
         }
 
         val checkBadgingTaskName = "check${capitalizedVariantName}Badging"
         tasks.register<CheckBadgingTask>(checkBadgingTaskName) {
             goldenBadging = project.layout.projectDirectory.file("${variant.name}-badging.txt")
 
-            generatedBadging = generateBadging.get().badging
+            generatedBadging.set(generateBadging.flatMap(GenerateBadgingTask::badging))
 
             this.updateBadgingTaskName = updateBadgingTaskName
 
             output = project.layout.buildDirectory.dir("intermediates/$checkBadgingTaskName")
-
         }
     }
 }

@@ -33,29 +33,25 @@ class TestNewsRepository : NewsRepository {
     private val newsResourcesFlow: MutableSharedFlow<List<NewsResource>> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
-    override fun getNewsResources(query: NewsResourceQuery): Flow<List<NewsResource>> =
-        newsResourcesFlow.map { newsResources ->
-            var result = newsResources
-            query.filterNewsIds?.let { filterNewsIds ->
-                result = newsResources.filter { it.id in filterNewsIds }
-            }
-            result
+    override fun getNewsResources(query: NewsResourceQuery): Flow<List<NewsResource>> = newsResourcesFlow.map { newsResources ->
+        var result = newsResources
+        query.filterNewsIds?.let { filterNewsIds ->
+            result = newsResources.filter { it.id in filterNewsIds }
         }
+        result
+    }
 
-    override fun getNewsResourcesPages(limit: Int, offset: Int): Flow<List<NewsResource>> =
-        newsResourcesFlow.map { newsResources ->
-            newsResources.take(limit)
-        }
+    override fun getNewsResourcesPages(limit: Int, offset: Int): Flow<List<NewsResource>> = newsResourcesFlow.map { newsResources ->
+        newsResources.take(limit)
+    }
 
-    override fun getNewsResource(id: String): Flow<NewsResource> =
-        newsResourcesFlow.map { newsResources ->
-            newsResources.first { it.id == id }
-        }
+    override fun getNewsResource(id: String): Flow<NewsResource> = newsResourcesFlow.map { newsResources ->
+        newsResources.first { it.id == id }
+    }
 
-    override fun getNewsCount(): Flow<Int> =
-        newsResourcesFlow.map { newsResources ->
-            newsResources.count()
-        }
+    override fun getNewsCount(): Flow<Int> = newsResourcesFlow.map { newsResources ->
+        newsResources.count()
+    }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 

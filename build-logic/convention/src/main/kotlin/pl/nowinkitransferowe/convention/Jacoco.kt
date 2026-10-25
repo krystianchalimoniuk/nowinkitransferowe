@@ -1,12 +1,31 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pl.nowinkitransferowe.convention
 
 import com.android.build.api.artifact.ScopedArtifact
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.ScopedArtifacts
+import com.android.build.api.variant.SourceDirectories
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
@@ -41,8 +60,15 @@ private fun String.capitalize() = replaceFirstChar {
  * tests on CI using a different Github Action or an external device farm.
  */
 internal fun Project.configureJacoco(
+    commonExtension: CommonExtension,
     androidComponentsExtension: AndroidComponentsExtension<*, *, *>,
 ) {
+    // Configure only the debug build, otherwise it will force the debuggable flag on release buildTypes as well
+    commonExtension.buildTypes.named("debug") {
+        enableAndroidTestCoverage = true
+        enableUnitTestCoverage = true
+    }
+
     configure<JacocoPluginExtension> {
         toolVersion = libs.findVersion("jacoco").get().toString()
     }
@@ -58,7 +84,6 @@ internal fun Project.configureJacoco(
                 "create${variant.name.capitalize()}CombinedCoverageReport",
                 JacocoReport::class,
             ) {
-
                 classDirectories.setFrom(
                     allJars,
                     allDirectories.map { dirs ->
@@ -72,11 +97,14 @@ internal fun Project.configureJacoco(
                     html.required = true
                 }
 
-                // TODO: This is missing files in src/debug/, src/prod, src/demo, src/demoDebug...
+                fun SourceDirectories.Flat?.toFilePaths(): Provider<List<String>> = this
+                    ?.all
+                    ?.map { directories -> directories.map { it.asFile.path } }
+                    ?: provider { emptyList() }
                 sourceDirectories.setFrom(
                     files(
-                        "$projectDir/src/main/java",
-                        "$projectDir/src/main/kotlin",
+                        variant.sources.java.toFilePaths(),
+                        variant.sources.kotlin.toFilePaths(),
                     ),
                 )
 
@@ -88,7 +116,6 @@ internal fun Project.configureJacoco(
                         .matching { include("**/*.ec") },
                 )
             }
-
 
         variant.artifacts.forScope(ScopedArtifacts.Scope.PROJECT)
             .use(reportTask)

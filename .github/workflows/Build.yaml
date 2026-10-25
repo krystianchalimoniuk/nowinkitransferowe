@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -25,33 +26,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Enable KVM group perms
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-          ls /dev/kvm
-
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          validate-wrappers: true
-          gradle-home-cache-cleanup: true
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Check build-logic
         run: ./gradlew check -p build-logic
 
       - name: Check spotless
-        run: ./gradlew spotlessCheck --init-script gradle/init.gradle.kts --no-configuration-cache
+        run: ./gradlew spotlessCheck
 
       - name: Check Dependency Guard
         id: dependencyguard_verify
@@ -79,6 +70,31 @@ jobs:
           file_pattern: '**/dependencies/*.txt'
           disable_globbing: true
           commit_message: "🤖 Updates baselines for Dependency Guard"
+
+      - name: Update Graphs
+        # Graph tasks read other projects, so they only exist without isolated projects
+        run: ./gradlew graphUpdate -Dorg.gradle.isolated-projects=false
+        continue-on-error: true
+
+      - name: Check Graphs
+        id: graphs_verify
+        continue-on-error: true
+        run: git add -- "**/README.md" && git diff --cached --quiet --exit-code -- "**/README.md"
+
+      - name: Prevent updating graphs if this is a fork
+        id: checkfork_graphs
+        continue-on-error: false
+        if: steps.graphs_verify.outcome == 'failure' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "::error::Check Graphs failed, please update graphs with: ./gradlew graphUpdate -Dorg.gradle.isolated-projects=false" && exit 1
+
+      - name: Push new graphs if available
+        if: steps.graphs_verify.outcome == 'failure' && github.event_name == 'pull_request'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          file_pattern: '**/README.md'
+          disable_globbing: true
+          commit_message: "🤖 Updates graphs"
 
       - name: Run all local screenshot tests (Roborazzi)
         id: screenshotsverify
@@ -110,19 +126,9 @@ jobs:
       - name: Run local tests
         run: ./gradlew testDemoDebug :lint:test
 
-      - name: Setup GMD
-        run: ./gradlew :benchmarks:pixel6Api33Setup
-          --info
-          -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true
-          -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
-
       - name: Build all build type and flavor permutations
-        run: ./gradlew :app:assemble :benchmarks:assemble -Pandroidx.baselineprofile.skipgeneration
-          -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
-          -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true
-          -Pandroid.experimental.androidTest.numManagedDeviceShards=1
-          -Pandroid.experimental.testOptions.managedDevices.maxConcurrentDevices=1
-          -Pandroid.experimental.testOptions.managedDevices.setupTimeoutMinutes=5
+        run: ./gradlew :app:assemble :benchmarks:assemble -PminifyWithR8=false
+          -Pandroidx.baselineprofile.skipgeneration
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v4
@@ -131,14 +137,14 @@ jobs:
           path: '**/build/outputs/apk/**/*.apk'
 
       - name: Upload JVM local results (XML)
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: local-test-results
           path: '**/build/test-results/test*UnitTest/**.xml'
 
       - name: Upload screenshot results (PNG)
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: screenshot-test-results
@@ -148,7 +154,7 @@ jobs:
         run: ./gradlew :app:lintProdRelease :lint:lint
 
       - name: Upload lint reports (HTML)
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: lint-reports
@@ -199,21 +205,21 @@ jobs:
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          validate-wrappers: true
-          gradle-home-cache-cleanup: true
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build projects and run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          # The "default" API 26 image crashes in Compose SlotWriter on activity destroy;
+          # google_apis matches real devices better and passes locally (arm64)
+          target: google_apis
           arch: x86_64
           disable-animations: true
           disk-size: 6000M
@@ -231,7 +237,7 @@ jobs:
         run: ./gradlew createDemoDebugCombinedCoverageReport
 
       - name: Upload test reports
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: test-reports-${{ matrix.api-level }}

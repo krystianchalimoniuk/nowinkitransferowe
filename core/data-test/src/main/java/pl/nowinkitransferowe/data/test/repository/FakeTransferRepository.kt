@@ -47,40 +47,36 @@ class FakeTransferRepository @Inject constructor(
 
     override fun getTransferResources(
         query: TransferResourceQuery,
-    ): Flow<List<TransferResource>> =
-        flow {
-            emit(
-                datasource
-                    .getTransferResources()
-                    .map(NetworkTransferResource::asEntity)
-                    .map(TransferResourceEntity::asExternalModel),
-            )
-        }.flowOn(ioDispatcher)
+    ): Flow<List<TransferResource>> = flow {
+        emit(
+            datasource
+                .getTransferResources()
+                .map(NetworkTransferResource::asEntity)
+                .map(TransferResourceEntity::asExternalModel),
+        )
+    }.flowOn(ioDispatcher)
 
-    override fun getTransferResourcesPages(limit: Int, offset: Int): Flow<List<TransferResource>> =
-        flow {
-            emit(
-                datasource.getTransferResources().take(limit).map(NetworkTransferResource::asEntity)
-                    .map(TransferResourceEntity::asExternalModel),
-            )
-        }
+    override fun getTransferResourcesPages(limit: Int, offset: Int): Flow<List<TransferResource>> = flow {
+        emit(
+            datasource.getTransferResources().take(limit).map(NetworkTransferResource::asEntity)
+                .map(TransferResourceEntity::asExternalModel),
+        )
+    }
 
-    override fun getTransferResource(id: String): Flow<TransferResource> =
-        flow {
-            emit(
-                datasource.getTransferResources().first { it.id == id.toInt() }.asEntity()
-                    .asExternalModel(),
-            )
-        }
+    override fun getTransferResource(id: String): Flow<TransferResource> = flow {
+        emit(
+            datasource.getTransferResources().first { it.id == id.toInt() }.asEntity()
+                .asExternalModel(),
+        )
+    }
 
-    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> =
-        flow {
-            emit(
-                datasource.getTransferResources().filter { it.name == name }
-                    .map(NetworkTransferResource::asEntity)
-                    .map(TransferResourceEntity::asExternalModel),
-            )
-        }
+    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> = flow {
+        emit(
+            datasource.getTransferResources().filter { it.name == name }
+                .map(NetworkTransferResource::asEntity)
+                .map(TransferResourceEntity::asExternalModel),
+        )
+    }
 
     override fun getCount(): Flow<Int> = flow {
         emit(

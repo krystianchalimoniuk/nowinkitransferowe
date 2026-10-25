@@ -33,34 +33,29 @@ class TestTransferRepository : TransferRepository {
     private val transferResourcesFlow: MutableSharedFlow<List<TransferResource>> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
-    override fun getTransferResources(query: TransferResourceQuery): Flow<List<TransferResource>> =
-        transferResourcesFlow.map { transferResources ->
-            var result = transferResources
-            query.filterTransferIds?.let { filterTransferIds ->
-                result = transferResources.filter { it.id in filterTransferIds }
-            }
-            result
+    override fun getTransferResources(query: TransferResourceQuery): Flow<List<TransferResource>> = transferResourcesFlow.map { transferResources ->
+        var result = transferResources
+        query.filterTransferIds?.let { filterTransferIds ->
+            result = transferResources.filter { it.id in filterTransferIds }
         }
+        result
+    }
 
-    override fun getTransferResourcesPages(limit: Int, offset: Int): Flow<List<TransferResource>> =
-        transferResourcesFlow.map { transferResources ->
-            transferResources.take(limit)
-        }
+    override fun getTransferResourcesPages(limit: Int, offset: Int): Flow<List<TransferResource>> = transferResourcesFlow.map { transferResources ->
+        transferResources.take(limit)
+    }
 
-    override fun getTransferResource(id: String): Flow<TransferResource> =
-        transferResourcesFlow.map { transferResources ->
-            transferResources.first { it.id == id }
-        }
+    override fun getTransferResource(id: String): Flow<TransferResource> = transferResourcesFlow.map { transferResources ->
+        transferResources.first { it.id == id }
+    }
 
-    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> =
-        transferResourcesFlow.map { transferResources ->
-            transferResources.filter { it.name == name }
-        }
+    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> = transferResourcesFlow.map { transferResources ->
+        transferResources.filter { it.name == name }
+    }
 
-    override fun getCount(): Flow<Int> =
-        transferResourcesFlow.map { transferResources ->
-            transferResources.count()
-        }
+    override fun getCount(): Flow<Int> = transferResourcesFlow.map { transferResources ->
+        transferResources.count()
+    }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 

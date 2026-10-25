@@ -40,36 +40,31 @@ class CompositeUserNewsResourceRepository @Inject constructor(
      */
     override fun observeAll(
         query: NewsResourceQuery,
-    ): Flow<List<UserNewsResource>> =
-        newsRepository.getNewsResources(query)
-            .combine(userDataRepository.userData) { newsResources, userData ->
-                newsResources.mapToUserNewsResources(userData)
-            }
+    ): Flow<List<UserNewsResource>> = newsRepository.getNewsResources(query)
+        .combine(userDataRepository.userData) { newsResources, userData ->
+            newsResources.mapToUserNewsResources(userData)
+        }
 
-    override fun observeAllPages(limit: Int, offset: Int): Flow<List<UserNewsResource>> =
-        newsRepository.getNewsResourcesPages(limit, offset)
-            .combine(userDataRepository.userData) { newsResources, userData ->
-                newsResources.mapToUserNewsResources(userData)
-            }
+    override fun observeAllPages(limit: Int, offset: Int): Flow<List<UserNewsResource>> = newsRepository.getNewsResourcesPages(limit, offset)
+        .combine(userDataRepository.userData) { newsResources, userData ->
+            newsResources.mapToUserNewsResources(userData)
+        }
 
     /**
      * Returns available news resources (joined with user data) for the followed topics.
      */
-    override fun observeAllForFollowedTopics(): Flow<List<UserNewsResource>> =
-        newsRepository.getNewsResources()
-            .combine(userDataRepository.userData) { newsResources, userData ->
-                newsResources.mapToUserNewsResources(userData)
-            }
+    override fun observeAllForFollowedTopics(): Flow<List<UserNewsResource>> = newsRepository.getNewsResources()
+        .combine(userDataRepository.userData) { newsResources, userData ->
+            newsResources.mapToUserNewsResources(userData)
+        }
 
-    override fun observeAllBookmarked(): Flow<List<UserNewsResource>> =
-        userDataRepository.userData.map { it.bookmarkedNewsResources }.distinctUntilChanged()
-            .flatMapLatest { bookmarkedNewsResources ->
-                when {
-                    bookmarkedNewsResources.isEmpty() -> flowOf(emptyList())
-                    else -> observeAll(NewsResourceQuery(filterNewsIds = bookmarkedNewsResources))
-                }
+    override fun observeAllBookmarked(): Flow<List<UserNewsResource>> = userDataRepository.userData.map { it.bookmarkedNewsResources }.distinctUntilChanged()
+        .flatMapLatest { bookmarkedNewsResources ->
+            when {
+                bookmarkedNewsResources.isEmpty() -> flowOf(emptyList())
+                else -> observeAll(NewsResourceQuery(filterNewsIds = bookmarkedNewsResources))
             }
+        }
 
-    override fun getCount(): Flow<Int> =
-        newsRepository.getNewsCount()
+    override fun getCount(): Flow<Int> = newsRepository.getNewsCount()
 }

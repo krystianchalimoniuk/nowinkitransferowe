@@ -40,8 +40,7 @@ class FakeUserDataRepository @Inject constructor(
         ntPreferencesDataSource.setNewsResourceBookmarked(newsResourceId, bookmarked)
     }
 
-    override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) =
-        ntPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
+    override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) = ntPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
 
     override suspend fun setTransferResourceBookmarked(
         transferResourceId: String,

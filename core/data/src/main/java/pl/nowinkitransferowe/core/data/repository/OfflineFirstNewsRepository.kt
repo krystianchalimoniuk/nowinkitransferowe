@@ -52,12 +52,10 @@ internal class OfflineFirstNewsRepository @Inject constructor(
     )
         .map { it.map(NewsResourceEntity::asExternalModel) }
 
-    override fun getNewsResourcesPages(limit: Int, offset: Int): Flow<List<NewsResource>> =
-        newsResourceDao.getNewsResourcesPages(limit, offset)
-            .map { it.map(NewsResourceEntity::asExternalModel) }
+    override fun getNewsResourcesPages(limit: Int, offset: Int): Flow<List<NewsResource>> = newsResourceDao.getNewsResourcesPages(limit, offset)
+        .map { it.map(NewsResourceEntity::asExternalModel) }
 
-    override fun getNewsResource(id: String): Flow<NewsResource> =
-        newsResourceDao.getNewsResource(id).map { it.asExternalModel() }
+    override fun getNewsResource(id: String): Flow<NewsResource> = newsResourceDao.getNewsResource(id).map { it.asExternalModel() }
 
     override fun getNewsCount(): Flow<Int> = newsResourceDao.getCount()
 

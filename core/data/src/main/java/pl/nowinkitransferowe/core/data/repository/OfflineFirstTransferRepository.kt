@@ -44,23 +44,19 @@ internal class OfflineFirstTransferRepository @Inject constructor(
     private val databaseUpdatingMonitor: DatabaseUpdatingMonitor,
 ) : TransferRepository {
 
-    override fun getTransferResources(query: TransferResourceQuery): Flow<List<TransferResource>> =
-        transferResourceDao.getTransferResources(
-            useFilterTransferIds = query.filterTransferIds != null,
-            filterTransferIds = query.filterTransferIds ?: emptySet(),
-        )
-            .map { it.map(TransferResourceEntity::asExternalModel) }
+    override fun getTransferResources(query: TransferResourceQuery): Flow<List<TransferResource>> = transferResourceDao.getTransferResources(
+        useFilterTransferIds = query.filterTransferIds != null,
+        filterTransferIds = query.filterTransferIds ?: emptySet(),
+    )
+        .map { it.map(TransferResourceEntity::asExternalModel) }
 
-    override fun getTransferResourcesPages(limit: Int, offset: Int): Flow<List<TransferResource>> =
-        transferResourceDao.getTransferResourcesPages(limit, offset)
-            .map { it.map(TransferResourceEntity::asExternalModel) }
+    override fun getTransferResourcesPages(limit: Int, offset: Int): Flow<List<TransferResource>> = transferResourceDao.getTransferResourcesPages(limit, offset)
+        .map { it.map(TransferResourceEntity::asExternalModel) }
 
-    override fun getTransferResource(id: String): Flow<TransferResource> =
-        transferResourceDao.getTransferResource(id).map { it.asExternalModel() }
+    override fun getTransferResource(id: String): Flow<TransferResource> = transferResourceDao.getTransferResource(id).map { it.asExternalModel() }
 
-    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> =
-        transferResourceDao.getTransferResourcesByName(name)
-            .map { it.map(TransferResourceEntity::asExternalModel) }
+    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> = transferResourceDao.getTransferResourcesByName(name)
+        .map { it.map(TransferResourceEntity::asExternalModel) }
 
     override fun getCount(): Flow<Int> = transferResourceDao.getCount()
 
