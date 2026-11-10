@@ -226,6 +226,14 @@ jobs:
           heap-size: 600M
           script: ./gradlew connectedDemoDebugAndroidTest --daemon
 
+      # The emulator step leaves its Gradle and Kotlin daemons (4 GB each) running, and the next
+      # step forks a new single-use daemon, so the runner runs out of memory and shuts down.
+      - name: Stop daemons from the instrumentation step (only API 34)
+        if: matrix.api-level == 34
+        run: |
+          ./gradlew --stop
+          pkill -f KotlinCompileDaemon || true
+
       - name: Run local tests (including Roborazzi) for the combined coverage report (only API 34)
         if: matrix.api-level == 34
         # There is no need to verify Roborazzi tests to generate coverage.
