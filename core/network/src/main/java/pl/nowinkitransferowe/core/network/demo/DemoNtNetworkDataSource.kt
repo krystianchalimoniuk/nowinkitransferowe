@@ -31,6 +31,7 @@ import pl.nowinkitransferowe.core.network.model.NetworkChange
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkChanges
 import pl.nowinkitransferowe.core.network.model.NetworkClub
+import pl.nowinkitransferowe.core.network.model.NetworkClubSeasons
 import pl.nowinkitransferowe.core.network.model.NetworkCountry
 import pl.nowinkitransferowe.core.network.model.NetworkLeagues
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
@@ -89,6 +90,10 @@ class DemoNtNetworkDataSource @Inject constructor(
 
     override suspend fun getRumourStats(): NetworkRumourStats = getDemoObjectFromJson(RUMOUR_STATS_ASSET)
 
+    override suspend fun getClubSeasons(clubId: Int): NetworkClubSeasons = getDemoDataFromJson<NetworkClubSeasons>(CLUB_SEASONS_ASSET)
+        .find { it.clubId == clubId }
+        ?: NetworkClubSeasons(clubId = clubId)
+
     override suspend fun getLeagues(season: String?): NetworkLeagues = getDemoObjectFromJson(LEAGUES_ASSET)
 
     override suspend fun getTopics(): List<NetworkTopic> = getDemoDataFromJson(TOPICS_ASSET)
@@ -126,6 +131,9 @@ class DemoNtNetworkDataSource @Inject constructor(
         private const val PLAYERS_ASSET = "v3/players.json"
         private const val RUMOURS_ASSET = "v3/rumours.json"
         private const val RUMOUR_STATS_ASSET = "v3/rumour_stats.json"
+
+        // Computed from the demo transfers by the server rules, so the totals are smaller than on the website.
+        private const val CLUB_SEASONS_ASSET = "v3/club_seasons.json"
         private const val LEAGUES_ASSET = "v3/leagues.json"
         private const val TOPICS_ASSET = "v3/topics.json"
         private const val COUNTRIES_ASSET = "v3/countries.json"

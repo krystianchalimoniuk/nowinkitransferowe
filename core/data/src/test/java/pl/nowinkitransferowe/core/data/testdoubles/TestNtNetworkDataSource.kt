@@ -27,6 +27,7 @@ import pl.nowinkitransferowe.core.network.model.NetworkArticle
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkChanges
 import pl.nowinkitransferowe.core.network.model.NetworkClub
+import pl.nowinkitransferowe.core.network.model.NetworkClubSeasons
 import pl.nowinkitransferowe.core.network.model.NetworkCountry
 import pl.nowinkitransferowe.core.network.model.NetworkLeagues
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
@@ -92,6 +93,8 @@ class TestNtNetworkDataSource : NtNetworkDataSource {
     override suspend fun getRumours(ids: List<Int>): List<NetworkRumour> = source.getRumours(ids)
 
     override suspend fun getRumourStats(): NetworkRumourStats = source.getRumourStats()
+
+    override suspend fun getClubSeasons(clubId: Int): NetworkClubSeasons = source.getClubSeasons(clubId)
 
     override suspend fun getLeagues(season: String?): NetworkLeagues = source.getLeagues(season)
 

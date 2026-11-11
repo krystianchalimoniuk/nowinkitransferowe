@@ -30,6 +30,7 @@ import pl.nowinkitransferowe.core.network.model.NetworkArticle
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkChanges
 import pl.nowinkitransferowe.core.network.model.NetworkClub
+import pl.nowinkitransferowe.core.network.model.NetworkClubSeasons
 import pl.nowinkitransferowe.core.network.model.NetworkCountry
 import pl.nowinkitransferowe.core.network.model.NetworkLeagues
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
@@ -99,6 +100,9 @@ private interface RetrofitNtNetworkApiV3 {
 
     @GET(value = "rumours/stats")
     suspend fun getRumourStats(): NetworkRumourStats
+
+    @GET(value = "clubs/{id}/seasons")
+    suspend fun getClubSeasons(@Path("id") clubId: Int): NetworkClubSeasons
 
     @GET(value = "leagues")
     suspend fun getLeagues(@Query("season") season: String?): NetworkLeagues
@@ -175,6 +179,8 @@ class RetrofitNtNetwork @Inject constructor(
     override suspend fun getRumours(ids: List<Int>): List<NetworkRumour> = byIds(ids, apiV3::getRumours)
 
     override suspend fun getRumourStats(): NetworkRumourStats = apiV3.getRumourStats()
+
+    override suspend fun getClubSeasons(clubId: Int): NetworkClubSeasons = apiV3.getClubSeasons(clubId = clubId)
 
     override suspend fun getLeagues(season: String?): NetworkLeagues = apiV3.getLeagues(season = season)
 

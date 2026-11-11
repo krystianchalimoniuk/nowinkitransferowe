@@ -20,6 +20,7 @@ import pl.nowinkitransferowe.core.network.model.NetworkArticle
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkChanges
 import pl.nowinkitransferowe.core.network.model.NetworkClub
+import pl.nowinkitransferowe.core.network.model.NetworkClubSeasons
 import pl.nowinkitransferowe.core.network.model.NetworkCountry
 import pl.nowinkitransferowe.core.network.model.NetworkLeagues
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
@@ -64,6 +65,11 @@ interface NtNetworkDataSource {
     suspend fun getRumours(ids: List<Int>): List<NetworkRumour>
 
     suspend fun getRumourStats(): NetworkRumourStats
+
+    /**
+     * Spending, income and transfers of the club with [clubId] by season, newest first.
+     */
+    suspend fun getClubSeasons(clubId: Int): NetworkClubSeasons
 
     /**
      * Leagues of the season with the given slug (for example `26-27`), or of the current season.

@@ -1,0 +1,1751 @@
+[
+ {
+  "clubId": 3330,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     20061
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 3326,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     20194
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 3259,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     19642
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 2821,
+  "seasons": [
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     16475
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 1298,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 64.5,
+    "earned": 0.0,
+    "balance": -64.5,
+    "arrivals": [
+     20540
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 1251,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 0.85,
+    "balance": 0.85,
+    "arrivals": [],
+    "departures": [
+     20326
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 1133,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 2.5,
+    "earned": 0.0,
+    "balance": -2.5,
+    "arrivals": [
+     20294
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 1067,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 5.0,
+    "earned": 0.0,
+    "balance": -5.0,
+    "arrivals": [
+     20239
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 856,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 20.0,
+    "earned": 0.0,
+    "balance": -20.0,
+    "arrivals": [
+     20643
+    ],
+    "departures": []
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     16163
+    ],
+    "departures": [
+     16162
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 825,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 23.0,
+    "balance": 23.0,
+    "arrivals": [],
+    "departures": [
+     19788
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 823,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     19801
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 731,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 25.0,
+    "balance": 25.0,
+    "arrivals": [],
+    "departures": [
+     20582
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 567,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 3.0,
+    "balance": 3.0,
+    "arrivals": [],
+    "departures": [
+     20235
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 562,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 6.0,
+    "balance": 6.0,
+    "arrivals": [
+     19250
+    ],
+    "departures": [
+     19901
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 558,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     19940
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 549,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 80.0,
+    "balance": 80.0,
+    "arrivals": [],
+    "departures": [
+     20692,
+     20217
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 509,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     20472
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 486,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 6.0,
+    "earned": 0.0,
+    "balance": -6.0,
+    "arrivals": [
+     20224
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 466,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 135.0,
+    "balance": 135.0,
+    "arrivals": [],
+    "departures": [
+     20250
+    ]
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     16466
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 463,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 80.0,
+    "balance": 80.0,
+    "arrivals": [],
+    "departures": [
+     20439,
+     20392
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 420,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 30.0,
+    "balance": 30.0,
+    "arrivals": [],
+    "departures": [
+     20477
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 409,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     19229
+    ],
+    "departures": []
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     17125
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 393,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 1.0,
+    "balance": 1.0,
+    "arrivals": [],
+    "departures": [
+     20216
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 363,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     19481
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 362,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 50.0,
+    "balance": 50.0,
+    "arrivals": [],
+    "departures": [
+     20237
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 330,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 6.0,
+    "balance": 6.0,
+    "arrivals": [],
+    "departures": [
+     20223
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 329,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 35.0,
+    "balance": 35.0,
+    "arrivals": [],
+    "departures": [
+     20259
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 328,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 6.0,
+    "earned": 0.0,
+    "balance": -6.0,
+    "arrivals": [
+     19901
+    ],
+    "departures": [
+     19801
+    ]
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 1.5,
+    "balance": 1.5,
+    "arrivals": [],
+    "departures": [
+     16917,
+     16878
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 327,
+  "seasons": [
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 47.5,
+    "balance": 47.5,
+    "arrivals": [],
+    "departures": [
+     15375
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 324,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 103.7,
+    "balance": 103.7,
+    "arrivals": [],
+    "departures": [
+     20481,
+     20245
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 320,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 20.0,
+    "balance": 20.0,
+    "arrivals": [],
+    "departures": [
+     20645,
+     20643
+    ]
+   },
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     19300
+    ]
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     17340
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 315,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 30.0,
+    "balance": 30.0,
+    "arrivals": [],
+    "departures": [
+     20278
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 248,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 40.0,
+    "earned": 0.0,
+    "balance": -40.0,
+    "arrivals": [
+     20281
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 242,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 294.7,
+    "earned": 0.0,
+    "balance": -294.7,
+    "arrivals": [
+     20425,
+     20248,
+     20247
+    ],
+    "departures": []
+   },
+   {
+    "season": "25/26",
+    "spent": 63.8,
+    "earned": 0.0,
+    "balance": -63.8,
+    "arrivals": [
+     18456
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 230,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 1.0,
+    "earned": 0.0,
+    "balance": -1.0,
+    "arrivals": [
+     20216
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 226,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 3.0,
+    "earned": 0.0,
+    "balance": -3.0,
+    "arrivals": [
+     20330,
+     20222
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 222,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 1.5,
+    "earned": 0.0,
+    "balance": -1.5,
+    "arrivals": [
+     20055
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 217,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 6.0,
+    "earned": 0.0,
+    "balance": -6.0,
+    "arrivals": [
+     20223
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 216,
+  "seasons": [
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     16878
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 212,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 6.7,
+    "balance": 6.7,
+    "arrivals": [],
+    "departures": [
+     20239,
+     20210
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 209,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 30.0,
+    "balance": 30.0,
+    "arrivals": [],
+    "departures": [
+     20387
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 207,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     20741
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 194,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     20130
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 175,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 40.0,
+    "balance": 40.0,
+    "arrivals": [],
+    "departures": [
+     17837
+    ]
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     16037
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 172,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 42.0,
+    "earned": 0.0,
+    "balance": -42.0,
+    "arrivals": [
+     20167
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 171,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 50.0,
+    "balance": 50.0,
+    "arrivals": [],
+    "departures": [
+     20244
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 162,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 40.0,
+    "earned": 0.0,
+    "balance": -40.0,
+    "arrivals": [
+     20721
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 154,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 44.0,
+    "earned": 0.0,
+    "balance": -44.0,
+    "arrivals": [
+     20204
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 152,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 145.0,
+    "earned": 138.0,
+    "balance": -7.0,
+    "arrivals": [
+     20469,
+     20399,
+     20387,
+     20317
+    ],
+    "departures": [
+     20304
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 148,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 44.0,
+    "balance": 44.0,
+    "arrivals": [],
+    "departures": [
+     19412,
+     18679
+    ]
+   },
+   {
+    "season": "24/25",
+    "spent": 21.4,
+    "earned": 0.0,
+    "balance": -21.4,
+    "arrivals": [
+     16487,
+     15625
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 141,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 38.0,
+    "earned": 0.0,
+    "balance": -38.0,
+    "arrivals": [
+     20536
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 138,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 40.0,
+    "balance": 40.0,
+    "arrivals": [],
+    "departures": [
+     20721
+    ]
+   },
+   {
+    "season": "25/26",
+    "spent": 14.0,
+    "earned": 0.0,
+    "balance": -14.0,
+    "arrivals": [
+     19904
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 136,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 19.36,
+    "balance": 19.36,
+    "arrivals": [],
+    "departures": [
+     18623
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 132,
+  "seasons": [
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     16361
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 129,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 37.0,
+    "earned": 0.0,
+    "balance": -37.0,
+    "arrivals": [
+     20319
+    ],
+    "departures": []
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 29.3,
+    "balance": 29.3,
+    "arrivals": [],
+    "departures": [
+     15942
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 122,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 49.0,
+    "balance": 49.0,
+    "arrivals": [],
+    "departures": [
+     20574
+    ]
+   },
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     18937
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 119,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 1.7,
+    "earned": 0.0,
+    "balance": -1.7,
+    "arrivals": [
+     20210
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 112,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 20.78,
+    "balance": 20.78,
+    "arrivals": [],
+    "departures": [
+     19015
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 109,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 155.0,
+    "earned": 48.5,
+    "balance": -106.5,
+    "arrivals": [
+     20385,
+     20202
+    ],
+    "departures": [
+     20349
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 108,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 35.0,
+    "earned": 0.0,
+    "balance": -35.0,
+    "arrivals": [
+     20259
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 106,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 135.0,
+    "balance": 135.0,
+    "arrivals": [],
+    "departures": [
+     20288
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 105,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 23.7,
+    "earned": 0.0,
+    "balance": -23.7,
+    "arrivals": [
+     19307,
+     19236
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 102,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 3.0,
+    "balance": 3.0,
+    "arrivals": [],
+    "departures": [
+     20222
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 98,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.85,
+    "earned": 6.0,
+    "balance": 5.15,
+    "arrivals": [
+     20326
+    ],
+    "departures": [
+     20224
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 97,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 30.0,
+    "earned": 0.0,
+    "balance": -30.0,
+    "arrivals": [
+     20278
+    ],
+    "departures": []
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 27.0,
+    "balance": 27.0,
+    "arrivals": [],
+    "departures": [
+     15921
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 96,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 7.05,
+    "earned": 0.0,
+    "balance": -7.05,
+    "arrivals": [
+     20235,
+     20214
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 95,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     18484
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 87,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 25.0,
+    "earned": 0.0,
+    "balance": -25.0,
+    "arrivals": [
+     20582
+    ],
+    "departures": []
+   },
+   {
+    "season": "24/25",
+    "spent": 1.5,
+    "earned": 0.0,
+    "balance": -1.5,
+    "arrivals": [
+     16917
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 86,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 275.0,
+    "earned": 0.0,
+    "balance": -275.0,
+    "arrivals": [
+     20692,
+     20691,
+     20537,
+     20217
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 85,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 124.0,
+    "earned": 38.0,
+    "balance": -86.0,
+    "arrivals": [
+     20392,
+     20249
+    ],
+    "departures": [
+     20536
+    ]
+   },
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     19798
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 84,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 280.0,
+    "earned": 162.7,
+    "balance": -117.3,
+    "arrivals": [
+     20538,
+     20250
+    ],
+    "departures": [
+     20425,
+     20385
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 83,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 204.3,
+    "balance": 204.3,
+    "arrivals": [
+     20741,
+     20645
+    ],
+    "departures": [
+     20540,
+     20529,
+     20472,
+     20399,
+     20330,
+     20247
+    ]
+   },
+   {
+    "season": "25/26",
+    "spent": 193.14,
+    "earned": 145.0,
+    "balance": -48.14,
+    "arrivals": [
+     20061,
+     19899,
+     19788,
+     19580,
+     19422,
+     19412,
+     19300,
+     19015,
+     18921,
+     18679,
+     18623,
+     18282,
+     17837
+    ],
+    "departures": [
+     20194,
+     20167,
+     20130,
+     20055,
+     19940,
+     19904,
+     19798,
+     19642,
+     19481,
+     19307,
+     19250,
+     19236,
+     19229,
+     18937,
+     18484,
+     18456,
+     17847
+    ]
+   },
+   {
+    "season": "24/25",
+    "spent": 121.4,
+    "earned": 21.4,
+    "balance": -100.0,
+    "arrivals": [
+     17340,
+     16459,
+     16162,
+     16119,
+     16037,
+     15954,
+     15942,
+     15921,
+     15375
+    ],
+    "departures": [
+     17677,
+     17125,
+     16542,
+     16487,
+     16475,
+     16466,
+     16361,
+     16163,
+     15625
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 82,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 49.0,
+    "earned": 188.0,
+    "balance": 139.0,
+    "arrivals": [
+     20574
+    ],
+    "departures": [
+     20248,
+     20202
+    ]
+   },
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     18921
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 80,
+  "seasons": [
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     17677
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 79,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 241.7,
+    "earned": 200.0,
+    "balance": -41.7,
+    "arrivals": [
+     20481,
+     20304,
+     20245
+    ],
+    "departures": [
+     20538,
+     20220
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 77,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 60.0,
+    "balance": 60.0,
+    "arrivals": [],
+    "departures": [
+     20317
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 76,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 100.0,
+    "earned": 0.0,
+    "balance": -100.0,
+    "arrivals": [
+     20244,
+     20237
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 74,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 41.2,
+    "earned": 0.0,
+    "balance": -41.2,
+    "arrivals": [
+     20275
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 73,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 60.0,
+    "earned": 40.0,
+    "balance": -20.0,
+    "arrivals": [
+     20477,
+     20439
+    ],
+    "departures": [
+     20703
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 70,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 40.8,
+    "earned": 0.0,
+    "balance": -40.8,
+    "arrivals": [
+     20529
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 62,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 4.05,
+    "balance": 4.05,
+    "arrivals": [],
+    "departures": [
+     20214
+    ]
+   },
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     18282
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 61,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 22.0,
+    "earned": 70.0,
+    "balance": 48.0,
+    "arrivals": [
+     20713
+    ],
+    "departures": [
+     20691
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 58,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 37.0,
+    "balance": 37.0,
+    "arrivals": [],
+    "departures": [
+     20319
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 48,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 44.0,
+    "balance": 44.0,
+    "arrivals": [],
+    "departures": [
+     20204
+    ]
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 17.6,
+    "balance": 17.6,
+    "arrivals": [],
+    "departures": [
+     16119
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 42,
+  "seasons": [
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 29.0,
+    "balance": 29.0,
+    "arrivals": [],
+    "departures": [
+     19899
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 38,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 50.0,
+    "balance": 50.0,
+    "arrivals": [],
+    "departures": [
+     20291
+    ]
+   },
+   {
+    "season": "25/26",
+    "spent": 0.0,
+    "earned": 17.0,
+    "balance": 17.0,
+    "arrivals": [],
+    "departures": [
+     19422
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 37,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 40.0,
+    "earned": 0.0,
+    "balance": -40.0,
+    "arrivals": [
+     20703
+    ],
+    "departures": []
+   }
+  ]
+ },
+ {
+  "clubId": 36,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 190.0,
+    "earned": 40.0,
+    "balance": -150.0,
+    "arrivals": [
+     20288,
+     20220
+    ],
+    "departures": [
+     20281
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 29,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 22.0,
+    "balance": 22.0,
+    "arrivals": [],
+    "departures": [
+     20713
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 16,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 2.5,
+    "balance": 2.5,
+    "arrivals": [],
+    "departures": [
+     20294
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 15,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 143.5,
+    "earned": 295.2,
+    "balance": 151.7,
+    "arrivals": [
+     20357,
+     20349,
+     20291
+    ],
+    "departures": [
+     20537,
+     20469,
+     20275,
+     20249
+    ]
+   },
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     16459
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 14,
+  "seasons": [
+   {
+    "season": "26/27",
+    "spent": 0.0,
+    "earned": 45.0,
+    "balance": 45.0,
+    "arrivals": [],
+    "departures": [
+     20357
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 13,
+  "seasons": [
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [],
+    "departures": [
+     15954
+    ]
+   }
+  ]
+ },
+ {
+  "clubId": 12,
+  "seasons": [
+   {
+    "season": "24/25",
+    "spent": 0.0,
+    "earned": 0.0,
+    "balance": 0.0,
+    "arrivals": [
+     16542
+    ],
+    "departures": []
+   }
+  ]
+ }
+]
