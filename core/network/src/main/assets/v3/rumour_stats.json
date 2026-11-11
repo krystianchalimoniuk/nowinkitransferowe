@@ -1,0 +1,31 @@
+{
+ "season": "26/27",
+ "active": 5,
+ "confirmed": 0,
+ "failed": 0,
+ "showAccuracy": false,
+ "byStage": [],
+ "hotClubs": [
+  {
+   "clubId": 15,
+   "rumours": 1
+  },
+  {
+   "clubId": 86,
+   "rumours": 1
+  },
+  {
+   "clubId": 36,
+   "rumours": 1
+  },
+  {
+   "clubId": 79,
+   "rumours": 1
+  },
+  {
+   "clubId": 109,
+   "rumours": 1
+  }
+ ],
+ "daysToConfirm": null
+}

@@ -1,0 +1,62 @@
+[
+ {
+  "slug": "premier-league",
+  "name": "Premier League",
+  "kind": "LEAGUE"
+ },
+ {
+  "slug": "la-liga",
+  "name": "La Liga",
+  "kind": "LEAGUE"
+ },
+ {
+  "slug": "serie-a",
+  "name": "Serie A",
+  "kind": "LEAGUE"
+ },
+ {
+  "slug": "bundesliga",
+  "name": "Bundesliga",
+  "kind": "LEAGUE"
+ },
+ {
+  "slug": "ligue-1",
+  "name": "Ligue 1",
+  "kind": "LEAGUE"
+ },
+ {
+  "slug": "ekstraklasa",
+  "name": "Ekstraklasa",
+  "kind": "LEAGUE"
+ },
+ {
+  "slug": "liga-mistrzow",
+  "name": "Liga Mistrzów",
+  "kind": "CUP"
+ },
+ {
+  "slug": "liga-europy",
+  "name": "Liga Europy",
+  "kind": "CUP"
+ },
+ {
+  "slug": "liga-konferencji",
+  "name": "Liga Konferencji",
+  "kind": "CUP"
+ },
+ {
+  "slug": "polacy-za-granica",
+  "name": "Polacy za granicą",
+  "kind": "SPECIAL"
+ },
+ {
+  "slug": "reprezentacja-polski",
+  "name": "Reprezentacja Polski",
+  "kind": "SPECIAL"
+ },
+ {
+  "slug": "reprezentacje",
+  "name": "Reprezentacje",
+  "kind": "SPECIAL"
+ }
+]

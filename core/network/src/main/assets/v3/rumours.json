@@ -1,0 +1,122 @@
+[
+ {
+  "id": 5,
+  "playerId": 10287,
+  "playerName": "Fermín López",
+  "fromClubId": 109,
+  "fromClubName": "FC Barcelona",
+  "toClubId": 15,
+  "toClubName": "PSG FC",
+  "stage": 1,
+  "stageName": "Spekulacja",
+  "previousStage": null,
+  "fee": "80 mln €",
+  "status": "ACTIVE",
+  "transferId": null,
+  "updatedAt": "2026-10-29T13:46:38.543203Z",
+  "latestArticleId": 11284,
+  "history": [
+   {
+    "stage": 1,
+    "at": "2026-10-29T13:46:38.543203Z",
+    "articleId": 11284
+   }
+  ]
+ },
+ {
+  "id": 4,
+  "playerId": 10286,
+  "playerName": "Gavi",
+  "fromClubId": 109,
+  "fromClubName": "FC Barcelona",
+  "toClubId": 86,
+  "toClubName": "Liverpool FC",
+  "stage": 1,
+  "stageName": "Spekulacja",
+  "previousStage": null,
+  "fee": "30 mln €",
+  "status": "ACTIVE",
+  "transferId": null,
+  "updatedAt": "2026-10-29T13:35:02.029562Z",
+  "latestArticleId": 11283,
+  "history": [
+   {
+    "stage": 1,
+    "at": "2026-10-29T13:35:02.029562Z",
+    "articleId": 11283
+   }
+  ]
+ },
+ {
+  "id": 3,
+  "playerId": 9412,
+  "playerName": "Rayan Cherki",
+  "fromClubId": 84,
+  "fromClubName": "Manchester City",
+  "toClubId": 36,
+  "toClubName": "Real Madryt",
+  "stage": 1,
+  "stageName": "Spekulacja",
+  "previousStage": null,
+  "fee": "90 mln €",
+  "status": "ACTIVE",
+  "transferId": null,
+  "updatedAt": "2026-10-29T13:13:33.076151Z",
+  "latestArticleId": 11282,
+  "history": [
+   {
+    "stage": 1,
+    "at": "2026-10-29T13:13:33.076151Z",
+    "articleId": 11282
+   }
+  ]
+ },
+ {
+  "id": 2,
+  "playerId": 9390,
+  "playerName": "Trent Alexander-Arnold",
+  "fromClubId": 36,
+  "fromClubName": "Real Madryt",
+  "toClubId": 79,
+  "toClubName": "Chelsea FC",
+  "stage": 1,
+  "stageName": "Spekulacja",
+  "previousStage": null,
+  "fee": "70 mln €",
+  "status": "ACTIVE",
+  "transferId": null,
+  "updatedAt": "2026-10-29T12:58:19.344147Z",
+  "latestArticleId": 11281,
+  "history": [
+   {
+    "stage": 1,
+    "at": "2026-10-29T12:58:19.344147Z",
+    "articleId": 11281
+   }
+  ]
+ },
+ {
+  "id": 1,
+  "playerId": 9182,
+  "playerName": "Finn Jeltsch",
+  "fromClubId": 181,
+  "fromClubName": "VfB Stuttgart",
+  "toClubId": 109,
+  "toClubName": "FC Barcelona",
+  "stage": 2,
+  "stageName": "Zainteresowanie",
+  "previousStage": null,
+  "fee": "60 mln €",
+  "status": "ACTIVE",
+  "transferId": null,
+  "updatedAt": "2026-10-29T12:46:44.528866Z",
+  "latestArticleId": 11280,
+  "history": [
+   {
+    "stage": 2,
+    "at": "2026-10-29T12:46:44.528866Z",
+    "articleId": 11280
+   }
+  ]
+ }
+]

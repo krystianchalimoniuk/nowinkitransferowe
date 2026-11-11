@@ -1,0 +1,1046 @@
+{
+ "season": "26/27",
+ "seasons": [
+  {
+   "slug": "26-27",
+   "label": "26/27",
+   "current": true
+  }
+ ],
+ "leagues": [
+  {
+   "topic": "premier-league",
+   "spent": 4165.25,
+   "earned": 2571.75,
+   "balance": -1593.5,
+   "transfers": 273,
+   "clubs": [
+    {
+     "clubId": 84,
+     "spent": 523.0,
+     "earned": 336.4,
+     "balance": -186.6,
+     "arrivals": 8,
+     "departures": 14
+    },
+    {
+     "clubId": 79,
+     "spent": 427.25,
+     "earned": 493.95,
+     "balance": 66.7,
+     "arrivals": 11,
+     "departures": 21
+    },
+    {
+     "clubId": 242,
+     "spent": 426.35,
+     "earned": 183.0,
+     "balance": -243.35,
+     "arrivals": 9,
+     "departures": 9
+    },
+    {
+     "clubId": 86,
+     "spent": 313.0,
+     "earned": 30.0,
+     "balance": -283.0,
+     "arrivals": 8,
+     "departures": 9
+    },
+    {
+     "clubId": 152,
+     "spent": 300.5,
+     "earned": 366.4,
+     "balance": 65.9,
+     "arrivals": 11,
+     "departures": 16
+    },
+    {
+     "clubId": 82,
+     "spent": 294.0,
+     "earned": 275.5,
+     "balance": -18.5,
+     "arrivals": 7,
+     "departures": 9
+    },
+    {
+     "clubId": 806,
+     "spent": 247.7,
+     "earned": 7.0,
+     "balance": -240.7,
+     "arrivals": 14,
+     "departures": 1
+    },
+    {
+     "clubId": 320,
+     "spent": 233.2,
+     "earned": 247.75,
+     "balance": 14.55,
+     "arrivals": 12,
+     "departures": 16
+    },
+    {
+     "clubId": 37,
+     "spent": 227.1,
+     "earned": 137.15,
+     "balance": -89.95,
+     "arrivals": 7,
+     "departures": 10
+    },
+    {
+     "clubId": 48,
+     "spent": 173.2,
+     "earned": 52.15,
+     "balance": -121.05,
+     "arrivals": 4,
+     "departures": 5
+    },
+    {
+     "clubId": 249,
+     "spent": 160.3,
+     "earned": 7.0,
+     "balance": -153.3,
+     "arrivals": 14,
+     "departures": 4
+    },
+    {
+     "clubId": 772,
+     "spent": 157.0,
+     "earned": 5.2,
+     "balance": -151.8,
+     "arrivals": 10,
+     "departures": 3
+    },
+    {
+     "clubId": 70,
+     "spent": 127.8,
+     "earned": 7.0,
+     "balance": -120.8,
+     "arrivals": 6,
+     "departures": 7
+    },
+    {
+     "clubId": 466,
+     "spent": 118.2,
+     "earned": 147.5,
+     "balance": 29.3,
+     "arrivals": 4,
+     "departures": 7
+    },
+    {
+     "clubId": 248,
+     "spent": 106.8,
+     "earned": 20.5,
+     "balance": -86.3,
+     "arrivals": 7,
+     "departures": 4
+    },
+    {
+     "clubId": 129,
+     "spent": 83.7,
+     "earned": 28.6,
+     "balance": -55.1,
+     "arrivals": 3,
+     "departures": 7
+    },
+    {
+     "clubId": 111,
+     "spent": 82.65,
+     "earned": 103.15,
+     "balance": 20.5,
+     "arrivals": 7,
+     "departures": 6
+    },
+    {
+     "clubId": 87,
+     "spent": 61.0,
+     "earned": 15.1,
+     "balance": -45.9,
+     "arrivals": 4,
+     "departures": 7
+    },
+    {
+     "clubId": 29,
+     "spent": 58.0,
+     "earned": 22.0,
+     "balance": -36.0,
+     "arrivals": 4,
+     "departures": 1
+    },
+    {
+     "clubId": 163,
+     "spent": 44.5,
+     "earned": 86.4,
+     "balance": 41.9,
+     "arrivals": 10,
+     "departures": 8
+    }
+   ],
+   "topArrivals": [
+    20538,
+    20304,
+    20250,
+    20537,
+    20248
+   ],
+   "topDepartures": [
+    20538,
+    20304,
+    20250,
+    20248,
+    20425
+   ]
+  },
+  {
+   "topic": "la-liga",
+   "spent": 690.4,
+   "earned": 482.1,
+   "balance": -208.3,
+   "transfers": 147,
+   "clubs": [
+    {
+     "clubId": 36,
+     "spent": 238.0,
+     "earned": 76.0,
+     "balance": -162.0,
+     "arrivals": 7,
+     "departures": 11
+    },
+    {
+     "clubId": 109,
+     "spent": 199.0,
+     "earned": 91.0,
+     "balance": -108.0,
+     "arrivals": 8,
+     "departures": 17
+    },
+    {
+     "clubId": 162,
+     "spent": 142.0,
+     "earned": 59.0,
+     "balance": -83.0,
+     "arrivals": 5,
+     "departures": 9
+    },
+    {
+     "clubId": 13,
+     "spent": 31.0,
+     "earned": 23.5,
+     "balance": -7.5,
+     "arrivals": 5,
+     "departures": 4
+    },
+    {
+     "clubId": 92,
+     "spent": 16.5,
+     "earned": 0.0,
+     "balance": -16.5,
+     "arrivals": 2,
+     "departures": 4
+    },
+    {
+     "clubId": 143,
+     "spent": 13.0,
+     "earned": 5.0,
+     "balance": -8.0,
+     "arrivals": 4,
+     "departures": 1
+    },
+    {
+     "clubId": 699,
+     "spent": 12.5,
+     "earned": 19.5,
+     "balance": 7.0,
+     "arrivals": 6,
+     "departures": 3
+    },
+    {
+     "clubId": 168,
+     "spent": 11.5,
+     "earned": 0.0,
+     "balance": -11.5,
+     "arrivals": 6,
+     "departures": 2
+    },
+    {
+     "clubId": 12,
+     "spent": 8.5,
+     "earned": 2.0,
+     "balance": -6.5,
+     "arrivals": 3,
+     "departures": 3
+    },
+    {
+     "clubId": 217,
+     "spent": 6.0,
+     "earned": 0.0,
+     "balance": -6.0,
+     "arrivals": 4,
+     "departures": 0
+    },
+    {
+     "clubId": 139,
+     "spent": 5.5,
+     "earned": 11.0,
+     "balance": 5.5,
+     "arrivals": 7,
+     "departures": 5
+    },
+    {
+     "clubId": 549,
+     "spent": 5.0,
+     "earned": 80.0,
+     "balance": 75.0,
+     "arrivals": 2,
+     "departures": 4
+    },
+    {
+     "clubId": 231,
+     "spent": 1.9,
+     "earned": 0.0,
+     "balance": -1.9,
+     "arrivals": 7,
+     "departures": 5
+    },
+    {
+     "clubId": 381,
+     "spent": 0.0,
+     "earned": 42.4,
+     "balance": 42.4,
+     "arrivals": 2,
+     "departures": 2
+    },
+    {
+     "clubId": 731,
+     "spent": 0.0,
+     "earned": 37.0,
+     "balance": 37.0,
+     "arrivals": 3,
+     "departures": 3
+    },
+    {
+     "clubId": 180,
+     "spent": 0.0,
+     "earned": 25.0,
+     "balance": 25.0,
+     "arrivals": 4,
+     "departures": 1
+    },
+    {
+     "clubId": 207,
+     "spent": 0.0,
+     "earned": 9.0,
+     "balance": 9.0,
+     "arrivals": 0,
+     "departures": 7
+    },
+    {
+     "clubId": 194,
+     "spent": 0.0,
+     "earned": 1.7,
+     "balance": 1.7,
+     "arrivals": 2,
+     "departures": 5
+    },
+    {
+     "clubId": 438,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 6,
+     "departures": 0
+    },
+    {
+     "clubId": 232,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 1,
+     "departures": 0
+    }
+   ],
+   "topArrivals": [
+    20288,
+    20202,
+    20385,
+    20220,
+    20721
+   ],
+   "topDepartures": [
+    20349,
+    20692,
+    20217,
+    20281,
+    20582
+   ]
+  },
+  {
+   "topic": "serie-a",
+   "spent": 662.65,
+   "earned": 394.9,
+   "balance": -267.75,
+   "transfers": 248,
+   "clubs": [
+    {
+     "clubId": 85,
+     "spent": 154.0,
+     "earned": 38.0,
+     "balance": -116.0,
+     "arrivals": 6,
+     "departures": 8
+    },
+    {
+     "clubId": 108,
+     "spent": 114.5,
+     "earned": 0.0,
+     "balance": -114.5,
+     "arrivals": 8,
+     "departures": 11
+    },
+    {
+     "clubId": 74,
+     "spent": 113.4,
+     "earned": 17.3,
+     "balance": -96.1,
+     "arrivals": 11,
+     "departures": 12
+    },
+    {
+     "clubId": 158,
+     "spent": 83.0,
+     "earned": 20.0,
+     "balance": -63.0,
+     "arrivals": 5,
+     "departures": 10
+    },
+    {
+     "clubId": 2584,
+     "spent": 60.5,
+     "earned": 0.0,
+     "balance": -60.5,
+     "arrivals": 11,
+     "departures": 9
+    },
+    {
+     "clubId": 1267,
+     "spent": 48.5,
+     "earned": 3.0,
+     "balance": -45.5,
+     "arrivals": 13,
+     "departures": 15
+    },
+    {
+     "clubId": 154,
+     "spent": 44.0,
+     "earned": 32.0,
+     "balance": -12.0,
+     "arrivals": 3,
+     "departures": 9
+    },
+    {
+     "clubId": 369,
+     "spent": 10.7,
+     "earned": 0.0,
+     "balance": -10.7,
+     "arrivals": 10,
+     "departures": 2
+    },
+    {
+     "clubId": 31,
+     "spent": 7.15,
+     "earned": 2.0,
+     "balance": -5.15,
+     "arrivals": 5,
+     "departures": 5
+    },
+    {
+     "clubId": 209,
+     "spent": 7.0,
+     "earned": 70.5,
+     "balance": 63.5,
+     "arrivals": 8,
+     "departures": 7
+    },
+    {
+     "clubId": 58,
+     "spent": 7.0,
+     "earned": 37.0,
+     "balance": 30.0,
+     "arrivals": 11,
+     "departures": 4
+    },
+    {
+     "clubId": 32,
+     "spent": 7.0,
+     "earned": 0.3,
+     "balance": -6.7,
+     "arrivals": 12,
+     "departures": 5
+    },
+    {
+     "clubId": 265,
+     "spent": 5.9,
+     "earned": 0.0,
+     "balance": -5.9,
+     "arrivals": 6,
+     "departures": 9
+    },
+    {
+     "clubId": 324,
+     "spent": 0.0,
+     "earned": 106.7,
+     "balance": 106.7,
+     "arrivals": 5,
+     "departures": 9
+    },
+    {
+     "clubId": 42,
+     "spent": 0.0,
+     "earned": 33.0,
+     "balance": 33.0,
+     "arrivals": 6,
+     "departures": 7
+    },
+    {
+     "clubId": 409,
+     "spent": 0.0,
+     "earned": 30.4,
+     "balance": 30.4,
+     "arrivals": 9,
+     "departures": 5
+    },
+    {
+     "clubId": 1374,
+     "spent": 0.0,
+     "earned": 4.7,
+     "balance": 4.7,
+     "arrivals": 13,
+     "departures": 6
+    },
+    {
+     "clubId": 137,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 5,
+     "departures": 6
+    },
+    {
+     "clubId": 374,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 10,
+     "departures": 7
+    }
+   ],
+   "topArrivals": [
+    20249,
+    20392,
+    20204,
+    20275,
+    20259
+   ],
+   "topDepartures": [
+    20245,
+    20481,
+    20536,
+    20319,
+    20387
+   ]
+  },
+  {
+   "topic": "bundesliga",
+   "spent": 364.0,
+   "earned": 592.05,
+   "balance": 228.05,
+   "transfers": 67,
+   "clubs": [
+    {
+     "clubId": 73,
+     "spent": 115.5,
+     "earned": 116.5,
+     "balance": 1.0,
+     "arrivals": 4,
+     "departures": 6
+    },
+    {
+     "clubId": 76,
+     "spent": 103.5,
+     "earned": 19.8,
+     "balance": -83.7,
+     "arrivals": 3,
+     "departures": 3
+    },
+    {
+     "clubId": 97,
+     "spent": 85.0,
+     "earned": 22.0,
+     "balance": -63.0,
+     "arrivals": 5,
+     "departures": 4
+    },
+    {
+     "clubId": 122,
+     "spent": 20.0,
+     "earned": 49.0,
+     "balance": 29.0,
+     "arrivals": 1,
+     "departures": 3
+    },
+    {
+     "clubId": 106,
+     "spent": 15.0,
+     "earned": 136.5,
+     "balance": 121.5,
+     "arrivals": 5,
+     "departures": 4
+    },
+    {
+     "clubId": 313,
+     "spent": 10.0,
+     "earned": 7.0,
+     "balance": -3.0,
+     "arrivals": 2,
+     "departures": 1
+    },
+    {
+     "clubId": 362,
+     "spent": 9.0,
+     "earned": 70.0,
+     "balance": 61.0,
+     "arrivals": 1,
+     "departures": 5
+    },
+    {
+     "clubId": 226,
+     "spent": 6.0,
+     "earned": 20.0,
+     "balance": 14.0,
+     "arrivals": 4,
+     "departures": 3
+    },
+    {
+     "clubId": 77,
+     "spent": 0.0,
+     "earned": 82.0,
+     "balance": 82.0,
+     "arrivals": 1,
+     "departures": 2
+    },
+    {
+     "clubId": 326,
+     "spent": 0.0,
+     "earned": 25.0,
+     "balance": 25.0,
+     "arrivals": 0,
+     "departures": 2
+    },
+    {
+     "clubId": 181,
+     "spent": 0.0,
+     "earned": 22.0,
+     "balance": 22.0,
+     "arrivals": 0,
+     "departures": 1
+    },
+    {
+     "clubId": 2919,
+     "spent": 0.0,
+     "earned": 17.0,
+     "balance": 17.0,
+     "arrivals": 2,
+     "departures": 1
+    },
+    {
+     "clubId": 1003,
+     "spent": 0.0,
+     "earned": 5.25,
+     "balance": 5.25,
+     "arrivals": 0,
+     "departures": 1
+    },
+    {
+     "clubId": 195,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 2,
+     "departures": 0
+    },
+    {
+     "clubId": 78,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 0,
+     "departures": 1
+    },
+    {
+     "clubId": 533,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 1,
+     "departures": 0
+    },
+    {
+     "clubId": 3104,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 0,
+     "departures": 0
+    }
+   ],
+   "topArrivals": [
+    20237,
+    20244,
+    20278,
+    20439,
+    20477
+   ],
+   "topDepartures": [
+    20288,
+    20317,
+    20237,
+    20574,
+    20703
+   ]
+  },
+  {
+   "topic": "ligue-1",
+   "spent": 284.6,
+   "earned": 970.8,
+   "balance": 686.2,
+   "transfers": 68,
+   "clubs": [
+    {
+     "clubId": 15,
+     "spent": 150.5,
+     "earned": 335.2,
+     "balance": 184.7,
+     "arrivals": 4,
+     "departures": 6
+    },
+    {
+     "clubId": 463,
+     "spent": 59.0,
+     "earned": 170.5,
+     "balance": 111.5,
+     "arrivals": 7,
+     "departures": 8
+    },
+    {
+     "clubId": 105,
+     "spent": 22.1,
+     "earned": 59.0,
+     "balance": 36.9,
+     "arrivals": 2,
+     "departures": 5
+    },
+    {
+     "clubId": 61,
+     "spent": 22.0,
+     "earned": 87.0,
+     "balance": 65.0,
+     "arrivals": 2,
+     "departures": 3
+    },
+    {
+     "clubId": 856,
+     "spent": 20.0,
+     "earned": 4.5,
+     "balance": -15.5,
+     "arrivals": 1,
+     "departures": 1
+    },
+    {
+     "clubId": 38,
+     "spent": 11.0,
+     "earned": 85.5,
+     "balance": 74.5,
+     "arrivals": 2,
+     "departures": 3
+    },
+    {
+     "clubId": 599,
+     "spent": 0.0,
+     "earned": 71.0,
+     "balance": 71.0,
+     "arrivals": 0,
+     "departures": 3
+    },
+    {
+     "clubId": 114,
+     "spent": 0.0,
+     "earned": 63.0,
+     "balance": 63.0,
+     "arrivals": 2,
+     "departures": 6
+    },
+    {
+     "clubId": 509,
+     "spent": 0.0,
+     "earned": 48.0,
+     "balance": 48.0,
+     "arrivals": 2,
+     "departures": 1
+    },
+    {
+     "clubId": 827,
+     "spent": 0.0,
+     "earned": 25.15,
+     "balance": 25.15,
+     "arrivals": 0,
+     "departures": 3
+    },
+    {
+     "clubId": 175,
+     "spent": 0.0,
+     "earned": 21.95,
+     "balance": 21.95,
+     "arrivals": 0,
+     "departures": 4
+    },
+    {
+     "clubId": 837,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 0,
+     "departures": 0
+    },
+    {
+     "clubId": 726,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 1,
+     "departures": 0
+    },
+    {
+     "clubId": 479,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 1,
+     "departures": 0
+    },
+    {
+     "clubId": 990,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 1,
+     "departures": 0
+    },
+    {
+     "clubId": 429,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 0,
+     "departures": 0
+    },
+    {
+     "clubId": 653,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 1,
+     "departures": 0
+    },
+    {
+     "clubId": 1093,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 0,
+     "departures": 0
+    }
+   ],
+   "topArrivals": [
+    20291,
+    20349,
+    20357,
+    20713,
+    20643
+   ],
+   "topDepartures": [
+    20537,
+    20249,
+    20691,
+    20469,
+    20291
+   ]
+  },
+  {
+   "topic": "ekstraklasa",
+   "spent": 14.95,
+   "earned": 31.8,
+   "balance": 16.85,
+   "transfers": 73,
+   "clubs": [
+    {
+     "clubId": 96,
+     "spent": 8.35,
+     "earned": 1.75,
+     "balance": -6.6,
+     "arrivals": 5,
+     "departures": 5
+    },
+    {
+     "clubId": 119,
+     "spent": 2.2,
+     "earned": 0.0,
+     "balance": -2.2,
+     "arrivals": 3,
+     "departures": 0
+    },
+    {
+     "clubId": 230,
+     "spent": 1.5,
+     "earned": 0.0,
+     "balance": -1.5,
+     "arrivals": 4,
+     "departures": 2
+    },
+    {
+     "clubId": 98,
+     "spent": 0.85,
+     "earned": 6.0,
+     "balance": 5.15,
+     "arrivals": 4,
+     "departures": 4
+    },
+    {
+     "clubId": 904,
+     "spent": 0.7,
+     "earned": 0.0,
+     "balance": -0.7,
+     "arrivals": 3,
+     "departures": 0
+    },
+    {
+     "clubId": 212,
+     "spent": 0.6,
+     "earned": 10.1,
+     "balance": 9.5,
+     "arrivals": 5,
+     "departures": 5
+    },
+    {
+     "clubId": 80,
+     "spent": 0.25,
+     "earned": 0.7,
+     "balance": 0.45,
+     "arrivals": 2,
+     "departures": 2
+    },
+    {
+     "clubId": 285,
+     "spent": 0.25,
+     "earned": 0.0,
+     "balance": -0.25,
+     "arrivals": 2,
+     "departures": 0
+    },
+    {
+     "clubId": 118,
+     "spent": 0.25,
+     "earned": 0.0,
+     "balance": -0.25,
+     "arrivals": 1,
+     "departures": 0
+    },
+    {
+     "clubId": 330,
+     "spent": 0.0,
+     "earned": 6.0,
+     "balance": 6.0,
+     "arrivals": 3,
+     "departures": 2
+    },
+    {
+     "clubId": 102,
+     "spent": 0.0,
+     "earned": 3.0,
+     "balance": 3.0,
+     "arrivals": 3,
+     "departures": 2
+    },
+    {
+     "clubId": 16,
+     "spent": 0.0,
+     "earned": 2.5,
+     "balance": 2.5,
+     "arrivals": 0,
+     "departures": 1
+    },
+    {
+     "clubId": 56,
+     "spent": 0.0,
+     "earned": 1.0,
+     "balance": 1.0,
+     "arrivals": 1,
+     "departures": 1
+    },
+    {
+     "clubId": 169,
+     "spent": 0.0,
+     "earned": 0.5,
+     "balance": 0.5,
+     "arrivals": 2,
+     "departures": 3
+    },
+    {
+     "clubId": 127,
+     "spent": 0.0,
+     "earned": 0.25,
+     "balance": 0.25,
+     "arrivals": 3,
+     "departures": 1
+    },
+    {
+     "clubId": 121,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 3,
+     "departures": 0
+    },
+    {
+     "clubId": 2,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 5,
+     "departures": 4
+    },
+    {
+     "clubId": 17,
+     "spent": 0.0,
+     "earned": 0.0,
+     "balance": 0.0,
+     "arrivals": 0,
+     "departures": 0
+    }
+   ],
+   "topArrivals": [
+    20214,
+    20235,
+    20210,
+    20216,
+    20326
+   ],
+   "topDepartures": [
+    20224,
+    20223,
+    20239,
+    20222,
+    20294
+   ]
+  }
+ ]
+}
