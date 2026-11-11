@@ -33,6 +33,9 @@ class UserPreferencesSerializer @Inject constructor() : Serializer<UserPreferenc
             .setNotifyNews(true)
             .setNotifyTransfers(true)
             .setNotifyGeneral(true)
+            .setNotifyFollowed(true)
+            .setNotifyFollowedLeagues(true)
+            .setSchemaVersion(UserPreferencesMigration.CURRENT_SCHEMA_VERSION)
             .build()
 
     override suspend fun readFrom(input: InputStream): UserPreferences = try {

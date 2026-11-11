@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import pl.nowinkitransferowe.core.common.network.Dispatcher
 import pl.nowinkitransferowe.core.common.network.NtDispatchers.IO
 import pl.nowinkitransferowe.core.common.network.di.ApplicationScope
+import pl.nowinkitransferowe.core.datastore.UserPreferencesMigration
 import pl.nowinkitransferowe.core.datastore.UserPreferencesSerializer
 import pl.nowinkitransferowe.core.datastoreproto.UserPreferences
 import javax.inject.Singleton
@@ -45,10 +46,11 @@ object DataStoreModule {
         @Dispatcher(IO) ioDispatcher: CoroutineDispatcher,
         @ApplicationScope scope: CoroutineScope,
         userPreferencesSerializer: UserPreferencesSerializer,
+        userPreferencesMigration: UserPreferencesMigration,
     ): DataStore<UserPreferences> = DataStoreFactory.create(
         serializer = userPreferencesSerializer,
         scope = CoroutineScope(scope.coroutineContext + ioDispatcher),
-        migrations = listOf(),
+        migrations = listOf(userPreferencesMigration),
     ) {
         context.dataStoreFile("user_preferences.pb")
     }

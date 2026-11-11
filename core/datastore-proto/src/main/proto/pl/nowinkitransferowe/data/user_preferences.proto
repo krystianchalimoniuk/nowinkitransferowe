@@ -25,10 +25,34 @@ message UserPreferences {
     map<string, bool> bookmarked_transfer_resource_ids = 10;
     map<string, bool> viewed_transfer_resource_ids = 11;
 
+    // Version 3.x notification switches. notifyGeneral also covers the API v3 notifications
+    // sent by the editors.
     bool notifyNews = 12;
     bool notifyTransfers = 13;
     bool notifyGeneral = 14;
 
+    // The last applied version of each API v3 change list. 0 means nothing synced yet.
+    int32 article_change_list_version = 22;
+    int32 transfer_change_list_version = 23;
+    int32 rumour_change_list_version = 24;
+    int32 club_change_list_version = 25;
+    int32 player_change_list_version = 26;
 
-    // NEXT AVAILABLE ID: 22
+    // Clubs and players the user follows, by API v3 id. Leagues use followed_topic_ids (topic
+    // slugs such as "premier-league").
+    map<int32, bool> followed_club_ids = 27;
+    map<int32, bool> followed_player_ids = 28;
+
+    // Notifications about followed clubs and players, and important news from followed leagues.
+    bool notify_followed = 29;
+    bool notify_followed_leagues = 30;
+
+    // Keys of the records the user was already notified about, oldest first. A record is notified
+    // again only when its key changes, for example when a rumour moves to the next stage.
+    repeated string notified_keys = 31;
+
+    // The version of these preferences, used by UserPreferencesMigration.
+    int32 schema_version = 32;
+
+    // NEXT AVAILABLE ID: 33
 }
