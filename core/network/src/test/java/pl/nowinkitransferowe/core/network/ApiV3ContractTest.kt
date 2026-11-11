@@ -26,6 +26,8 @@ import pl.nowinkitransferowe.core.network.model.NetworkArticleImage
 import pl.nowinkitransferowe.core.network.model.NetworkChange
 import pl.nowinkitransferowe.core.network.model.NetworkChanges
 import pl.nowinkitransferowe.core.network.model.NetworkClub
+import pl.nowinkitransferowe.core.network.model.NetworkClubSeason
+import pl.nowinkitransferowe.core.network.model.NetworkClubSeasons
 import pl.nowinkitransferowe.core.network.model.NetworkCountry
 import pl.nowinkitransferowe.core.network.model.NetworkFee
 import pl.nowinkitransferowe.core.network.model.NetworkHotClub
@@ -354,6 +356,38 @@ class ApiV3ContractTest {
             league.clubs.single(),
         )
         assertEquals(listOf(20567, 20412), league.topArrivals)
+    }
+
+    @Test
+    fun club_seasons_parse() {
+        val seasons = json.decodeFromString<NetworkClubSeasons>(
+            """
+            {
+              "clubId": 107,
+              "seasons": [{
+                "season": "25/26", "spent": 107.0, "earned": 32.5, "balance": -74.5,
+                "arrivals": [20431, 20302], "departures": [20455]
+              }]
+            }
+            """,
+        )
+
+        assertEquals(
+            NetworkClubSeasons(
+                clubId = 107,
+                seasons = listOf(
+                    NetworkClubSeason(
+                        season = "25/26",
+                        spent = 107.0,
+                        earned = 32.5,
+                        balance = -74.5,
+                        arrivals = listOf(20431, 20302),
+                        departures = listOf(20455),
+                    ),
+                ),
+            ),
+            seasons,
+        )
     }
 
     @Test

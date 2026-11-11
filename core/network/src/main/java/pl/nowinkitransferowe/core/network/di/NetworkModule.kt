@@ -32,6 +32,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.nowinkitransferowe.core.network.BuildConfig
 import pl.nowinkitransferowe.core.network.demo.DemoAssetManager
+import pl.nowinkitransferowe.core.network.interceptor.ApiRateLimiter
+import pl.nowinkitransferowe.core.network.interceptor.RetryAfterInterceptor
 import javax.inject.Singleton
 
 @Module
@@ -54,6 +56,9 @@ internal object NetworkModule {
     @Singleton
     fun okHttpCallFactory(): Call.Factory = trace("NtOkHttpClient") {
         OkHttpClient.Builder()
+            // Retry first, so that every retried request also goes through the rate limiter
+            .addInterceptor(RetryAfterInterceptor())
+            .addInterceptor(ApiRateLimiter())
             .addInterceptor(
                 HttpLoggingInterceptor()
                     .apply {

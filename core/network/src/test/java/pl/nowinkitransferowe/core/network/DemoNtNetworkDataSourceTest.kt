@@ -184,6 +184,20 @@ class DemoNtNetworkDataSourceTest {
     }
 
     @Test
+    fun v3_club_seasons_come_from_the_demo_transfers() = runTest(testDispatcher) {
+        val liverpool = subject.getClubSeasons(86)
+        val transfers = subject.getTransfers(liverpool.seasons.flatMap { it.arrivals + it.departures })
+
+        assertEquals("26/27", liverpool.seasons.first().season)
+        assertTrue(transfers.all { it.toClubId == 86 || it.fromClubId == 86 })
+        assertEquals(
+            liverpool.seasons.first().spent,
+            transfers.filter { it.id in liverpool.seasons.first().arrivals }.sumOf { it.fee.millionsOfEuro ?: 0.0 },
+        )
+        assertEquals(emptyList(), subject.getClubSeasons(-1).seasons)
+    }
+
+    @Test
     fun v3_every_record_referenced_by_leagues_is_in_the_demo_data() = runTest(testDispatcher) {
         val leagues = subject.getLeagues()
         val clubIds = leagues.leagues.flatMap { league -> league.clubs.map { it.clubId } }

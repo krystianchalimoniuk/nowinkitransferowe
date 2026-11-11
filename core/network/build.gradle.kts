@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.retrofit.kotlin.serialization)
 
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.okhttp.mockwebserver)
 }
 
 // URLs come from secrets.defaults.properties and can be overridden in local.properties.
