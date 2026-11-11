@@ -129,12 +129,12 @@ fun NtOutlinedButton(
             contentColor = MaterialTheme.colorScheme.onBackground,
         ),
         border = BorderStroke(
-            width = NiaButtonDefaults.OutlinedButtonBorderWidth,
+            width = NtButtonDefaults.OutlinedButtonBorderWidth,
             color = if (enabled) {
                 MaterialTheme.colorScheme.outline
             } else {
                 MaterialTheme.colorScheme.onSurface.copy(
-                    alpha = NiaButtonDefaults.DISABLED_OUTLINED_BUTTON_BORDER_ALPHA,
+                    alpha = NtButtonDefaults.DISABLED_OUTLINED_BUTTON_BORDER_ALPHA,
                 )
             },
         ),
@@ -287,7 +287,7 @@ fun NtOutlinedButtonPreview() {
 
 @ThemePreviews
 @Composable
-fun NiaButtonLeadingIconPreview() {
+fun NtButtonLeadingIconPreview() {
     NtTheme {
         NtBackground(modifier = Modifier.size(150.dp, 50.dp)) {
             NtButton(
@@ -302,7 +302,7 @@ fun NiaButtonLeadingIconPreview() {
 /**
  * Now in Android button default values.
  */
-object NiaButtonDefaults {
+object NtButtonDefaults {
     // TODO: File bug
     // OutlinedButton border color doesn't respect disabled state by default
     const val DISABLED_OUTLINED_BUTTON_BORDER_ALPHA = 0.12f

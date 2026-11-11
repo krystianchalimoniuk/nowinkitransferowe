@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalMaterial3AdaptiveApi::class)
+
 package pl.nowinkitransferowe
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
@@ -25,6 +30,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import androidx.test.espresso.Espresso
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -40,7 +47,13 @@ import org.robolectric.annotation.Config
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.TransferResource
-import pl.nowinkitransferowe.ui.transfers2pane.TransfersListDetailScreen
+import pl.nowinkitransferowe.core.navigation.Navigator
+import pl.nowinkitransferowe.core.navigation.rememberNavigationState
+import pl.nowinkitransferowe.core.navigation.toEntries
+import pl.nowinkitransferowe.feature.details.transfers.DetailsTransferPlaceholder
+import pl.nowinkitransferowe.feature.details.transfers.navigation.transferDetailsEntry
+import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
+import pl.nowinkitransferowe.feature.transfers.navigation.transfersEntry
 import pl.nowinkitransferowe.uitesthiltmanifest.HiltComponentActivity
 import javax.inject.Inject
 import kotlin.properties.ReadOnlyProperty
@@ -68,7 +81,7 @@ class TransferListDetailScreenTest {
     }
 
     // The strings used for matching in these tests.
-    private val placeholderText by composeTestRule.stringResource(pl.nowinkitransferowe.feature.details.transfers.R.string.feature_details_transfers_select_a_transfer)
+    private val placeholderText by composeTestRule.stringResource(pl.nowinkitransferowe.feature.details.transfers.R.string.feature_details_transfers_impl_select_a_transfer)
     private val listPaneTag = "transfers:feed"
 
     private val TransferResource.testTag
@@ -79,13 +92,31 @@ class TransferListDetailScreenTest {
         hiltRule.inject()
     }
 
+    @Composable
+    private fun TestNavDisplay() {
+        val navigationState = rememberNavigationState(
+            startKey = TransfersNavKey,
+            topLevelKeys = setOf(TransfersNavKey),
+        )
+        val navigator = Navigator(navigationState)
+        val entryProvider = entryProvider {
+            transfersEntry(navigator, detailPlaceholder = { DetailsTransferPlaceholder() })
+            transferDetailsEntry(navigator)
+        }
+        NavDisplay(
+            entries = navigationState.toEntries(entryProvider),
+            onBack = { navigator.goBack() },
+            sceneStrategies = listOf(rememberListDetailSceneStrategy()),
+        )
+    }
+
     @Test
     @Config(qualifiers = EXPANDED_WIDTH)
     fun expandedWidth_initialState_showsTwoPanesWithPlaceholder() {
         composeTestRule.apply {
             setContent {
                 NtTheme {
-                    TransfersListDetailScreen()
+                    TestNavDisplay()
                 }
             }
 
@@ -100,7 +131,7 @@ class TransferListDetailScreenTest {
         composeTestRule.apply {
             setContent {
                 NtTheme {
-                    TransfersListDetailScreen()
+                    TestNavDisplay()
                 }
             }
 
@@ -115,7 +146,7 @@ class TransferListDetailScreenTest {
         composeTestRule.apply {
             setContent {
                 NtTheme {
-                    TransfersListDetailScreen()
+                    TestNavDisplay()
                 }
             }
 
@@ -134,7 +165,7 @@ class TransferListDetailScreenTest {
         composeTestRule.apply {
             setContent {
                 NtTheme {
-                    TransfersListDetailScreen()
+                    TestNavDisplay()
                 }
             }
 
@@ -149,22 +180,23 @@ class TransferListDetailScreenTest {
 
     @Test
     @Config(qualifiers = EXPANDED_WIDTH)
-    fun expandedWidth_backPressFromTransferDetail_leavesInterests() {
+    fun expandedWidth_backPressFromTransferDetail_leavesTransfers() {
         var unhandledBackPress = false
         composeTestRule.apply {
             setContent {
                 NtTheme {
-                    // Back press should not be handled by the two pane layout, and thus
-                    // "fall through" to this BackHandler.
+                    // With both panes shown, the list-detail scene does not handle back, so it
+                    // "falls through" to this BackHandler.
                     BackHandler {
                         unhandledBackPress = true
                     }
-                    TransfersListDetailScreen()
+                    TestNavDisplay()
                 }
             }
 
             val firstTransfers = getTransfers().first()
             onNodeWithText(firstTransfers.name).performClick()
+
             waitForIdle()
             Espresso.pressBack()
 
@@ -178,7 +210,7 @@ class TransferListDetailScreenTest {
         composeTestRule.apply {
             setContent {
                 NtTheme {
-                    TransfersListDetailScreen()
+                    TestNavDisplay()
                 }
             }
 
@@ -196,5 +228,4 @@ class TransferListDetailScreenTest {
 
 private fun AndroidComposeTestRule<*, *>.stringResource(
     @StringRes resId: Int,
-): ReadOnlyProperty<Any, String> =
-    ReadOnlyProperty { _, _ -> activity.getString(resId) }
+): ReadOnlyProperty<Any, String> = ReadOnlyProperty { _, _ -> activity.getString(resId) }

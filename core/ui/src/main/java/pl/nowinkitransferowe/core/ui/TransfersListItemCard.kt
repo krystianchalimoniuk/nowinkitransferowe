@@ -116,16 +116,14 @@ fun TransferListItemCard(
     }
 }
 
-private fun shortPriceValueIfNoInformationOrOnLoan(price: String): String {
-    return if (price == "wypożyczenie") {
-        "wyp."
-    } else if (price == "nie ujawniono") {
-        "-"
-    } else if (price == "za darmo") {
-        "0"
-    } else {
-        price.split(" ")[0]
-    }
+private fun shortPriceValueIfNoInformationOrOnLoan(price: String): String = if (price == "wypożyczenie") {
+    "wyp."
+} else if (price == "nie ujawniono") {
+    "-"
+} else if (price == "za darmo") {
+    "0"
+} else {
+    price.split(" ")[0]
 }
 
 @Composable

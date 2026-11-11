@@ -33,15 +33,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration.Indefinite
-import androidx.compose.material3.SnackbarDuration.Short
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,9 +61,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import pl.nowinkitransferowe.R
 import pl.nowinkitransferowe.core.designsystem.component.NtBackground
 import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
@@ -70,15 +71,27 @@ import pl.nowinkitransferowe.core.designsystem.component.NtNavigationSuiteScaffo
 import pl.nowinkitransferowe.core.designsystem.component.NtTopAppBar
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalGradientColors
+import pl.nowinkitransferowe.core.navigation.Navigator
+import pl.nowinkitransferowe.core.navigation.toEntries
+import pl.nowinkitransferowe.feature.bookmarks.navigation.LocalSnackbarHostState
+import pl.nowinkitransferowe.feature.bookmarks.navigation.bookmarksEntry
+import pl.nowinkitransferowe.feature.details.DetailPlaceholder
+import pl.nowinkitransferowe.feature.details.navigation.newsDetailsEntry
+import pl.nowinkitransferowe.feature.details.transfers.DetailsTransferPlaceholder
+import pl.nowinkitransferowe.feature.details.transfers.navigation.transferDetailsEntry
+import pl.nowinkitransferowe.feature.news.navigation.newsEntry
+import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
+import pl.nowinkitransferowe.feature.search.navigation.searchEntry
 import pl.nowinkitransferowe.feature.settings.SettingsDialog
-import pl.nowinkitransferowe.navigation.NtNavHost
-import kotlin.reflect.KClass
+import pl.nowinkitransferowe.feature.transfers.navigation.transfersEntry
+import pl.nowinkitransferowe.navigation.TOP_LEVEL_NAV_ITEMS
 import pl.nowinkitransferowe.feature.settings.R as settingsR
 
 @Composable
 fun NtApp(
     appState: NtAppState,
     modifier: Modifier = Modifier,
+    deepLinkKeys: List<NavKey> = emptyList(),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
@@ -103,14 +116,16 @@ fun NtApp(
                 }
             }
 
-            NtApp(
-                appState = appState,
-                snackbarHostState = snackbarHostState,
-                showSettingsDialog = showSettingsDialog,
-                onSettingsDismissed = { showSettingsDialog = false },
-                onTopAppBarActionClick = { showSettingsDialog = true },
-                windowAdaptiveInfo = windowAdaptiveInfo,
-            )
+            CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
+                NtApp(
+                    appState = appState,
+                    showSettingsDialog = showSettingsDialog,
+                    onSettingsDismissed = { showSettingsDialog = false },
+                    onTopAppBarActionClick = { showSettingsDialog = true },
+                    deepLinkKeys = deepLinkKeys,
+                    windowAdaptiveInfo = windowAdaptiveInfo,
+                )
+            }
         }
     }
 }
@@ -119,19 +134,28 @@ fun NtApp(
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalComposeUiApi::class,
+    ExperimentalMaterial3AdaptiveApi::class,
 )
 internal fun NtApp(
     appState: NtAppState,
-    snackbarHostState: SnackbarHostState,
     showSettingsDialog: Boolean,
     onSettingsDismissed: () -> Unit,
     onTopAppBarActionClick: () -> Unit,
     modifier: Modifier = Modifier,
+    deepLinkKeys: List<NavKey> = emptyList(),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val unreadDestinations by appState.topLevelDestinationsWithUnreadResources
+    val unreadNavKeys by appState.topLevelNavKeysWithUnreadResources
         .collectAsStateWithLifecycle()
-    val currentDestination = appState.currentDestination
+
+    val snackbarHostState = LocalSnackbarHostState.current
+
+    val navigator = remember { Navigator(appState.navigationState) }
+
+    // Open the destinations of a deep link, e.g. a notification, once
+    LaunchedEffect(deepLinkKeys) {
+        deepLinkKeys.forEach(navigator::navigate)
+    }
 
     if (showSettingsDialog) {
         SettingsDialog(
@@ -141,26 +165,25 @@ internal fun NtApp(
 
     NtNavigationSuiteScaffold(
         navigationSuiteItems = {
-            appState.topLevelDestinations.forEach { destination ->
-                val hasUnread = unreadDestinations.contains(destination)
-                val selected = currentDestination
-                    .isRouteInHierarchy(destination.route)
+            TOP_LEVEL_NAV_ITEMS.forEach { (navKey, navItem) ->
+                val hasUnread = unreadNavKeys.contains(navKey)
+                val selected = navKey == appState.navigationState.currentTopLevelKey
                 item(
                     selected = selected,
-                    onClick = { appState.navigateToTopLevelDestination(destination) },
+                    onClick = { navigator.navigate(navKey) },
                     icon = {
                         Icon(
-                            imageVector = destination.unselectedIcon,
+                            imageVector = navItem.unselectedIcon,
                             contentDescription = null,
                         )
                     },
                     selectedIcon = {
                         Icon(
-                            imageVector = destination.selectedIcon,
+                            imageVector = navItem.selectedIcon,
                             contentDescription = null,
                         )
                     },
-                    label = { Text(stringResource(destination.iconTextId)) },
+                    label = { Text(stringResource(navItem.iconTextId)) },
                     modifier =
                     Modifier
                         .testTag("NtNavItem")
@@ -199,21 +222,24 @@ internal fun NtApp(
                         ),
                     ),
             ) {
-                // Show the top app bar on top level destinations.
-                val destination = appState.currentTopLevelDestination
+                // Only show the top app bar on top level destinations.
                 var shouldShowTopAppBar = false
 
-                if (destination != null) {
+                if (appState.navigationState.isAtTopLevel) {
                     shouldShowTopAppBar = true
+
+                    val destination = TOP_LEVEL_NAV_ITEMS[appState.navigationState.currentTopLevelKey]
+                        ?: error("Top level nav item not found for ${appState.navigationState.currentTopLevelKey}")
+
                     NtTopAppBar(
                         titleRes = destination.titleTextId,
                         navigationIcon = NtIcons.Search,
                         navigationIconContentDescription = stringResource(
-                            id = settingsR.string.feature_settings_top_app_bar_navigation_icon_description,
+                            id = settingsR.string.feature_settings_impl_top_app_bar_navigation_icon_description,
                         ),
                         actionIcon = NtIcons.Settings,
                         actionIconContentDescription = stringResource(
-                            id = settingsR.string.feature_settings_top_app_bar_action_icon_description,
+                            id = settingsR.string.feature_settings_impl_top_app_bar_action_icon_description,
                         ),
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color.Transparent,
@@ -221,7 +247,7 @@ internal fun NtApp(
                         onActionClick = {
                             onTopAppBarActionClick()
                         },
-                        onNavigationClick = { appState.navigateToSearch() },
+                        onNavigationClick = { navigator.navigateToSearch() },
                     )
                 }
 
@@ -235,15 +261,21 @@ internal fun NtApp(
                         },
                     ),
                 ) {
-                    NtNavHost(
-                        appState = appState,
-                        onShowSnackbar = { message, action ->
-                            snackbarHostState.showSnackbar(
-                                message = message,
-                                actionLabel = action,
-                                duration = Short,
-                            ) == ActionPerformed
-                        },
+                    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
+
+                    val entryProvider = entryProvider {
+                        newsEntry(navigator, detailPlaceholder = { DetailPlaceholder() })
+                        transfersEntry(navigator, detailPlaceholder = { DetailsTransferPlaceholder() })
+                        bookmarksEntry(navigator)
+                        newsDetailsEntry(navigator)
+                        transferDetailsEntry(navigator)
+                        searchEntry(navigator)
+                    }
+
+                    NavDisplay(
+                        entries = appState.navigationState.toEntries(entryProvider),
+                        sceneStrategies = listOf(listDetailStrategy),
+                        onBack = { navigator.goBack() },
                     )
                 }
 
@@ -254,26 +286,20 @@ internal fun NtApp(
     }
 }
 
-private fun Modifier.notificationDot(): Modifier =
-    composed {
-        val tertiaryColor = MaterialTheme.colorScheme.tertiary
-        drawWithContent {
-            drawContent()
-            drawCircle(
-                tertiaryColor,
-                radius = 5.dp.toPx(),
-                // This is based on the dimensions of the NavigationBar's "indicator pill";
-                // however, its parameters are private, so we must depend on them implicitly
-                // (NavigationBarTokens.ActiveIndicatorWidth = 64.dp)
-                center = center + Offset(
-                    64.dp.toPx() * .45f,
-                    32.dp.toPx() * -.45f - 6.dp.toPx(),
-                ),
-            )
-        }
+private fun Modifier.notificationDot(): Modifier = composed {
+    val tertiaryColor = MaterialTheme.colorScheme.tertiary
+    drawWithContent {
+        drawContent()
+        drawCircle(
+            tertiaryColor,
+            radius = 5.dp.toPx(),
+            // This is based on the dimensions of the NavigationBar's "indicator pill";
+            // however, its parameters are private, so we must depend on them implicitly
+            // (NavigationBarTokens.ActiveIndicatorWidth = 64.dp)
+            center = center + Offset(
+                64.dp.toPx() * .45f,
+                32.dp.toPx() * -.45f - 6.dp.toPx(),
+            ),
+        )
     }
-
-private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
-    this?.hierarchy?.any {
-        it.hasRoute(route)
-    } ?: false
+}

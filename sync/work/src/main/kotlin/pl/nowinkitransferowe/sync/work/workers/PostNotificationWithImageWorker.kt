@@ -53,8 +53,7 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
     private val imageDownloader: ImageDownloader,
 ) : CoroutineWorker(appContext, workerParams) {
 
-    override suspend fun getForegroundInfo(): ForegroundInfo =
-        appContext.workForegroundInfo()
+    override suspend fun getForegroundInfo(): ForegroundInfo = appContext.workForegroundInfo()
 
     override suspend fun doWork(): Result = withContext(ioDispatcher) {
         traceAsync("PostNotificationWithImage", 0) {
@@ -137,25 +136,24 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
             description: String,
             url: String,
             imageUrl: String,
-        ) =
-            OneTimeWorkRequestBuilder<DelegatingWorker>()
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build(),
-                )
-                .setInputData(
-                    PostNotificationWithImageWorker::class.delegatedData(
-                        workDataOf(
-                            KEY_NOTIFICATION_ID to id,
-                            KEY_NOTIFICATION_TITLE to title,
-                            KEY_NOTIFICATION_DESCRIPTION to description,
-                            KEY_NOTIFICATION_URL to url,
-                            KEY_NOTIFICATION_IMAGE_URL to imageUrl,
-                        ),
+        ) = OneTimeWorkRequestBuilder<DelegatingWorker>()
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            )
+            .setInputData(
+                PostNotificationWithImageWorker::class.delegatedData(
+                    workDataOf(
+                        KEY_NOTIFICATION_ID to id,
+                        KEY_NOTIFICATION_TITLE to title,
+                        KEY_NOTIFICATION_DESCRIPTION to description,
+                        KEY_NOTIFICATION_URL to url,
+                        KEY_NOTIFICATION_IMAGE_URL to imageUrl,
                     ),
-                )
-                .build()
+                ),
+            )
+            .build()
     }
 }

@@ -51,5 +51,4 @@ data class UserTransferResource(
     )
 }
 
-fun List<TransferResource>.mapToUserTransferResources(userData: UserData): List<UserTransferResource> =
-    map { UserTransferResource(it, userData) }
+fun List<TransferResource>.mapToUserTransferResources(userData: UserData): List<UserTransferResource> = map { UserTransferResource(it, userData) }

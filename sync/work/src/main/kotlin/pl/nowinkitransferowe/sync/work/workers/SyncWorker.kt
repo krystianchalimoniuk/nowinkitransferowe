@@ -59,10 +59,10 @@ internal class SyncWorker @AssistedInject constructor(
     @Dispatcher(NtDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
     private val subscriber: Subscriber,
-) : CoroutineWorker(appContext, workerParams), Synchronizer {
+) : CoroutineWorker(appContext, workerParams),
+    Synchronizer {
 
-    override suspend fun getForegroundInfo(): ForegroundInfo =
-        appContext.workForegroundInfo()
+    override suspend fun getForegroundInfo(): ForegroundInfo = appContext.workForegroundInfo()
 
     override suspend fun doWork(): Result = withContext(ioDispatcher) {
         traceAsync("Sync", 0) {
@@ -88,8 +88,7 @@ internal class SyncWorker @AssistedInject constructor(
         }
     }
 
-    override suspend fun getChangeListVersions(): ChangeListVersions =
-        ntPreferences.getChangeListVersions()
+    override suspend fun getChangeListVersions(): ChangeListVersions = ntPreferences.getChangeListVersions()
 
     override suspend fun updateChangeListVersions(
         update: ChangeListVersions.() -> ChangeListVersions,

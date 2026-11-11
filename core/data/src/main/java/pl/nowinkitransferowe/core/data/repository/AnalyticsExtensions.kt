@@ -32,64 +32,59 @@ internal fun AnalyticsHelper.logNewsResourceBookmarkToggled(newsResourceId: Stri
     )
 }
 
-internal fun AnalyticsHelper.logDarkThemeConfigChanged(darkThemeConfigName: String) =
-    logEvent(
-        AnalyticsEvent(
-            type = "dark_theme_config_changed",
-            extras = listOf(
-                AnalyticsEvent.Param(key = "dark_theme_config", value = darkThemeConfigName),
-            ),
+internal fun AnalyticsHelper.logDarkThemeConfigChanged(darkThemeConfigName: String) = logEvent(
+    AnalyticsEvent(
+        type = "dark_theme_config_changed",
+        extras = listOf(
+            AnalyticsEvent.Param(key = "dark_theme_config", value = darkThemeConfigName),
         ),
-    )
+    ),
+)
 
-internal fun AnalyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor: Boolean) =
-    logEvent(
-        AnalyticsEvent(
-            type = "dynamic_color_preference_changed",
-            extras = listOf(
-                AnalyticsEvent.Param(
-                    key = "dynamic_color_preference",
-                    value = useDynamicColor.toString(),
-                ),
+internal fun AnalyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor: Boolean) = logEvent(
+    AnalyticsEvent(
+        type = "dynamic_color_preference_changed",
+        extras = listOf(
+            AnalyticsEvent.Param(
+                key = "dynamic_color_preference",
+                value = useDynamicColor.toString(),
             ),
         ),
-    )
+    ),
+)
 
-internal fun AnalyticsHelper.logNewsNotificationsPreferenceChanged(isAllowed: Boolean) =
-    logEvent(
-        AnalyticsEvent(
-            type = "news_notifications_preference_changed",
-            extras = listOf(
-                AnalyticsEvent.Param(
-                    key = "news_notifications_preference",
-                    value = isAllowed.toString(),
-                ),
+internal fun AnalyticsHelper.logNewsNotificationsPreferenceChanged(isAllowed: Boolean) = logEvent(
+    AnalyticsEvent(
+        type = "news_notifications_preference_changed",
+        extras = listOf(
+            AnalyticsEvent.Param(
+                key = "news_notifications_preference",
+                value = isAllowed.toString(),
             ),
         ),
-    )
+    ),
+)
 
-internal fun AnalyticsHelper.logTransfersNotificationsPreferenceChanged(isAllowed: Boolean) =
-    logEvent(
-        AnalyticsEvent(
-            type = "transfers_notifications_preference_changed",
-            extras = listOf(
-                AnalyticsEvent.Param(
-                    key = "transfers_notifications_preference",
-                    value = isAllowed.toString(),
-                ),
+internal fun AnalyticsHelper.logTransfersNotificationsPreferenceChanged(isAllowed: Boolean) = logEvent(
+    AnalyticsEvent(
+        type = "transfers_notifications_preference_changed",
+        extras = listOf(
+            AnalyticsEvent.Param(
+                key = "transfers_notifications_preference",
+                value = isAllowed.toString(),
             ),
         ),
-    )
+    ),
+)
 
-internal fun AnalyticsHelper.logGeneralNotificationsPreferenceChanged(isAllowed: Boolean) =
-    logEvent(
-        AnalyticsEvent(
-            type = "general_notifications_preference_changed",
-            extras = listOf(
-                AnalyticsEvent.Param(
-                    key = "general_notifications_preference",
-                    value = isAllowed.toString(),
-                ),
+internal fun AnalyticsHelper.logGeneralNotificationsPreferenceChanged(isAllowed: Boolean) = logEvent(
+    AnalyticsEvent(
+        type = "general_notifications_preference_changed",
+        extras = listOf(
+            AnalyticsEvent.Param(
+                key = "general_notifications_preference",
+                value = isAllowed.toString(),
             ),
         ),
-    )
+    ),
+)

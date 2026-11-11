@@ -46,23 +46,21 @@ class FakeNewsRepository @Inject constructor(
 
     override fun getNewsResources(
         query: NewsResourceQuery,
-    ): Flow<List<NewsResource>> =
-        flow {
-            emit(
-                datasource
-                    .getNewsResources()
-                    .map(NetworkNewsResource::asEntity)
-                    .map(NewsResourceEntity::asExternalModel),
-            )
-        }.flowOn(ioDispatcher)
+    ): Flow<List<NewsResource>> = flow {
+        emit(
+            datasource
+                .getNewsResources()
+                .map(NetworkNewsResource::asEntity)
+                .map(NewsResourceEntity::asExternalModel),
+        )
+    }.flowOn(ioDispatcher)
 
-    override fun getNewsResourcesPages(limit: Int, offset: Int): Flow<List<NewsResource>> =
-        flow {
-            emit(
-                datasource.getNewsResources().take(limit).map(NetworkNewsResource::asEntity)
-                    .map(NewsResourceEntity::asExternalModel),
-            )
-        }
+    override fun getNewsResourcesPages(limit: Int, offset: Int): Flow<List<NewsResource>> = flow {
+        emit(
+            datasource.getNewsResources().take(limit).map(NetworkNewsResource::asEntity)
+                .map(NewsResourceEntity::asExternalModel),
+        )
+    }
 
     override fun getNewsResource(id: String): Flow<NewsResource> = flow {
         emit(

@@ -29,54 +29,49 @@ import pl.nowinkitransferowe.core.database.model.TransferResourceEntity
 class TestTransferResourceDao : TransferResourceDao {
 
     private val entitiesStateFlow = MutableStateFlow(emptyList<TransferResourceEntity>())
-    override fun getTransferResource(transferId: String): Flow<TransferResourceEntity> =
-        entitiesStateFlow.map { transferResourceList ->
-            transferResourceList.first { it.id == transferId }
-        }
+    override fun getTransferResource(transferId: String): Flow<TransferResourceEntity> = entitiesStateFlow.map { transferResourceList ->
+        transferResourceList.first { it.id == transferId }
+    }
 
-    override fun getTransferResourcesByName(name: String): Flow<List<TransferResourceEntity>> =
-        entitiesStateFlow.map { transferResourceList ->
-            transferResourceList.filter { it.name == name }
-        }
+    override fun getTransferResourcesByName(name: String): Flow<List<TransferResourceEntity>> = entitiesStateFlow.map { transferResourceList ->
+        transferResourceList.filter { it.name == name }
+    }
 
     override fun getTransferResources(
         useFilterTransferIds: Boolean,
         filterTransferIds: Set<String>,
-    ): Flow<List<TransferResourceEntity>> =
-        entitiesStateFlow
-            .map { resources ->
-                var result = resources
-                if (useFilterTransferIds) {
-                    result = result.filter { resource ->
-                        resource.id in filterTransferIds
-                    }
+    ): Flow<List<TransferResourceEntity>> = entitiesStateFlow
+        .map { resources ->
+            var result = resources
+            if (useFilterTransferIds) {
+                result = result.filter { resource ->
+                    resource.id in filterTransferIds
                 }
-                result
             }
+            result
+        }
 
     override fun getTransferResourcesPages(
         limit: Int,
         offset: Int,
-    ): Flow<List<TransferResourceEntity>> =
-        entitiesStateFlow
-            .map { resources ->
-                resources.take(limit)
-            }
+    ): Flow<List<TransferResourceEntity>> = entitiesStateFlow
+        .map { resources ->
+            resources.take(limit)
+        }
 
     override fun getTransferResourceIds(
         useFilterTransferIds: Boolean,
         filterTransferIds: Set<String>,
-    ): Flow<List<String>> =
-        entitiesStateFlow
-            .map { resources ->
-                var result = resources
-                if (useFilterTransferIds) {
-                    result = result.filter { resource ->
-                        resource.id in filterTransferIds
-                    }
+    ): Flow<List<String>> = entitiesStateFlow
+        .map { resources ->
+            var result = resources
+            if (useFilterTransferIds) {
+                result = result.filter { resource ->
+                    resource.id in filterTransferIds
                 }
-                result.map { it.id }
             }
+            result.map { it.id }
+        }
 
     override suspend fun upsertTransferResources(transferResourceEntities: List<TransferResourceEntity>) {
         entitiesStateFlow.update { oldValues ->
@@ -96,8 +91,7 @@ class TestTransferResourceDao : TransferResourceDao {
         }
     }
 
-    override fun getCount(): Flow<Int> =
-        entitiesStateFlow.map {
-            it.size
-        }
+    override fun getCount(): Flow<Int> = entitiesStateFlow.map {
+        it.size
+    }
 }

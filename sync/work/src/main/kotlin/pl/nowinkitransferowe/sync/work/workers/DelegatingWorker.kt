@@ -43,11 +43,10 @@ private const val WORKER_CLASS_NAME = "RouterWorkerDelegateClassName"
  * Adds metadata to a WorkRequest to identify what [CoroutineWorker] the [DelegatingWorker] should
  * delegate to
  */
-fun KClass<out CoroutineWorker>.delegatedData(data: Data) =
-    Data.Builder()
-        .putString(WORKER_CLASS_NAME, qualifiedName)
-        .putAll(data)
-        .build()
+fun KClass<out CoroutineWorker>.delegatedData(data: Data) = Data.Builder()
+    .putString(WORKER_CLASS_NAME, qualifiedName)
+    .putAll(data)
+    .build()
 
 /**
  * A worker that delegates sync to another [CoroutineWorker] constructed with a [HiltWorkerFactory].
@@ -73,9 +72,7 @@ class DelegatingWorker(
             as? CoroutineWorker
             ?: throw IllegalArgumentException("Unable to find appropriate worker")
 
-    override suspend fun getForegroundInfo(): ForegroundInfo =
-        delegateWorker.getForegroundInfo()
+    override suspend fun getForegroundInfo(): ForegroundInfo = delegateWorker.getForegroundInfo()
 
-    override suspend fun doWork(): Result =
-        delegateWorker.doWork()
+    override suspend fun doWork(): Result = delegateWorker.doWork()
 }

@@ -57,5 +57,4 @@ data class UserNewsResource internal constructor(
     )
 }
 
-fun List<NewsResource>.mapToUserNewsResources(userData: UserData): List<UserNewsResource> =
-    map { UserNewsResource(it, userData) }
+fun List<NewsResource>.mapToUserNewsResources(userData: UserData): List<UserNewsResource> = map { UserNewsResource(it, userData) }

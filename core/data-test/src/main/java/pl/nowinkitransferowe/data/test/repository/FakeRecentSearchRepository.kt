@@ -28,8 +28,7 @@ import javax.inject.Inject
 internal class FakeRecentSearchRepository @Inject constructor() : RecentSearchRepository {
     override suspend fun insertOrReplaceRecentSearch(searchQuery: String) = Unit
 
-    override fun getRecentSearchQueries(limit: Int): Flow<List<RecentSearchQuery>> =
-        flowOf(emptyList())
+    override fun getRecentSearchQueries(limit: Int): Flow<List<RecentSearchQuery>> = flowOf(emptyList())
 
     override suspend fun clearRecentSearches() = Unit
 }

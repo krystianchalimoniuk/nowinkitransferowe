@@ -20,15 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
-import androidx.tracing.trace
+import androidx.navigation3.runtime.NavKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,12 +32,13 @@ import pl.nowinkitransferowe.core.data.repository.UserNewsResourceRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
+import pl.nowinkitransferowe.core.navigation.NavigationState
+import pl.nowinkitransferowe.core.navigation.rememberNavigationState
 import pl.nowinkitransferowe.core.ui.TrackDisposableJank
-import pl.nowinkitransferowe.feature.bookmarks.navigation.navigateToBookmarks
-import pl.nowinkitransferowe.feature.news.navigation.navigateToNews
-import pl.nowinkitransferowe.feature.search.navigation.navigateToSearch
-import pl.nowinkitransferowe.feature.transfers.navigation.navigateToTransfer
-import pl.nowinkitransferowe.navigation.TopLevelDestination
+import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksNavKey
+import pl.nowinkitransferowe.feature.news.api.navigation.NewsNavKey
+import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
+import pl.nowinkitransferowe.navigation.TOP_LEVEL_NAV_ITEMS
 
 @Composable
 fun rememberNtAppState(
@@ -54,18 +47,24 @@ fun rememberNtAppState(
     userTransferResourceRepository: UserTransferResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    navController: NavHostController = rememberNavController(),
 ): NtAppState {
-    NavigationTrackingSideEffect(navController)
+    val navigationState = rememberNavigationState(
+        startKey = NewsNavKey,
+        topLevelKeys = TOP_LEVEL_NAV_ITEMS.keys,
+    )
+
+    NavigationTrackingSideEffect(navigationState)
+
     return remember(
-        navController,
+        navigationState,
         coroutineScope,
         networkMonitor,
         userNewsResourceRepository,
+        userTransferResourceRepository,
         timeZoneMonitor,
     ) {
         NtAppState(
-            navController = navController,
+            navigationState = navigationState,
             coroutineScope = coroutineScope,
             networkMonitor = networkMonitor,
             userNewsResourceRepository = userNewsResourceRepository,
@@ -77,24 +76,13 @@ fun rememberNtAppState(
 
 @Stable
 class NtAppState(
-    val navController: NavHostController,
+    val navigationState: NavigationState,
     coroutineScope: CoroutineScope,
     networkMonitor: NetworkMonitor,
     userNewsResourceRepository: UserNewsResourceRepository,
     userTransferResourceRepository: UserTransferResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
 ) {
-    val currentDestination: NavDestination?
-        @Composable get() = navController
-            .currentBackStackEntryAsState().value?.destination
-
-    val currentTopLevelDestination: TopLevelDestination?
-        @Composable get() {
-            return TopLevelDestination.entries.firstOrNull { topLevelDestination ->
-                currentDestination?.hasRoute(route = topLevelDestination.route) ?: false
-            }
-        }
-
     val isOffline = networkMonitor.isOnline
         .map(Boolean::not)
         .stateIn(
@@ -104,15 +92,9 @@ class NtAppState(
         )
 
     /**
-     * Map of top level destinations to be used in the TopBar, BottomBar and NavRail. The key is the
-     * route.
+     * The top level nav keys that have unread news or transfer resources.
      */
-    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
-
-    /**
-     * The top level destinations that have unread news resources.
-     */
-    val topLevelDestinationsWithUnreadResources: StateFlow<Set<TopLevelDestination>> =
+    val topLevelNavKeysWithUnreadResources: StateFlow<Set<NavKey>> =
         combine(
             userNewsResourceRepository.observeAll(),
             userNewsResourceRepository.observeAllBookmarked(),
@@ -120,10 +102,12 @@ class NtAppState(
             userTransferResourceRepository.observeAllBookmarked(),
         ) { newsResources, bookmarkedNewsResources, transferResources, bookmarkedTransfersResources ->
             setOfNotNull(
-                TopLevelDestination.NEWS.takeIf { newsResources.any { !it.hasBeenViewed } },
-                TopLevelDestination.TRANSFERS.takeIf { transferResources.any { !it.hasBeenViewed } },
-                TopLevelDestination.BOOKMARKS.takeIf { bookmarkedNewsResources.any { !it.hasBeenViewed } or bookmarkedTransfersResources.any { !it.hasBeenViewed } },
-
+                NewsNavKey.takeIf { newsResources.any { !it.hasBeenViewed } },
+                TransfersNavKey.takeIf { transferResources.any { !it.hasBeenViewed } },
+                BookmarksNavKey.takeIf {
+                    bookmarkedNewsResources.any { !it.hasBeenViewed } ||
+                        bookmarkedTransfersResources.any { !it.hasBeenViewed }
+                },
             )
         }
             .stateIn(
@@ -138,59 +122,15 @@ class NtAppState(
             SharingStarted.WhileSubscribed(5_000),
             TimeZone.currentSystemDefault(),
         )
-
-    /**
-     * UI logic for navigating to a top level destination in the app. Top level destinations have
-     * only one copy of the destination of the back stack, and save and restore state whenever you
-     * navigate to and from it.
-     *
-     * @param topLevelDestination: The destination the app needs to navigate to.
-     */
-    fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-        trace("Navigation: ${topLevelDestination.name}") {
-            val topLevelNavOptions = navOptions {
-                // Pop up to the start destination of the graph to
-                // avoid building up a large stack of destinations
-                // on the back stack as users select items
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
-                }
-                // Avoid multiple copies of the same destination when
-                // reselecting the same item
-                launchSingleTop = true
-                // Restore state when reselecting a previously selected item
-                restoreState = true
-            }
-
-            when (topLevelDestination) {
-                TopLevelDestination.NEWS -> navController.navigateToNews(null, topLevelNavOptions)
-                TopLevelDestination.TRANSFERS -> navController.navigateToTransfer(null, topLevelNavOptions)
-                TopLevelDestination.BOOKMARKS -> navController.navigateToBookmarks(
-                    topLevelNavOptions,
-                )
-            }
-        }
-    }
-
-    fun navigateToSearch() {
-        navController.navigateToSearch(null)
-    }
 }
 
 /**
  * Stores information about navigation events to be used with JankStats
  */
 @Composable
-private fun NavigationTrackingSideEffect(navController: NavHostController) {
-    TrackDisposableJank(navController) { metricsHolder ->
-        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            metricsHolder.state?.putState("Navigation", destination.route.toString())
-        }
-
-        navController.addOnDestinationChangedListener(listener)
-
-        onDispose {
-            navController.removeOnDestinationChangedListener(listener)
-        }
+private fun NavigationTrackingSideEffect(navigationState: NavigationState) {
+    TrackDisposableJank(navigationState.currentKey) { metricsHolder ->
+        metricsHolder.state?.putState("Navigation", navigationState.currentKey.toString())
+        onDispose {}
     }
 }

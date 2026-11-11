@@ -60,8 +60,8 @@ private const val DEEP_LINK_NEWS_PATH = "news"
 private const val DEEP_LINK_TRANSFER_PATH = "transfer"
 private const val DEEP_LINK_NEWS_BASE_PATH = "$DEEP_LINK_SCHEME_AND_HOST/$DEEP_LINK_NEWS_PATH"
 private const val DEEP_LINK_TRANSFER_BASE_PATH = "$DEEP_LINK_SCHEME_AND_HOST/$DEEP_LINK_TRANSFER_PATH"
-const val DEEP_LINK_NEWS_RESOURCE_ID_KEY = "linkedNewsResourceId"
-const val DEEP_LINK_TRANSFER_RESOURCE_ID_KEY = "linkedTransferResourceId"
+const val DEEP_LINK_NEWS_RESOURCE_ID_KEY = "newsId"
+const val DEEP_LINK_TRANSFER_RESOURCE_ID_KEY = "transferId"
 const val DEEP_LINK_NEWS_URI_PATTERN = "$DEEP_LINK_NEWS_BASE_PATH/{$DEEP_LINK_NEWS_RESOURCE_ID_KEY}"
 const val DEEP_LINK_TRANSFER_URI_PATTERN = "$DEEP_LINK_TRANSFER_BASE_PATH/{$DEEP_LINK_TRANSFER_RESOURCE_ID_KEY}"
 
@@ -126,111 +126,109 @@ internal class SystemTrayNotifier @Inject constructor(
         notificationManager.notify(NEWS_NOTIFICATION_SUMMARY_ID, summaryNotification)
     }
 
-    override fun postTransferNotifications(transferResource: List<TransferResource>) =
-        with(context) {
-            if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
-                return
-            }
-
-            val truncatedTransferResources = transferResource.take(MAX_NUM_NOTIFICATIONS)
-
-            val newsNotifications = truncatedTransferResources.map { transferResource ->
-                createNotification {
-                    setSmallIcon(
-                        pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
-                    )
-                        .setContentTitle("\uD83D\uDC64 ${HtmlCompat.fromHtml(transferResource.name, HtmlCompat.FROM_HTML_MODE_COMPACT)}")
-                        .setContentText("\uD83D\uDD01 ${transferResource.clubFrom} - ${transferResource.clubTo}\n\uD83D\uDCB6 ${transferResource.price}")
-                        .setContentIntent(transferPendingIntent(transferResource))
-                        .setGroup(TRANSFER_NOTIFICATION_GROUP)
-                        .setAutoCancel(true)
-                }
-            }
-            val summaryNotification = createNotification {
-                val title = getString(
-                    R.string.core_notifications_transfer_notification_group_summary,
-                )
-                setContentTitle(title)
-                    .setContentText(title)
-                    .setSmallIcon(
-                        pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
-                    )
-                    // Build summary info into InboxStyle template.
-                    .setStyle(transferNotificationStyle(truncatedTransferResources, title))
-                    .setGroup(TRANSFER_NOTIFICATION_GROUP)
-                    .setGroupSummary(true)
-                    .setAutoCancel(true)
-                    .build()
-            }
-
-            // Send the notifications
-            val notificationManager = NotificationManagerCompat.from(this)
-            newsNotifications.forEachIndexed { index, notification ->
-                notificationManager.notify(
-                    truncatedTransferResources[index].id.hashCode(),
-                    notification,
-                )
-            }
-            notificationManager.notify(TRANSFER_NOTIFICATION_SUMMARY_ID, summaryNotification)
+    override fun postTransferNotifications(transferResource: List<TransferResource>) = with(context) {
+        if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
+            return
         }
+
+        val truncatedTransferResources = transferResource.take(MAX_NUM_NOTIFICATIONS)
+
+        val newsNotifications = truncatedTransferResources.map { transferResource ->
+            createNotification {
+                setSmallIcon(
+                    pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
+                )
+                    .setContentTitle("\uD83D\uDC64 ${HtmlCompat.fromHtml(transferResource.name, HtmlCompat.FROM_HTML_MODE_COMPACT)}")
+                    .setContentText("\uD83D\uDD01 ${transferResource.clubFrom} - ${transferResource.clubTo}\n\uD83D\uDCB6 ${transferResource.price}")
+                    .setContentIntent(transferPendingIntent(transferResource))
+                    .setGroup(TRANSFER_NOTIFICATION_GROUP)
+                    .setAutoCancel(true)
+            }
+        }
+        val summaryNotification = createNotification {
+            val title = getString(
+                R.string.core_notifications_transfer_notification_group_summary,
+            )
+            setContentTitle(title)
+                .setContentText(title)
+                .setSmallIcon(
+                    pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
+                )
+                // Build summary info into InboxStyle template.
+                .setStyle(transferNotificationStyle(truncatedTransferResources, title))
+                .setGroup(TRANSFER_NOTIFICATION_GROUP)
+                .setGroupSummary(true)
+                .setAutoCancel(true)
+                .build()
+        }
+
+        // Send the notifications
+        val notificationManager = NotificationManagerCompat.from(this)
+        newsNotifications.forEachIndexed { index, notification ->
+            notificationManager.notify(
+                truncatedTransferResources[index].id.hashCode(),
+                notification,
+            )
+        }
+        notificationManager.notify(TRANSFER_NOTIFICATION_SUMMARY_ID, summaryNotification)
+    }
 
     override fun postGeneralNotification(
         generalNotificationResource: GeneralNotificationResource,
         bitmap: Bitmap?,
-    ) =
-        with(context) {
-            if (checkSelfPermission(
-                    this,
-                    permission.POST_NOTIFICATIONS,
-                ) != PERMISSION_GRANTED
-            ) {
-                return
-            }
-            val summaryNotification = createNotification {
-                val title = getString(
-                    R.string.core_notifications_general_notification_group_summary,
-                )
-                setContentTitle(title)
-                    .setContentText(title)
-                    .setSmallIcon(
-                        pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
-                    )
-                    // Build summary info into InboxStyle template.
-                    .setStyle(
-                        generalNotificationSummaryStyle(
-                            generalNotificationResource.title,
-                            title,
-                        ),
-                    )
-                    .setGroup(GENERAL_NOTIFICATION_GROUP)
-                    .setGroupSummary(true)
-                    .setAutoCancel(true)
-                    .build()
-            }
-            val style = generalNotificationStyle(bitmap)
-            val notification = createNotification {
-                setSmallIcon(
+    ) = with(context) {
+        if (checkSelfPermission(
+                this,
+                permission.POST_NOTIFICATIONS,
+            ) != PERMISSION_GRANTED
+        ) {
+            return
+        }
+        val summaryNotification = createNotification {
+            val title = getString(
+                R.string.core_notifications_general_notification_group_summary,
+            )
+            setContentTitle(title)
+                .setContentText(title)
+                .setSmallIcon(
                     pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
                 )
-                    .setContentTitle(generalNotificationResource.title)
-                    .setContentText(generalNotificationResource.description)
-                    .setStyle(style)
-                    .setContentIntent(
-                        generalNotificationPendingIntent(
-                            generalNotificationResource,
-                        ),
-                    )
-                    .setGroup(GENERAL_NOTIFICATION_GROUP)
-                    .setAutoCancel(true)
-            }
-            // Send the notifications
-            val notificationManager = NotificationManagerCompat.from(this)
-            notificationManager.notify(
-                generalNotificationResource.id,
-                notification,
-            )
-            notificationManager.notify(GENERAL_NOTIFICATION_SUMMARY_ID, summaryNotification)
+                // Build summary info into InboxStyle template.
+                .setStyle(
+                    generalNotificationSummaryStyle(
+                        generalNotificationResource.title,
+                        title,
+                    ),
+                )
+                .setGroup(GENERAL_NOTIFICATION_GROUP)
+                .setGroupSummary(true)
+                .setAutoCancel(true)
+                .build()
         }
+        val style = generalNotificationStyle(bitmap)
+        val notification = createNotification {
+            setSmallIcon(
+                pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
+            )
+                .setContentTitle(generalNotificationResource.title)
+                .setContentText(generalNotificationResource.description)
+                .setStyle(style)
+                .setContentIntent(
+                    generalNotificationPendingIntent(
+                        generalNotificationResource,
+                    ),
+                )
+                .setGroup(GENERAL_NOTIFICATION_GROUP)
+                .setAutoCancel(true)
+        }
+        // Send the notifications
+        val notificationManager = NotificationManagerCompat.from(this)
+        notificationManager.notify(
+            generalNotificationResource.id,
+            notification,
+        )
+        notificationManager.notify(GENERAL_NOTIFICATION_SUMMARY_ID, summaryNotification)
+    }
 
     /**
      * Creates an inbox style summary notification for news updates
@@ -259,9 +257,7 @@ internal class SystemTrayNotifier @Inject constructor(
      */
     private fun generalNotificationStyle(
         bitmap: Bitmap?,
-    ): BigPictureStyle {
-        return BigPictureStyle().bigPicture(bitmap)
-    }
+    ): BigPictureStyle = BigPictureStyle().bigPicture(bitmap)
 
     /**
      * Creates an inbox style summary notification for transfers updates
@@ -338,18 +334,16 @@ private fun Context.transferPendingIntent(
     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
 )
 
-private fun Context.generalNotificationPendingIntent(generalNotificationResource: GeneralNotificationResource): PendingIntent? =
-    PendingIntent.getActivity(
-        this,
-        GENERAL_NOTIFICATIONS_REQUEST_CODE,
-        Intent().apply {
-            action = Intent.ACTION_VIEW
-            data = generalNotificationResource.url.toUri()
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        },
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-    )
+private fun Context.generalNotificationPendingIntent(generalNotificationResource: GeneralNotificationResource): PendingIntent? = PendingIntent.getActivity(
+    this,
+    GENERAL_NOTIFICATIONS_REQUEST_CODE,
+    Intent().apply {
+        action = Intent.ACTION_VIEW
+        data = generalNotificationResource.url.toUri()
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    },
+    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+)
 
 private fun NewsResource.newsDeepLinkUri() = "$DEEP_LINK_NEWS_BASE_PATH/$id".toUri()
-private fun TransferResource.transferDeepLinkUri() =
-    "$DEEP_LINK_TRANSFER_BASE_PATH/$id".toUri()
+private fun TransferResource.transferDeepLinkUri() = "$DEEP_LINK_TRANSFER_BASE_PATH/$id".toUri()

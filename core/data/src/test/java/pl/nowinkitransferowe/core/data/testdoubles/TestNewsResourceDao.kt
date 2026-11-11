@@ -30,46 +30,42 @@ class TestNewsResourceDao : NewsResourceDao {
 
     private val entitiesStateFlow = MutableStateFlow(emptyList<NewsResourceEntity>())
 
-    override fun getNewsResource(newsId: String): Flow<NewsResourceEntity> =
-        entitiesStateFlow.map { newsResourceList ->
-            newsResourceList.first { it.id == newsId }
-        }
+    override fun getNewsResource(newsId: String): Flow<NewsResourceEntity> = entitiesStateFlow.map { newsResourceList ->
+        newsResourceList.first { it.id == newsId }
+    }
 
     override fun getNewsResources(
         useFilterNewsIds: Boolean,
         filterNewsIds: Set<String>,
-    ): Flow<List<NewsResourceEntity>> =
-        entitiesStateFlow
-            .map { resources ->
-                var result = resources
-                if (useFilterNewsIds) {
-                    result = result.filter { resource ->
-                        resource.id in filterNewsIds
-                    }
+    ): Flow<List<NewsResourceEntity>> = entitiesStateFlow
+        .map { resources ->
+            var result = resources
+            if (useFilterNewsIds) {
+                result = result.filter { resource ->
+                    resource.id in filterNewsIds
                 }
-                result
             }
+            result
+        }
 
-    override fun getNewsResourcesPages(limit: Int, offset: Int): Flow<List<NewsResourceEntity>> =
-        entitiesStateFlow
-            .map { resources ->
-                resources.take(limit)
-            }
+    override fun getNewsResourcesPages(limit: Int, offset: Int): Flow<List<NewsResourceEntity>> = entitiesStateFlow
+        .map { resources ->
+            resources.take(limit)
+        }
 
     override fun getNewsResourceIds(
         useFilterNewsIds: Boolean,
         filterNewsIds: Set<String>,
-    ): Flow<List<String>> =
-        entitiesStateFlow
-            .map { resources ->
-                var result = resources
-                if (useFilterNewsIds) {
-                    result = result.filter { resource ->
-                        resource.id in filterNewsIds
-                    }
+    ): Flow<List<String>> = entitiesStateFlow
+        .map { resources ->
+            var result = resources
+            if (useFilterNewsIds) {
+                result = result.filter { resource ->
+                    resource.id in filterNewsIds
                 }
-                result.map { it.id }
             }
+            result.map { it.id }
+        }
 
     override suspend fun upsertNewsResources(newsResourceEntities: List<NewsResourceEntity>) {
         entitiesStateFlow.update { oldValues ->
@@ -89,8 +85,7 @@ class TestNewsResourceDao : NewsResourceDao {
         }
     }
 
-    override fun getCount(): Flow<Int> =
-        entitiesStateFlow.map {
-            it.size
-        }
+    override fun getCount(): Flow<Int> = entitiesStateFlow.map {
+        it.size
+    }
 }

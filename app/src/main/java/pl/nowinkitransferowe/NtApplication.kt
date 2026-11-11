@@ -31,7 +31,9 @@ import javax.inject.Inject
  * [Application] class for NT
  */
 @HiltAndroidApp
-class NtApplication : Application(), ImageLoaderFactory {
+class NtApplication :
+    Application(),
+    ImageLoaderFactory {
     @Inject
     lateinit var imageLoader: dagger.Lazy<ImageLoader>
 
@@ -53,9 +55,7 @@ class NtApplication : Application(), ImageLoaderFactory {
     /**
      * Return true if the application is debuggable.
      */
-    private fun isDebuggable(): Boolean {
-        return 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
-    }
+    private fun isDebuggable(): Boolean = 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
 
     /**
      * Set a thread policy that detects all potential problems on the main thread, such as network

@@ -180,7 +180,7 @@ fun NtNavigationRail(
  * Wraps Material 3 [NavigationSuiteScaffold].
  *
  * @param modifier Modifier to be applied to the navigation suite scaffold.
- * @param navigationSuiteItems A slot to display multiple items via [NiaNavigationSuiteScope].
+ * @param navigationSuiteItems A slot to display multiple items via [NtNavigationSuiteScope].
  * @param windowAdaptiveInfo The window adaptive info.
  * @param content The app content inside the scaffold.
  */
@@ -272,7 +272,7 @@ class NtNavigationSuiteScope internal constructor(
 
 @ThemePreviews
 @Composable
-fun NiaNavigationBarPreview() {
+fun NtNavigationBarPreview() {
     val items = listOf("For you", "Saved", "Interests")
     val icons = listOf(
         NtIcons.UpcomingBorder,

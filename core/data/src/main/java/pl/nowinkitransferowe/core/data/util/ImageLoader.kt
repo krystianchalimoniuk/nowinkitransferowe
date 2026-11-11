@@ -65,7 +65,6 @@ internal class DefaultImageDownLoader @Inject constructor(
     }
 }
 
-internal fun AnalyticsHelper.logDownloadImageError(param: AnalyticsEvent.Param) =
-    logEvent(
-        AnalyticsEvent(type = "coil_download_image_error", extras = listOf(param)),
-    )
+internal fun AnalyticsHelper.logDownloadImageError(param: AnalyticsEvent.Param) = logEvent(
+    AnalyticsEvent(type = "coil_download_image_error", extras = listOf(param)),
+)

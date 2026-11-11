@@ -36,30 +36,26 @@ class CompositeUserTransferResourceRepository @Inject constructor(
      */
     override fun observeAll(
         query: TransferResourceQuery,
-    ): Flow<List<UserTransferResource>> =
-        transferRepository.getTransferResources(query)
-            .combine(userDataRepository.userData) { transferResources, userData ->
-                transferResources.mapToUserTransferResources(userData)
-            }
+    ): Flow<List<UserTransferResource>> = transferRepository.getTransferResources(query)
+        .combine(userDataRepository.userData) { transferResources, userData ->
+            transferResources.mapToUserTransferResources(userData)
+        }
 
-    override fun observeAllBookmarked(): Flow<List<UserTransferResource>> =
-        userDataRepository.userData.map { it.bookmarkedTransferResources }.distinctUntilChanged()
-            .flatMapLatest { bookmarkedTransferResources ->
-                when {
-                    bookmarkedTransferResources.isEmpty() -> flowOf(emptyList())
-                    else -> observeAll(TransferResourceQuery(filterTransferIds = bookmarkedTransferResources))
-                }
+    override fun observeAllBookmarked(): Flow<List<UserTransferResource>> = userDataRepository.userData.map { it.bookmarkedTransferResources }.distinctUntilChanged()
+        .flatMapLatest { bookmarkedTransferResources ->
+            when {
+                bookmarkedTransferResources.isEmpty() -> flowOf(emptyList())
+                else -> observeAll(TransferResourceQuery(filterTransferIds = bookmarkedTransferResources))
             }
+        }
 
     override fun observeAllPages(
         limit: Int,
         offset: Int,
-    ): Flow<List<UserTransferResource>> =
-        transferRepository.getTransferResourcesPages(limit, offset)
-            .combine(userDataRepository.userData) { transferResources, userData ->
-                transferResources.mapToUserTransferResources(userData)
-            }
+    ): Flow<List<UserTransferResource>> = transferRepository.getTransferResourcesPages(limit, offset)
+        .combine(userDataRepository.userData) { transferResources, userData ->
+            transferResources.mapToUserTransferResources(userData)
+        }
 
-    override fun getCount(): Flow<Int> =
-        transferRepository.getCount()
+    override fun getCount(): Flow<Int> = transferRepository.getCount()
 }

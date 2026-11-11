@@ -19,10 +19,10 @@ package pl.nowinkitransferowe.core.common
 import app.cash.turbine.test
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import pl.nowinkitransferowe.core.common.result.Result
 import pl.nowinkitransferowe.core.common.result.asResult
+import kotlin.test.assertEquals
 
 class ResultKtTest {
 
@@ -38,7 +38,7 @@ class ResultKtTest {
                 assertEquals(Result.Success(1), awaitItem())
 
                 when (val errorResult = awaitItem()) {
-                    is Result.Error -> kotlin.test.assertEquals(
+                    is Result.Error -> assertEquals(
                         "Test Done",
                         errorResult.exception?.message,
                     )
