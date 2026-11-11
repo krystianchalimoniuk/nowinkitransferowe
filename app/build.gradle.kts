@@ -22,7 +22,7 @@ plugins {
     alias(libs.plugins.nowinkitransferowe.android.application.jacoco)
     alias(libs.plugins.nowinkitransferowe.hilt)
     alias(libs.plugins.nowinkitransferowe.android.application.firebase)
-    id("com.google.android.gms.oss-licenses-plugin")
+    alias(libs.plugins.google.osslicenses)
     alias(libs.plugins.baselineprofile)
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.kotlin.serialization)
