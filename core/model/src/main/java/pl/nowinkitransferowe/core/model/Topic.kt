@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,23 @@
 
 package pl.nowinkitransferowe.core.model
 
+/**
+ * A topic articles are filed under, for example a league ("premier-league") or "polacy-za-granica".
+ */
 data class Topic(
-    val id: String,
+    val slug: String,
     val name: String,
-    val shortDescription: String,
-    val longDescription: String,
-    val url: String,
-    val imageUrl: String,
+    val kind: TopicKind,
 )
+
+enum class TopicKind {
+    LEAGUE,
+    CUP,
+    SPECIAL,
+    UNKNOWN,
+    ;
+
+    companion object {
+        fun fromApi(value: String?): TopicKind = entries.find { it.name == value } ?: UNKNOWN
+    }
+}
