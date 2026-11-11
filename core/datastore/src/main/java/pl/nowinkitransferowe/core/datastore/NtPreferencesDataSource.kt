@@ -55,6 +55,11 @@ class NtPreferencesDataSource @Inject constructor(
                 isNewsNotificationsAllowed = it.notifyNews,
                 isTransfersNotificationsAllowed = it.notifyTransfers,
                 isGeneralNotificationAllowed = it.notifyGeneral,
+                followedTopics = it.followedTopicIdsMap.keys,
+                followedClubs = it.followedClubIdsMap.keys,
+                followedPlayers = it.followedPlayerIdsMap.keys,
+                isFollowedNotificationsAllowed = it.notifyFollowed,
+                isFollowedLeaguesNotificationsAllowed = it.notifyFollowedLeagues,
             )
         }
 
@@ -79,6 +84,74 @@ class NtPreferencesDataSource @Inject constructor(
     suspend fun setGeneralNotificationsAllowed(isAllowed: Boolean) {
         userPreferences.updateData {
             it.copy { this.notifyGeneral = isAllowed }
+        }
+    }
+
+    suspend fun setFollowedNotificationsAllowed(isAllowed: Boolean) {
+        userPreferences.updateData {
+            it.copy { this.notifyFollowed = isAllowed }
+        }
+    }
+
+    suspend fun setFollowedLeaguesNotificationsAllowed(isAllowed: Boolean) {
+        userPreferences.updateData {
+            it.copy { this.notifyFollowedLeagues = isAllowed }
+        }
+    }
+
+    suspend fun setTopicFollowed(topicSlug: String, followed: Boolean) {
+        userPreferences.updateData {
+            it.copy {
+                if (followed) {
+                    followedTopicIds.put(topicSlug, true)
+                } else {
+                    followedTopicIds.remove(topicSlug)
+                }
+            }
+        }
+    }
+
+    suspend fun setClubFollowed(clubId: Int, followed: Boolean) {
+        userPreferences.updateData {
+            it.copy {
+                if (followed) {
+                    followedClubIds.put(clubId, true)
+                } else {
+                    followedClubIds.remove(clubId)
+                }
+            }
+        }
+    }
+
+    suspend fun setPlayerFollowed(playerId: Int, followed: Boolean) {
+        userPreferences.updateData {
+            it.copy {
+                if (followed) {
+                    followedPlayerIds.put(playerId, true)
+                } else {
+                    followedPlayerIds.remove(playerId)
+                }
+            }
+        }
+    }
+
+    /**
+     * Keys of the records the user was already notified about.
+     */
+    suspend fun getNotifiedKeys(): Set<String> = userPreferences.data.map { it.notifiedKeysList.toSet() }.firstOrNull().orEmpty()
+
+    /**
+     * Remembers that the user was notified about [keys]. Only the newest [MAX_NOTIFIED_KEYS] keys
+     * are kept, which is far more than a single sync can notify about.
+     */
+    suspend fun addNotifiedKeys(keys: Collection<String>) {
+        if (keys.isEmpty()) return
+        userPreferences.updateData {
+            it.copy {
+                val newest = (notifiedKeys - keys.toSet() + keys.distinct()).takeLast(MAX_NOTIFIED_KEYS)
+                notifiedKeys.clear()
+                notifiedKeys.addAll(newest)
+            }
         }
     }
 
@@ -169,6 +242,11 @@ class NtPreferencesDataSource @Inject constructor(
             ChangeListVersions(
                 transferResourceVersion = it.transferResourcesChangeListVersion,
                 newsResourceVersion = it.newsResourceChangeListVersion,
+                articleVersion = it.articleChangeListVersion,
+                transferVersion = it.transferChangeListVersion,
+                rumourVersion = it.rumourChangeListVersion,
+                clubVersion = it.clubChangeListVersion,
+                playerVersion = it.playerChangeListVersion,
             )
         }
         .firstOrNull() ?: ChangeListVersions()
@@ -183,6 +261,11 @@ class NtPreferencesDataSource @Inject constructor(
                     ChangeListVersions(
                         transferResourceVersion = currentPreferences.transferResourcesChangeListVersion,
                         newsResourceVersion = currentPreferences.newsResourceChangeListVersion,
+                        articleVersion = currentPreferences.articleChangeListVersion,
+                        transferVersion = currentPreferences.transferChangeListVersion,
+                        rumourVersion = currentPreferences.rumourChangeListVersion,
+                        clubVersion = currentPreferences.clubChangeListVersion,
+                        playerVersion = currentPreferences.playerChangeListVersion,
                     ),
                 )
 
@@ -190,10 +273,19 @@ class NtPreferencesDataSource @Inject constructor(
                     transferResourcesChangeListVersion =
                         updatedChangeListVersions.transferResourceVersion
                     newsResourceChangeListVersion = updatedChangeListVersions.newsResourceVersion
+                    articleChangeListVersion = updatedChangeListVersions.articleVersion
+                    transferChangeListVersion = updatedChangeListVersions.transferVersion
+                    rumourChangeListVersion = updatedChangeListVersions.rumourVersion
+                    clubChangeListVersion = updatedChangeListVersions.clubVersion
+                    playerChangeListVersion = updatedChangeListVersions.playerVersion
                 }
             }
         } catch (ioException: IOException) {
             Log.e("NtPreferences", "Failed to update user preferences", ioException)
         }
+    }
+
+    companion object {
+        const val MAX_NOTIFIED_KEYS = 500
     }
 }

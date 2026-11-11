@@ -26,4 +26,10 @@ data class UserData(
     val isNewsNotificationsAllowed: Boolean,
     val isTransfersNotificationsAllowed: Boolean,
     val isGeneralNotificationAllowed: Boolean,
+    // API v3. Defaults keep the 3.x screens compiling until they are replaced.
+    val followedTopics: Set<String> = emptySet(),
+    val followedClubs: Set<Int> = emptySet(),
+    val followedPlayers: Set<Int> = emptySet(),
+    val isFollowedNotificationsAllowed: Boolean = false,
+    val isFollowedLeaguesNotificationsAllowed: Boolean = false,
 )

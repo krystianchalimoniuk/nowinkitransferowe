@@ -34,6 +34,9 @@ class UserPreferencesSerializerTest {
                 notifyNews = true
                 notifyTransfers = true
                 notifyGeneral = true
+                notifyFollowed = true
+                notifyFollowedLeagues = true
+                schemaVersion = UserPreferencesMigration.CURRENT_SCHEMA_VERSION
             },
             userPreferencesSerializer.defaultValue,
         )

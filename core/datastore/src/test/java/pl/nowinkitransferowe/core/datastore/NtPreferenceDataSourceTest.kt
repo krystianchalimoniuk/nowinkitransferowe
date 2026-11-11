@@ -26,6 +26,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import pl.nowinkitransferowe.core.datastoreproto.UserPreferences
 import pl.nowinkitransferowe.core.datastoretest.InMemoryDataStore
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -86,5 +87,55 @@ class NtPreferenceDataSourceTest {
     fun isGeneralNotificationsAllowedIsTrueWhenSet() = runTest {
         subject.setGeneralNotificationsAllowed(true)
         assertTrue(subject.userData.first().isGeneralNotificationAllowed)
+    }
+
+    @Test
+    fun followedClubsPlayersAndTopicsAreSaved() = runTest {
+        subject.setClubFollowed(86, true)
+        subject.setClubFollowed(44, true)
+        subject.setPlayerFollowed(10281, true)
+        subject.setTopicFollowed("premier-league", true)
+        subject.setClubFollowed(44, false)
+
+        val userData = subject.userData.first()
+        assertEquals(setOf(86), userData.followedClubs)
+        assertEquals(setOf(10281), userData.followedPlayers)
+        assertEquals(setOf("premier-league"), userData.followedTopics)
+    }
+
+    @Test
+    fun followedNotificationSwitchesAreSaved() = runTest {
+        subject.setFollowedNotificationsAllowed(true)
+        subject.setFollowedLeaguesNotificationsAllowed(false)
+
+        val userData = subject.userData.first()
+        assertTrue(userData.isFollowedNotificationsAllowed)
+        assertFalse(userData.isFollowedLeaguesNotificationsAllowed)
+    }
+
+    @Test
+    fun apiV3ChangeListVersionsAreSavedNextToTheV2Ones() = runTest {
+        val nothingSynced = ChangeListVersions(transferResourceVersion = 0, newsResourceVersion = 0)
+        assertEquals(nothingSynced, subject.getChangeListVersions())
+
+        subject.updateChangeListVersion { copy(articleVersion = 120, playerVersion = 7) }
+        subject.updateChangeListVersion { copy(newsResourceVersion = 3) }
+
+        assertEquals(
+            nothingSynced.copy(newsResourceVersion = 3, articleVersion = 120, playerVersion = 7),
+            subject.getChangeListVersions(),
+        )
+    }
+
+    @Test
+    fun notifiedKeysKeepOnlyTheNewest() = runTest {
+        subject.addNotifiedKeys((1..NtPreferencesDataSource.MAX_NOTIFIED_KEYS).map { "article:$it" })
+        subject.addNotifiedKeys(listOf("article:1", "rumour:5:3"))
+
+        val keys = subject.getNotifiedKeys()
+        assertEquals(NtPreferencesDataSource.MAX_NOTIFIED_KEYS, keys.size)
+        assertFalse("article:2" in keys)
+        assertTrue("article:1" in keys)
+        assertTrue("rumour:5:3" in keys)
     }
 }
