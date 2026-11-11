@@ -22,7 +22,7 @@ plugins {
 }
 
 android {
-    namespace = "pl.nowinkitransferowe.feature.news"
+    namespace = "pl.nowinkitransferowe.feature.news.impl"
     testOptions.unitTests.isIncludeAndroidResources = true
 }
 

@@ -20,7 +20,7 @@ plugins {
 }
 
 android {
-    namespace = "pl.nowinkitransferowe.feature.search"
+    namespace = "pl.nowinkitransferowe.feature.search.impl"
 }
 
 dependencies {

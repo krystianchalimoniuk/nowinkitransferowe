@@ -20,7 +20,7 @@ plugins {
 }
 
 android {
-    namespace = "pl.nowinkitransferowe.feature.settings"
+    namespace = "pl.nowinkitransferowe.feature.settings.impl"
 }
 
 dependencies {
