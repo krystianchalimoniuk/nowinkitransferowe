@@ -1,0 +1,43 @@
+/*
+ * Copyright 2026 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package pl.nowinkitransferowe.core.model
+
+/**
+ * A transfer fee. [label] is the Polish text from the website ("70 mln €", "wypożyczenie");
+ * [millionsOfEuro] is set only for [FeeKind.AMOUNT].
+ */
+data class Fee(
+    val kind: FeeKind,
+    val label: String,
+    val millionsOfEuro: Double?,
+) {
+    /** What the fee adds to spending and income: loans and undisclosed fees count as 0, like on the website. */
+    val countedMillions: Double get() = if (kind == FeeKind.AMOUNT) millionsOfEuro ?: 0.0 else 0.0
+}
+
+enum class FeeKind {
+    AMOUNT,
+    FREE,
+    LOAN,
+    UNDISCLOSED,
+    UNKNOWN,
+    ;
+
+    companion object {
+        fun fromApi(value: String?): FeeKind = entries.find { it.name == value } ?: UNKNOWN
+    }
+}
