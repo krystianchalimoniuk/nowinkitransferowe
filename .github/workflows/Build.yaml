@@ -271,7 +271,7 @@ jobs:
       - name: Display local test coverage (only API 34)
         if: matrix.api-level == 34
         id: jacoco
-        uses: madrapps/jacoco-report@v1.7.1
+        uses: madrapps/jacoco-report@v1.8.0
         with:
           title: Combined test coverage report
           min-coverage-overall: 40
