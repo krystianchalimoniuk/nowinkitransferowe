@@ -39,7 +39,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
         with:
           # The default "tools" package no longer exists in the SDK repository
           packages: platform-tools
