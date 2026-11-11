@@ -21,11 +21,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.data.Synchronizer
-import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.TransferResourceQuery
+import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.model.TransferResource
 
-class TestTransferRepository : TransferRepository {
+class TestTransferResourceRepository : TransferResourceRepository {
 
     /**
      * The backing hot flow for the list of topics ids for testing.

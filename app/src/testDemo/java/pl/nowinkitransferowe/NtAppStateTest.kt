@@ -37,7 +37,7 @@ import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceR
 import pl.nowinkitransferowe.core.navigation.NavigationState
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.core.testing.repository.TestNewsRepository
-import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
+import pl.nowinkitransferowe.core.testing.repository.TestTransferResourceRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.util.TestNetworkMonitor
 import pl.nowinkitransferowe.core.testing.util.TestTimeZoneMonitor
@@ -70,7 +70,7 @@ class NtAppStateTest {
     private val userNewsResourceRepository =
         CompositeUserNewsResourceRepository(TestNewsRepository(), userDataRepository)
     private val userTransferResourceRepository =
-        CompositeUserTransferResourceRepository(TestTransferRepository(), userDataRepository)
+        CompositeUserTransferResourceRepository(TestTransferResourceRepository(), userDataRepository)
 
     // Subject under test.
     private lateinit var state: NtAppState

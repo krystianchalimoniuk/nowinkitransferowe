@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,113 +17,61 @@
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.data.Synchronizer
-import pl.nowinkitransferowe.core.data.changeListSync
 import pl.nowinkitransferowe.core.data.model.asEntity
-import pl.nowinkitransferowe.core.data.util.DatabaseUpdatingMonitor
-import pl.nowinkitransferowe.core.database.dao.TransferResourceDao
-import pl.nowinkitransferowe.core.database.model.TransferResourceEntity
+import pl.nowinkitransferowe.core.data.model.clubStub
+import pl.nowinkitransferowe.core.data.model.playerStub
+import pl.nowinkitransferowe.core.data.syncChanges
+import pl.nowinkitransferowe.core.database.dao.ArticleDao
+import pl.nowinkitransferowe.core.database.dao.ClubDao
+import pl.nowinkitransferowe.core.database.dao.PlayerDao
+import pl.nowinkitransferowe.core.database.dao.TransferDao
+import pl.nowinkitransferowe.core.database.model.PopulatedTransfer
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.datastore.ChangeListVersions
-import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
-import pl.nowinkitransferowe.core.model.TransferResource
+import pl.nowinkitransferowe.core.model.Season
+import pl.nowinkitransferowe.core.model.Transfer
+import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
-import pl.nowinkitransferowe.core.network.model.NetworkTransferResource
-import pl.nowinkitransferowe.core.notifications.Notifier
 import javax.inject.Inject
 
-private const val SYNC_BATCH_SIZE = 1000
-
 internal class OfflineFirstTransferRepository @Inject constructor(
-    private val ntPreferencesDataSource: NtPreferencesDataSource,
-    private val transferResourceDao: TransferResourceDao,
+    private val transferDao: TransferDao,
+    private val articleDao: ArticleDao,
+    private val clubDao: ClubDao,
+    private val playerDao: PlayerDao,
     private val network: NtNetworkDataSource,
-    private val notifier: Notifier,
-    private val databaseUpdatingMonitor: DatabaseUpdatingMonitor,
 ) : TransferRepository {
 
-    override fun getTransferResources(query: TransferResourceQuery): Flow<List<TransferResource>> = transferResourceDao.getTransferResources(
-        useFilterTransferIds = query.filterTransferIds != null,
-        filterTransferIds = query.filterTransferIds ?: emptySet(),
+    override fun observeTransfer(id: Int): Flow<Transfer?> = transferDao.observeTransfer(id).map { it?.asExternalModel() }
+
+    override fun observeTransfers(season: Season?, limit: Int): Flow<List<Transfer>> = transferDao.observeTransfers(season?.startYear, limit).map { it.map(PopulatedTransfer::asExternalModel) }
+
+    override fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>> = transferDao.observeTransfersByIds(ids).map { it.map(PopulatedTransfer::asExternalModel) }
+
+    override fun observeTransfersOfClub(clubId: Int): Flow<List<Transfer>> = transferDao.observeTransfersOfClub(clubId).map { it.map(PopulatedTransfer::asExternalModel) }
+
+    override fun observeTransfersOfPlayer(playerId: Int): Flow<List<Transfer>> = transferDao.observeTransfersOfPlayer(playerId).map { it.map(PopulatedTransfer::asExternalModel) }
+
+    override suspend fun syncWith(synchronizer: Synchronizer): Boolean = synchronizer.syncChanges(
+        versionReader = ChangeListVersions::transferVersion,
+        changesFetcher = { after -> network.getChanges(NetworkRecordType.TRANSFERS, after) },
+        versionUpdater = { copy(transferVersion = it) },
+        modelDeleter = transferDao::deleteTransfers,
+        modelUpdater = { ids ->
+            val transfers = network.getTransfers(ids)
+            playerDao.insertOrIgnorePlayers(transfers.map { playerStub(it.playerId, it.playerName) })
+            clubDao.insertOrIgnoreClubs(
+                transfers.flatMap { transfer ->
+                    listOfNotNull(
+                        transfer.fromClubId?.let { clubStub(it, transfer.fromClubName) },
+                        transfer.toClubId?.let { clubStub(it, transfer.toClubName) },
+                    )
+                },
+            )
+            val articleIds = articleDao.getExistingIds(transfers.mapNotNullTo(mutableSetOf()) { it.articleId }).toSet()
+            transferDao.upsertTransfers(transfers.map { it.asEntity(articleIds) })
+        },
     )
-        .map { it.map(TransferResourceEntity::asExternalModel) }
-
-    override fun getTransferResourcesPages(limit: Int, offset: Int): Flow<List<TransferResource>> = transferResourceDao.getTransferResourcesPages(limit, offset)
-        .map { it.map(TransferResourceEntity::asExternalModel) }
-
-    override fun getTransferResource(id: String): Flow<TransferResource> = transferResourceDao.getTransferResource(id).map { it.asExternalModel() }
-
-    override fun getTransferResourceByName(name: String): Flow<List<TransferResource>> = transferResourceDao.getTransferResourcesByName(name)
-        .map { it.map(TransferResourceEntity::asExternalModel) }
-
-    override fun getCount(): Flow<Int> = transferResourceDao.getCount()
-
-    override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
-        var isFirstSync = false
-        return synchronizer.changeListSync(
-            versionReader = ChangeListVersions::transferResourceVersion,
-            changeListFetcher = { currentVersion ->
-                isFirstSync = currentVersion <= 0
-                network.getTransferResourceChangeList(after = currentVersion)
-            },
-            versionUpdater = { latestVersion ->
-                copy(transferResourceVersion = latestVersion)
-            },
-            modelDeleter = { toDelete ->
-                transferResourceDao.deleteTransferResources(toDelete)
-                if (toDelete.isNotEmpty()) databaseUpdatingMonitor.notifyTransfersDataChanged()
-            },
-            modelUpdater = { changedIds ->
-
-                val isTransferNotificationAllowed =
-                    ntPreferencesDataSource.userData.first().isTransfersNotificationsAllowed
-
-                val existingTransferResourceIdsThatHaveChanged = when {
-                    isFirstSync -> emptySet()
-                    else -> transferResourceDao.getTransferResourceIds(
-                        useFilterTransferIds = true,
-                        filterTransferIds = changedIds.toSet(),
-                    )
-                        .first()
-                        .toSet()
-                }
-
-                if (isFirstSync) {
-                    // When we first retrieve news, mark everything viewed, so that we aren't
-                    // overwhelmed with all historical news.
-                    ntPreferencesDataSource.setTransferResourcesViewed(changedIds, true)
-                }
-
-                // Obtain the news resources which have changed from the network and upsert them locally
-                changedIds.chunked(SYNC_BATCH_SIZE).forEach { chunkedIds ->
-                    val networkTransferResources =
-                        network.getTransferResources(ids = chunkedIds.joinToString(","))
-
-                    transferResourceDao.upsertTransferResources(
-                        transferResourceEntities = networkTransferResources.map(
-                            NetworkTransferResource::asEntity,
-                        ),
-                    )
-                }
-                if (changedIds.isNotEmpty()) databaseUpdatingMonitor.notifyTransfersDataChanged()
-
-                if (!isFirstSync) {
-                    val addedTransferResources = transferResourceDao.getTransferResources(
-                        useFilterTransferIds = true,
-                        filterTransferIds = changedIds.toSet() - existingTransferResourceIdsThatHaveChanged,
-                    )
-                        .first()
-                        .map(TransferResourceEntity::asExternalModel)
-
-                    if (addedTransferResources.isNotEmpty() && isTransferNotificationAllowed) {
-                        notifier.postTransferNotifications(
-                            transferResource = addedTransferResources,
-                        )
-                    }
-                }
-            },
-        )
-    }
 }

@@ -44,7 +44,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import pl.nowinkitransferowe.core.data.repository.TransferRepository
+import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.navigation.Navigator
@@ -73,7 +73,7 @@ class TransferListDetailScreenTest {
     val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
 
     @Inject
-    lateinit var transferRepository: TransferRepository
+    lateinit var transferRepository: TransferResourceRepository
 
     /** Convenience function for getting all transfer during tests, */
     private fun getTransfers(): List<TransferResource> = runBlocking {

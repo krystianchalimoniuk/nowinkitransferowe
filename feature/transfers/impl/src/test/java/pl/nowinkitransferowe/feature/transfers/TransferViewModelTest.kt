@@ -29,7 +29,7 @@ import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.UserTransferResource
-import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
+import pl.nowinkitransferowe.core.testing.repository.TestTransferResourceRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
@@ -44,7 +44,7 @@ class TransferViewModelTest {
 
     private val syncManager = TestSyncManager()
     private val userDataRepository = TestUserDataRepository()
-    private val transferRepository = TestTransferRepository()
+    private val transferRepository = TestTransferResourceRepository()
 
     private val userTransferResourceRepository = CompositeUserTransferResourceRepository(
         transferRepository = transferRepository,

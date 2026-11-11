@@ -41,8 +41,11 @@ dependencies {
     implementation(projects.core.analytics)
     implementation(projects.core.notifications)
 
+    testImplementation(libs.androidx.test.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(projects.core.datastoreTest)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.room.runtime)
     testImplementation(projects.core.testing)
 }

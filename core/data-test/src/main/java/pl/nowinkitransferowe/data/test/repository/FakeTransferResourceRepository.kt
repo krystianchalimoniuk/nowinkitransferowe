@@ -25,8 +25,8 @@ import pl.nowinkitransferowe.core.common.network.NtDispatchers
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.model.asEntity
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
-import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.TransferResourceQuery
+import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.database.model.TransferResourceEntity
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.model.TransferResource
@@ -40,10 +40,10 @@ import javax.inject.Inject
  * This allows us to run the app with fake data, without needing an internet connection or working
  * backend.
  */
-class FakeTransferRepository @Inject constructor(
+class FakeTransferResourceRepository @Inject constructor(
     @Dispatcher(NtDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val datasource: DemoNtNetworkDataSource,
-) : TransferRepository {
+) : TransferResourceRepository {
 
     override fun getTransferResources(
         query: TransferResourceQuery,

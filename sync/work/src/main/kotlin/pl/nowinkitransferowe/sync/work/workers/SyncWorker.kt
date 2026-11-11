@@ -37,7 +37,7 @@ import pl.nowinkitransferowe.core.common.network.NtDispatchers
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
-import pl.nowinkitransferowe.core.data.repository.TransferRepository
+import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.datastore.ChangeListVersions
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.sync.work.initializers.SyncConstraints
@@ -53,7 +53,7 @@ internal class SyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val ntPreferences: NtPreferencesDataSource,
-    private val transferRepository: TransferRepository,
+    private val transferRepository: TransferResourceRepository,
     private val newsRepository: NewsRepository,
     private val searchContentsRepository: SearchContentsRepository,
     @Dispatcher(NtDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,

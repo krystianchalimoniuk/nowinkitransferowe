@@ -28,7 +28,7 @@ import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceR
 import pl.nowinkitransferowe.core.testing.data.newsResourcesTestData
 import pl.nowinkitransferowe.core.testing.data.transferResourceTestData
 import pl.nowinkitransferowe.core.testing.repository.TestNewsRepository
-import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
+import pl.nowinkitransferowe.core.testing.repository.TestTransferResourceRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
@@ -47,7 +47,7 @@ class BookmarksViewModelTest {
         userDataRepository = userDataRepository,
     )
 
-    private val transferRepository = TestTransferRepository()
+    private val transferRepository = TestTransferResourceRepository()
     private val userTransferResourceRepository = CompositeUserTransferResourceRepository(
         transferRepository = transferRepository,
         userDataRepository = userDataRepository,

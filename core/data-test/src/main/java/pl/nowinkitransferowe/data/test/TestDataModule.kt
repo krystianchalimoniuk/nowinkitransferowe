@@ -24,7 +24,7 @@ import pl.nowinkitransferowe.core.data.di.DataModule
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.data.repository.RecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
-import pl.nowinkitransferowe.core.data.repository.TransferRepository
+import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
@@ -32,7 +32,7 @@ import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.data.test.repository.FakeNewsRepository
 import pl.nowinkitransferowe.data.test.repository.FakeRecentSearchRepository
 import pl.nowinkitransferowe.data.test.repository.FakeSearchContentsRepository
-import pl.nowinkitransferowe.data.test.repository.FakeTransferRepository
+import pl.nowinkitransferowe.data.test.repository.FakeTransferResourceRepository
 import pl.nowinkitransferowe.data.test.repository.FakeUserDataRepository
 
 @Module
@@ -43,8 +43,8 @@ import pl.nowinkitransferowe.data.test.repository.FakeUserDataRepository
 internal interface TestDataModule {
     @Binds
     fun bindsTransferRepository(
-        fakeTopicsRepository: FakeTransferRepository,
-    ): TransferRepository
+        fakeTopicsRepository: FakeTransferResourceRepository,
+    ): TransferResourceRepository
 
     @Binds
     fun bindsNewsResourceRepository(

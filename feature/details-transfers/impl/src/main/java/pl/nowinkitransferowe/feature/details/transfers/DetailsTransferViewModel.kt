@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.nowinkitransferowe.core.common.result.Result
 import pl.nowinkitransferowe.core.common.result.asResult
-import pl.nowinkitransferowe.core.data.repository.TransferRepository
+import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.model.UserTransferResource
@@ -45,7 +45,7 @@ import pl.nowinkitransferowe.feature.details.transfers.Util.shortcutDate
 @HiltViewModel(assistedFactory = DetailsTransferViewModel.Factory::class)
 class DetailsTransferViewModel @AssistedInject constructor(
     private val userDataRepository: UserDataRepository,
-    transferRepository: TransferRepository,
+    transferRepository: TransferResourceRepository,
     private val imageDownloader: ImageDownloader,
     @Assisted val transferResourceId: String,
 ) : ViewModel() {
