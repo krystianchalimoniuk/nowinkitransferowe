@@ -20,7 +20,7 @@ plugins {
     alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
 }
 android {
-    namespace = "pl.nowinkitransferowe.feature.transfers"
+    namespace = "pl.nowinkitransferowe.feature.transfers.impl"
 }
 
 dependencies {

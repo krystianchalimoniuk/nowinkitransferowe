@@ -20,7 +20,7 @@ plugins {
 }
 
 android {
-    namespace = "pl.nowinkitransferowe.feature.bookmarks"
+    namespace = "pl.nowinkitransferowe.feature.bookmarks.impl"
 }
 
 dependencies {
