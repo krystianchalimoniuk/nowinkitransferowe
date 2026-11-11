@@ -3,10 +3,13 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    # Work for the next release lands on develop first
+    target-branch: "develop"
     schedule:
       interval: "weekly"
   - package-ecosystem: "gradle"
     directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
     registries: "*"
