@@ -21,9 +21,17 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import pl.nowinkitransferowe.core.database.NtDatabase
+import pl.nowinkitransferowe.core.database.dao.ArticleDao
+import pl.nowinkitransferowe.core.database.dao.ClubDao
+import pl.nowinkitransferowe.core.database.dao.DictionaryDao
 import pl.nowinkitransferowe.core.database.dao.NewsResourceDao
 import pl.nowinkitransferowe.core.database.dao.NewsResourceFtsDao
+import pl.nowinkitransferowe.core.database.dao.PlayerDao
 import pl.nowinkitransferowe.core.database.dao.RecentSearchQueryDao
+import pl.nowinkitransferowe.core.database.dao.RumourDao
+import pl.nowinkitransferowe.core.database.dao.SearchDao
+import pl.nowinkitransferowe.core.database.dao.StatsDao
+import pl.nowinkitransferowe.core.database.dao.TransferDao
 import pl.nowinkitransferowe.core.database.dao.TransferResourceDao
 import pl.nowinkitransferowe.core.database.dao.TransferResourceFtsDao
 
@@ -55,4 +63,44 @@ internal object DaosModule {
     fun providesRecentSearchQueryDao(
         database: NtDatabase,
     ): RecentSearchQueryDao = database.recentSearchQueryDao()
+
+    @Provides
+    fun providesArticleDao(
+        database: NtDatabase,
+    ): ArticleDao = database.articleDao()
+
+    @Provides
+    fun providesTransferDao(
+        database: NtDatabase,
+    ): TransferDao = database.transferDao()
+
+    @Provides
+    fun providesClubDao(
+        database: NtDatabase,
+    ): ClubDao = database.clubDao()
+
+    @Provides
+    fun providesPlayerDao(
+        database: NtDatabase,
+    ): PlayerDao = database.playerDao()
+
+    @Provides
+    fun providesRumourDao(
+        database: NtDatabase,
+    ): RumourDao = database.rumourDao()
+
+    @Provides
+    fun providesDictionaryDao(
+        database: NtDatabase,
+    ): DictionaryDao = database.dictionaryDao()
+
+    @Provides
+    fun providesStatsDao(
+        database: NtDatabase,
+    ): StatsDao = database.statsDao()
+
+    @Provides
+    fun providesSearchDao(
+        database: NtDatabase,
+    ): SearchDao = database.searchDao()
 }

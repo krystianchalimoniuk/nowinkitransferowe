@@ -25,9 +25,16 @@ import pl.nowinkitransferowe.core.database.NtDatabase
 
 internal abstract class DatabaseTest {
 
-    private lateinit var db: NtDatabase
+    protected lateinit var db: NtDatabase
     protected lateinit var newsResourceDao: NewsResourceDao
     protected lateinit var transferResourceDao: TransferResourceDao
+    protected lateinit var articleDao: ArticleDao
+    protected lateinit var transferDao: TransferDao
+    protected lateinit var clubDao: ClubDao
+    protected lateinit var playerDao: PlayerDao
+    protected lateinit var rumourDao: RumourDao
+    protected lateinit var statsDao: StatsDao
+    protected lateinit var searchDao: SearchDao
 
     @Before
     fun setup() {
@@ -40,6 +47,13 @@ internal abstract class DatabaseTest {
         }
         newsResourceDao = db.newsResourceDao()
         transferResourceDao = db.transferResourceDao()
+        articleDao = db.articleDao()
+        transferDao = db.transferDao()
+        clubDao = db.clubDao()
+        playerDao = db.playerDao()
+        rumourDao = db.rumourDao()
+        statsDao = db.statsDao()
+        searchDao = db.searchDao()
     }
 
     @After
