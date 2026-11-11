@@ -111,7 +111,9 @@ import pl.nowinkitransferowe.core.database.util.LocalDateConverter
     IntListConverter::class,
     LocalDateConverter::class,
 )
-internal abstract class NtDatabase : RoomDatabase() {
+// Public so that the repository tests in core:data can run against an in-memory database, with
+// its foreign keys, instead of fakes. The app gets the DAOs from DaosModule.
+abstract class NtDatabase : RoomDatabase() {
     abstract fun newsResourceDao(): NewsResourceDao
     abstract fun newsResourceFtsDao(): NewsResourceFtsDao
     abstract fun transferResourceDao(): TransferResourceDao

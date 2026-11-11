@@ -27,7 +27,7 @@ import pl.nowinkitransferowe.core.model.mapToUserTransferResources
 import javax.inject.Inject
 
 class CompositeUserTransferResourceRepository @Inject constructor(
-    val transferRepository: TransferRepository,
+    val transferRepository: TransferResourceRepository,
     val userDataRepository: UserDataRepository,
 ) : UserTransferResourceRepository {
 

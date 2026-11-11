@@ -20,15 +20,25 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import pl.nowinkitransferowe.core.data.repository.ArticleRepository
+import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.DefaultRecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.DefaultSearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstArticleRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstClubRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstNewsRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstPlayerRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstRumourRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstTransferRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstTransferResourceRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstUserDataRepository
+import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RecentSearchRepository
+import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
+import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.util.ConnectivityManagerNetworkMonitor
 import pl.nowinkitransferowe.core.data.util.DatabaseUpdatingMonitor
@@ -50,8 +60,33 @@ abstract class DataModule {
 
     @Binds
     internal abstract fun bindsTransferResourceRepository(
-        newsRepository: OfflineFirstTransferRepository,
+        newsRepository: OfflineFirstTransferResourceRepository,
+    ): TransferResourceRepository
+
+    @Binds
+    internal abstract fun bindsArticleRepository(
+        articleRepository: OfflineFirstArticleRepository,
+    ): ArticleRepository
+
+    @Binds
+    internal abstract fun bindsTransferRepository(
+        transferRepository: OfflineFirstTransferRepository,
     ): TransferRepository
+
+    @Binds
+    internal abstract fun bindsRumourRepository(
+        rumourRepository: OfflineFirstRumourRepository,
+    ): RumourRepository
+
+    @Binds
+    internal abstract fun bindsClubRepository(
+        clubRepository: OfflineFirstClubRepository,
+    ): ClubRepository
+
+    @Binds
+    internal abstract fun bindsPlayerRepository(
+        playerRepository: OfflineFirstPlayerRepository,
+    ): PlayerRepository
 
     @Binds
     internal abstract fun bindsUserDataRepository(

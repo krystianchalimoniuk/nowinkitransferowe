@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,47 +18,23 @@ package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import pl.nowinkitransferowe.core.data.Syncable
-import pl.nowinkitransferowe.core.model.TransferResource
+import pl.nowinkitransferowe.core.model.Season
+import pl.nowinkitransferowe.core.model.Transfer
 
 /**
- * Encapsulation class for query parameters for [TransferResource]
- */
-data class TransferResourceQuery(
-    val filterTransferIds: Set<String>? = null,
-    val footballerName: String? = null,
-)
-
-/**
- * Data layer implementation for [TransferResource]
+ * API v3 transfers, saved offline. Club and player names are the current ones.
  */
 interface TransferRepository : Syncable {
-    /**
-     * Returns available news resources that match the specified [query].
-     */
-    fun getTransferResources(
-        query: TransferResourceQuery = TransferResourceQuery(filterTransferIds = null, footballerName = null),
-    ): Flow<List<TransferResource>>
+    fun observeTransfer(id: Int): Flow<Transfer?>
 
     /**
-     * Returns available news resources that match the specified [limit] and [offset].
+     * Newest transfers first, optionally only from [season].
      */
-    fun getTransferResourcesPages(
-        limit: Int,
-        offset: Int,
-    ): Flow<List<TransferResource>>
+    fun observeTransfers(season: Season? = null, limit: Int = Int.MAX_VALUE): Flow<List<Transfer>>
 
-    /**
-     * Returns available transfer resource that match the specified [id].
-     */
-    fun getTransferResource(id: String): Flow<TransferResource>
+    fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>>
 
-    /**
-     * Returns available transfer resource that match the specified [name].
-     */
-    fun getTransferResourceByName(name: String): Flow<List<TransferResource>>
+    fun observeTransfersOfClub(clubId: Int): Flow<List<Transfer>>
 
-    /**
-     * Returns counts number.
-     */
-    fun getCount(): Flow<Int>
+    fun observeTransfersOfPlayer(playerId: Int): Flow<List<Transfer>>
 }

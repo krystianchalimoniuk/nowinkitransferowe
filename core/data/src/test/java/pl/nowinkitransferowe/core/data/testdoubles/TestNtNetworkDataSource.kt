@@ -24,6 +24,7 @@ import pl.nowinkitransferowe.core.network.NtNetworkDataSource
 import pl.nowinkitransferowe.core.network.demo.DemoNtNetworkDataSource
 import pl.nowinkitransferowe.core.network.demo.mapToChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkArticle
+import pl.nowinkitransferowe.core.network.model.NetworkChange
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkChanges
 import pl.nowinkitransferowe.core.network.model.NetworkClub
@@ -37,6 +38,7 @@ import pl.nowinkitransferowe.core.network.model.NetworkRumourStats
 import pl.nowinkitransferowe.core.network.model.NetworkTopic
 import pl.nowinkitransferowe.core.network.model.NetworkTransfer
 import pl.nowinkitransferowe.core.network.model.NetworkTransferResource
+import java.io.IOException
 
 enum class CollectionType {
     TransferResources,
@@ -78,19 +80,62 @@ class TestNtNetworkDataSource : NtNetworkDataSource {
 
     override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> = changeLists.getValue(CollectionType.NewsResources).after(after)
 
-    // API v3 calls are served by the demo data until the repositories move to v3.
+    // API v3: records come from the demo data; the change lists can be edited like on the server.
 
-    override suspend fun getChanges(type: NetworkRecordType, after: Int, limit: Int): NetworkChanges = source.getChanges(type, after, limit)
+    private val v3Changes: MutableMap<NetworkRecordType, List<NetworkChange>> = NetworkRecordType.entries.associateWithTo(mutableMapOf()) { type ->
+        runBlocking { source.getChanges(type, after = 0, limit = Int.MAX_VALUE).changes }
+    }
 
-    override suspend fun getArticles(ids: List<Int>): List<NetworkArticle> = source.getArticles(ids)
+    /**
+     * Largest page of changes the fake server returns, to test paging.
+     */
+    var maxChangesPerPage = Int.MAX_VALUE
 
-    override suspend fun getTransfers(ids: List<Int>): List<NetworkTransfer> = source.getTransfers(ids)
+    /**
+     * Record type whose records cannot be fetched, to test an interrupted sync.
+     */
+    var failingRecordType: NetworkRecordType? = null
 
-    override suspend fun getClubs(ids: List<Int>): List<NetworkClub> = source.getClubs(ids)
+    /**
+     * Ids asked for in each records request, by type.
+     */
+    val requestedIds: MutableMap<NetworkRecordType, MutableList<List<Int>>> = mutableMapOf()
 
-    override suspend fun getPlayers(ids: List<Int>): List<NetworkPlayer> = source.getPlayers(ids)
+    override suspend fun getChanges(type: NetworkRecordType, after: Int, limit: Int): NetworkChanges {
+        val all = v3Changes.getValue(type)
+        val newer = all.filter { it.version > after }.sortedBy(NetworkChange::version)
+        val pageSize = minOf(limit, maxChangesPerPage)
+        return NetworkChanges(
+            changes = newer.take(pageSize),
+            latestVersion = all.maxOfOrNull(NetworkChange::version) ?: 0,
+            hasMore = newer.size > pageSize,
+        )
+    }
 
-    override suspend fun getRumours(ids: List<Int>): List<NetworkRumour> = source.getRumours(ids)
+    fun latestVersion(type: NetworkRecordType): Int = v3Changes.getValue(type).maxOf(NetworkChange::version)
+
+    /**
+     * Records a change of [id] with a new version, mimicking the server's change list.
+     */
+    fun editRecord(type: NetworkRecordType, id: Int, deleted: Boolean = false) {
+        val changes = v3Changes.getValue(type)
+        v3Changes[type] = changes.filterNot { it.id == id } + NetworkChange(id = id, version = latestVersion(type) + 1, deleted = deleted)
+    }
+
+    private fun recordsRequest(type: NetworkRecordType, ids: List<Int>) {
+        if (type == failingRecordType) throw IOException("${type.path} are not available")
+        requestedIds.getOrPut(type, ::mutableListOf) += ids
+    }
+
+    override suspend fun getArticles(ids: List<Int>): List<NetworkArticle> = recordsRequest(NetworkRecordType.ARTICLES, ids).let { source.getArticles(ids) }
+
+    override suspend fun getTransfers(ids: List<Int>): List<NetworkTransfer> = recordsRequest(NetworkRecordType.TRANSFERS, ids).let { source.getTransfers(ids) }
+
+    override suspend fun getClubs(ids: List<Int>): List<NetworkClub> = recordsRequest(NetworkRecordType.CLUBS, ids).let { source.getClubs(ids) }
+
+    override suspend fun getPlayers(ids: List<Int>): List<NetworkPlayer> = recordsRequest(NetworkRecordType.PLAYERS, ids).let { source.getPlayers(ids) }
+
+    override suspend fun getRumours(ids: List<Int>): List<NetworkRumour> = recordsRequest(NetworkRecordType.RUMOURS, ids).let { source.getRumours(ids) }
 
     override suspend fun getRumourStats(): NetworkRumourStats = source.getRumourStats()
 

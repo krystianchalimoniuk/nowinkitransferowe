@@ -28,7 +28,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import pl.nowinkitransferowe.core.model.UserTransferResource
 import pl.nowinkitransferowe.core.testing.data.transferResourceTestData
-import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
+import pl.nowinkitransferowe.core.testing.repository.TestTransferResourceRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
@@ -51,7 +51,7 @@ class DetailsTransferViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val userDataRepository = TestUserDataRepository()
-    private val transferRepository = TestTransferRepository()
+    private val transferRepository = TestTransferResourceRepository()
     private val imageDownloader = TestImageDownloader()
 
     private lateinit var viewModel: DetailsTransferViewModel

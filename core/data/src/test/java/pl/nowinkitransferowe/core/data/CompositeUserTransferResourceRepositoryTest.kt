@@ -23,14 +23,14 @@ import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
 import pl.nowinkitransferowe.core.model.TransferResource
 import pl.nowinkitransferowe.core.model.mapToUserTransferResources
-import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
+import pl.nowinkitransferowe.core.testing.repository.TestTransferResourceRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import kotlin.test.assertEquals
 
 class CompositeUserTransferResourceRepositoryTest {
 
-    private val transferRepository = TestTransferRepository()
+    private val transferRepository = TestTransferResourceRepository()
     private val userDataRepository = TestUserDataRepository()
 
     private val userTransferResourceRepository = CompositeUserTransferResourceRepository(

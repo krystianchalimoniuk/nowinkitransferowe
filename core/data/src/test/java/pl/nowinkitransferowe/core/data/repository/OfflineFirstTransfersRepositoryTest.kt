@@ -46,7 +46,7 @@ class OfflineFirstTransfersRepositoryTest {
 
     private val testScope = TestScope(UnconfinedTestDispatcher())
 
-    private lateinit var subject: OfflineFirstTransferRepository
+    private lateinit var subject: OfflineFirstTransferResourceRepository
 
     private lateinit var ntPreferencesDataSource: NtPreferencesDataSource
 
@@ -76,7 +76,7 @@ class OfflineFirstTransfersRepositoryTest {
         )
         databaseUpdatingMonitor = TestDatabaseUpdatingMonitor()
 
-        subject = OfflineFirstTransferRepository(
+        subject = OfflineFirstTransferResourceRepository(
             ntPreferencesDataSource = ntPreferencesDataSource,
             transferResourceDao = transferResourceDao,
             network = network,
