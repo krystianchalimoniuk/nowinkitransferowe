@@ -171,7 +171,7 @@ class ThemeTest {
     }
 
     /**
-     * Workaround for the fact that the NiA design system specify all color scheme values.
+     * Workaround for the fact that the Nowinki Transferowe design system specifies all color scheme values.
      */
     private fun assertColorSchemesEqual(
         expectedColorScheme: ColorScheme,

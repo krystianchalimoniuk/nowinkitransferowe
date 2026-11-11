@@ -46,13 +46,13 @@ fun configureFlavors(
         }
 
         productFlavors {
-            NtFlavor.entries.forEach { niaFlavor ->
-                register(niaFlavor.name) {
-                    dimension = niaFlavor.dimension.name
-                    flavorConfigurationBlock(this, niaFlavor)
+            NtFlavor.entries.forEach { ntFlavor ->
+                register(ntFlavor.name) {
+                    dimension = ntFlavor.dimension.name
+                    flavorConfigurationBlock(this, ntFlavor)
                     if (commonExtension is ApplicationExtension && this is ApplicationProductFlavor) {
-                        if (niaFlavor.applicationIdSuffix != null) {
-                            applicationIdSuffix = niaFlavor.applicationIdSuffix
+                        if (ntFlavor.applicationIdSuffix != null) {
+                            applicationIdSuffix = ntFlavor.applicationIdSuffix
                         }
                     }
                 }

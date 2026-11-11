@@ -383,7 +383,7 @@ private fun DetailsTransferToolbar(
                 )
             }
         } else {
-            // Keeps the NiaFilterChip aligned to the end of the Row.
+            // Keeps the Row from being empty when there is no back button.
             Spacer(modifier = Modifier.width(1.dp))
         }
     }

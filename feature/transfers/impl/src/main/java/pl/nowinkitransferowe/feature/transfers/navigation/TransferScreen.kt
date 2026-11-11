@@ -186,7 +186,7 @@ internal fun TransferScreen(
                 Column {
                     Spacer(modifier = Modifier.height(8.dp))
                     // Add space for the content to clear the "offline" snackbar.
-                    // TODO: Check that the Scaffold handles this correctly in NiaApp
+                    // TODO: Check that the Scaffold handles this correctly in NtApp
                     // if (isOffline) Spacer(modifier = Modifier.height(48.dp))
                     Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
                 }

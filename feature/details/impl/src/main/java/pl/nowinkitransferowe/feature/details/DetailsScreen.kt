@@ -195,7 +195,7 @@ private fun DetailsToolbar(
                 )
             }
         } else {
-            // Keeps the NiaFilterChip aligned to the end of the Row.
+            // Keeps the share button aligned to the end of the Row.
             Spacer(modifier = Modifier.width(1.dp))
         }
         val context = LocalContext.current

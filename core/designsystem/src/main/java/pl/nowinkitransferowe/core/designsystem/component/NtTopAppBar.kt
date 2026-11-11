@@ -75,7 +75,7 @@ fun NtTopAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview("Top App Bar")
 @Composable
-private fun NiaTopAppBarPreview() {
+private fun NtTopAppBarPreview() {
     NtTheme {
         NtTopAppBar(
             titleRes = android.R.string.untitled,
