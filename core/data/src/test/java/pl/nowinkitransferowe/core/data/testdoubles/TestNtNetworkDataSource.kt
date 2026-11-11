@@ -19,11 +19,22 @@ package pl.nowinkitransferowe.core.data.testdoubles
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.serialization.json.Json
+import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
 import pl.nowinkitransferowe.core.network.demo.DemoNtNetworkDataSource
 import pl.nowinkitransferowe.core.network.demo.mapToChangeList
+import pl.nowinkitransferowe.core.network.model.NetworkArticle
 import pl.nowinkitransferowe.core.network.model.NetworkChangeList
+import pl.nowinkitransferowe.core.network.model.NetworkChanges
+import pl.nowinkitransferowe.core.network.model.NetworkClub
+import pl.nowinkitransferowe.core.network.model.NetworkCountry
+import pl.nowinkitransferowe.core.network.model.NetworkLeagues
 import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
+import pl.nowinkitransferowe.core.network.model.NetworkPlayer
+import pl.nowinkitransferowe.core.network.model.NetworkRumour
+import pl.nowinkitransferowe.core.network.model.NetworkRumourStats
+import pl.nowinkitransferowe.core.network.model.NetworkTopic
+import pl.nowinkitransferowe.core.network.model.NetworkTransfer
 import pl.nowinkitransferowe.core.network.model.NetworkTransferResource
 
 enum class CollectionType {
@@ -65,6 +76,28 @@ class TestNtNetworkDataSource : NtNetworkDataSource {
     override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> = changeLists.getValue(CollectionType.TransferResources).after(after)
 
     override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> = changeLists.getValue(CollectionType.NewsResources).after(after)
+
+    // API v3 calls are served by the demo data until the repositories move to v3.
+
+    override suspend fun getChanges(type: NetworkRecordType, after: Int, limit: Int): NetworkChanges = source.getChanges(type, after, limit)
+
+    override suspend fun getArticles(ids: List<Int>): List<NetworkArticle> = source.getArticles(ids)
+
+    override suspend fun getTransfers(ids: List<Int>): List<NetworkTransfer> = source.getTransfers(ids)
+
+    override suspend fun getClubs(ids: List<Int>): List<NetworkClub> = source.getClubs(ids)
+
+    override suspend fun getPlayers(ids: List<Int>): List<NetworkPlayer> = source.getPlayers(ids)
+
+    override suspend fun getRumours(ids: List<Int>): List<NetworkRumour> = source.getRumours(ids)
+
+    override suspend fun getRumourStats(): NetworkRumourStats = source.getRumourStats()
+
+    override suspend fun getLeagues(season: String?): NetworkLeagues = source.getLeagues(season)
+
+    override suspend fun getTopics(): List<NetworkTopic> = source.getTopics()
+
+    override suspend fun getCountries(): List<NetworkCountry> = source.getCountries()
 
     fun latestChangeListVersion(collectionType: CollectionType) = changeLists.getValue(collectionType).first().changeListVersion
 

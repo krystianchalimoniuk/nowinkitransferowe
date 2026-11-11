@@ -1,0 +1,1982 @@
+[
+ {
+  "id": 20741,
+  "playerId": 8020,
+  "playerName": "Adama Boiro",
+  "fromClubId": 207,
+  "fromClubName": "Athletic Bilbao",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2026-10-31",
+  "articleId": null
+ },
+ {
+  "id": 20721,
+  "playerId": 7531,
+  "playerName": "Morten Hjulmand",
+  "fromClubId": 138,
+  "fromClubName": "Sporting CP",
+  "toClubId": 162,
+  "toClubName": "Atletico Madryt",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "40 mln €",
+   "millionsOfEuro": 40.0
+  },
+  "date": "2026-07-11",
+  "articleId": null
+ },
+ {
+  "id": 20713,
+  "playerId": 10321,
+  "playerName": "Eliezer Mayenda",
+  "fromClubId": 29,
+  "fromClubName": "Sunderland",
+  "toClubId": 61,
+  "toClubName": "Stade Rennes",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "22 mln €",
+   "millionsOfEuro": 22.0
+  },
+  "date": "2026-10-31",
+  "articleId": null
+ },
+ {
+  "id": 20703,
+  "playerId": 5120,
+  "playerName": "Piero Hincapie",
+  "fromClubId": 73,
+  "fromClubName": "Bayer Leverkusen",
+  "toClubId": 37,
+  "toClubName": "Arsenal FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "40 mln €",
+   "millionsOfEuro": 40.0
+  },
+  "date": "2026-10-31",
+  "articleId": null
+ },
+ {
+  "id": 20692,
+  "playerId": 9617,
+  "playerName": "Victor Munoz",
+  "fromClubId": 549,
+  "fromClubName": "Osasuna Pampeluna",
+  "toClubId": 86,
+  "toClubName": "Liverpool FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "40 mln €",
+   "millionsOfEuro": 40.0
+  },
+  "date": "2026-10-31",
+  "articleId": null
+ },
+ {
+  "id": 20691,
+  "playerId": 10190,
+  "playerName": "Jeremy Jacquet",
+  "fromClubId": 61,
+  "fromClubName": "Stade Rennes",
+  "toClubId": 86,
+  "toClubName": "Liverpool FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "70 mln €",
+   "millionsOfEuro": 70.0
+  },
+  "date": "2026-10-31",
+  "articleId": null
+ },
+ {
+  "id": 20645,
+  "playerId": 3368,
+  "playerName": "Joël Veltman",
+  "fromClubId": 320,
+  "fromClubName": "Brighton & Hove Albion",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2026-10-31",
+  "articleId": null
+ },
+ {
+  "id": 20643,
+  "playerId": 9430,
+  "playerName": "Diego Coppola",
+  "fromClubId": 320,
+  "fromClubName": "Brighton & Hove Albion",
+  "toClubId": 856,
+  "toClubName": "Paris FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "20 mln €",
+   "millionsOfEuro": 20.0
+  },
+  "date": "2026-10-31",
+  "articleId": null
+ },
+ {
+  "id": 20582,
+  "playerId": 8829,
+  "playerName": "Alvaro Rodriguez",
+  "fromClubId": 731,
+  "fromClubName": "Elche CF",
+  "toClubId": 87,
+  "toClubName": "Bournemouth",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "25 mln €",
+   "millionsOfEuro": 25.0
+  },
+  "date": "2026-07-14",
+  "articleId": null
+ },
+ {
+  "id": 20574,
+  "playerId": 9153,
+  "playerName": "Bazoumana Toure",
+  "fromClubId": 122,
+  "fromClubName": "Hoffenheim",
+  "toClubId": 82,
+  "toClubName": "Newcastle United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "49 mln €",
+   "millionsOfEuro": 49.0
+  },
+  "date": "2026-07-05",
+  "articleId": null
+ },
+ {
+  "id": 20540,
+  "playerId": 3805,
+  "playerName": "Crysencio Summerville",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 1298,
+  "toClubName": "Al-Hilal SFC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "64,5 mln €",
+   "millionsOfEuro": 64.5
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20538,
+  "playerId": 6324,
+  "playerName": "Enzo Fernandez",
+  "fromClubId": 79,
+  "fromClubName": "Chelsea FC",
+  "toClubId": 84,
+  "toClubName": "Manchester City",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "145 mln €",
+   "millionsOfEuro": 145.0
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20537,
+  "playerId": 7675,
+  "playerName": "Bradley Barcola",
+  "fromClubId": 15,
+  "fromClubName": "PSG FC",
+  "toClubId": 86,
+  "toClubName": "Liverpool FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "125 mln €",
+   "millionsOfEuro": 125.0
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20536,
+  "playerId": 2379,
+  "playerName": "Rafael Leao",
+  "fromClubId": 85,
+  "fromClubName": "AC Milan",
+  "toClubId": 141,
+  "toClubName": "Galatasaray",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "38 mln €",
+   "millionsOfEuro": 38.0
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20529,
+  "playerId": 7897,
+  "playerName": "El Hadji Malick Diouf",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 70,
+  "toClubName": "Brentford",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "40,8 mln €",
+   "millionsOfEuro": 40.8
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20481,
+  "playerId": 9545,
+  "playerName": "Honest Ahanor",
+  "fromClubId": 324,
+  "fromClubName": "Atalanta Bergamo",
+  "toClubId": 79,
+  "toClubName": "Chelsea FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "46,7 mln €",
+   "millionsOfEuro": 46.7
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20477,
+  "playerId": 1713,
+  "playerName": "Moussa Diaby",
+  "fromClubId": 420,
+  "fromClubName": "Al-Ittihad Club",
+  "toClubId": 73,
+  "toClubName": "Bayer Leverkusen",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "30 mln €",
+   "millionsOfEuro": 30.0
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20472,
+  "playerId": 1267,
+  "playerName": "Jean-Clair Todibo",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 509,
+  "toClubName": "RC Lens",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20469,
+  "playerId": 10260,
+  "playerName": "Ibrahim Mbaye",
+  "fromClubId": 15,
+  "fromClubName": "PSG FC",
+  "toClubId": 152,
+  "toClubName": "Aston Villa",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "55 mln €",
+   "millionsOfEuro": 55.0
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20439,
+  "playerId": 8622,
+  "playerName": "Guela Doue",
+  "fromClubId": 463,
+  "fromClubName": "RC Strasbourg",
+  "toClubId": 73,
+  "toClubName": "Bayer Leverkusen",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "30 mln €",
+   "millionsOfEuro": 30.0
+  },
+  "date": "2026-09-02",
+  "articleId": null
+ },
+ {
+  "id": 20425,
+  "playerId": 6391,
+  "playerName": "Savio",
+  "fromClubId": 84,
+  "fromClubName": "Manchester City",
+  "toClubId": 242,
+  "toClubName": "Tottenham Hotspur",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "87,7 mln €",
+   "millionsOfEuro": 87.7
+  },
+  "date": "2026-08-26",
+  "articleId": null
+ },
+ {
+  "id": 20399,
+  "playerId": 1848,
+  "playerName": "Aaron Wan-Bissaka",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 152,
+  "toClubName": "Aston Villa",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2026-08-26",
+  "articleId": null
+ },
+ {
+  "id": 20392,
+  "playerId": 7155,
+  "playerName": "Diego Moreira",
+  "fromClubId": 463,
+  "fromClubName": "RC Strasbourg",
+  "toClubId": 85,
+  "toClubName": "AC Milan",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "50 mln €",
+   "millionsOfEuro": 50.0
+  },
+  "date": "2026-08-26",
+  "articleId": null
+ },
+ {
+  "id": 20387,
+  "playerId": 7430,
+  "playerName": "Zion Suzuki",
+  "fromClubId": 209,
+  "fromClubName": "Parma Calcio",
+  "toClubId": 152,
+  "toClubName": "Aston Villa",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "30 mln €",
+   "millionsOfEuro": 30.0
+  },
+  "date": "2026-08-26",
+  "articleId": null
+ },
+ {
+  "id": 20385,
+  "playerId": 753,
+  "playerName": "Rodri",
+  "fromClubId": 84,
+  "fromClubName": "Manchester City",
+  "toClubId": 109,
+  "toClubName": "FC Barcelona",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "75 mln €",
+   "millionsOfEuro": 75.0
+  },
+  "date": "2026-08-26",
+  "articleId": null
+ },
+ {
+  "id": 20357,
+  "playerId": 6860,
+  "playerName": "Mika Godts",
+  "fromClubId": 14,
+  "fromClubName": "Ajax Amsterdam",
+  "toClubId": 15,
+  "toClubName": "PSG FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "45 mln €",
+   "millionsOfEuro": 45.0
+  },
+  "date": "2026-08-18",
+  "articleId": null
+ },
+ {
+  "id": 20349,
+  "playerId": 3415,
+  "playerName": "Ferran Torres",
+  "fromClubId": 109,
+  "fromClubName": "FC Barcelona",
+  "toClubId": 15,
+  "toClubName": "PSG FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "48,5 mln €",
+   "millionsOfEuro": 48.5
+  },
+  "date": "2026-08-18",
+  "articleId": null
+ },
+ {
+  "id": 20330,
+  "playerId": 1547,
+  "playerName": "Niclas Fullkrug",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 226,
+  "toClubName": "Werder Brema",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2026-08-18",
+  "articleId": null
+ },
+ {
+  "id": 20326,
+  "playerId": 10228,
+  "playerName": "Anders Klynge",
+  "fromClubId": 1251,
+  "fromClubName": "Bodo/Glimt",
+  "toClubId": 98,
+  "toClubName": "Jagiellonia Białystok",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "850 tys. €",
+   "millionsOfEuro": 0.85
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20319,
+  "playerId": 10226,
+  "playerName": "Tarik Muharemović",
+  "fromClubId": 58,
+  "fromClubName": "Sassuolo Calcio",
+  "toClubId": 129,
+  "toClubName": "Leeds United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "37 mln €",
+   "millionsOfEuro": 37.0
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20317,
+  "playerId": 10225,
+  "playerName": "Johan Manzambi",
+  "fromClubId": 77,
+  "fromClubName": "SC Freiburg",
+  "toClubId": 152,
+  "toClubName": "Aston Villa",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "60 mln €",
+   "millionsOfEuro": 60.0
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20304,
+  "playerId": 2387,
+  "playerName": "Morgan Rogers",
+  "fromClubId": 152,
+  "fromClubName": "Aston Villa",
+  "toClubId": 79,
+  "toClubName": "Chelsea FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "138 mln €",
+   "millionsOfEuro": 138.0
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20294,
+  "playerId": 4755,
+  "playerName": "Igor Drapiński",
+  "fromClubId": 16,
+  "fromClubName": "Piast Gliwice",
+  "toClubId": 1133,
+  "toClubName": "Samsunspor",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "2,5 mln €",
+   "millionsOfEuro": 2.5
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20291,
+  "playerId": 10219,
+  "playerName": "Maghnes Akliouche",
+  "fromClubId": 38,
+  "fromClubName": "AS Monaco",
+  "toClubId": 15,
+  "toClubName": "PSG FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "50 mln €",
+   "millionsOfEuro": 50.0
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20288,
+  "playerId": 9673,
+  "playerName": "Yan Diomande",
+  "fromClubId": 106,
+  "fromClubName": "RB Lipsk",
+  "toClubId": 36,
+  "toClubName": "Real Madryt",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "135 mln €",
+   "millionsOfEuro": 135.0
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20281,
+  "playerId": 10217,
+  "playerName": "Gonzalo Garcia",
+  "fromClubId": 36,
+  "fromClubName": "Real Madryt",
+  "toClubId": 248,
+  "toClubName": "Fulham FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "40 mln €",
+   "millionsOfEuro": 40.0
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20278,
+  "playerId": 10215,
+  "playerName": "Konstantinos Karetsas",
+  "fromClubId": 315,
+  "fromClubName": "KRC Genk",
+  "toClubId": 97,
+  "toClubName": "Borussia Dortmund",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "30 mln €",
+   "millionsOfEuro": 30.0
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20275,
+  "playerId": 5912,
+  "playerName": "Randal Kolo Muani",
+  "fromClubId": 15,
+  "fromClubName": "PSG FC",
+  "toClubId": 74,
+  "toClubName": "Juventus FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "41,2 mln €",
+   "millionsOfEuro": 41.2
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20259,
+  "playerId": 8034,
+  "playerName": "Santiago Castro",
+  "fromClubId": 329,
+  "fromClubName": "Bologna FC",
+  "toClubId": 108,
+  "toClubName": "AS Roma",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "35 mln €",
+   "millionsOfEuro": 35.0
+  },
+  "date": "2026-08-09",
+  "articleId": null
+ },
+ {
+  "id": 20250,
+  "playerId": 8419,
+  "playerName": "Elliot Anderson",
+  "fromClubId": 466,
+  "fromClubName": "Nottingham Forest",
+  "toClubId": 84,
+  "toClubName": "Manchester City",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "135 mln €",
+   "millionsOfEuro": 135.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20249,
+  "playerId": 7456,
+  "playerName": "Goncalo Ramos",
+  "fromClubId": 15,
+  "fromClubName": "PSG FC",
+  "toClubId": 85,
+  "toClubName": "AC Milan",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "74 mln €",
+   "millionsOfEuro": 74.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20248,
+  "playerId": 3744,
+  "playerName": "Sandro Tonali",
+  "fromClubId": 82,
+  "fromClubName": "Newcastle United",
+  "toClubId": 242,
+  "toClubName": "Tottenham Hotspur",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "108 mln €",
+   "millionsOfEuro": 108.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20247,
+  "playerId": 8754,
+  "playerName": "Mateus Fernandes",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 242,
+  "toClubName": "Tottenham Hotspur",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "99 mln €",
+   "millionsOfEuro": 99.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20245,
+  "playerId": 10208,
+  "playerName": "Marco Palestra",
+  "fromClubId": 324,
+  "fromClubName": "Atalanta Bergamo",
+  "toClubId": 79,
+  "toClubName": "Chelsea FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "57 mln €",
+   "millionsOfEuro": 57.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20244,
+  "playerId": 10207,
+  "playerName": "Ismael Saibari",
+  "fromClubId": 171,
+  "fromClubName": "PSV Eindhoven",
+  "toClubId": 76,
+  "toClubName": "Bayern Monachium",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "50 mln €",
+   "millionsOfEuro": 50.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20239,
+  "playerId": 8414,
+  "playerName": "Lukas Ambros",
+  "fromClubId": 212,
+  "fromClubName": "Górnik Zabrze",
+  "toClubId": 1067,
+  "toClubName": "RSC Anderlecht",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "5 mln €",
+   "millionsOfEuro": 5.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20237,
+  "playerId": 7871,
+  "playerName": "Nathaniel Brown",
+  "fromClubId": 362,
+  "fromClubName": "Eintracht Frankfurt",
+  "toClubId": 76,
+  "toClubName": "Bayern Monachium",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "50 mln €",
+   "millionsOfEuro": 50.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20235,
+  "playerId": 10204,
+  "playerName": "Terry Yegbe",
+  "fromClubId": 567,
+  "fromClubName": "FC Metz",
+  "toClubId": 96,
+  "toClubName": "Lech Poznań",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "3 mln €",
+   "millionsOfEuro": 3.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20224,
+  "playerId": 10202,
+  "playerName": "Bartosz Mazurek",
+  "fromClubId": 98,
+  "fromClubName": "Jagiellonia Białystok",
+  "toClubId": 486,
+  "toClubName": "Red Bull Salzburg",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "6 mln €",
+   "millionsOfEuro": 6.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20223,
+  "playerId": 9034,
+  "playerName": "Bright Ede",
+  "fromClubId": 330,
+  "fromClubName": "Motor Lublin",
+  "toClubId": 217,
+  "toClubName": "Deportivo La Coruna",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "6 mln €",
+   "millionsOfEuro": 6.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20222,
+  "playerId": 10201,
+  "playerName": "Oskar Wójcik",
+  "fromClubId": 102,
+  "fromClubName": "Cracovia",
+  "toClubId": 226,
+  "toClubName": "Werder Brema",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "3 mln €",
+   "millionsOfEuro": 3.0
+  },
+  "date": "2026-07-10",
+  "articleId": null
+ },
+ {
+  "id": 20220,
+  "playerId": 1201,
+  "playerName": "Marc Cucurella",
+  "fromClubId": 79,
+  "fromClubName": "Chelsea FC",
+  "toClubId": 36,
+  "toClubName": "Real Madryt",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "55 mln €",
+   "millionsOfEuro": 55.0
+  },
+  "date": "2026-06-19",
+  "articleId": 11273
+ },
+ {
+  "id": 20217,
+  "playerId": 9617,
+  "playerName": "Victor Munoz",
+  "fromClubId": 549,
+  "fromClubName": "Osasuna Pampeluna",
+  "toClubId": 86,
+  "toClubName": "Liverpool FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "40 mln €",
+   "millionsOfEuro": 40.0
+  },
+  "date": "2026-06-19",
+  "articleId": null
+ },
+ {
+  "id": 20216,
+  "playerId": 1333,
+  "playerName": "Karol Świderski",
+  "fromClubId": 393,
+  "fromClubName": "Panathinaikos Ateny",
+  "toClubId": 230,
+  "toClubName": "Widzew Łódź",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "1 mln €",
+   "millionsOfEuro": 1.0
+  },
+  "date": "2026-06-19",
+  "articleId": 11272
+ },
+ {
+  "id": 20214,
+  "playerId": 7642,
+  "playerName": "Luis Palma",
+  "fromClubId": 62,
+  "fromClubName": "Celtic Glasgow",
+  "toClubId": 96,
+  "toClubName": "Lech Poznań",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "4,05 mln €",
+   "millionsOfEuro": 4.05
+  },
+  "date": "2026-06-19",
+  "articleId": null
+ },
+ {
+  "id": 20210,
+  "playerId": 8275,
+  "playerName": "Patrik Hellebrand",
+  "fromClubId": 212,
+  "fromClubName": "Górnik Zabrze",
+  "toClubId": 119,
+  "toClubName": "Korona Kielce",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "1,7 mln €",
+   "millionsOfEuro": 1.7
+  },
+  "date": "2026-06-19",
+  "articleId": null
+ },
+ {
+  "id": 20204,
+  "playerId": 6542,
+  "playerName": "Rasmus Hojlund",
+  "fromClubId": 48,
+  "fromClubName": "Manchester United",
+  "toClubId": 154,
+  "toClubName": "SSC Napoli",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "44 mln €",
+   "millionsOfEuro": 44.0
+  },
+  "date": "2026-06-19",
+  "articleId": null
+ },
+ {
+  "id": 20202,
+  "playerId": 4374,
+  "playerName": "Anthony Gordon",
+  "fromClubId": 82,
+  "fromClubName": "Newcastle United",
+  "toClubId": 109,
+  "toClubName": "FC Barcelona",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "80 mln €",
+   "millionsOfEuro": 80.0
+  },
+  "date": "2026-06-19",
+  "articleId": 11271
+ },
+ {
+  "id": 20194,
+  "playerId": 10197,
+  "playerName": "Michail Antonio",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 3326,
+  "toClubName": "Al-Sailiya SC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2026-03-26",
+  "articleId": null
+ },
+ {
+  "id": 20167,
+  "playerId": 1233,
+  "playerName": "Lucas Paqueta",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 172,
+  "toClubName": "Flamengo",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "42 mln €",
+   "millionsOfEuro": 42.0
+  },
+  "date": "2026-02-12",
+  "articleId": null
+ },
+ {
+  "id": 20130,
+  "playerId": 2895,
+  "playerName": "Guido Rodriguez",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 194,
+  "toClubName": "Valencia CF",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "UNDISCLOSED",
+   "label": "nie ujawniono",
+   "millionsOfEuro": null
+  },
+  "date": "2026-01-26",
+  "articleId": null
+ },
+ {
+  "id": 20061,
+  "playerId": 10152,
+  "playerName": "Keiber Lamadrid",
+  "fromClubId": 3330,
+  "fromClubName": "Deportivo La Guaira",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2026-01-22",
+  "articleId": null
+ },
+ {
+  "id": 20055,
+  "playerId": 10148,
+  "playerName": "Andy Irving",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 222,
+  "toClubName": "Sparta Praga",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "1,5 mln €",
+   "millionsOfEuro": 1.5
+  },
+  "date": "2026-01-22",
+  "articleId": null
+ },
+ {
+  "id": 19940,
+  "playerId": 10096,
+  "playerName": "Callum Marshall",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 558,
+  "toClubName": "VfL Bochum",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2026-01-15",
+  "articleId": null
+ },
+ {
+  "id": 19904,
+  "playerId": 8322,
+  "playerName": "Luis Guilherme",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 138,
+  "toClubName": "Sporting CP",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "14 mln €",
+   "millionsOfEuro": 14.0
+  },
+  "date": "2026-01-15",
+  "articleId": null
+ },
+ {
+  "id": 19901,
+  "playerId": 10080,
+  "playerName": "Louis Munteanu",
+  "fromClubId": 562,
+  "fromClubName": "CFR Cluj",
+  "toClubId": 328,
+  "toClubName": "DC United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "6 mln €",
+   "millionsOfEuro": 6.0
+  },
+  "date": "2026-01-15",
+  "articleId": null
+ },
+ {
+  "id": 19899,
+  "playerId": 7323,
+  "playerName": "Taty Castellanos",
+  "fromClubId": 42,
+  "fromClubName": "Lazio Rzym",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "29 mln €",
+   "millionsOfEuro": 29.0
+  },
+  "date": "2026-01-15",
+  "articleId": null
+ },
+ {
+  "id": 19801,
+  "playerId": 10052,
+  "playerName": "Christian Benteke",
+  "fromClubId": 328,
+  "fromClubName": "DC United",
+  "toClubId": 823,
+  "toClubName": "Al-Wahda",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2026-01-04",
+  "articleId": null
+ },
+ {
+  "id": 19798,
+  "playerId": 1547,
+  "playerName": "Niclas Fullkrug",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 85,
+  "toClubName": "AC Milan",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2026-01-04",
+  "articleId": null
+ },
+ {
+  "id": 19788,
+  "playerId": 4212,
+  "playerName": "Pablo",
+  "fromClubId": 825,
+  "fromClubName": "Gil Vicente",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "23 mln €",
+   "millionsOfEuro": 23.0
+  },
+  "date": "2026-01-04",
+  "articleId": null
+ },
+ {
+  "id": 19642,
+  "playerId": 5882,
+  "playerName": "Luizao",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 3259,
+  "toClubName": "Criciuma Esporte Clube",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-09-23",
+  "articleId": null
+ },
+ {
+  "id": 19580,
+  "playerId": 832,
+  "playerName": "Łukasz Fabiański",
+  "fromClubId": null,
+  "fromClubName": "Bez klubu",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": "FREE_AGENT",
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-09-11",
+  "articleId": null
+ },
+ {
+  "id": 19481,
+  "playerId": 1041,
+  "playerName": "Danny Ings",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 363,
+  "toClubName": "Sheffield United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-09-07",
+  "articleId": null
+ },
+ {
+  "id": 19422,
+  "playerId": 9940,
+  "playerName": "Soungoutou Magassa",
+  "fromClubId": 38,
+  "fromClubName": "AS Monaco",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "17 mln €",
+   "millionsOfEuro": 17.0
+  },
+  "date": "2025-09-07",
+  "articleId": null
+ },
+ {
+  "id": 19412,
+  "playerId": 8754,
+  "playerName": "Mateus Fernandes",
+  "fromClubId": 148,
+  "fromClubName": "Southampton",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "44 mln €",
+   "millionsOfEuro": 44.0
+  },
+  "date": "2025-09-07",
+  "articleId": null
+ },
+ {
+  "id": 19307,
+  "playerId": 3529,
+  "playerName": "Nayef Aguerd",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 105,
+  "toClubName": "Olympique Marsylia",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "23 mln €",
+   "millionsOfEuro": 23.0
+  },
+  "date": "2025-09-07",
+  "articleId": null
+ },
+ {
+  "id": 19300,
+  "playerId": 9902,
+  "playerName": "Igor Julio",
+  "fromClubId": 320,
+  "fromClubName": "Brighton & Hove Albion",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2025-09-07",
+  "articleId": null
+ },
+ {
+  "id": 19250,
+  "playerId": 1058,
+  "playerName": "Kurt Zouma",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 562,
+  "toClubName": "CFR Cluj",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-09-07",
+  "articleId": null
+ },
+ {
+  "id": 19236,
+  "playerId": 540,
+  "playerName": "Emerson Palmieri",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 105,
+  "toClubName": "Olympique Marsylia",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "0,7 mln €",
+   "millionsOfEuro": 0.7
+  },
+  "date": "2025-09-07",
+  "articleId": null
+ },
+ {
+  "id": 19229,
+  "playerId": 5257,
+  "playerName": "Maxwel Cornet",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 409,
+  "toClubName": "Genoa CFC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2025-09-07",
+  "articleId": null
+ },
+ {
+  "id": 19015,
+  "playerId": 7296,
+  "playerName": "Mads Hermansen",
+  "fromClubId": 112,
+  "fromClubName": "Leicester City",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "20,78 mln €",
+   "millionsOfEuro": 20.78
+  },
+  "date": "2025-08-09",
+  "articleId": null
+ },
+ {
+  "id": 18937,
+  "playerId": 3920,
+  "playerName": "Vladimir Coufal",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 122,
+  "toClubName": "Hoffenheim",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-08-05",
+  "articleId": null
+ },
+ {
+  "id": 18921,
+  "playerId": 3712,
+  "playerName": "Callum Wilson",
+  "fromClubId": 82,
+  "fromClubName": "Newcastle United",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-08-04",
+  "articleId": null
+ },
+ {
+  "id": 18679,
+  "playerId": 2982,
+  "playerName": "Kyle Walker-Peters",
+  "fromClubId": 148,
+  "fromClubName": "Southampton",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-07-21",
+  "articleId": null
+ },
+ {
+  "id": 18623,
+  "playerId": 7897,
+  "playerName": "El Hadji Malick Diouf",
+  "fromClubId": 136,
+  "fromClubName": "Slavia Praga",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "19,36 mln €",
+   "millionsOfEuro": 19.36
+  },
+  "date": "2025-07-20",
+  "articleId": null
+ },
+ {
+  "id": 18484,
+  "playerId": 9623,
+  "playerName": "Aaron Cresswell",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 95,
+  "toClubName": "Stoke City",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-07-12",
+  "articleId": null
+ },
+ {
+  "id": 18456,
+  "playerId": 3304,
+  "playerName": "Mohammed Kudus",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 242,
+  "toClubName": "Tottenham Hotspur",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "63,8 mln €",
+   "millionsOfEuro": 63.8
+  },
+  "date": "2025-07-12",
+  "articleId": null
+ },
+ {
+  "id": 18282,
+  "playerId": 9538,
+  "playerName": "Daniel Cummings",
+  "fromClubId": 62,
+  "fromClubName": "Celtic Glasgow",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-07-03",
+  "articleId": null
+ },
+ {
+  "id": 17847,
+  "playerId": 832,
+  "playerName": "Łukasz Fabiański",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": null,
+  "toClubName": "Bez klubu",
+  "fromStatus": null,
+  "toStatus": "FREE_AGENT",
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2025-05-15",
+  "articleId": null
+ },
+ {
+  "id": 17837,
+  "playerId": 1267,
+  "playerName": "Jean-Clair Todibo",
+  "fromClubId": 175,
+  "fromClubName": "OGC Nice",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "40 mln €",
+   "millionsOfEuro": 40.0
+  },
+  "date": "2025-05-09",
+  "articleId": null
+ },
+ {
+  "id": 17677,
+  "playerId": 5882,
+  "playerName": "Luizao",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 80,
+  "toClubName": "Pogoń Szczecin",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2025-02-21",
+  "articleId": null
+ },
+ {
+  "id": 17340,
+  "playerId": 9162,
+  "playerName": "Evan Ferguson",
+  "fromClubId": 320,
+  "fromClubName": "Brighton & Hove Albion",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2025-02-03",
+  "articleId": null
+ },
+ {
+  "id": 17125,
+  "playerId": 5257,
+  "playerName": "Maxwel Cornet",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 409,
+  "toClubName": "Genoa CFC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2025-01-22",
+  "articleId": null
+ },
+ {
+  "id": 16917,
+  "playerId": 8992,
+  "playerName": "Matai Akinmboni",
+  "fromClubId": 328,
+  "fromClubName": "DC United",
+  "toClubId": 87,
+  "toClubName": "Bournemouth",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "1,5 mln €",
+   "millionsOfEuro": 1.5
+  },
+  "date": "2025-01-04",
+  "articleId": null
+ },
+ {
+  "id": 16878,
+  "playerId": 157,
+  "playerName": "Mateusz Klich",
+  "fromClubId": 328,
+  "fromClubName": "DC United",
+  "toClubId": 216,
+  "toClubName": "Atlanta United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "wymiana",
+   "millionsOfEuro": null
+  },
+  "date": "2024-12-29",
+  "articleId": null
+ },
+ {
+  "id": 16542,
+  "playerId": 3529,
+  "playerName": "Nayef Aguerd",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 12,
+  "toClubName": "Real Sociedad",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2024-09-03",
+  "articleId": null
+ },
+ {
+  "id": 16487,
+  "playerId": 5257,
+  "playerName": "Maxwel Cornet",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 148,
+  "toClubName": "Southampton",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2024-09-03",
+  "articleId": null
+ },
+ {
+  "id": 16475,
+  "playerId": 1058,
+  "playerName": "Kurt Zouma",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 2821,
+  "toClubName": "Al-Orobah FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2024-09-03",
+  "articleId": null
+ },
+ {
+  "id": 16466,
+  "playerId": 7535,
+  "playerName": "James Ward-Prowse",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 466,
+  "toClubName": "Nottingham Forest",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2024-09-03",
+  "articleId": null
+ },
+ {
+  "id": 16459,
+  "playerId": 6590,
+  "playerName": "Carlos Soler",
+  "fromClubId": 15,
+  "fromClubName": "PSG FC",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2024-09-03",
+  "articleId": null
+ },
+ {
+  "id": 16361,
+  "playerId": 8814,
+  "playerName": "Angelo Ogbonna",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 132,
+  "toClubName": "Watford",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2024-08-30",
+  "articleId": null
+ },
+ {
+  "id": 16163,
+  "playerId": 8752,
+  "playerName": "Mohamadou Kante",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 856,
+  "toClubName": "Paris FC",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2024-08-30",
+  "articleId": null
+ },
+ {
+  "id": 16162,
+  "playerId": 8752,
+  "playerName": "Mohamadou Kante",
+  "fromClubId": 856,
+  "fromClubName": "Paris FC",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "UNDISCLOSED",
+   "label": "nie ujawniono",
+   "millionsOfEuro": null
+  },
+  "date": "2024-08-30",
+  "articleId": null
+ },
+ {
+  "id": 16119,
+  "playerId": 1848,
+  "playerName": "Aaron Wan-Bissaka",
+  "fromClubId": 48,
+  "fromClubName": "Manchester United",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "17,6 mln €",
+   "millionsOfEuro": 17.6
+  },
+  "date": "2024-08-30",
+  "articleId": null
+ },
+ {
+  "id": 16037,
+  "playerId": 1267,
+  "playerName": "Jean-Clair Todibo",
+  "fromClubId": 175,
+  "fromClubName": "OGC Nice",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "LOAN",
+   "label": "wypożyczenie",
+   "millionsOfEuro": null
+  },
+  "date": "2024-08-30",
+  "articleId": null
+ },
+ {
+  "id": 15954,
+  "playerId": 2895,
+  "playerName": "Guido Rodriguez",
+  "fromClubId": 13,
+  "fromClubName": "Real Betis",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "FREE",
+   "label": "za darmo",
+   "millionsOfEuro": 0.0
+  },
+  "date": "2024-08-30",
+  "articleId": null
+ },
+ {
+  "id": 15942,
+  "playerId": 3805,
+  "playerName": "Crysencio Summerville",
+  "fromClubId": 129,
+  "fromClubName": "Leeds United",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "29,3 mln €",
+   "millionsOfEuro": 29.3
+  },
+  "date": "2024-08-30",
+  "articleId": null
+ },
+ {
+  "id": 15921,
+  "playerId": 8671,
+  "playerName": "Niclas Fuellkrug",
+  "fromClubId": 97,
+  "fromClubName": "Borussia Dortmund",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "27 mln €",
+   "millionsOfEuro": 27.0
+  },
+  "date": "2024-08-30",
+  "articleId": null
+ },
+ {
+  "id": 15625,
+  "playerId": 5188,
+  "playerName": "Flynn Downes",
+  "fromClubId": 83,
+  "fromClubName": "West Ham United",
+  "toClubId": 148,
+  "toClubName": "Southampton",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "21,4 mln €",
+   "millionsOfEuro": 21.4
+  },
+  "date": "2024-08-30",
+  "articleId": 6592
+ },
+ {
+  "id": 15375,
+  "playerId": 8472,
+  "playerName": "Max Kilman",
+  "fromClubId": 327,
+  "fromClubName": "Wolverhampton",
+  "toClubId": 83,
+  "toClubName": "West Ham United",
+  "fromStatus": null,
+  "toStatus": null,
+  "fee": {
+   "kind": "AMOUNT",
+   "label": "47,5 mln €",
+   "millionsOfEuro": 47.5
+  },
+  "date": "2024-08-30",
+  "articleId": 6592
+ }
+]
