@@ -22,14 +22,27 @@ import androidx.work.Configuration
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
+import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.testing.WorkManagerTestInitHelper
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import pl.nowinkitransferowe.core.data.repository.ArticleRepository
+import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
+import pl.nowinkitransferowe.core.data.repository.PlayerRepository
+import pl.nowinkitransferowe.core.data.repository.TransferRepository
+import pl.nowinkitransferowe.sync.work.initializers.SYNC_WORK_NAME
+import pl.nowinkitransferowe.sync.work.workers.PeriodicSyncWorker
 import pl.nowinkitransferowe.sync.work.workers.SyncWorker
+import javax.inject.Inject
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @HiltAndroidTest
 class SyncWorkerTest {
@@ -39,8 +52,25 @@ class SyncWorkerTest {
 
     private val context get() = InstrumentationRegistry.getInstrumentation().context
 
+    @Inject
+    lateinit var dictionaryRepository: DictionaryRepository
+
+    @Inject
+    lateinit var articleRepository: ArticleRepository
+
+    @Inject
+    lateinit var transferRepository: TransferRepository
+
+    @Inject
+    lateinit var clubRepository: ClubRepository
+
+    @Inject
+    lateinit var playerRepository: PlayerRepository
+
     @Before
     fun setup() {
+        hiltRule.inject()
+
         val config = Configuration.Builder()
             .setMinimumLoggingLevel(Log.DEBUG)
             .setExecutor(SynchronousExecutor())
@@ -72,5 +102,44 @@ class SyncWorkerTest {
 
         val postRequirementWorkInfo = workManager.getWorkInfoById(request.id).get()
         assertEquals(WorkInfo.State.RUNNING, postRequirementWorkInfo?.state)
+    }
+
+    @Test
+    fun syncWorkSavesTheApiV3DemoData() = runBlocking {
+        val request = SyncWorker.startUpSyncWork()
+        val workManager = WorkManager.getInstance(context)
+        val testDriver = WorkManagerTestInitHelper.getTestDriver(context)!!
+
+        workManager.enqueue(request).result.get()
+        testDriver.setAllConstraintsMet(request.id)
+
+        // The API v2 sync that still runs next to it does not finish in this test environment, so
+        // the test waits for the API v3 data instead of the end of the work. Once API v2 is
+        // removed, this can wait for WorkInfo.State.SUCCEEDED.
+        awaitUntil {
+            clubRepository.observeClub(86).first()?.isStub == false &&
+                (playerRepository.observePlayer(10281).first()?.isStub == false)
+        }
+        assertEquals(12, dictionaryRepository.observeTopics().first().size)
+        assertEquals(40, articleRepository.observeArticles().first().size)
+        assertEquals(110, transferRepository.observeTransfers().first().size)
+    }
+
+    @Test
+    fun periodicWorkEnqueuesTheUniqueSync() = runBlocking {
+        val workManager = WorkManager.getInstance(context)
+
+        val result = TestListenableWorkerBuilder<PeriodicSyncWorker>(context).build().doWork()
+
+        assertTrue(result is androidx.work.ListenableWorker.Result.Success)
+        assertEquals(1, workManager.getWorkInfosForUniqueWork(SYNC_WORK_NAME).get().size)
+    }
+
+    private suspend fun awaitUntil(condition: suspend () -> Boolean) {
+        repeat(300) {
+            if (condition()) return
+            delay(100)
+        }
+        error("The API v3 data did not arrive in 30 s")
     }
 }

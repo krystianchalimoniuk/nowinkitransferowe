@@ -17,8 +17,10 @@
 package pl.nowinkitransferowe.sync.work.initializers
 
 import android.content.Context
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
+import pl.nowinkitransferowe.sync.work.workers.PeriodicSyncWorker
 import pl.nowinkitransferowe.sync.work.workers.SyncWorker
 
 object Sync {
@@ -32,9 +34,18 @@ object Sync {
                 ExistingWorkPolicy.KEEP,
                 SyncWorker.startUpSyncWork(),
             )
+            // Sync every few hours too, since the sync push is sent by hand. The periodic work only
+            // enqueues the unique sync above, so two syncs never run at once.
+            enqueueUniquePeriodicWork(
+                PERIODIC_SYNC_WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                PeriodicSyncWorker.periodicSyncWork(),
+            )
         }
     }
 }
 
 // This name should not be changed otherwise the app may have concurrent sync requests running
 internal const val SYNC_WORK_NAME = "SyncWorkName"
+
+internal const val PERIODIC_SYNC_WORK_NAME = "PeriodicSyncWorkName"

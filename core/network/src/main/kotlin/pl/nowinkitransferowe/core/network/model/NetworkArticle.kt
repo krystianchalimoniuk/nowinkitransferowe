@@ -32,7 +32,8 @@ data class NetworkArticle(
     val socialTitle: String? = null,
     val kind: String,
     val topics: List<String> = emptyList(),
-    val lead: String,
+    // Null for some older articles (79 of 9515 on 2026-11-12).
+    val lead: String? = null,
     val contentHtml: String,
     val image: NetworkArticleImage? = null,
     val imageSource: String? = null,

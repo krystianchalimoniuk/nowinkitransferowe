@@ -35,8 +35,14 @@ import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.common.network.Dispatcher
 import pl.nowinkitransferowe.core.common.network.NtDispatchers
 import pl.nowinkitransferowe.core.data.Synchronizer
+import pl.nowinkitransferowe.core.data.repository.ArticleRepository
+import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
+import pl.nowinkitransferowe.core.data.repository.PlayerRepository
+import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
+import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.datastore.ChangeListVersions
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
@@ -53,8 +59,14 @@ internal class SyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val ntPreferences: NtPreferencesDataSource,
-    private val transferRepository: TransferResourceRepository,
+    private val transferResourceRepository: TransferResourceRepository,
     private val newsRepository: NewsRepository,
+    private val dictionaryRepository: DictionaryRepository,
+    private val articleRepository: ArticleRepository,
+    private val transferRepository: TransferRepository,
+    private val rumourRepository: RumourRepository,
+    private val clubRepository: ClubRepository,
+    private val playerRepository: PlayerRepository,
     private val searchContentsRepository: SearchContentsRepository,
     @Dispatcher(NtDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
@@ -71,9 +83,10 @@ internal class SyncWorker @AssistedInject constructor(
             subscriber.subscribeToSync()
             subscriber.subscribeToGeneral()
 
-            // First sync the repositories in parallel
             val syncedSuccessfully = awaitAll(
-                async { transferRepository.sync() },
+                async { syncApiV3() },
+                // API v2 feeds the 3.x screens until they move to the API v3 repositories.
+                async { transferResourceRepository.sync() },
                 async { newsRepository.sync() },
             ).all { it }
 
@@ -87,6 +100,21 @@ internal class SyncWorker @AssistedInject constructor(
             }
         }
     }
+
+    /**
+     * Syncs the API v3 record types one after another: articles first, so that the home screen
+     * fills up within seconds; rumours after transfers, which they point to; clubs and players
+     * last, replacing the stubs the other records created. A type that fails does not stop the
+     * others; its change list version stays, so the retry picks it up where it stopped.
+     */
+    private suspend fun syncApiV3(): Boolean = listOf(
+        dictionaryRepository,
+        articleRepository,
+        transferRepository,
+        rumourRepository,
+        clubRepository,
+        playerRepository,
+    ).map { it.sync() }.all { it }
 
     override suspend fun getChangeListVersions(): ChangeListVersions = ntPreferences.getChangeListVersions()
 
