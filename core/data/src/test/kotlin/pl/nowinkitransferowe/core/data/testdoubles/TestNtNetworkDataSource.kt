@@ -143,9 +143,14 @@ class TestNtNetworkDataSource : NtNetworkDataSource {
 
     override suspend fun getLeagues(season: String?): NetworkLeagues = source.getLeagues(season)
 
-    override suspend fun getTopics(): List<NetworkTopic> = source.getTopics()
+    /**
+     * Number of /topics and /countries requests.
+     */
+    var dictionaryRequests = 0
 
-    override suspend fun getCountries(): List<NetworkCountry> = source.getCountries()
+    override suspend fun getTopics(): List<NetworkTopic> = source.getTopics().also { dictionaryRequests++ }
+
+    override suspend fun getCountries(): List<NetworkCountry> = source.getCountries().also { dictionaryRequests++ }
 
     fun latestChangeListVersion(collectionType: CollectionType) = changeLists.getValue(collectionType).first().changeListVersion
 

@@ -122,6 +122,23 @@ class ApiV3ContractTest {
     }
 
     @Test
+    fun article_without_lead_parses() {
+        // Some older articles on the website have no lead.
+        val article = json.decodeFromString<NetworkArticle>(
+            """
+            {
+              "id": 812, "url": "https://nowinkitransferowe.pl/812/x", "title": "Stary artykuł",
+              "kind": "OFFICIAL", "topics": [], "lead": null, "contentHtml": "<p>…</p>",
+              "image": null, "author": { "name": "Redakcja" }, "publishedAt": "2013-07-01T10:00:00Z"
+            }
+            """,
+        )
+
+        assertEquals(null, article.lead)
+        assertEquals(null, article.image)
+    }
+
+    @Test
     fun transfer_parses_with_structured_fee() {
         val transfer = json.decodeFromString<NetworkTransfer>(
             """

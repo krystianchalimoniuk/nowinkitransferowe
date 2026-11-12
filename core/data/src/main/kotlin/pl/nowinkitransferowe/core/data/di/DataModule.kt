@@ -24,9 +24,11 @@ import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.DefaultRecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.DefaultSearchContentsRepository
+import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstArticleRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstClubRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstDictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstNewsRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstPlayerRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstRumourRepository
@@ -87,6 +89,11 @@ abstract class DataModule {
     internal abstract fun bindsPlayerRepository(
         playerRepository: OfflineFirstPlayerRepository,
     ): PlayerRepository
+
+    @Binds
+    internal abstract fun bindsDictionaryRepository(
+        dictionaryRepository: OfflineFirstDictionaryRepository,
+    ): DictionaryRepository
 
     @Binds
     internal abstract fun bindsUserDataRepository(

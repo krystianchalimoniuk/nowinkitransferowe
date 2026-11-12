@@ -21,17 +21,29 @@ import dagger.Module
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import pl.nowinkitransferowe.core.data.di.DataModule
+import pl.nowinkitransferowe.core.data.repository.ArticleRepository
+import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.NewsRepository
+import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RecentSearchRepository
+import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
+import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
+import pl.nowinkitransferowe.data.test.repository.FakeArticleRepository
+import pl.nowinkitransferowe.data.test.repository.FakeClubRepository
+import pl.nowinkitransferowe.data.test.repository.FakeDictionaryRepository
 import pl.nowinkitransferowe.data.test.repository.FakeNewsRepository
+import pl.nowinkitransferowe.data.test.repository.FakePlayerRepository
 import pl.nowinkitransferowe.data.test.repository.FakeRecentSearchRepository
+import pl.nowinkitransferowe.data.test.repository.FakeRumourRepository
 import pl.nowinkitransferowe.data.test.repository.FakeSearchContentsRepository
+import pl.nowinkitransferowe.data.test.repository.FakeTransferRepository
 import pl.nowinkitransferowe.data.test.repository.FakeTransferResourceRepository
 import pl.nowinkitransferowe.data.test.repository.FakeUserDataRepository
 
@@ -42,8 +54,8 @@ import pl.nowinkitransferowe.data.test.repository.FakeUserDataRepository
 )
 internal interface TestDataModule {
     @Binds
-    fun bindsTransferRepository(
-        fakeTopicsRepository: FakeTransferResourceRepository,
+    fun bindsTransferResourceRepository(
+        fakeTransferResourceRepository: FakeTransferResourceRepository,
     ): TransferResourceRepository
 
     @Binds
@@ -65,6 +77,24 @@ internal interface TestDataModule {
     fun bindsSearchContentsRepository(
         searchContentsRepository: FakeSearchContentsRepository,
     ): SearchContentsRepository
+
+    @Binds
+    fun bindsDictionaryRepository(repository: FakeDictionaryRepository): DictionaryRepository
+
+    @Binds
+    fun bindsArticleRepository(repository: FakeArticleRepository): ArticleRepository
+
+    @Binds
+    fun bindsTransferRepository(repository: FakeTransferRepository): TransferRepository
+
+    @Binds
+    fun bindsRumourRepository(repository: FakeRumourRepository): RumourRepository
+
+    @Binds
+    fun bindsClubRepository(repository: FakeClubRepository): ClubRepository
+
+    @Binds
+    fun bindsPlayerRepository(repository: FakePlayerRepository): PlayerRepository
 
     @Binds
     fun bindsNetworkMonitor(
