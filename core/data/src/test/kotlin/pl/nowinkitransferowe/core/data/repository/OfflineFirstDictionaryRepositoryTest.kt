@@ -20,13 +20,12 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import pl.nowinkitransferowe.core.data.model.clubStub
 import pl.nowinkitransferowe.core.data.testdoubles.TestNtNetworkDataSource
 import pl.nowinkitransferowe.core.database.NtDatabase
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
@@ -36,8 +35,6 @@ import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.TopicKind
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
 
 @RunWith(RobolectricTestRunner::class)
 class OfflineFirstDictionaryRepositoryTest {
@@ -47,18 +44,13 @@ class OfflineFirstDictionaryRepositoryTest {
     private lateinit var subject: OfflineFirstDictionaryRepository
     private val synchronizer = TestSynchronizer(NtPreferencesDataSource(InMemoryDataStore(UserPreferences.getDefaultInstance())))
 
-    private var now = Instant.parse("2026-11-11T10:00:00Z")
-
     @Before
     fun setUp() {
         db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(), NtDatabase::class.java)
             .allowMainThreadQueries()
             .build()
         network = TestNtNetworkDataSource()
-        subject = OfflineFirstDictionaryRepository(db.dictionaryDao(), db.statsDao(), network)
-        subject.clock = object : Clock {
-            override fun now(): Instant = now
-        }
+        subject = OfflineFirstDictionaryRepository(db.dictionaryDao(), network)
     }
 
     @After
@@ -76,19 +68,29 @@ class OfflineFirstDictionaryRepositoryTest {
     }
 
     @Test
-    fun dictionaries_are_downloaded_again_after_a_day() = runTest {
+    fun dictionaries_are_not_downloaded_again_when_nothing_is_missing() = runTest {
         subject.syncWith(synchronizer)
+        db.clubDao().upsertClubs(listOf(clubStub(1, "Legia").copy(country = "pl", topic = "ekstraklasa")))
 
-        advanceClock(23.hours)
         assertTrue(subject.syncWith(synchronizer))
         assertEquals(2, network.dictionaryRequests)
+    }
 
-        advanceClock(1.hours)
+    @Test
+    fun dictionaries_are_downloaded_again_for_an_unknown_country() = runTest {
+        subject.syncWith(synchronizer)
+        db.clubDao().upsertClubs(listOf(clubStub(1, "Nowy klub").copy(country = "xx")))
+
         assertTrue(subject.syncWith(synchronizer))
         assertEquals(4, network.dictionaryRequests)
     }
 
-    private fun advanceClock(by: Duration) {
-        now += by
+    @Test
+    fun dictionaries_are_downloaded_again_for_an_unknown_topic() = runTest {
+        subject.syncWith(synchronizer)
+        db.clubDao().upsertClubs(listOf(clubStub(1, "Nowy klub").copy(topic = "nowa-liga")))
+
+        assertTrue(subject.syncWith(synchronizer))
+        assertEquals(4, network.dictionaryRequests)
     }
 }

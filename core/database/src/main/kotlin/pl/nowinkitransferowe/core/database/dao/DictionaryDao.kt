@@ -53,6 +53,26 @@ interface DictionaryDao {
     @Query("DELETE FROM countries")
     suspend fun deleteCountries()
 
+    /**
+     * True when either dictionary is empty or a topic or country code in the records is missing from it.
+     * The API has no change list for the dictionaries, so this decides when to download them again.
+     */
+    @Query(
+        """
+        SELECT NOT EXISTS (SELECT 1 FROM topics)
+            OR NOT EXISTS (SELECT 1 FROM countries)
+            OR EXISTS (SELECT 1 FROM article_topics WHERE topic NOT IN (SELECT slug FROM topics))
+            OR EXISTS (SELECT 1 FROM clubs WHERE topic NOT IN (SELECT slug FROM topics))
+            OR EXISTS (SELECT 1 FROM clubs WHERE country NOT IN (SELECT code FROM countries))
+            OR EXISTS (
+                SELECT 1 FROM players
+                WHERE nationality NOT IN (SELECT code FROM countries)
+                    OR nationality2 NOT IN (SELECT code FROM countries)
+            )
+        """,
+    )
+    suspend fun hasMissingEntries(): Boolean
+
     @Query("SELECT * FROM topics")
     fun observeTopics(): Flow<List<TopicEntity>>
 

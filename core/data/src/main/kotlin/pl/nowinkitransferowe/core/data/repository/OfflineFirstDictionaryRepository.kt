@@ -18,48 +18,37 @@ package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Clock
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.model.asEntity
 import pl.nowinkitransferowe.core.data.suspendRunCatching
 import pl.nowinkitransferowe.core.database.dao.DictionaryDao
-import pl.nowinkitransferowe.core.database.dao.StatsDao
 import pl.nowinkitransferowe.core.database.model.CountryEntity
-import pl.nowinkitransferowe.core.database.model.FetchTimeEntity
 import pl.nowinkitransferowe.core.database.model.TopicEntity
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.model.Country
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.days
 
+/**
+ * Topics and countries change only when the website is deployed and the API has no change list for them,
+ * so they are downloaded whole on the first sync and again only when the records use a code they lack.
+ */
 internal class OfflineFirstDictionaryRepository @Inject constructor(
     private val dictionaryDao: DictionaryDao,
-    private val statsDao: StatsDao,
     private val network: NtNetworkDataSource,
 ) : DictionaryRepository {
-
-    internal var clock: Clock = Clock.System
 
     override fun observeTopics(): Flow<List<Topic>> = dictionaryDao.observeTopics().map { it.map(TopicEntity::asExternalModel) }
 
     override fun observeCountries(): Flow<List<Country>> = dictionaryDao.observeCountries().map { it.map(CountryEntity::asExternalModel) }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = suspendRunCatching {
-        val now = clock.now()
-        val fetchedAt = statsDao.getFetchTime(FETCH_TIME_KEY)?.fetchedAt
-        if (fetchedAt != null && now - fetchedAt < MAX_AGE) return@suspendRunCatching
+        if (!dictionaryDao.hasMissingEntries()) return@suspendRunCatching
 
         val topics = network.getTopics()
         val countries = network.getCountries()
         dictionaryDao.replaceTopics(topics.map { it.asEntity() })
         dictionaryDao.replaceCountries(countries.map { it.asEntity() })
-        statsDao.upsertFetchTime(FetchTimeEntity(key = FETCH_TIME_KEY, fetchedAt = now))
     }.isSuccess
-
-    companion object {
-        internal const val FETCH_TIME_KEY = "dictionaries"
-        internal val MAX_AGE = 1.days
-    }
 }

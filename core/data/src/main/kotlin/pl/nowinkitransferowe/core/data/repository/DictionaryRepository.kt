@@ -23,7 +23,7 @@ import pl.nowinkitransferowe.core.model.Topic
 
 /**
  * Topics (leagues, cups, special topics) and country names from API v3. They have no change list,
- * so a sync downloads them again when the saved copy is older than a day.
+ * so a sync downloads them again only when they are empty or the records use a code they lack.
  */
 interface DictionaryRepository : Syncable {
     fun observeTopics(): Flow<List<Topic>>
