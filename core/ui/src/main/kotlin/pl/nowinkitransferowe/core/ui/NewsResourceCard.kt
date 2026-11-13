@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -333,17 +334,21 @@ fun NotificationDot(
     )
 }
 
+/** The app's locale, read so that the text follows a language change. */
+@Composable
+private fun currentLocale(): Locale = LocalConfiguration.current.locales[0]
+
 @Composable
 fun dateFormatted(publishDate: Instant, style: FormatStyle = FormatStyle.MEDIUM): String = DateTimeFormatter
     .ofLocalizedDate(style)
-    .withLocale(Locale.getDefault())
+    .withLocale(currentLocale())
     .withZone(LocalTimeZone.current.toJavaZoneId())
     .format(publishDate.toJavaInstant())
 
 @Composable
 fun dateFormatted(date: LocalDate, style: FormatStyle = FormatStyle.MEDIUM): String = DateTimeFormatter
     .ofLocalizedDate(style)
-    .withLocale(Locale.getDefault())
+    .withLocale(currentLocale())
     .format(date.toJavaLocalDate())
 
 @Composable

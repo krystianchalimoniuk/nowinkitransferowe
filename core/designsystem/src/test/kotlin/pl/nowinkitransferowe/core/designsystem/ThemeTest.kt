@@ -32,11 +32,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import pl.nowinkitransferowe.core.designsystem.theme.BackgroundTheme
-import pl.nowinkitransferowe.core.designsystem.theme.DarkDefaultColorScheme
+import pl.nowinkitransferowe.core.designsystem.theme.DarkNtColors
 import pl.nowinkitransferowe.core.designsystem.theme.GradientColors
-import pl.nowinkitransferowe.core.designsystem.theme.LightDefaultColorScheme
+import pl.nowinkitransferowe.core.designsystem.theme.LightNtColors
 import pl.nowinkitransferowe.core.designsystem.theme.LocalBackgroundTheme
 import pl.nowinkitransferowe.core.designsystem.theme.LocalGradientColors
+import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
 import pl.nowinkitransferowe.core.designsystem.theme.LocalTintTheme
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.designsystem.theme.TintTheme
@@ -45,7 +46,7 @@ import pl.nowinkitransferowe.core.designsystem.theme.lightScheme
 
 /**
  * Tests [NtTheme] using different combinations of the theme mode parameters:
- * darkTheme, disableDynamicTheming, and androidTheme.
+ * darkTheme and disableDynamicTheming.
  *
  * It verifies that the various composition locals — [MaterialTheme], [LocalGradientColors] and
  * [LocalBackgroundTheme] — have the expected values for a given theme mode, as specified by the
@@ -136,13 +137,13 @@ class ThemeTest {
     @Composable
     private fun dynamicLightColorSchemeWithFallback(): ColorScheme = when {
         SDK_INT >= VERSION_CODES.S -> dynamicLightColorScheme(LocalContext.current)
-        else -> LightDefaultColorScheme
+        else -> lightScheme
     }
 
     @Composable
     private fun dynamicDarkColorSchemeWithFallback(): ColorScheme = when {
         SDK_INT >= VERSION_CODES.S -> dynamicDarkColorScheme(LocalContext.current)
-        else -> DarkDefaultColorScheme
+        else -> darkScheme
     }
 
     private fun emptyGradientColors(colorScheme: ColorScheme): GradientColors = GradientColors(container = colorScheme.surfaceColorAtElevation(2.dp))
@@ -238,5 +239,23 @@ class ThemeTest {
             actualColorScheme.inverseOnSurface,
         )
         kotlin.test.assertEquals(expectedColorScheme.outline, actualColorScheme.outline)
+    }
+
+    @Test
+    fun lightMeaningColoursDoNotFollowDynamicColours() {
+        composeTestRule.setContent {
+            NtTheme(darkTheme = false, disableDynamicTheming = false) {
+                kotlin.test.assertEquals(LightNtColors, LocalNtColors.current)
+            }
+        }
+    }
+
+    @Test
+    fun darkMeaningColoursDoNotFollowDynamicColours() {
+        composeTestRule.setContent {
+            NtTheme(darkTheme = true, disableDynamicTheming = false) {
+                kotlin.test.assertEquals(DarkNtColors, LocalNtColors.current)
+            }
+        }
     }
 }
