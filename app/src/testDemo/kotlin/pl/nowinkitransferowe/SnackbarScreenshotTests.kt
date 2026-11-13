@@ -57,7 +57,7 @@ import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.screenshottesting.DefaultRoborazziOptions
 import pl.nowinkitransferowe.data.test.repository.FakeUserDataRepository
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.LocalSnackbarHostState
-import pl.nowinkitransferowe.ui.NtApp
+import pl.nowinkitransferowe.ui.NtAppContent
 import pl.nowinkitransferowe.ui.rememberNtAppState
 import pl.nowinkitransferowe.uitesthiltmanifest.HiltComponentActivity
 import java.util.TimeZone
@@ -212,11 +212,8 @@ class SnackbarScreenshotTests {
                                 timeZoneMonitor = timeZoneMonitor,
                             )
                             CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
-                                NtApp(
+                                NtAppContent(
                                     appState = appState,
-                                    showSettingsDialog = false,
-                                    onSettingsDismissed = {},
-                                    onTopAppBarActionClick = {},
                                     windowAdaptiveInfo = WindowAdaptiveInfo(
                                         windowSizeClass = WindowSizeClass.compute(
                                             maxWidth.value,

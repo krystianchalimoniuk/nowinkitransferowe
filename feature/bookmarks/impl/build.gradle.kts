@@ -17,9 +17,11 @@ plugins {
     alias(libs.plugins.nowinkitransferowe.android.feature.impl)
     alias(libs.plugins.nowinkitransferowe.android.library.compose)
     alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
+    testOptions.unitTests.isIncludeAndroidResources = true
     namespace = "pl.nowinkitransferowe.feature.bookmarks.impl"
 }
 
@@ -27,10 +29,12 @@ dependencies {
     implementation(projects.feature.bookmarks.api)
     implementation(projects.feature.articleDetails.api)
     implementation(projects.feature.transferDetails.api)
-    implementation(projects.feature.search.api)
     implementation(projects.core.data)
 
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.robolectric)
     testImplementation(projects.core.testing)
+    testImplementation(projects.core.screenshotTesting)
 
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)

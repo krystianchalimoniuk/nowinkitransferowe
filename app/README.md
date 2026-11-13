@@ -13,10 +13,6 @@ config:
 graph TB
   subgraph :feature
     direction TB
-    subgraph :feature:settings
-      direction TB
-      :feature:settings:impl[impl]:::android-feature
-    end
     subgraph :feature:articles
       direction TB
       :feature:articles:api[api]:::android-library
@@ -32,20 +28,25 @@ graph TB
       :feature:bookmarks:api[api]:::android-library
       :feature:bookmarks:impl[impl]:::android-feature
     end
+    subgraph :feature:settings
+      direction TB
+      :feature:settings:api[api]:::android-library
+      :feature:settings:impl[impl]:::android-feature
+    end
     subgraph :feature:transfers
       direction TB
       :feature:transfers:api[api]:::android-library
       :feature:transfers:impl[impl]:::android-feature
     end
-    subgraph :feature:rumours
-      direction TB
-      :feature:rumours:api[api]:::android-library
-      :feature:rumours:impl[impl]:::android-feature
-    end
     subgraph :feature:search
       direction TB
       :feature:search:api[api]:::android-library
       :feature:search:impl[impl]:::android-feature
+    end
+    subgraph :feature:rumours
+      direction TB
+      :feature:rumours:api[api]:::android-library
+      :feature:rumours:impl[impl]:::android-feature
     end
     subgraph :feature:article-details
       direction TB
@@ -102,6 +103,7 @@ graph TB
   :app -.-> :feature:rumours:impl
   :app -.-> :feature:search:api
   :app -.-> :feature:search:impl
+  :app -.-> :feature:settings:api
   :app -.-> :feature:settings:impl
   :app -.-> :feature:transfer-details:api
   :app -.-> :feature:transfer-details:impl
@@ -152,7 +154,6 @@ graph TB
   :feature:bookmarks:impl -.-> :core:ui
   :feature:bookmarks:impl -.-> :feature:article-details:api
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
-  :feature:bookmarks:impl -.-> :feature:search:api
   :feature:bookmarks:impl -.-> :feature:transfer-details:api
   :feature:leagues:api --> :core:navigation
   :feature:leagues:impl -.-> :core:designsystem
@@ -170,9 +171,11 @@ graph TB
   :feature:search:impl -.-> :feature:article-details:api
   :feature:search:impl -.-> :feature:search:api
   :feature:search:impl -.-> :feature:transfer-details:api
+  :feature:settings:api --> :core:navigation
   :feature:settings:impl -.-> :core:data
   :feature:settings:impl -.-> :core:designsystem
   :feature:settings:impl -.-> :core:ui
+  :feature:settings:impl -.-> :feature:settings:api
   :feature:transfer-details:api --> :core:navigation
   :feature:transfer-details:impl -.-> :core:data
   :feature:transfer-details:impl -.-> :core:designsystem

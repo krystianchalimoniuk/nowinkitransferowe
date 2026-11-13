@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,18 @@ package pl.nowinkitransferowe.feature.bookmarks.impl
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.test.assertCountEquals
-import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.filter
-import androidx.compose.ui.test.hasAnyAncestor
-import androidx.compose.ui.test.hasScrollToNodeAction
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollToNode
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.testing.TestLifecycleOwner
@@ -39,8 +38,6 @@ import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.testing.data.savedUserArticlesTestData
 import pl.nowinkitransferowe.core.testing.data.savedUserTransfersTestData
-import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
-import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -52,260 +49,137 @@ class BookmarksScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
+    private fun string(id: Int, vararg args: Any) = composeTestRule.activity.resources.getString(id, *args)
+
+    private fun state(tab: SavedTab, articles: Boolean = true, transfers: Boolean = true) = BookmarksUiState.Success(
+        tab = tab,
+        articles = if (articles) savedUserArticlesTestData else emptyList(),
+        transfers = if (transfers) savedUserTransfersTestData else emptyList(),
+    )
+
+    private val unbookmark get() = string(pl.nowinkitransferowe.core.ui.R.string.core_ui_unbookmark)
+
+    private fun tab(label: Int, count: Int) = hasText(string(R.string.feature_bookmarks_impl_tab, string(label), count)) and
+        SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Tab)
+
     @Test
     fun loading_showsLoadingSpinner() {
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = ArticleFeedUiState.Loading,
-                transferFeedState = TransferFeedUiState.Loading,
+                uiState = BookmarksUiState.Loading,
+                onTabSelected = {},
                 onShowSnackbar = { _, _ -> false },
-                removeFromArticleBookmarks = {},
-                removeFromTransferBookmarks = {},
-                onTopicClick = {},
+                removeArticleBookmark = {},
+                removeTransferBookmark = {},
                 onArticleClick = {},
-                onTransferViewed = {},
-                onArticleViewed = {},
                 onTransferClick = {},
             )
         }
 
-        composeTestRule
-            .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_bookmarks_impl_loading),
-            )
-            .assertExists()
+        composeTestRule.onNodeWithContentDescription(string(R.string.feature_bookmarks_impl_loading)).assertExists()
     }
 
     @Test
-    fun feed_whenHasBookmarks_showsBookmarks() {
+    fun articlesTab_showsArticlesAndCountsAndReportsTabClicks() {
+        var selected: SavedTab? = null
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = ArticleFeedUiState.Success(
-                    savedUserArticlesTestData.take(2),
-                ),
-                transferFeedState = TransferFeedUiState.Success(
-                    feed = savedUserTransfersTestData.take(
-                        2,
-                    ),
-                ),
+                uiState = state(SavedTab.ARTICLES),
+                onTabSelected = { selected = it },
                 onShowSnackbar = { _, _ -> false },
-                removeFromArticleBookmarks = {},
-                removeFromTransferBookmarks = {},
-                onTopicClick = {},
-                onArticleViewed = {},
-                onTransferViewed = {},
+                removeArticleBookmark = {},
+                removeTransferBookmark = {},
                 onArticleClick = {},
                 onTransferClick = {},
             )
         }
 
-        composeTestRule
-            .onNodeWithText(
-                savedUserArticlesTestData[0].title,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
+        composeTestRule.onNode(tab(R.string.feature_bookmarks_impl_articles, savedUserArticlesTestData.size)).assertIsSelected()
+        composeTestRule.onNodeWithText(savedUserArticlesTestData[0].title).assertExists()
+        composeTestRule.onNodeWithTag("transfer-item:${savedUserTransfersTestData[0].id}").assertDoesNotExist()
 
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    savedUserArticlesTestData[1].title,
-                    substring = true,
-                ),
-            )
-
-        composeTestRule
-            .onNodeWithText(
-                savedUserArticlesTestData[1].title,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
-
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    savedUserTransfersTestData[0].player.name,
-                    substring = true,
-                ),
-            )
-        composeTestRule
-            .onNodeWithText(
-                savedUserTransfersTestData[0].player.name,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
-
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    savedUserTransfersTestData[1].player.name,
-                    substring = true,
-                ),
-            )
-
-        composeTestRule
-            .onNodeWithText(
-                savedUserTransfersTestData[1].player.name,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
+        composeTestRule.onNode(tab(R.string.feature_bookmarks_impl_transfers, savedUserTransfersTestData.size)).performClick()
+        assertEquals(SavedTab.TRANSFERS, selected)
     }
 
     @Test
-    fun feed_whenRemovingNewsBookmark_removesNewsBookmark() = runTest {
-        var removeNewsFromBookmarksCalled = false
-
+    fun transfersTab_removingBookmark_reportsTransfer() {
+        var removed: Int? = null
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = ArticleFeedUiState.Success(
-                    feed = savedUserArticlesTestData.take(2),
-                ),
-                transferFeedState = TransferFeedUiState.Success(
-                    feed = arrayListOf(),
-                ),
+                uiState = state(SavedTab.TRANSFERS),
+                onTabSelected = {},
                 onShowSnackbar = { _, _ -> false },
-                removeFromArticleBookmarks = { articleId ->
-                    assertEquals(savedUserArticlesTestData[0].id, articleId)
-                    removeNewsFromBookmarksCalled = true
-                },
-                removeFromTransferBookmarks = {},
-                onTopicClick = {},
-                onArticleViewed = {},
-                onTransferViewed = {},
+                removeArticleBookmark = {},
+                removeTransferBookmark = { removed = it },
                 onArticleClick = {},
                 onTransferClick = {},
             )
         }
 
-        composeTestRule
-            .onAllNodesWithContentDescription(
-                composeTestRule.activity.getString(
-                    pl.nowinkitransferowe.core.ui.R.string.core_ui_unbookmark,
-                ),
-            ).filter(
-                hasAnyAncestor(
-                    hasText(
-                        savedUserArticlesTestData[0].title,
-                        substring = true,
-                    ),
-                ),
-            )
-            .assertCountEquals(1)
-            .onFirst()
-            .performClick()
-
-        assertTrue(removeNewsFromBookmarksCalled)
+        composeTestRule.onNodeWithTag("transfer-item:${savedUserTransfersTestData[0].id}").assertExists()
+        composeTestRule.onAllNodesWithContentDescription(unbookmark).onFirst().performClick()
+        assertEquals(savedUserTransfersTestData[0].id, removed)
     }
 
     @Test
-    fun feed_whenRemovingTransfersBookmark_removesTransfersBookmark() = runTest {
-        var removeTransfersFromBookmarksCalled = false
-
+    fun articlesTab_removingBookmark_reportsArticle() {
+        var removed: Int? = null
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = ArticleFeedUiState.Success(
-                    feed = arrayListOf(),
-                ),
-                transferFeedState = TransferFeedUiState.Success(
-                    feed = savedUserTransfersTestData.take(
-                        2,
-                    ),
-                ),
+                uiState = state(SavedTab.ARTICLES),
+                onTabSelected = {},
                 onShowSnackbar = { _, _ -> false },
-                removeFromArticleBookmarks = {},
-                removeFromTransferBookmarks = { transferId ->
-                    assertEquals(savedUserTransfersTestData[0].id, transferId)
-                    removeTransfersFromBookmarksCalled = true
-                },
-                onTopicClick = {},
-                onArticleViewed = {},
-                onTransferViewed = {},
+                removeArticleBookmark = { removed = it },
+                removeTransferBookmark = {},
                 onArticleClick = {},
                 onTransferClick = {},
             )
         }
 
-        composeTestRule
-            .onAllNodesWithContentDescription(
-                composeTestRule.activity.getString(
-                    pl.nowinkitransferowe.core.ui.R.string.core_ui_unbookmark,
-                ),
-            ).filter(
-                hasAnyAncestor(
-                    hasText(
-                        savedUserTransfersTestData[0].player.name,
-                        substring = true,
-                    ),
-                ),
-            )
-            .assertCountEquals(1)
-            .onFirst()
-            .performClick()
-
-        assertTrue(removeTransfersFromBookmarksCalled)
+        composeTestRule.onAllNodesWithContentDescription(unbookmark).onFirst().performClick()
+        assertEquals(savedUserArticlesTestData[0].id, removed)
     }
 
     @Test
-    fun feed_whenHasNoBookmarks_showsEmptyState() {
+    fun emptyTab_showsEmptyState() {
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = ArticleFeedUiState.Success(emptyList()),
-                transferFeedState = TransferFeedUiState.Success(emptyList()),
+                uiState = state(SavedTab.TRANSFERS, transfers = false),
+                onTabSelected = {},
                 onShowSnackbar = { _, _ -> false },
-                removeFromArticleBookmarks = {},
-                removeFromTransferBookmarks = {},
+                removeArticleBookmark = {},
+                removeTransferBookmark = {},
                 onArticleClick = {},
-                onTopicClick = {},
-                onArticleViewed = {},
-                onTransferViewed = {},
                 onTransferClick = {},
             )
         }
 
-        composeTestRule
-            .onNodeWithText(
-                composeTestRule.activity.getString(R.string.feature_bookmarks_impl_empty_error),
-            )
-            .assertExists()
-
-        composeTestRule
-            .onNodeWithText(
-                composeTestRule.activity.getString(R.string.feature_bookmarks_impl_empty_description),
-            )
-            .assertExists()
+        composeTestRule.onNodeWithText(string(R.string.feature_bookmarks_impl_empty_transfers)).assertExists()
     }
 
     @Test
-    fun feed_whenLifecycleStops_undoBookmarkedStateIsCleared() = runTest {
+    fun whenLifecycleStops_undoBookmarkedStateIsCleared() = runTest {
         var undoStateCleared = false
         val testLifecycleOwner = TestLifecycleOwner(initialState = Lifecycle.State.STARTED)
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalLifecycleOwner provides testLifecycleOwner) {
                 BookmarksScreen(
-                    newsFeedState = ArticleFeedUiState.Success(emptyList()),
-                    transferFeedState = TransferFeedUiState.Success(emptyList()),
+                    uiState = state(SavedTab.ARTICLES),
+                    onTabSelected = {},
                     onShowSnackbar = { _, _ -> false },
-                    removeFromArticleBookmarks = {},
-                    removeFromTransferBookmarks = {},
-                    onTopicClick = {},
+                    removeArticleBookmark = {},
+                    removeTransferBookmark = {},
                     onArticleClick = {},
-                    onArticleViewed = {},
-                    onTransferViewed = {},
                     onTransferClick = {},
-                    clearUndoState = {
-                        undoStateCleared = true
-                    },
+                    clearUndoState = { undoStateCleared = true },
                 )
             }
         }
 
         assertEquals(false, undoStateCleared)
         testLifecycleOwner.handleLifecycleEvent(event = Lifecycle.Event.ON_STOP)
-        assertEquals(true, undoStateCleared)
+        assertTrue(undoStateCleared)
     }
 }

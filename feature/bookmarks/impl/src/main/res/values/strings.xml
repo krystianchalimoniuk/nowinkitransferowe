@@ -17,10 +17,12 @@
 <resources>
     <string name="feature_bookmarks_impl_title">Zapisane</string>
     <string name="feature_bookmarks_impl_loading">Pobieram zapisane…</string>
-    <string name="feature_bookmarks_impl_empty_error">Brak zapisanych nowinek i transferów</string>
-    <string name="feature_bookmarks_impl_empty_description">Zapisane zakładki bedą wyświetlone tutaj\ndo przeczytania później</string>
+    <string name="feature_bookmarks_impl_empty_description">Dotknij zakładki przy artykule lub transferze,\nżeby wrócić do niego później</string>
     <string name="feature_bookmarks_impl_removed">Zakładka usunięta</string>
     <string name="feature_bookmarks_impl_undo">COFNIJ</string>
-    <string name="feature_bookmarks_impl_news">Nowinki</string>
+    <string name="feature_bookmarks_impl_articles">Artykuły</string>
+    <string name="feature_bookmarks_impl_tab">%1$s (%2$d)</string>
+    <string name="feature_bookmarks_impl_empty_articles">Brak zapisanych artykułów</string>
+    <string name="feature_bookmarks_impl_empty_transfers">Brak zapisanych transferów</string>
     <string name="feature_bookmarks_impl_transfers">Transfery</string>
 </resources>

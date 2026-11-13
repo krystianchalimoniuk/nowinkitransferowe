@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe
 
+import android.app.Notification
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -58,6 +59,7 @@ import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_URI_PATTERN
 import pl.nowinkitransferowe.core.ui.LocalTimeZone
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.ArticleNavKey
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
+import pl.nowinkitransferowe.feature.settings.api.navigation.SettingsNavKey
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.TransferDetailsNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import pl.nowinkitransferowe.ui.NtApp
@@ -145,7 +147,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val deepLinkKeys = if (savedInstanceState == null) {
-            intent.data?.let { uri -> deepLinkKeys(uri.toString()) }.orEmpty()
+            when {
+                // "Additional settings in the app" in the system notification settings
+                intent.hasCategory(Notification.INTENT_CATEGORY_NOTIFICATION_PREFERENCES) -> listOf(SettingsNavKey)
+                else -> intent.data?.let { uri -> deepLinkKeys(uri.toString()) }.orEmpty()
+            }
         } else {
             emptyList()
         }

@@ -83,6 +83,7 @@ dependencies {
     implementation(projects.feature.articleDetails.impl)
     implementation(projects.feature.search.api)
     implementation(projects.feature.search.impl)
+    implementation(projects.feature.settings.api)
     implementation(projects.feature.settings.impl)
     implementation(projects.feature.transferDetails.api)
     implementation(projects.feature.transferDetails.impl)

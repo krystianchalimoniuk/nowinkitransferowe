@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ package pl.nowinkitransferowe.feature.bookmarks.impl
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
@@ -33,12 +33,11 @@ import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.model.UserTransfer
-import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
-import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import javax.inject.Inject
 
 @HiltViewModel
 class BookmarksViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val userDataRepository: UserDataRepository,
     userArticleRepository: UserArticleRepository,
     userTransferRepository: UserTransferRepository,
@@ -47,24 +46,20 @@ class BookmarksViewModel @Inject constructor(
     var shouldDisplayUndoBookmark by mutableStateOf(false)
     private var lastRemovedBookmark: BookmarkElement? = null
 
-    val newsFeedUiState: StateFlow<ArticleFeedUiState> =
-        userArticleRepository.observeBookmarked()
-            .map<List<UserArticle>, ArticleFeedUiState>(ArticleFeedUiState::Success)
-            .onStart { emit(ArticleFeedUiState.Loading) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = ArticleFeedUiState.Loading,
-            )
-    val transferFeedUiState: StateFlow<TransferFeedUiState> =
-        userTransferRepository.observeBookmarked()
-            .map<List<UserTransfer>, TransferFeedUiState>(TransferFeedUiState::Success)
-            .onStart { emit(TransferFeedUiState.Loading) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = TransferFeedUiState.Loading,
-            )
+    val uiState: StateFlow<BookmarksUiState> = combine(
+        savedStateHandle.getStateFlow(TAB_KEY, SavedTab.ARTICLES),
+        userArticleRepository.observeBookmarked(),
+        userTransferRepository.observeBookmarked(),
+        BookmarksUiState::Success,
+    ).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = BookmarksUiState.Loading,
+    )
+
+    fun selectTab(tab: SavedTab) {
+        savedStateHandle[TAB_KEY] = tab
+    }
 
     fun removeArticleBookmark(articleId: Int) {
         viewModelScope.launch {
@@ -82,35 +77,15 @@ class BookmarksViewModel @Inject constructor(
         }
     }
 
-    fun setArticleViewed(articleId: Int, viewed: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setArticleViewed(articleId, viewed)
-        }
-    }
-
-    fun setTransferViewed(transferIds: List<Int>, viewed: Boolean) {
-        viewModelScope.launch {
-            transferIds.forEach {
-                userDataRepository.setTransferViewed(it, viewed)
-            }
-        }
-    }
-
     fun undoBookmarkRemoval() {
         viewModelScope.launch {
-            lastRemovedBookmark?.let {
-                when (it) {
-                    is BookmarkElement.Article -> {
-                        userDataRepository.setArticleBookmarked(it.id, true)
-                    }
-
-                    is BookmarkElement.Transfer -> {
-                        userDataRepository.setTransferBookmarked(it.id, true)
-                    }
-                }
+            when (val removed = lastRemovedBookmark) {
+                is BookmarkElement.Article -> userDataRepository.setArticleBookmarked(removed.id, true)
+                is BookmarkElement.Transfer -> userDataRepository.setTransferBookmarked(removed.id, true)
+                null -> Unit
             }
+            clearUndoState()
         }
-        clearUndoState()
     }
 
     fun clearUndoState() {
@@ -119,15 +94,21 @@ class BookmarksViewModel @Inject constructor(
     }
 }
 
-sealed interface BookmarkUiState {
-    data object Loading : BookmarkUiState
+/** The tabs of the saved screen. Saved rumours join them with the rumour screens. */
+enum class SavedTab { ARTICLES, TRANSFERS }
+
+sealed interface BookmarksUiState {
+    data object Loading : BookmarksUiState
     data class Success(
-        val articleFeed: List<UserArticle>,
-        val transfersFeed: List<UserTransfer>,
-    ) : BookmarkUiState
+        val tab: SavedTab,
+        val articles: List<UserArticle>,
+        val transfers: List<UserTransfer>,
+    ) : BookmarksUiState
 }
 
 sealed class BookmarkElement(open val id: Int) {
     data class Article(override val id: Int) : BookmarkElement(id)
     data class Transfer(override val id: Int) : BookmarkElement(id)
 }
+
+private const val TAB_KEY = "tab"

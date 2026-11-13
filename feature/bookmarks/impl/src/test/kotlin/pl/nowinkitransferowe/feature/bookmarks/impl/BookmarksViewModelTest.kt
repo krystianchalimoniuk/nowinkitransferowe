@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.feature.bookmarks.impl
 
+import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -32,10 +33,9 @@ import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
 import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
-import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
-import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 class BookmarksViewModelTest {
     @get:Rule
@@ -43,92 +43,80 @@ class BookmarksViewModelTest {
 
     private val userDataRepository = TestUserDataRepository()
     private val articleRepository = TestArticleRepository()
-    private val userArticleRepository = CompositeUserArticleRepository(
-        articleRepository = articleRepository,
-        dictionaryRepository = TestDictionaryRepository(),
-        userDataRepository = userDataRepository,
-    )
-
     private val transferRepository = TestTransferRepository()
-    private val userTransferRepository = CompositeUserTransferRepository(
-        transferRepository = transferRepository,
-        userDataRepository = userDataRepository,
-    )
 
     private lateinit var viewModel: BookmarksViewModel
 
     @Before
     fun setup() {
         viewModel = BookmarksViewModel(
+            savedStateHandle = SavedStateHandle(),
             userDataRepository = userDataRepository,
-            userArticleRepository = userArticleRepository,
-            userTransferRepository = userTransferRepository,
+            userArticleRepository = CompositeUserArticleRepository(
+                articleRepository = articleRepository,
+                dictionaryRepository = TestDictionaryRepository(),
+                userDataRepository = userDataRepository,
+            ),
+            userTransferRepository = CompositeUserTransferRepository(
+                transferRepository = transferRepository,
+                userDataRepository = userDataRepository,
+            ),
         )
+        articleRepository.sendArticles(articlesTestData)
+        transferRepository.sendTransfers(transfersTestData)
     }
+
+    private fun success() = assertIs<BookmarksUiState.Success>(viewModel.uiState.value)
 
     @Test
     fun stateIsInitiallyLoading() = runTest {
-        assertEquals(ArticleFeedUiState.Loading, viewModel.newsFeedUiState.value)
-        assertEquals(TransferFeedUiState.Loading, viewModel.transferFeedUiState.value)
+        assertEquals(BookmarksUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun oneNews_showsInFeed() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.newsFeedUiState.collect() }
-
-        articleRepository.sendArticles(articlesTestData)
+    fun bookmarks_showInTheirTabs() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
         userDataRepository.setArticleBookmarked(articlesTestData[0].id, true)
-        val item = viewModel.newsFeedUiState.value
-        assertIs<ArticleFeedUiState.Success>(item)
-        assertEquals(item.feed.size, 1)
+        userDataRepository.setTransferBookmarked(transfersTestData[0].id, true)
+        userDataRepository.setTransferBookmarked(transfersTestData[1].id, true)
 
-        collectJob.cancel()
+        assertEquals(SavedTab.ARTICLES, success().tab)
+        assertEquals(listOf(articlesTestData[0].id), success().articles.map { it.id })
+        assertEquals(2, success().transfers.size)
     }
 
     @Test
-    fun oneNews_whenRemoving_removesFromFeed() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.newsFeedUiState.collect() }
-        // Set the news resources to be used by this test
-        articleRepository.sendArticles(articlesTestData)
-        // Start with the resource saved
+    fun selectTab_changesTab() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        userDataRepository.setTransferBookmarked(transfersTestData[0].id, true)
+        viewModel.selectTab(SavedTab.TRANSFERS)
+        assertEquals(SavedTab.TRANSFERS, success().tab)
+    }
+
+    @Test
+    fun removeArticleBookmark_removesItAndUndoBringsItBack() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
         userDataRepository.setArticleBookmarked(articlesTestData[0].id, true)
-        // Use viewModel to remove saved resource
+
         viewModel.removeArticleBookmark(articlesTestData[0].id)
-        // Verify list of saved resources is now empty
-        val item = viewModel.newsFeedUiState.value
-        assertIs<ArticleFeedUiState.Success>(item)
-        assertEquals(item.feed.size, 0)
+        assertTrue(success().articles.isEmpty())
+        assertTrue(viewModel.shouldDisplayUndoBookmark)
 
-        collectJob.cancel()
+        viewModel.undoBookmarkRemoval()
+        assertEquals(1, success().articles.size)
+        assertEquals(false, viewModel.shouldDisplayUndoBookmark)
     }
 
     @Test
-    fun oneTransfer_showsInFeed() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.transferFeedUiState.collect() }
-
-        transferRepository.sendTransfers(transfersTestData)
+    fun removeTransferBookmark_removesIt() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
         userDataRepository.setTransferBookmarked(transfersTestData[0].id, true)
-        val item = viewModel.transferFeedUiState.value
-        assertIs<TransferFeedUiState.Success>(item)
-        assertEquals(item.feed.size, 1)
 
-        collectJob.cancel()
-    }
-
-    @Test
-    fun oneTransfer_whenRemoving_removesFromFeed() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.transferFeedUiState.collect() }
-        // Set the news resources to be used by this test
-        transferRepository.sendTransfers(transfersTestData)
-        // Start with the resource saved
-        userDataRepository.setTransferBookmarked(transfersTestData[0].id, true)
-        // Use viewModel to remove saved resource
         viewModel.removeTransferBookmark(transfersTestData[0].id)
-        // Verify list of saved resources is now empty
-        val item = viewModel.transferFeedUiState.value
-        assertIs<TransferFeedUiState.Success>(item)
-        assertEquals(item.feed.size, 0)
+        assertTrue(success().transfers.isEmpty())
 
-        collectJob.cancel()
+        viewModel.clearUndoState()
+        viewModel.undoBookmarkRemoval()
+        assertTrue(success().transfers.isEmpty())
     }
 }
