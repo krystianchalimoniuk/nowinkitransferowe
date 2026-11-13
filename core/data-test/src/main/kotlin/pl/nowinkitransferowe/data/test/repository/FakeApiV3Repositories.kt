@@ -156,6 +156,8 @@ class FakeRumourRepository @Inject constructor() : RumourRepository {
 
     override fun observeRumours(status: RumourStatus, updatedSince: Instant): Flow<List<Rumour>> = flowOf(emptyList())
 
+    override fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>> = flowOf(emptyList())
+
     override fun observeRumoursOfClub(clubId: Int): Flow<List<Rumour>> = flowOf(emptyList())
 
     override fun observeRumoursOfPlayer(playerId: Int): Flow<List<Rumour>> = flowOf(emptyList())

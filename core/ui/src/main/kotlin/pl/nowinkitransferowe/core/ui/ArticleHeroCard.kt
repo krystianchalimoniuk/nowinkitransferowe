@@ -105,7 +105,7 @@ fun ArticleHeroCard(
 
 /** An article image filling its box; nothing in previews and tests, where the box shows. */
 @Composable
-internal fun ArticleImage(url: String?, modifier: Modifier = Modifier) {
+fun ArticleImage(url: String?, modifier: Modifier = Modifier) {
     if (url != null && !LocalInspectionMode.current) {
         AsyncImage(model = url, contentDescription = null, contentScale = ContentScale.Crop, modifier = modifier)
     }

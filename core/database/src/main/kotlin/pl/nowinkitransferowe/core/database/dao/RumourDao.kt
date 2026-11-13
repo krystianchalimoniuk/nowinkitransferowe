@@ -72,6 +72,25 @@ interface RumourDao {
      * Rumours with [status] updated at or after [updatedSince], most recently updated first. Active
      * rumours of the last 45 days are the board shown on the website.
      */
+    /** Rumours that the article with [articleId] moved to a stage, most recently updated first. */
+    @Transaction
+    @Query(
+        """
+        SELECT r.*,
+            p.name AS current_player_name, p.photo_url AS player_photo_url,
+            fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
+            tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
+        FROM rumours r
+        LEFT JOIN players p ON p.id = r.player_id
+        LEFT JOIN clubs fc ON fc.id = r.from_club_id
+        LEFT JOIN clubs tc ON tc.id = r.to_club_id
+        WHERE r.latest_article_id = :articleId
+            OR r.id IN (SELECT rumour_id FROM rumour_stages WHERE article_id = :articleId)
+        ORDER BY r.updated_at DESC
+        """,
+    )
+    fun observeRumoursOfArticle(articleId: Int): Flow<List<PopulatedRumour>>
+
     @Transaction
     @Query(
         """

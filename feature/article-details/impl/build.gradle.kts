@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.nowinkitransferowe.android.feature.impl)
     alias(libs.plugins.nowinkitransferowe.android.library.compose)
     alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -26,12 +27,15 @@ android {
 
 dependencies {
     implementation(projects.feature.articleDetails.api)
+    implementation(projects.feature.rumours.api)
     implementation(projects.feature.search.api)
     implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(projects.core.data)
 
     testImplementation(projects.core.testing)
     testImplementation(libs.robolectric)
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(projects.core.screenshotTesting)
 
 
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)

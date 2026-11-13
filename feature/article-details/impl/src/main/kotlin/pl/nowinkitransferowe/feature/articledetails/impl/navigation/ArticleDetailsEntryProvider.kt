@@ -23,8 +23,10 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.ArticleNavKey
+import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
 import pl.nowinkitransferowe.feature.articledetails.impl.ArticleDetailsRoute
 import pl.nowinkitransferowe.feature.articledetails.impl.ArticleDetailsViewModel
+import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
 import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -36,6 +38,8 @@ fun EntryProviderScope<NavKey>.articleDetailsEntry(navigator: Navigator) {
             showBackButton = true,
             onBackClick = { navigator.goBack() },
             onTopicClick = navigator::navigateToSearch,
+            onArticleLinkClick = navigator::navigateToArticle,
+            onRumourClick = { navigator.navigate(RumoursNavKey) },
             viewModel = hiltViewModel<ArticleDetailsViewModel, ArticleDetailsViewModel.Factory>(
                 key = key.newsId.toString(),
             ) { factory ->
