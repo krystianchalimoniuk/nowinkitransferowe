@@ -169,7 +169,7 @@ class BookmarksScreenTest {
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = { newsResourceId ->
-                    assertEquals(savedUserArticlesTestData[0].id.toString(), newsResourceId)
+                    assertEquals(savedUserArticlesTestData[0].id, newsResourceId)
                     removeNewsFromBookmarksCalled = true
                 },
                 removeFromTransferBookmarks = {},
@@ -218,7 +218,7 @@ class BookmarksScreenTest {
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = {},
                 removeFromTransferBookmarks = { transferResourceId ->
-                    assertEquals(savedUserTransfersTestData[0].id.toString(), transferResourceId)
+                    assertEquals(savedUserTransfersTestData[0].id, transferResourceId)
                     removeTransfersFromBookmarksCalled = true
                 },
                 onTopicClick = {},

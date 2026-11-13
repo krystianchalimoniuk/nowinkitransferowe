@@ -43,7 +43,7 @@ class NewsViewModel @Inject constructor(
     private val userArticleRepository: UserArticleRepository,
 ) : ViewModel() {
 
-    val selectedNewsId: StateFlow<String?> =
+    val selectedNewsId: StateFlow<Int?> =
         savedStateHandle.getStateFlow(SELECTED_NEWS_ID_KEY, null)
 
     private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
@@ -72,19 +72,19 @@ class NewsViewModel @Inject constructor(
                 initialValue = NewsFeedUiState.Loading,
             )
 
-    fun updateNewsResourceSaved(newsResourceId: String, isChecked: Boolean) {
+    fun updateNewsResourceSaved(newsResourceId: Int, isChecked: Boolean) {
         viewModelScope.launch {
-            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, isChecked) }
+            userDataRepository.setArticleBookmarked(newsResourceId, isChecked)
         }
     }
 
-    fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
+    fun setNewsResourceViewed(newsResourceId: Int, viewed: Boolean) {
         viewModelScope.launch {
-            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleViewed(it, viewed) }
+            userDataRepository.setArticleViewed(newsResourceId, viewed)
         }
     }
 
-    fun onNewsClick(newsId: String?) {
+    fun onNewsClick(newsId: Int?) {
         savedStateHandle[SELECTED_NEWS_ID_KEY] = newsId
     }
 

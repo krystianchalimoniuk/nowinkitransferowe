@@ -74,5 +74,5 @@ val userArticlesTestData: List<UserArticle> = articlesTestData.mapToUserArticles
 /** [articlesTestData] all saved, as the bookmarks screen shows them. */
 val savedUserArticlesTestData: List<UserArticle> = articlesTestData.mapToUserArticles(
     topicsTestData,
-    emptyUserData.copy(bookmarkedNewsResources = articlesTestData.map { it.id.toString() }.toSet()),
+    emptyUserData.copy(bookmarkedArticles = articlesTestData.map { it.id }.toSet()),
 )

@@ -49,10 +49,10 @@ class SearchScreenTest {
     private lateinit var searchNotReadyString: String
 
     private val userData: UserData = UserData(
-        bookmarkedNewsResources = setOf("1", "3"),
-        viewedNewsResources = setOf("1", "2", "4"),
-        bookmarkedTransferResources = setOf("1", "3", "5"),
-        viewedTransferResources = setOf("1", "2", "3"),
+        bookmarkedArticles = setOf(1, 3),
+        viewedArticles = setOf(1, 2, 4),
+        bookmarkedTransfers = setOf(1, 3, 5),
+        viewedTransfers = setOf(1, 2, 3),
         darkThemeConfig = DarkThemeConfig.DARK,
         useDynamicColor = false,
         isNewsNotificationsAllowed = true,

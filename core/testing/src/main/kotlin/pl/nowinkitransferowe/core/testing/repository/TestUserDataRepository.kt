@@ -25,10 +25,10 @@ import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserData
 
 val emptyUserData = UserData(
-    bookmarkedNewsResources = emptySet(),
-    bookmarkedTransferResources = emptySet(),
-    viewedNewsResources = emptySet(),
-    viewedTransferResources = emptySet(),
+    bookmarkedArticles = emptySet(),
+    bookmarkedTransfers = emptySet(),
+    viewedArticles = emptySet(),
+    viewedTransfers = emptySet(),
     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     useDynamicColor = false,
     isNewsNotificationsAllowed = true,
@@ -51,25 +51,25 @@ class TestUserDataRepository : UserDataRepository {
 
     override suspend fun setArticleBookmarked(articleId: Int, bookmarked: Boolean) {
         currentUserData.let { current ->
-            val id = articleId.toString()
-            val bookmarkedArticles = if (bookmarked) current.bookmarkedNewsResources + id else current.bookmarkedNewsResources - id
-            _userData.tryEmit(current.copy(bookmarkedNewsResources = bookmarkedArticles))
+            val id = articleId
+            val bookmarkedArticles = if (bookmarked) current.bookmarkedArticles + id else current.bookmarkedArticles - id
+            _userData.tryEmit(current.copy(bookmarkedArticles = bookmarkedArticles))
         }
     }
 
     override suspend fun setArticleViewed(articleId: Int, viewed: Boolean) {
         currentUserData.let { current ->
-            val id = articleId.toString()
-            val viewedArticles = if (viewed) current.viewedNewsResources + id else current.viewedNewsResources - id
-            _userData.tryEmit(current.copy(viewedNewsResources = viewedArticles))
+            val id = articleId
+            val viewedArticles = if (viewed) current.viewedArticles + id else current.viewedArticles - id
+            _userData.tryEmit(current.copy(viewedArticles = viewedArticles))
         }
     }
 
     override suspend fun setTransferBookmarked(transferId: Int, bookmarked: Boolean) {
         currentUserData.let { current ->
-            val id = transferId.toString()
-            val bookmarkedTransfers = if (bookmarked) current.bookmarkedTransferResources + id else current.bookmarkedTransferResources - id
-            _userData.tryEmit(current.copy(bookmarkedTransferResources = bookmarkedTransfers))
+            val id = transferId
+            val bookmarkedTransfers = if (bookmarked) current.bookmarkedTransfers + id else current.bookmarkedTransfers - id
+            _userData.tryEmit(current.copy(bookmarkedTransfers = bookmarkedTransfers))
         }
     }
 
@@ -77,9 +77,9 @@ class TestUserDataRepository : UserDataRepository {
 
     override suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) {
         currentUserData.let { current ->
-            val ids = transferIds.map(Int::toString).toSet()
-            val viewedTransfers = if (viewed) current.viewedTransferResources + ids else current.viewedTransferResources - ids
-            _userData.tryEmit(current.copy(viewedTransferResources = viewedTransfers))
+            val ids = transferIds.toSet()
+            val viewedTransfers = if (viewed) current.viewedTransfers + ids else current.viewedTransfers - ids
+            _userData.tryEmit(current.copy(viewedTransfers = viewedTransfers))
         }
     }
 

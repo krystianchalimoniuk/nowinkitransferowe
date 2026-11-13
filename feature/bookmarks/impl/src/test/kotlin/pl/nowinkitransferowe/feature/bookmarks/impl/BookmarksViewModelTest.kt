@@ -93,7 +93,7 @@ class BookmarksViewModelTest {
         // Start with the resource saved
         userDataRepository.setArticleBookmarked(articlesTestData[0].id, true)
         // Use viewModel to remove saved resource
-        viewModel.removeFromSavedNewsResources(articlesTestData[0].id.toString())
+        viewModel.removeFromSavedNewsResources(articlesTestData[0].id)
         // Verify list of saved resources is now empty
         val item = viewModel.newsFeedUiState.value
         assertIs<NewsFeedUiState.Success>(item)
@@ -123,7 +123,7 @@ class BookmarksViewModelTest {
         // Start with the resource saved
         userDataRepository.setTransferBookmarked(transfersTestData[0].id, true)
         // Use viewModel to remove saved resource
-        viewModel.removeFromSavedTransferResources(transfersTestData[0].id.toString())
+        viewModel.removeFromSavedTransferResources(transfersTestData[0].id)
         // Verify list of saved resources is now empty
         val item = viewModel.transferFeedUiState.value
         assertIs<TransferFeedUiState.Success>(item)

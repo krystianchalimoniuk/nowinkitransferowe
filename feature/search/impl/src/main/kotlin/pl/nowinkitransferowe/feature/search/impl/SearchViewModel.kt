@@ -119,28 +119,28 @@ class SearchViewModel @AssistedInject constructor(
         }
     }
 
-    fun setNewsResourceBookmarked(newsResourceId: String, isChecked: Boolean) {
+    fun setNewsResourceBookmarked(newsResourceId: Int, isChecked: Boolean) {
         viewModelScope.launch {
-            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, isChecked) }
+            userDataRepository.setArticleBookmarked(newsResourceId, isChecked)
         }
     }
 
-    fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
+    fun setNewsResourceViewed(newsResourceId: Int, viewed: Boolean) {
         viewModelScope.launch {
-            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleViewed(it, viewed) }
+            userDataRepository.setArticleViewed(newsResourceId, viewed)
         }
     }
 
-    fun setTransferResourceBookmarked(transferResourceId: String, isChecked: Boolean) {
+    fun setTransferResourceBookmarked(transferResourceId: Int, isChecked: Boolean) {
         viewModelScope.launch {
-            transferResourceId.toIntOrNull()?.let { userDataRepository.setTransferBookmarked(it, isChecked) }
+            userDataRepository.setTransferBookmarked(transferResourceId, isChecked)
         }
     }
 
-    fun setTransferResourceViewed(transferResourceIds: List<String>, viewed: Boolean) {
+    fun setTransferResourceViewed(transferResourceIds: List<Int>, viewed: Boolean) {
         viewModelScope.launch {
             transferResourceIds.forEach {
-                it.toIntOrNull()?.let { userDataRepository.setTransferViewed(it, viewed) }
+                userDataRepository.setTransferViewed(it, viewed)
             }
         }
     }

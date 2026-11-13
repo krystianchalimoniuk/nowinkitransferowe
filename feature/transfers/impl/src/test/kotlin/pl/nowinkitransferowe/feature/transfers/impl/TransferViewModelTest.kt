@@ -80,13 +80,13 @@ class TransferViewModelTest {
 
     @Test
     fun whenUpdateTransferResourceSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        viewModel.updateTransferResourceSaved("1", true)
+        viewModel.updateTransferResourceSaved(1, true)
 
-        assertEquals(setOf("1"), userDataRepository.userData.first().bookmarkedTransferResources)
+        assertEquals(setOf(1), userDataRepository.userData.first().bookmarkedTransfers)
 
-        viewModel.updateTransferResourceSaved("1", false)
+        viewModel.updateTransferResourceSaved(1, false)
 
-        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedTransferResources)
+        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedTransfers)
     }
 
     @Test
@@ -94,9 +94,9 @@ class TransferViewModelTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
         transferRepository.sendTransfers(transfersTestData)
 
-        viewModel.updateTransferResourceSaved(transferResourceId = "15000", isChecked = true)
+        viewModel.updateTransferResourceSaved(transferResourceId = 15000, isChecked = true)
 
-        val userData = emptyUserData.copy(bookmarkedTransferResources = setOf("15000"))
+        val userData = emptyUserData.copy(bookmarkedTransfers = setOf(15000))
         assertEquals(
             TransferFeedUiState.Success(feed = transfersTestData.take(TransferViewModel.PAGE_SIZE).mapToUserTransfers(userData)),
             viewModel.feedUiState.value,
@@ -118,8 +118,8 @@ class TransferViewModelTest {
 
     @Test
     fun transfersMarkedAsViewedAreSaved() = runTest {
-        viewModel.setTransferResourcesViewed(listOf("19580", "15000"), true)
+        viewModel.setTransferResourcesViewed(listOf(19580, 15000), true)
 
-        assertEquals(setOf("19580", "15000"), userDataRepository.userData.first().viewedTransferResources)
+        assertEquals(setOf(19580, 15000), userDataRepository.userData.first().viewedTransfers)
     }
 }

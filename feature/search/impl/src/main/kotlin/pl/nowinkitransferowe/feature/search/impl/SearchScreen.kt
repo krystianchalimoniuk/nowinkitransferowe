@@ -86,8 +86,8 @@ import pl.nowinkitransferowe.feature.search.impl.R as searchR
 @Composable
 internal fun SearchRoute(
     onBackClick: () -> Unit,
-    onNewsClick: (String) -> Unit,
-    onTransferClick: (String) -> Unit,
+    onNewsClick: (Int) -> Unit,
+    onTransferClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel,
 ) {
@@ -127,14 +127,14 @@ internal fun SearchScreen(
     onSearchQueryChanged: (String) -> Unit = {},
     onSearchTriggered: (String) -> Unit = {},
     onClearRecentSearches: () -> Unit = {},
-    onNewsResourcesCheckedChanged: (String, Boolean) -> Unit = { _, _ -> },
-    onNewsResourceViewed: (String) -> Unit = {},
-    onTransferResourcesCheckedChanged: (String, Boolean) -> Unit = { _, _ -> },
-    onTransferResourceViewed: (List<String>) -> Unit = {},
+    onNewsResourcesCheckedChanged: (Int, Boolean) -> Unit = { _, _ -> },
+    onNewsResourceViewed: (Int) -> Unit = {},
+    onTransferResourcesCheckedChanged: (Int, Boolean) -> Unit = { _, _ -> },
+    onTransferResourceViewed: (List<Int>) -> Unit = {},
     onBackClick: () -> Unit = {},
     onTopicClick: (String) -> Unit = {},
-    onNewsClick: (String) -> Unit = {},
-    onTransferClick: (String) -> Unit = {},
+    onNewsClick: (Int) -> Unit = {},
+    onTransferClick: (Int) -> Unit = {},
 ) {
     TrackScreenViewEvent(screenName = "Search")
     Column(modifier = modifier) {
@@ -252,12 +252,12 @@ private fun SearchResultBody(
     newsResources: List<UserArticle>,
     onSearchTriggered: (String) -> Unit,
     onTopicClick: (String) -> Unit,
-    onNewsClick: (String) -> Unit,
-    onTransferClick: (String) -> Unit,
-    onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onNewsResourceViewed: (String) -> Unit,
-    onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onTransferResourceViewed: (List<String>) -> Unit,
+    onNewsClick: (Int) -> Unit,
+    onTransferClick: (Int) -> Unit,
+    onNewsResourcesCheckedChanged: (Int, Boolean) -> Unit,
+    onNewsResourceViewed: (Int) -> Unit,
+    onTransferResourcesCheckedChanged: (Int, Boolean) -> Unit,
+    onTransferResourceViewed: (List<Int>) -> Unit,
 ) {
     val state = rememberLazyStaggeredGridState()
     Box(

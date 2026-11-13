@@ -35,7 +35,7 @@ fun EntryProviderScope<NavKey>.transferDetailsEntry(navigator: Navigator) {
             showBackButton = true,
             onBackClick = { navigator.goBack() },
             viewModel = hiltViewModel<DetailsTransferViewModel, DetailsTransferViewModel.Factory>(
-                key = key.transferId,
+                key = key.transferId.toString(),
             ) { factory ->
                 factory.create(key.transferId)
             },

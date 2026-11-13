@@ -82,8 +82,9 @@ private val transferDeepLinkMatcher = UriDeepLinkMatcher(
  */
 private fun deepLinkKeys(uri: String): List<NavKey> {
     val request = DeepLinkRequest(uri)
-    newsDeepLinkMatcher.match(request)?.let { return listOf(NewsNavKey, it.key) }
-    transferDeepLinkMatcher.match(request)?.let { return listOf(TransfersNavKey, it.key) }
+    // The ids are numbers; a link with anything else fails to decode and opens the app as usual.
+    runCatching { newsDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(NewsNavKey, it.key) }
+    runCatching { transferDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(TransfersNavKey, it.key) }
     return emptyList()
 }
 

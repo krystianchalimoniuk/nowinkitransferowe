@@ -77,7 +77,7 @@ import pl.nowinkitransferowe.feature.transfers.impl.R
 fun TransferRoute(
     modifier: Modifier = Modifier,
     viewModel: TransferViewModel = hiltViewModel(),
-    onTransferClick: (String) -> Unit,
+    onTransferClick: (Int) -> Unit,
     highlightSelectedTransfer: Boolean = false,
 ) {
     val feedState by viewModel.feedUiState.collectAsStateWithLifecycle()
@@ -104,15 +104,15 @@ fun TransferRoute(
 @Composable
 internal fun TransferScreen(
     modifier: Modifier = Modifier,
-    unreadTransfers: List<String> = arrayListOf(),
-    onTransferClick: (String) -> Unit,
+    unreadTransfers: List<Int> = arrayListOf(),
+    onTransferClick: (Int) -> Unit,
     isSyncing: Boolean,
     feedState: TransferFeedUiState,
     highlightSelectedTransfer: Boolean = false,
-    selectedTransferId: String? = null,
-    onTransferSelected: (String) -> Unit = {},
-    onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onTransferResourceViewed: (List<String>) -> Unit,
+    selectedTransferId: Int? = null,
+    onTransferSelected: (Int) -> Unit = {},
+    onTransferResourcesCheckedChanged: (Int, Boolean) -> Unit,
+    onTransferResourceViewed: (List<Int>) -> Unit,
     loadNextPage: () -> Unit,
 ) {
     val isFeedLoading = feedState is TransferFeedUiState.Loading

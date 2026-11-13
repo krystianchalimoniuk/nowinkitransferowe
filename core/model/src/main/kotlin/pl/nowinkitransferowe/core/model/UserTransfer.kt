@@ -40,8 +40,8 @@ data class UserTransfer internal constructor(
         fee = transfer.fee,
         date = transfer.date,
         articleId = transfer.articleId,
-        isSaved = transfer.id.toString() in userData.bookmarkedTransferResources,
-        hasBeenViewed = transfer.id.toString() in userData.viewedTransferResources,
+        isSaved = transfer.id in userData.bookmarkedTransfers,
+        hasBeenViewed = transfer.id in userData.viewedTransfers,
     )
 
     val season: Season get() = Season.of(date)

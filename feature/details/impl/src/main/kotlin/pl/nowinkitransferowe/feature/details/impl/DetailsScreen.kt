@@ -115,7 +115,7 @@ internal fun DetailsScreen(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
-    onBookmarkChanged: (String, Boolean) -> Unit,
+    onBookmarkChanged: (Int, Boolean) -> Unit,
     darkThemeConfig: DarkThemeConfig,
     modifier: Modifier = Modifier,
 ) {
@@ -155,7 +155,7 @@ internal fun DetailsScreen(
                         userNewsResource = detailsUiState.userNewsResource,
                         onToggleBookmark = {
                             onBookmarkChanged(
-                                detailsUiState.userNewsResource.id.toString(),
+                                detailsUiState.userNewsResource.id,
                                 !detailsUiState.userNewsResource.isSaved,
                             )
                         },

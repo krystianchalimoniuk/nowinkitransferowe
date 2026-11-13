@@ -70,14 +70,14 @@ fun TransferResourceCardExpanded(
     modifier: Modifier = Modifier,
     userTransferResource: UserTransfer,
     isBookmarked: Boolean,
-    selectedTransferId: String? = null,
+    selectedTransferId: Int? = null,
     highlightSelectedTransfer: Boolean = false,
     hasBeenViewed: Boolean,
     onToggleBookmark: () -> Unit,
     onClick: () -> Unit,
 ) {
     val clickActionLabel = stringResource(R.string.core_ui_card_tap_action)
-    val isSelected = highlightSelectedTransfer && userTransferResource.id.toString() == selectedTransferId
+    val isSelected = highlightSelectedTransfer && userTransferResource.id == selectedTransferId
 
     OutlinedCard(
         onClick = onClick,

@@ -21,8 +21,8 @@ import kotlinx.serialization.Serializable
 import pl.nowinkitransferowe.core.navigation.Navigator
 
 @Serializable
-data class DetailsTransferNavKey(val transferId: String) : NavKey
+data class DetailsTransferNavKey(val transferId: Int) : NavKey
 
-fun Navigator.navigateToTransferDetails(transferId: String) {
+fun Navigator.navigateToTransferDetails(transferId: Int) {
     navigate(DetailsTransferNavKey(transferId))
 }

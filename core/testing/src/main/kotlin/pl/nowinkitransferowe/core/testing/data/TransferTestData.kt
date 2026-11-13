@@ -74,5 +74,5 @@ val userTransfersTestData: List<UserTransfer> = transfersTestData.mapToUserTrans
 
 /** [transfersTestData] all saved, as the bookmarks screen shows them. */
 val savedUserTransfersTestData: List<UserTransfer> = transfersTestData.mapToUserTransfers(
-    emptyUserData.copy(bookmarkedTransferResources = transfersTestData.map { it.id.toString() }.toSet()),
+    emptyUserData.copy(bookmarkedTransfers = transfersTestData.map { it.id }.toSet()),
 )

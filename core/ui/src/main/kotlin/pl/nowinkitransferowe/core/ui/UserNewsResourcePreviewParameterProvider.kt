@@ -40,10 +40,10 @@ class UserNewsResourcePreviewParameterProvider : PreviewParameterProvider<List<U
 
 object PreviewParameterData {
     internal val userData: UserData = UserData(
-        bookmarkedNewsResources = setOf("1", "3"),
-        viewedNewsResources = setOf("1", "2", "4"),
-        bookmarkedTransferResources = setOf("2", "3"),
-        viewedTransferResources = setOf("2", "3"),
+        bookmarkedArticles = setOf(1, 3),
+        viewedArticles = setOf(1, 2, 4),
+        bookmarkedTransfers = setOf(2, 3),
+        viewedTransfers = setOf(2, 3),
         darkThemeConfig = DarkThemeConfig.DARK,
         useDynamicColor = false,
         isNewsNotificationsAllowed = true,

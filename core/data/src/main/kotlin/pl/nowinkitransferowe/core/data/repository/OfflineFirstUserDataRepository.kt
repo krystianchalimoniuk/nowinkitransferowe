@@ -32,26 +32,26 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
         ntPreferencesDataSource.userData
 
     override suspend fun setArticleBookmarked(articleId: Int, bookmarked: Boolean) {
-        ntPreferencesDataSource.setNewsResourceBookmarked(articleId.toString(), bookmarked)
+        ntPreferencesDataSource.setArticleBookmarked(articleId, bookmarked)
         analyticsHelper.logNewsResourceBookmarkToggled(
             newsResourceId = articleId.toString(),
             isBookmarked = bookmarked,
         )
     }
 
-    override suspend fun setArticleViewed(articleId: Int, viewed: Boolean) = ntPreferencesDataSource.setNewsResourceViewed(articleId.toString(), viewed)
+    override suspend fun setArticleViewed(articleId: Int, viewed: Boolean) = ntPreferencesDataSource.setArticlesViewed(listOf(articleId), viewed)
 
     override suspend fun setTransferBookmarked(transferId: Int, bookmarked: Boolean) {
-        ntPreferencesDataSource.setTransferResourceBookmarked(transferId.toString(), bookmarked)
+        ntPreferencesDataSource.setTransferBookmarked(transferId, bookmarked)
         analyticsHelper.logNewsResourceBookmarkToggled(
             newsResourceId = transferId.toString(),
             isBookmarked = bookmarked,
         )
     }
 
-    override suspend fun setTransferViewed(transferId: Int, viewed: Boolean) = ntPreferencesDataSource.setTransferResourceViewed(transferId.toString(), viewed)
+    override suspend fun setTransferViewed(transferId: Int, viewed: Boolean) = ntPreferencesDataSource.setTransfersViewed(listOf(transferId), viewed)
 
-    override suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) = ntPreferencesDataSource.setTransferResourcesViewed(transferIds.map(Int::toString), viewed)
+    override suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) = ntPreferencesDataSource.setTransfersViewed(transferIds, viewed)
 
     override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         ntPreferencesDataSource.setDarkThemeConfig(darkThemeConfig)
