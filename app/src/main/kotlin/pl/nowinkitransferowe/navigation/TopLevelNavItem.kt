@@ -22,9 +22,12 @@ import pl.nowinkitransferowe.R
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksNavKey
+import pl.nowinkitransferowe.feature.leagues.api.navigation.LeaguesNavKey
+import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
-import pl.nowinkitransferowe.feature.articles.impl.R as newsR
 import pl.nowinkitransferowe.feature.bookmarks.impl.R as bookmarksR
+import pl.nowinkitransferowe.feature.leagues.impl.R as leaguesR
+import pl.nowinkitransferowe.feature.rumours.impl.R as rumoursR
 import pl.nowinkitransferowe.feature.transfers.impl.R as transferR
 
 /**
@@ -45,18 +48,32 @@ data class TopLevelNavItem(
     @StringRes val titleTextId: Int,
 )
 
-val NEWS = TopLevelNavItem(
-    selectedIcon = NtIcons.Upcoming,
-    unselectedIcon = NtIcons.UpcomingBorder,
-    iconTextId = newsR.string.feature_articles_impl_title,
+val HOME = TopLevelNavItem(
+    selectedIcon = NtIcons.Home,
+    unselectedIcon = NtIcons.HomeBorder,
+    iconTextId = R.string.home,
     titleTextId = R.string.app_name,
 )
 
 val TRANSFERS = TopLevelNavItem(
-    selectedIcon = NtIcons.Arrows,
-    unselectedIcon = NtIcons.ArrowsBorder,
+    selectedIcon = NtIcons.Transfers,
+    unselectedIcon = NtIcons.TransfersBorder,
     iconTextId = transferR.string.feature_transfers_impl_title,
     titleTextId = transferR.string.feature_transfers_impl_title,
+)
+
+val RUMOURS = TopLevelNavItem(
+    selectedIcon = NtIcons.Rumours,
+    unselectedIcon = NtIcons.RumoursBorder,
+    iconTextId = rumoursR.string.feature_rumours_impl_title,
+    titleTextId = rumoursR.string.feature_rumours_impl_title,
+)
+
+val LEAGUES = TopLevelNavItem(
+    selectedIcon = NtIcons.Leagues,
+    unselectedIcon = NtIcons.LeaguesBorder,
+    iconTextId = leaguesR.string.feature_leagues_impl_title,
+    titleTextId = leaguesR.string.feature_leagues_impl_title,
 )
 
 val BOOKMARKS = TopLevelNavItem(
@@ -66,8 +83,11 @@ val BOOKMARKS = TopLevelNavItem(
     titleTextId = bookmarksR.string.feature_bookmarks_impl_title,
 )
 
+/** The five sections of the bottom bar (navigation rail on wide screens), in this order. */
 val TOP_LEVEL_NAV_ITEMS = mapOf(
-    ArticlesNavKey to NEWS,
+    ArticlesNavKey to HOME,
     TransfersNavKey to TRANSFERS,
+    RumoursNavKey to RUMOURS,
+    LeaguesNavKey to LEAGUES,
     BookmarksNavKey to BOOKMARKS,
 )

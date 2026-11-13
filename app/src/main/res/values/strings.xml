@@ -16,6 +16,7 @@
 -->
 <resources>
     <string name="app_name">Nowinki transferowe</string>
+    <string name="home">Główna</string>
     <string name="not_connected">Nie jesteś połączony z Internetem</string>
 
 </resources>
