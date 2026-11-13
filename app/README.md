@@ -22,16 +22,6 @@ graph TB
       :feature:articles:api[api]:::android-library
       :feature:articles:impl[impl]:::android-feature
     end
-    subgraph :feature:transfers
-      direction TB
-      :feature:transfers:api[api]:::android-library
-      :feature:transfers:impl[impl]:::android-feature
-    end
-    subgraph :feature:rumours
-      direction TB
-      :feature:rumours:api[api]:::android-library
-      :feature:rumours:impl[impl]:::android-feature
-    end
     subgraph :feature:leagues
       direction TB
       :feature:leagues:api[api]:::android-library
@@ -42,15 +32,25 @@ graph TB
       :feature:bookmarks:api[api]:::android-library
       :feature:bookmarks:impl[impl]:::android-feature
     end
-    subgraph :feature:article-details
+    subgraph :feature:transfers
       direction TB
-      :feature:article-details:api[api]:::android-library
-      :feature:article-details:impl[impl]:::android-feature
+      :feature:transfers:api[api]:::android-library
+      :feature:transfers:impl[impl]:::android-feature
+    end
+    subgraph :feature:rumours
+      direction TB
+      :feature:rumours:api[api]:::android-library
+      :feature:rumours:impl[impl]:::android-feature
     end
     subgraph :feature:search
       direction TB
       :feature:search:api[api]:::android-library
       :feature:search:impl[impl]:::android-feature
+    end
+    subgraph :feature:article-details
+      direction TB
+      :feature:article-details:api[api]:::android-library
+      :feature:article-details:impl[impl]:::android-feature
     end
     subgraph :feature:transfer-details
       direction TB
@@ -142,7 +142,9 @@ graph TB
   :feature:articles:impl -.-> :core:ui
   :feature:articles:impl -.-> :feature:article-details:api
   :feature:articles:impl -.-> :feature:articles:api
-  :feature:articles:impl -.-> :feature:search:api
+  :feature:articles:impl -.-> :feature:rumours:api
+  :feature:articles:impl -.-> :feature:transfer-details:api
+  :feature:articles:impl -.-> :feature:transfers:api
   :feature:bookmarks:api --> :core:navigation
   :feature:bookmarks:impl -.-> :core:data
   :feature:bookmarks:impl -.-> :core:designsystem

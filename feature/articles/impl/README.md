@@ -22,9 +22,17 @@ graph TB
       direction TB
       :feature:article-details:api[api]:::android-library
     end
-    subgraph :feature:search
+    subgraph :feature:rumours
       direction TB
-      :feature:search:api[api]:::android-library
+      :feature:rumours:api[api]:::android-library
+    end
+    subgraph :feature:transfer-details
+      direction TB
+      :feature:transfer-details:api[api]:::android-library
+    end
+    subgraph :feature:transfers
+      direction TB
+      :feature:transfers:api[api]:::android-library
     end
   end
   subgraph :core
@@ -72,8 +80,12 @@ graph TB
   :feature:articles:impl -.-> :core:ui
   :feature:articles:impl -.-> :feature:article-details:api
   :feature:articles:impl -.-> :feature:articles:api
-  :feature:articles:impl -.-> :feature:search:api
-  :feature:search:api --> :core:navigation
+  :feature:articles:impl -.-> :feature:rumours:api
+  :feature:articles:impl -.-> :feature:transfer-details:api
+  :feature:articles:impl -.-> :feature:transfers:api
+  :feature:rumours:api --> :core:navigation
+  :feature:transfer-details:api --> :core:navigation
+  :feature:transfers:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
