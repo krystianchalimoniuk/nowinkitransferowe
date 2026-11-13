@@ -111,6 +111,8 @@ data class PopulatedRumour(
     val currentPlayerName: String?,
     @ColumnInfo(name = "player_photo_url")
     val playerPhotoUrl: String?,
+    @ColumnInfo(name = "player_nationality")
+    val playerNationality: String? = null,
     @ColumnInfo(name = "current_from_club_name")
     val currentFromClubName: String?,
     @ColumnInfo(name = "from_club_crest_url")
@@ -129,6 +131,7 @@ fun PopulatedRumour.asExternalModel() = Rumour(
         id = rumour.playerId,
         name = currentPlayerName.orCopy(rumour.playerName),
         photoUrl = playerPhotoUrl,
+        nationality = playerNationality,
     ),
     from = rumour.fromClubId?.let { clubRef(it, currentFromClubName.orCopy(rumour.fromClubName), fromClubCrestUrl, null) },
     to = clubRef(rumour.toClubId, currentToClubName.orCopy(rumour.toClubName), toClubCrestUrl, null),

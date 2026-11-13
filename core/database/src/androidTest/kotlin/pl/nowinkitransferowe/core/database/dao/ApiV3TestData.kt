@@ -99,6 +99,7 @@ internal fun rumour(
     updatedAt: String = "2026-10-20T10:00:00Z",
     transferId: Int? = null,
     latestArticleId: Int? = null,
+    stage: Int = 4,
 ) = RumourEntity(
     id = id,
     playerId = playerId,
@@ -107,7 +108,7 @@ internal fun rumour(
     fromClubName = "Arsenal FC",
     toClubId = toClubId,
     toClubName = "Al-Hilal SFC",
-    stage = 4,
+    stage = stage,
     previousStage = 3,
     fee = "ok. 70 mln €",
     status = status,

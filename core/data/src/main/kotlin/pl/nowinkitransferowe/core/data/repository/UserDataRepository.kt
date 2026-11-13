@@ -33,6 +33,8 @@ interface UserDataRepository {
 
     suspend fun setTransferBookmarked(transferId: Int, bookmarked: Boolean)
 
+    suspend fun setRumourBookmarked(rumourId: Int, bookmarked: Boolean)
+
     suspend fun setTransferViewed(transferId: Int, viewed: Boolean)
 
     suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean)

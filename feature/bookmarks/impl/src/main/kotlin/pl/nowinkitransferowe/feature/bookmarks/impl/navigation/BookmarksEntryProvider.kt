@@ -26,6 +26,7 @@ import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
 import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksNavKey
 import pl.nowinkitransferowe.feature.bookmarks.impl.BookmarksRoute
+import pl.nowinkitransferowe.feature.rumours.api.navigation.navigateToRumour
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
 
 fun EntryProviderScope<NavKey>.bookmarksEntry(navigator: Navigator) {
@@ -34,6 +35,7 @@ fun EntryProviderScope<NavKey>.bookmarksEntry(navigator: Navigator) {
         BookmarksRoute(
             onArticleClick = navigator::navigateToArticle,
             onTransferClick = navigator::navigateToTransfer,
+            onRumourClick = navigator::navigateToRumour,
             onShowSnackbar = { message, action ->
                 snackbarHostState.showSnackbar(
                     message = message,

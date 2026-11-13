@@ -16,5 +16,34 @@
 -->
 <resources>
     <string name="feature_rumours_impl_title">Plotki</string>
-    <string name="feature_rumours_impl_coming">Tablica plotek z etapami i statystykami sezonu pojawi się tutaj wkrótce.</string>
+    <string name="feature_rumours_impl_loading">Wczytuję plotki…</string>
+    <string name="feature_rumours_impl_empty">Brak aktywnych plotek z tymi filtrami</string>
+    <string name="feature_rumours_impl_season">Sezon %1$s</string>
+    <string name="feature_rumours_impl_active">Aktywne</string>
+    <string name="feature_rumours_impl_confirmed">Potwierdzone</string>
+    <string name="feature_rumours_impl_accuracy">Skuteczność</string>
+    <string name="feature_rumours_impl_all_leagues">Wszystkie ligi</string>
+    <string name="feature_rumours_impl_stage">Etap</string>
+    <string name="feature_rumours_impl_all_stages">Wszystkie etapy</string>
+    <string name="feature_rumours_impl_rumour">Plotka</string>
+    <string name="feature_rumours_impl_back">Wróć</string>
+    <string name="feature_rumours_impl_share">Udostępnij</string>
+    <string name="feature_rumours_impl_not_found">Tej plotki nie ma już w bazie</string>
+    <plurals name="feature_rumours_impl_age">
+        <item quantity="one">%1$d rok</item>
+        <item quantity="few">%1$d lata</item>
+        <item quantity="many">%1$d lat</item>
+        <item quantity="other">%1$d lat</item>
+    </plurals>
+    <string name="feature_rumours_impl_unknown_club">Klub nieznany</string>
+    <string name="feature_rumours_impl_updated">aktualizacja %1$s</string>
+    <string name="feature_rumours_impl_see_transfer">Zobacz transfer</string>
+    <string name="feature_rumours_impl_history">Historia etapów</string>
+    <string name="feature_rumours_impl_no_article">zmiana bez artykułu</string>
+    <string name="feature_rumours_impl_read">Czytaj</string>
+    <string name="feature_rumours_impl_select_a_rumour">Wybierz plotkę</string>
+    <string name="feature_rumours_impl_status_active">Aktywna</string>
+    <string name="feature_rumours_impl_status_confirmed">Potwierdzona</string>
+    <string name="feature_rumours_impl_status_failed">Nieudana</string>
+    <string name="feature_rumours_impl_status_expired">Wygasła</string>
 </resources>

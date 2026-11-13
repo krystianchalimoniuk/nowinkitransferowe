@@ -140,6 +140,41 @@ internal class TransferAndRumourDaoTest : DatabaseTest() {
         assertEquals(listOf(4, 1), board.map { it.rumour.id })
     }
 
+    @Test
+    fun the_board_filters_by_league_and_stage() = runTest {
+        saveRumourDependencies()
+        clubDao.upsertClubs(
+            listOf(
+                clubStub(37, "Arsenal FC").copy(topic = "premier-league"),
+                clubStub(81, "FC Barcelona").copy(topic = "la-liga"),
+            ),
+        )
+        rumourDao.upsertRumours(
+            listOf(
+                rumour(1, fromClubId = 37, stage = 4, updatedAt = "2026-10-20T10:00:00Z"),
+                rumour(2, fromClubId = 81, stage = 4, updatedAt = "2026-10-21T10:00:00Z"),
+                rumour(3, fromClubId = 37, stage = 2, updatedAt = "2026-10-22T10:00:00Z"),
+            ),
+            emptyList(),
+        )
+        val since = Instant.parse("2026-09-15T00:00:00Z")
+
+        assertEquals(listOf(3, 1), rumourDao.observeRumours("ACTIVE", since, topic = "premier-league").first().map { it.rumour.id })
+        assertEquals(listOf(2, 1), rumourDao.observeRumours("ACTIVE", since, stage = 4).first().map { it.rumour.id })
+        assertEquals(listOf(1), rumourDao.observeRumours("ACTIVE", since, "premier-league", 4).first().map { it.rumour.id })
+    }
+
+    @Test
+    fun saved_rumours_are_read_by_id() = runTest {
+        saveRumourDependencies()
+        rumourDao.upsertRumours(
+            listOf(rumour(1, updatedAt = "2026-10-20T10:00:00Z"), rumour(2, updatedAt = "2026-10-21T10:00:00Z"), rumour(3)),
+            emptyList(),
+        )
+
+        assertEquals(listOf(2, 1), rumourDao.observeRumours(setOf(1, 2)).first().map { it.rumour.id })
+    }
+
     private suspend fun saveRumourDependencies() {
         playerDao.insertOrIgnorePlayers(listOf(playerStub(12148, "Gabriel Martinelli")))
         clubDao.insertOrIgnoreClubs(listOf(clubStub(37, "Arsenal FC"), clubStub(5120, "Al-Hilal SFC")))

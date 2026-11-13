@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.data.Syncable
 import pl.nowinkitransferowe.core.model.Rumour
+import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStatus
 
 /**
@@ -29,9 +30,18 @@ interface RumourRepository : Syncable {
     fun observeRumour(id: Int): Flow<Rumour?>
 
     /**
-     * Rumours with [status] updated at or after [updatedSince], most recently updated first.
+     * Rumours with [status] updated at or after [updatedSince], most recently updated first,
+     * optionally only to or from a club of the league [topic] and only at [stage].
      */
-    fun observeRumours(status: RumourStatus, updatedSince: Instant = Instant.DISTANT_PAST): Flow<List<Rumour>>
+    fun observeRumours(
+        status: RumourStatus,
+        updatedSince: Instant = Instant.DISTANT_PAST,
+        topic: String? = null,
+        stage: RumourStage? = null,
+    ): Flow<List<Rumour>>
+
+    /** The rumours with [ids], for example the saved ones, most recently updated first. */
+    fun observeRumours(ids: Set<Int>): Flow<List<Rumour>>
 
     /** Rumours the article with [articleId] moved to a stage. */
     fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>>

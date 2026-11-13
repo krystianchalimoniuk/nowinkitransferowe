@@ -32,4 +32,5 @@ data class UserData(
     val followedPlayers: Set<Int> = emptySet(),
     val isFollowedNotificationsAllowed: Boolean = false,
     val isFollowedLeaguesNotificationsAllowed: Boolean = false,
+    val bookmarkedRumours: Set<Int> = emptySet(),
 )

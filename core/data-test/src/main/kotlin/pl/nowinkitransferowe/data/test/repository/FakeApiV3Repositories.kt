@@ -21,11 +21,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.model.asEntity
 import pl.nowinkitransferowe.core.data.model.clubEntities
 import pl.nowinkitransferowe.core.data.model.playerEntities
+import pl.nowinkitransferowe.core.data.model.stageEntities
 import pl.nowinkitransferowe.core.data.model.tagEntities
 import pl.nowinkitransferowe.core.data.model.topicEntities
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
@@ -33,8 +35,10 @@ import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
+import pl.nowinkitransferowe.core.data.repository.RumourStatsRepository
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.database.model.PopulatedArticle
+import pl.nowinkitransferowe.core.database.model.PopulatedRumour
 import pl.nowinkitransferowe.core.database.model.PopulatedTransfer
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.model.Article
@@ -42,10 +46,14 @@ import pl.nowinkitransferowe.core.model.ArticleKind
 import pl.nowinkitransferowe.core.model.Club
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.Country
+import pl.nowinkitransferowe.core.model.HotClub
 import pl.nowinkitransferowe.core.model.Player
 import pl.nowinkitransferowe.core.model.Rumour
+import pl.nowinkitransferowe.core.model.RumourStage
+import pl.nowinkitransferowe.core.model.RumourStats
 import pl.nowinkitransferowe.core.model.RumourStatus
 import pl.nowinkitransferowe.core.model.Season
+import pl.nowinkitransferowe.core.model.StageAccuracy
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.Transfer
 import pl.nowinkitransferowe.core.network.NetworkRecordType
@@ -53,6 +61,7 @@ import pl.nowinkitransferowe.core.network.demo.DemoNtNetworkDataSource
 import pl.nowinkitransferowe.core.network.model.NetworkClub
 import pl.nowinkitransferowe.core.network.model.NetworkPlayer
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.days
 
 // Fakes of the API v3 repositories for the app's Hilt tests. Articles, transfers and the
 // dictionaries come from the demo data, mapped as the database would return them; the other
@@ -159,16 +168,81 @@ private suspend fun allIds(datasource: DemoNtNetworkDataSource, type: NetworkRec
     .filterNot { it.deleted }
     .map { it.id }
 
-class FakeRumourRepository @Inject constructor() : RumourRepository {
-    override fun observeRumour(id: Int): Flow<Rumour?> = flowOf(null)
+class FakeRumourRepository @Inject constructor(
+    private val datasource: DemoNtNetworkDataSource,
+) : RumourRepository {
+    private val clubs: Flow<Map<Int, NetworkClub>> = flow {
+        emit(datasource.getClubs(allIds(datasource, NetworkRecordType.CLUBS)).associateBy(NetworkClub::id))
+    }
 
-    override fun observeRumours(status: RumourStatus, updatedSince: Instant): Flow<List<Rumour>> = flowOf(emptyList())
+    private val rumours: Flow<List<Rumour>> = combine(
+        clubs,
+        flow { emit(datasource.getPlayers(allIds(datasource, NetworkRecordType.PLAYERS)).associateBy(NetworkPlayer::id)) },
+        flow { emit(datasource.getRumours(allIds(datasource, NetworkRecordType.RUMOURS))) },
+    ) { clubs, players, rumours ->
+        val transferIds = allIds(datasource, NetworkRecordType.TRANSFERS).toSet()
+        val articleIds = allIds(datasource, NetworkRecordType.ARTICLES).toSet()
+        rumours
+            .mapNotNull { rumour ->
+                val entity = rumour.asEntity(transferIds, articleIds) ?: return@mapNotNull null
+                val from = rumour.fromClubId?.let(clubs::get)
+                val to = rumour.toClubId?.let(clubs::get)
+                PopulatedRumour(
+                    rumour = entity,
+                    currentPlayerName = players[rumour.playerId]?.name,
+                    playerPhotoUrl = players[rumour.playerId]?.photoUrl,
+                    playerNationality = players[rumour.playerId]?.nationality,
+                    currentFromClubName = from?.name,
+                    fromClubCrestUrl = from?.crestUrl,
+                    currentToClubName = to?.name,
+                    toClubCrestUrl = to?.crestUrl,
+                    stages = rumour.stageEntities(articleIds),
+                ).asExternalModel()
+            }
+            .sortedByDescending(Rumour::updatedAt)
+            .movedToToday()
+    }
 
-    override fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>> = flowOf(emptyList())
+    /**
+     * The demo rumours keep their order and spacing but the newest one moves to yesterday, so they
+     * stay on the board (the last 45 days) however old the demo data gets.
+     */
+    private fun List<Rumour>.movedToToday(): List<Rumour> {
+        val newest = firstOrNull()?.updatedAt ?: return this
+        val shift = Clock.System.now() - 1.days - newest
+        return map { rumour ->
+            rumour.copy(
+                updatedAt = rumour.updatedAt + shift,
+                history = rumour.history.map { it.copy(at = it.at + shift) },
+            )
+        }
+    }
 
-    override fun observeRumoursOfClub(clubId: Int): Flow<List<Rumour>> = flowOf(emptyList())
+    override fun observeRumour(id: Int): Flow<Rumour?> = rumours.map { list -> list.find { it.id == id } }
 
-    override fun observeRumoursOfPlayer(playerId: Int): Flow<List<Rumour>> = flowOf(emptyList())
+    override fun observeRumours(
+        status: RumourStatus,
+        updatedSince: Instant,
+        topic: String?,
+        stage: RumourStage?,
+    ): Flow<List<Rumour>> = combine(rumours, clubs) { list, clubs ->
+        list
+            .filter { it.status == status && it.updatedAt >= updatedSince }
+            .filter { stage == null || it.stage == stage }
+            .filter { rumour -> topic == null || listOfNotNull(rumour.from, rumour.to).any { it is ClubRef.Club && clubs[it.id]?.topic == topic } }
+    }
+
+    override fun observeRumours(ids: Set<Int>): Flow<List<Rumour>> = rumours.map { list -> list.filter { it.id in ids } }
+
+    override fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>> = rumours.map { list ->
+        list.filter { rumour -> rumour.latestArticleId == articleId || rumour.history.any { it.articleId == articleId } }
+    }
+
+    override fun observeRumoursOfClub(clubId: Int): Flow<List<Rumour>> = rumours.map { list ->
+        list.filter { rumour -> listOfNotNull(rumour.from, rumour.to).any { it is ClubRef.Club && it.id == clubId } }
+    }
+
+    override fun observeRumoursOfPlayer(playerId: Int): Flow<List<Rumour>> = rumours.map { list -> list.filter { it.player.id == playerId } }
 
     override suspend fun syncWith(synchronizer: Synchronizer) = true
 }
@@ -191,4 +265,28 @@ class FakePlayerRepository @Inject constructor() : PlayerRepository {
     override suspend fun getPlayerBySlug(slug: String): Player? = null
 
     override suspend fun syncWith(synchronizer: Synchronizer) = true
+}
+
+/** The demo stats of the season, as the server would count them. */
+class FakeRumourStatsRepository @Inject constructor(
+    private val datasource: DemoNtNetworkDataSource,
+) : RumourStatsRepository {
+    override fun observeRumourStats(): Flow<RumourStats?> = flow {
+        val stats = datasource.getRumourStats()
+        val season = Season.parse(stats.season) ?: return@flow emit(null)
+        emit(
+            RumourStats(
+                season = season,
+                active = stats.active,
+                confirmed = stats.confirmed,
+                failed = stats.failed,
+                showAccuracy = stats.showAccuracy,
+                byStage = stats.byStage.map { StageAccuracy(RumourStage.fromLevel(it.stage), it.confirmed, it.closed) },
+                hotClubs = stats.hotClubs.map { HotClub(it.clubId, it.rumours) },
+                daysToConfirm = stats.daysToConfirm,
+            ),
+        )
+    }
+
+    override suspend fun refresh() = true
 }

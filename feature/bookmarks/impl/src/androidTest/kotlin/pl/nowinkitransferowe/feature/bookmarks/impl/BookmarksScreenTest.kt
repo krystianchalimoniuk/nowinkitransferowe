@@ -36,6 +36,7 @@ import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
 import pl.nowinkitransferowe.core.testing.data.savedUserArticlesTestData
 import pl.nowinkitransferowe.core.testing.data.savedUserTransfersTestData
 import kotlin.test.assertEquals
@@ -55,6 +56,7 @@ class BookmarksScreenTest {
         tab = tab,
         articles = if (articles) savedUserArticlesTestData else emptyList(),
         transfers = if (transfers) savedUserTransfersTestData else emptyList(),
+        rumours = rumoursTestData,
     )
 
     private val unbookmark get() = string(pl.nowinkitransferowe.core.ui.R.string.core_ui_unbookmark)
@@ -139,6 +141,31 @@ class BookmarksScreenTest {
 
         composeTestRule.onAllNodesWithContentDescription(unbookmark).onFirst().performClick()
         assertEquals(savedUserArticlesTestData[0].id, removed)
+    }
+
+    @Test
+    fun rumoursTab_showsRumoursAndReportsClicks() {
+        var clicked: Int? = null
+        var removed: Int? = null
+        composeTestRule.setContent {
+            BookmarksScreen(
+                uiState = state(SavedTab.RUMOURS),
+                onTabSelected = {},
+                onShowSnackbar = { _, _ -> false },
+                removeArticleBookmark = {},
+                removeTransferBookmark = {},
+                onArticleClick = {},
+                onTransferClick = {},
+                removeRumourBookmark = { removed = it },
+                onRumourClick = { clicked = it },
+            )
+        }
+
+        composeTestRule.onNode(tab(R.string.feature_bookmarks_impl_rumours, rumoursTestData.size)).assertIsSelected()
+        composeTestRule.onNodeWithTag("rumour-item:${rumoursTestData[0].id}").performClick()
+        assertEquals(rumoursTestData[0].id, clicked)
+        composeTestRule.onAllNodesWithContentDescription(unbookmark).onFirst().performClick()
+        assertEquals(rumoursTestData[0].id, removed)
     }
 
     @Test

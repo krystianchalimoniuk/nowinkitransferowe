@@ -79,6 +79,7 @@ class BookmarksScreenScreenshotTests {
                         tab = tab,
                         articles = if (empty) emptyList() else savedUserArticlesTestData,
                         transfers = if (empty) emptyList() else savedUserTransfersTestData,
+                        rumours = emptyList(),
                     ),
                     onTabSelected = {},
                     onShowSnackbar = { _, _ -> false },

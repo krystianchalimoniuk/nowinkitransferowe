@@ -18,6 +18,16 @@ package pl.nowinkitransferowe.feature.rumours.api.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+import pl.nowinkitransferowe.core.navigation.Navigator
 
+/** The rumours board. */
 @Serializable
 object RumoursNavKey : NavKey
+
+/** The card of one rumour: its stage, history and articles. */
+@Serializable
+data class RumourNavKey(val rumourId: Int) : NavKey
+
+fun Navigator.navigateToRumour(rumourId: Int) {
+    navigate(RumourNavKey(rumourId))
+}

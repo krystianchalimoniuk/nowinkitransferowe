@@ -39,6 +39,7 @@ class NtPreferencesDataSource @Inject constructor(
                 viewedArticles = it.viewedArticleIdsMap.keys,
                 bookmarkedTransfers = it.bookmarkedTransferIdsMap.keys,
                 viewedTransfers = it.viewedTransferIdsMap.keys,
+                bookmarkedRumours = it.bookmarkedRumourIdsMap.keys,
                 darkThemeConfig = when (it.darkThemeConfig) {
                     null,
                     DarkThemeConfigProto.DARK_THEME_CONFIG_UNSPECIFIED,
@@ -184,6 +185,10 @@ class NtPreferencesDataSource @Inject constructor(
 
     suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) = update {
         transferIds.forEach { id -> if (viewed) viewedTransferIds.put(id, true) else viewedTransferIds.remove(id) }
+    }
+
+    suspend fun setRumourBookmarked(rumourId: Int, bookmarked: Boolean) = update {
+        if (bookmarked) bookmarkedRumourIds.put(rumourId, true) else bookmarkedRumourIds.remove(rumourId)
     }
 
     private suspend fun update(block: UserPreferencesKt.Dsl.() -> Unit) {

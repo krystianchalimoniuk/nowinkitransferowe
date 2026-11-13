@@ -32,11 +32,13 @@ import pl.nowinkitransferowe.core.data.repository.OfflineFirstClubRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstDictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstPlayerRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstRumourRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstRumourStatsRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstTransferRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstUserDataRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
+import pl.nowinkitransferowe.core.data.repository.RumourStatsRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
@@ -67,6 +69,11 @@ abstract class DataModule {
     internal abstract fun bindsRumourRepository(
         rumourRepository: OfflineFirstRumourRepository,
     ): RumourRepository
+
+    @Binds
+    internal abstract fun bindsRumourStatsRepository(
+        rumourStatsRepository: OfflineFirstRumourStatsRepository,
+    ): RumourStatsRepository
 
     @Binds
     internal abstract fun bindsClubRepository(

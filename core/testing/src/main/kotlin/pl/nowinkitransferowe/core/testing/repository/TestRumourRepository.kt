@@ -25,6 +25,7 @@ import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.Rumour
+import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStatus
 
 class TestRumourRepository : RumourRepository {
@@ -34,8 +35,24 @@ class TestRumourRepository : RumourRepository {
 
     override fun observeRumour(id: Int): Flow<Rumour?> = rumoursFlow.map { rumours -> rumours.find { it.id == id } }
 
-    override fun observeRumours(status: RumourStatus, updatedSince: Instant): Flow<List<Rumour>> = rumoursFlow.map { rumours ->
-        rumours.filter { it.status == status && it.updatedAt >= updatedSince }.sortedByDescending(Rumour::updatedAt)
+    /** League topics of the clubs, by club id, for filtering rumours by league. */
+    var clubTopics: Map<Int, String> = emptyMap()
+
+    override fun observeRumours(
+        status: RumourStatus,
+        updatedSince: Instant,
+        topic: String?,
+        stage: RumourStage?,
+    ): Flow<List<Rumour>> = rumoursFlow.map { rumours ->
+        rumours
+            .filter { it.status == status && it.updatedAt >= updatedSince }
+            .filter { stage == null || it.stage == stage }
+            .filter { rumour -> topic == null || listOfNotNull(rumour.from, rumour.to).any { it is ClubRef.Club && clubTopics[it.id] == topic } }
+            .sortedByDescending(Rumour::updatedAt)
+    }
+
+    override fun observeRumours(ids: Set<Int>): Flow<List<Rumour>> = rumoursFlow.map { rumours ->
+        rumours.filter { it.id in ids }.sortedByDescending(Rumour::updatedAt)
     }
 
     override fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>> = rumoursFlow.map { rumours ->

@@ -260,4 +260,24 @@ class OfflineFirstApiV3RepositoriesTest {
 
         assertEquals(emptyList(), notifier.addedArticles)
     }
+
+    @Test
+    fun rumour_stats_are_fetched_once_an_hour_and_kept_when_the_fetch_fails() = runTest {
+        val stats = OfflineFirstRumourStatsRepository(db.statsDao(), network)
+        assertNull(stats.observeRumourStats().first())
+
+        assertTrue(stats.refresh())
+        assertTrue(stats.refresh())
+        assertEquals(1, network.rumourStatsRequests)
+
+        val saved = assertNotNull(stats.observeRumourStats().first())
+        assertEquals(Season(2026), saved.season)
+        assertEquals(5, saved.active)
+        assertNull(saved.accuracy)
+
+        db.statsDao().upsertFetchTime(pl.nowinkitransferowe.core.database.model.FetchTimeEntity("rumour_stats", kotlinx.datetime.Instant.DISTANT_PAST))
+        network.failRumourStats = true
+        assertFalse(stats.refresh())
+        assertEquals(saved, stats.observeRumourStats().first())
+    }
 }

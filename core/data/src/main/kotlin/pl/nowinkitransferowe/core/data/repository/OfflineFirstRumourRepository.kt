@@ -34,6 +34,7 @@ import pl.nowinkitransferowe.core.database.model.PopulatedRumour
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.datastore.ChangeListVersions
 import pl.nowinkitransferowe.core.model.Rumour
+import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStatus
 import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
@@ -50,7 +51,14 @@ internal class OfflineFirstRumourRepository @Inject constructor(
 
     override fun observeRumour(id: Int): Flow<Rumour?> = rumourDao.observeRumour(id).map { it?.asExternalModel() }
 
-    override fun observeRumours(status: RumourStatus, updatedSince: Instant): Flow<List<Rumour>> = rumourDao.observeRumours(status.name, updatedSince).map { it.map(PopulatedRumour::asExternalModel) }
+    override fun observeRumours(
+        status: RumourStatus,
+        updatedSince: Instant,
+        topic: String?,
+        stage: RumourStage?,
+    ): Flow<List<Rumour>> = rumourDao.observeRumours(status.name, updatedSince, topic, stage?.level).map { it.map(PopulatedRumour::asExternalModel) }
+
+    override fun observeRumours(ids: Set<Int>): Flow<List<Rumour>> = rumourDao.observeRumours(ids).map { it.map(PopulatedRumour::asExternalModel) }
 
     override fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>> = rumourDao.observeRumoursOfArticle(articleId).map { it.map(PopulatedRumour::asExternalModel) }
 
