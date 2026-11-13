@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.data.test.repository
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -129,8 +130,15 @@ class FakeTransferRepository @Inject constructor(
 
     override fun observeTransfer(id: Int): Flow<Transfer?> = transfers.map { list -> list.find { it.id == id } }
 
-    override fun observeTransfers(season: Season?, limit: Int): Flow<List<Transfer>> = transfers.map { list ->
-        list.filter { season == null || it.season == season }.take(limit)
+    private val clubTopics: Flow<Map<Int, String?>> = flow {
+        emit(datasource.getClubs(allIds(datasource, NetworkRecordType.CLUBS)).associate { it.id to it.topic })
+    }
+
+    override fun observeTransfers(season: Season?, topic: String?, limit: Int): Flow<List<Transfer>> = combine(transfers, clubTopics) { list, topics ->
+        list
+            .filter { season == null || it.season == season }
+            .filter { transfer -> topic == null || listOf(transfer.from, transfer.to).any { it is ClubRef.Club && topics[it.id] == topic } }
+            .take(limit)
     }
 
     override fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>> = transfers.map { list -> list.filter { it.id in ids } }

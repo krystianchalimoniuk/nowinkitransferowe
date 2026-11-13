@@ -17,14 +17,15 @@
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
+import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.UserTransfer
 
 /**
  * Transfers joined with the user's data.
  */
 interface UserTransferRepository {
-    /** The newest [limit] transfers. */
-    fun observeTransfers(limit: Int = Int.MAX_VALUE): Flow<List<UserTransfer>>
+    /** The newest [limit] transfers, optionally of [season] and of the league [topic]. */
+    fun observeTransfers(season: Season? = null, topic: String? = null, limit: Int = Int.MAX_VALUE): Flow<List<UserTransfer>>
 
     fun observeTransfer(id: Int): Flow<UserTransfer?>
 

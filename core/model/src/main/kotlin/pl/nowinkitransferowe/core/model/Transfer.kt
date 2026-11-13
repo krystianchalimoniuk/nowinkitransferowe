@@ -45,4 +45,6 @@ data class PlayerRef(
     val id: Int,
     val name: String,
     val photoUrl: String? = null,
+    /** Country code of the first nationality, for the flag; null for a stub. */
+    val nationality: String? = null,
 )

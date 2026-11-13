@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,282 +16,150 @@
 
 package pl.nowinkitransferowe.feature.transferdetails.impl
 
-import android.graphics.Bitmap
-import android.graphics.Paint
-import android.graphics.Typeface
-import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.asAndroidPath
-import androidx.compose.ui.graphics.asComposePath
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.text.HtmlCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import pl.nowinkitransferowe.core.designsystem.component.NtBackground
-import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
+import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
+import pl.nowinkitransferowe.core.designsystem.component.NtOutlinedButton
+import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
-import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
+import pl.nowinkitransferowe.core.model.ClubRef
+import pl.nowinkitransferowe.core.model.Player
 import pl.nowinkitransferowe.core.model.UserTransfer
-import pl.nowinkitransferowe.core.ui.DevicePreviews
+import pl.nowinkitransferowe.core.ui.BookmarkButton
+import pl.nowinkitransferowe.core.ui.ClubCrest
+import pl.nowinkitransferowe.core.ui.CountryFlag
+import pl.nowinkitransferowe.core.ui.FeeLabel
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
-import pl.nowinkitransferowe.core.ui.TrackScrollJank
-import pl.nowinkitransferowe.core.ui.TransferListItemCard
-import pl.nowinkitransferowe.core.ui.UserTransferPreviewParameterProvider
+import pl.nowinkitransferowe.core.ui.TransferListItem
 import pl.nowinkitransferowe.core.ui.dateFormatted
-import pl.nowinkitransferowe.feature.transferdetails.impl.Util.calculateMaxTransferValue
-import pl.nowinkitransferowe.feature.transferdetails.impl.Util.calculateTransferSum
-import pl.nowinkitransferowe.feature.transferdetails.impl.Util.hasMoreThanOrEqualTwoCashTransfers
-import pl.nowinkitransferowe.feature.transferdetails.impl.Util.priceToFloat
-import pl.nowinkitransferowe.feature.transferdetails.impl.Util.shortcutDate
-import java.util.Locale
-import kotlin.math.roundToInt
 
 @Composable
-fun TransferDetailsRoute(
+internal fun TransferDetailsRoute(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    onArticleClick: (Int) -> Unit,
+    onTransferClick: (Int) -> Unit,
     viewModel: TransferDetailsViewModel,
+    modifier: Modifier = Modifier,
 ) {
-    val detailsTransferUiState by viewModel.detailsTransferUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     TrackScreenViewEvent(screenName = "Transfer: ${viewModel.transferId}")
-    NtBackground {
-        NtGradientBackground {
-            TransferDetailsScreen(
-                detailsTransferUiState = detailsTransferUiState,
-                showBackButton = showBackButton,
-                onBackClick = onBackClick,
-                modifier = modifier.testTag("transfer:${viewModel.transferId}"),
-            )
-        }
-    }
+    TransferDetailsScreen(
+        uiState = uiState,
+        showBackButton = showBackButton,
+        onBackClick = onBackClick,
+        onBookmarkChanged = viewModel::bookmarkTransfer,
+        onArticleClick = onArticleClick,
+        onTransferClick = onTransferClick,
+        modifier = modifier,
+    )
 }
 
-@VisibleForTesting
+/**
+ * A transfer as in the mockups: the player, the route with large crests, the fee, date and
+ * season, links to the article and the player profile, and the player's other transfers.
+ */
 @Composable
-fun TransferDetailsScreen(
-    detailsTransferUiState: TransferDetailsUiState,
+internal fun TransferDetailsScreen(
+    uiState: TransferDetailsUiState,
     showBackButton: Boolean,
     onBackClick: () -> Unit,
+    onBookmarkChanged: (Int, Boolean) -> Unit,
+    onArticleClick: (Int) -> Unit,
+    onTransferClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val state = rememberLazyListState()
-    TrackScrollJank(scrollableState = state, stateName = "details-transfers:screen")
-
-    Box(
-        modifier = modifier,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            when (detailsTransferUiState) {
-                TransferDetailsUiState.Loading ->
-                    NtLoadingWheel(
-                        modifier = modifier,
-                        contentDesc = stringResource(id = R.string.feature_transfer_details_impl_loading),
-                    )
-
-                TransferDetailsUiState.Error -> {
-                    LaunchedEffect(Unit) {
-                        onBackClick()
-                    }
-                }
-
-                is TransferDetailsUiState.Success -> {
-                    TransferDetailsToolbar(
-                        showBackButton = showBackButton,
-                        onBackClick = onBackClick,
-                    )
-
-                    TransferDetailsBody(
-                        userTransfers = detailsTransferUiState.userTransfer,
-                        dataPoints = detailsTransferUiState.dataPoints,
-                        state = state,
-                    )
-                }
-            }
-
-            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+    when (uiState) {
+        TransferDetailsUiState.Loading -> Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            NtLoadingWheel(contentDesc = stringResource(R.string.feature_transfer_details_impl_loading))
         }
-    }
-}
 
-@Composable
-fun TransferDetailsBody(
-    userTransfers: List<UserTransfer>,
-    dataPoints: List<DataPoint>,
-    state: LazyListState,
-) {
-    Column(modifier = Modifier.testTag("content")) {
-        Box(
-            modifier = Modifier.padding(8.dp),
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .testTag("details_transfers:feed"),
-                state = state,
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+        is TransferDetailsUiState.Success -> {
+            val transfer = uiState.transfer
+            val context = LocalContext.current
+            Column(
+                modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .testTag("transfer:${transfer.id}"),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                item {
-                    Column {
-                        Column(
-                            Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Spacer(modifier = Modifier.height(32.dp))
-                            Image(
-                                modifier = Modifier
-                                    .size(140.dp)
-                                    .clip(RoundedCornerShape(80.dp)),
-                                painter =
-                                painterResource(pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_transfer_face),
-                                contentDescription = "Footballer photo placeholder",
-                            )
-
-                            Spacer(modifier = Modifier.height(24.dp))
-                            TransfersResourceFootballerName(
-                                name = userTransfers.first().player.name,
-                                modifier = Modifier.widthIn(180.dp),
-                            )
+                Column(Modifier.widthIn(max = 720.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(Modifier.fillMaxWidth().padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                        if (showBackButton) {
+                            IconButton(onClick = onBackClick) {
+                                Icon(NtIcons.ArrowBack, contentDescription = stringResource(pl.nowinkitransferowe.core.ui.R.string.core_ui_back))
+                            }
                         }
-                        Spacer(modifier = Modifier.height(32.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_transfer_details_impl_list_label_season),
-                                modifier = Modifier.weight(.12f),
-                            )
-                            TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_transfer_details_impl_list_label_date),
-                                modifier = Modifier.weight(.14f),
-                            )
-                            TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_transfer_details_impl_list_label_club_from),
-                                modifier = Modifier.weight(.32f),
-                            )
-                            TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_transfer_details_impl_list_label_club_to),
-                                modifier = Modifier.weight(.32f),
-                            )
-                            TransfersResourceTransferListLabel(
-                                label = stringResource(id = R.string.feature_transfer_details_impl_list_label_price),
-                                modifier = Modifier.weight(.1f),
-                            )
+                        Spacer(Modifier.weight(1f))
+                        BookmarkButton(transfer.isSaved, onClick = { onBookmarkChanged(transfer.id, !transfer.isSaved) })
+                    }
+                    PlayerHeader(transfer, uiState.player)
+                    RouteCard(transfer.from, transfer.to, transfer)
+                    Facts(transfer)
+                    Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        transfer.articleId?.let { articleId ->
+                            FilledTonalButton(onClick = { onArticleClick(articleId) }, modifier = Modifier.weight(1f)) {
+                                Text(stringResource(R.string.feature_transfer_details_impl_article))
+                            }
+                        }
+                        uiState.player?.url?.let { url ->
+                            NtOutlinedButton(
+                                onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) },
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text(stringResource(R.string.feature_transfer_details_impl_player_profile))
+                            }
                         }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-                items(
-                    items = userTransfers,
-                    key = { it.id },
-                    contentType = { "transferListItem" },
-                ) { userTransfer ->
-                    TransferListItemCard(
-                        userTransfer,
-                        onClick = {},
-                    )
-                }
-                item {
-                    Column(Modifier.fillMaxWidth()) {
-                        Row(
-                            horizontalArrangement = Arrangement.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 32.dp, horizontal = 8.dp),
-                        ) {
-                            TransfersResourceTransferListLabel(label = stringResource(id = R.string.feature_transfer_details_impl_list_label_total_transfer_amount))
-                            TransfersResourceTransferListLabel(
-                                label = calculateTransferSum(
-                                    userTransfers.map { it.fee.label },
-                                ),
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-                        if (hasMoreThanOrEqualTwoCashTransfers(userTransfers.map { it.fee.label })) {
-                            TransfersResourceChartTitle(
-                                label = stringResource(R.string.feature_transfer_details_impl_transfers_value),
-                                Modifier.padding(horizontal = 8.dp),
-                            )
-                            TransfersResourceMaxTransferValue(
-                                label = stringResource(R.string.feature_transfer_details_impl_max_transfer_value),
-                                value = calculateMaxTransferValue(prices = userTransfers.map { it.fee.label }),
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .padding(top = 25.dp, end = 16.dp),
-                            )
-
-                            Spacer(modifier = Modifier.height(60.dp))
-                            LineChart(
-                                data =
-                                dataPoints,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(150.dp)
-                                    .align(Alignment.CenterHorizontally)
-                                    .padding(horizontal = 8.dp),
-                            )
-
-                            Spacer(modifier = Modifier.height(90.dp))
+                    if (uiState.history.size > 1) {
+                        NtSectionHeader(stringResource(R.string.feature_transfer_details_impl_history), Modifier.padding(horizontal = 16.dp))
+                        Column(Modifier.padding(horizontal = 4.dp)) {
+                            uiState.history.forEach { other ->
+                                TransferListItem(
+                                    transfer = other,
+                                    onClick = { if (other.id != transfer.id) onTransferClick(other.id) },
+                                    selected = other.id == transfer.id,
+                                )
+                            }
                         }
                     }
+                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
                 }
             }
         }
@@ -299,307 +167,80 @@ fun TransferDetailsBody(
 }
 
 @Composable
-fun TransfersResourceFootballerName(
-    name: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        HtmlCompat.fromHtml(name, HtmlCompat.FROM_HTML_MODE_COMPACT).toString(),
-        style = MaterialTheme.typography.headlineLarge,
-        modifier = modifier,
-        maxLines = 1,
-        textAlign = TextAlign.Center,
-    )
-}
-
-@Composable
-fun TransfersResourceTransferListLabel(
-    label: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        label,
-        style = MaterialTheme.typography.labelSmall,
-        modifier = modifier,
-        maxLines = 2,
-        textAlign = TextAlign.Center,
-    )
-}
-
-@Composable
-fun TransfersResourceChartTitle(
-    label: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        label,
-        style = MaterialTheme.typography.titleMedium,
-        modifier = modifier,
-        maxLines = 1,
-        textAlign = TextAlign.Center,
-    )
-}
-
-@Composable
-fun TransfersResourceMaxTransferValue(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        buildAnnotatedString {
-            append(label)
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append(value)
-            }
-        },
-        style = MaterialTheme.typography.bodySmall,
-        modifier = modifier,
-        maxLines = 2,
-        textAlign = TextAlign.End,
-    )
-}
-
-@Composable
-private fun TransferDetailsToolbar(
-    modifier: Modifier = Modifier,
-    showBackButton: Boolean = true,
-    onBackClick: () -> Unit = {},
-) {
+private fun PlayerHeader(transfer: UserTransfer, player: Player?) {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        Modifier.padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = 32.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        if (showBackButton) {
-            IconButton(onClick = { onBackClick() }) {
-                Icon(
-                    imageVector = NtIcons.ArrowBack,
-                    contentDescription = stringResource(
-                        id = pl.nowinkitransferowe.core.ui.R.string.core_ui_back,
-                    ),
-                )
-            }
-        } else {
-            // Keeps the Row from being empty when there is no back button.
-            Spacer(modifier = Modifier.width(1.dp))
-        }
-    }
-}
-
-@Composable
-fun LineChart(
-    modifier: Modifier = Modifier,
-    data: List<DataPoint> = emptyList(),
-) {
-    val defaultBitmap =
-        ImageBitmap.imageResource(id = pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_crest_placeholder)
-            .asAndroidBitmap()
-    val defaultScaledBitmap = Bitmap.createScaledBitmap(defaultBitmap, 80, 80, false)
-    val spacingFromLeft = 80f
-    val graphColor = MaterialTheme.colorScheme.onPrimaryContainer // color for your graph
-    val transparentGraphColor = remember { graphColor.copy(alpha = 0.5f) }
-    val upperValue = remember { (data.maxOfOrNull { it.price })?.roundToInt() ?: 0 }
-    val lowerValue = remember { 0 }
-    val density = LocalDensity.current
-    val materialColor = MaterialTheme.colorScheme.inverseSurface
-    // paint for the text shown in data values
-    val textPaint = remember(density) {
-        Paint().apply {
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-            color = materialColor.toArgb()
-            textAlign = Paint.Align.CENTER
-            textSize = density.run { 14.sp.toPx() }
-        }
-    }
-
-    Canvas(modifier = modifier) {
-        val spacePerData = (size.width - spacingFromLeft) / data.size
-
-        // loop through each index by step of 1
-        // data shown horizontally
-        (data.indices step 1).forEach { i ->
-            val date = data[i].date
-            val bitmap = data[i].bitmap ?: defaultScaledBitmap
-            drawContext.canvas.nativeCanvas.apply {
-                drawText(
-                    date,
-                    spacingFromLeft + i * spacePerData,
-                    size.height,
-                    textPaint,
-
-                )
-                drawImage(
-                    image = bitmap.asImageBitmap(),
-                    topLeft = Offset(
-                        (spacingFromLeft + i * spacePerData) - (bitmap.width / 2),
-                        size.height + 30,
-                    ),
-                )
-            }
-        }
-
-        val priceStep = (upperValue - lowerValue) / 5f
-        // data shown vertically
-        (0..5).forEachIndexed { index, i ->
-            drawContext.canvas.nativeCanvas.apply {
-                drawText(
-                    String.format(
-                        Locale.forLanguageTag("pl"),
-                        "%.1f",
-                        (lowerValue + priceStep * i),
-                    ),
-                    30f,
-                    size.height - spacingFromLeft - i * size.height / 5f,
-                    textPaint,
-                )
-                if (index == 5) {
-                    drawText(
-                        "[mln €]",
-                        30f,
-                        0f - spacingFromLeft - 80,
-                        textPaint,
-                    )
-                }
-            }
-        }
-
-        // Vertical line
-        drawLine(
-            start = Offset(spacingFromLeft, size.height - spacingFromLeft),
-            end = Offset(spacingFromLeft, 0f - spacingFromLeft - 50),
-            color = materialColor,
-            strokeWidth = 4f,
-        )
-
-        // Horizontal line
-        drawLine(
-            start = Offset(spacingFromLeft, size.height - spacingFromLeft),
-            end = Offset(size.width - 40f, size.height - spacingFromLeft),
-            color = materialColor,
-            strokeWidth = 4f,
-        )
-
-        // Use this to show straight line path
-        val straightLinePath = Path().apply {
-            val height = size.height
-
-            // loop through index only not value
-            data.indices.forEach { i ->
-                val info = data[i]
-                val x1 = spacingFromLeft + i * spacePerData
-                val y1 =
-                    (upperValue - info.price) / upperValue * height - spacingFromLeft
-
-                if (i == 0) {
-                    moveTo(x1, y1)
-                }
-                lineTo(x1, y1)
-                drawCircle(
-                    color = materialColor,
-                    radius = 5f,
-                    center = Offset(x1, y1),
-                ) // Uncomment it to see the end points
-            }
-        }
-
-        // Use this to show curved path
-        var medX: Float
-        var medY: Float
-        Path().apply {
-            val height = size.height
-            data.indices.forEach { i ->
-                val nextInfo = data.getOrNull(i + 1) ?: data.last()
-
-                val x1 = spacingFromLeft + i * spacePerData
-                val y1 =
-                    (upperValue - data[i].price) / upperValue * height - spacingFromLeft
-                val x2 = spacingFromLeft + (i + 1) * spacePerData
-                val y2 =
-                    (upperValue - nextInfo.price) / upperValue * height - spacingFromLeft
-                if (i == 0) {
-                    moveTo(x1, y1)
-                } else {
-                    medX = (x1 + x2) / 2f
-                    medY = (y1 + y2) / 2f
-                    quadraticTo(x1 = x1, y1 = y1, x2 = medX, y2 = medY)
-                }
-
-                // drawCircle(color = Color.White, radius = 5f, center = Offset(x1,y1))
-                // drawCircle(color = Color.Magenta, radius = 9f, center = Offset(medX,medY))
-                // drawCircle(color = Color.Blue, radius = 7f, center = Offset(x2,y2))  //Uncomment these to see the control Points
-            }
-        }
-
-        // Now draw path on canvas
-        drawPath(
-            path = straightLinePath,
-            color = graphColor,
-            style = Stroke(
-                width = 1.dp.toPx(),
-                cap = StrokeCap.Round,
-            ),
-        )
-
-        // To show the background transparent gradient
-        val fillPath =
-            android.graphics.Path(straightLinePath.asAndroidPath()).asComposePath().apply {
-                lineTo(size.width - spacePerData, size.height - spacingFromLeft)
-                lineTo(spacingFromLeft, size.height - spacingFromLeft)
-                close()
-            }
-
-        drawPath(
-            path = fillPath,
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    transparentGraphColor,
-                    Color.Transparent,
-                ),
-                endY = size.height - spacingFromLeft,
-            ),
-        )
-    }
-}
-
-@DevicePreviews
-@Composable
-fun ArticleDetailsScreenPopulated(
-    @PreviewParameter(UserTransferPreviewParameterProvider::class)
-    userTransfers: List<UserTransfer>,
-) {
-    NtTheme {
-        NtBackground {
-            TransferDetailsScreen(
-                detailsTransferUiState = TransferDetailsUiState.Success(
-                    userTransfers,
-                    userTransfers.sortedBy { it.date }.map {
-                        DataPoint(
-                            date = shortcutDate(dateFormatted(it.date)),
-                            price = priceToFloat(it.fee.label),
-                            bitmap = null,
-                        )
-                    },
-                ),
-                showBackButton = true,
-                onBackClick = {},
+        NtCrest(imageUrl = transfer.player.photoUrl, name = transfer.player.name, size = 64.dp)
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                transfer.player.name.uppercase(),
+                style = MaterialTheme.typography.headlineMedium.copy(fontStyle = FontStyle.Italic),
             )
+            val details = listOfNotNull(player?.position, player?.birthDate?.let { stringResource(R.string.feature_transfer_details_impl_born, dateFormatted(it)) })
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                (player?.nationality ?: transfer.player.nationality)?.let { CountryFlag(it, contentDescription = null) }
+                if (details.isNotEmpty()) {
+                    Text(details.joinToString(" · "), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
         }
     }
 }
 
-@DevicePreviews
 @Composable
-fun ArticleDetailsScreenLoading() {
-    NtTheme {
-        NtBackground {
-            TransferDetailsScreen(
-                detailsTransferUiState = TransferDetailsUiState.Loading,
-                showBackButton = true,
-                onBackClick = {},
-            )
+private fun RouteCard(from: ClubRef, to: ClubRef, transfer: UserTransfer) {
+    Card(
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+    ) {
+        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            RouteClub(from, Modifier.weight(1f))
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Icon(NtIcons.ArrowForward, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
+                FeeLabel(transfer.fee)
+            }
+            RouteClub(to, Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun RouteClub(club: ClubRef, modifier: Modifier) {
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        ClubCrest(club, size = 56.dp)
+        Text(
+            club.name,
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+private fun Facts(transfer: UserTransfer) {
+    Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Fact(stringResource(R.string.feature_transfer_details_impl_fee), transfer.fee.label, Modifier.weight(1f))
+        Fact(stringResource(R.string.feature_transfer_details_impl_list_label_date), dateFormatted(transfer.date), Modifier.weight(1f))
+        Fact(stringResource(R.string.feature_transfer_details_impl_list_label_season), transfer.season.label, Modifier.weight(1f))
+    }
+}
+
+@Composable
+private fun Fact(label: String, value: String, modifier: Modifier) {
+    Card(
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        modifier = modifier,
+    ) {
+        Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(value, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }

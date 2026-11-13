@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,157 +17,79 @@
 package pl.nowinkitransferowe.feature.transfers.impl
 
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.hasScrollToNodeAction
-import androidx.compose.ui.test.hasText
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performClick
 import org.junit.Rule
 import org.junit.Test
+import pl.nowinkitransferowe.core.model.Season
+import pl.nowinkitransferowe.core.testing.data.topicsTestData
 import pl.nowinkitransferowe.core.testing.data.userTransfersTestData
-import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
-import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import pl.nowinkitransferowe.feature.transfers.impl.navigation.TransfersScreen
+import pl.nowinkitransferowe.feature.transfers.impl.navigation.TransfersUiState
+import kotlin.test.assertEquals
 
 class TransfersScreenTest {
-    @get:Rule(order = 0)
-    val postNotificationsPermission = GrantPostNotificationsPermissionRule()
-
-    @get:Rule(order = 1)
+    @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
-    @Test
-    fun circularProgressIndicator_whenScreenIsLoading_exists() {
-        composeTestRule.setContent {
-            Box {
-                TransfersScreen(
-                    isSyncing = false,
-                    feedState = TransferFeedUiState.Loading,
-                    onTransferViewed = {},
-                    onTransferSavedChanged = { _, _ -> },
-                    onTransferClick = {},
-                    loadNextPage = {},
-                )
-            }
-        }
+    private val state = TransfersUiState.Success(
+        season = Season(2026),
+        seasons = listOf(Season(2026), Season(2025), Season(2024)),
+        topic = null,
+        leagues = topicsTestData,
+        transfers = userTransfersTestData,
+        hasMore = false,
+    )
 
-        composeTestRule
-            .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_transfers_impl_loading),
-            )
-            .assertExists()
+    @Test
+    fun transfersAndFiltersAreShown() {
+        composeTestRule.setContent { Screen(state) }
+
+        composeTestRule.onNodeWithText(userTransfersTestData.first().player.name).assertExists()
+        composeTestRule.onNodeWithText("26/27").assertExists()
+        composeTestRule.onNodeWithText("Premier League").assertExists()
     }
 
     @Test
-    fun circularProgressIndicator_whenScreenIsSyncing_exists() {
-        composeTestRule.setContent {
-            Box {
-                TransfersScreen(
-                    isSyncing = true,
-                    feedState = TransferFeedUiState.Success(emptyList()),
-                    onTransferClick = {},
-                    onTransferViewed = {},
-                    onTransferSavedChanged = { _, _ -> },
-                    loadNextPage = {},
-                )
-            }
-        }
+    fun seasonAndTransferClicksAreReported() {
+        var season: Season? = null
+        var transfer: Int? = null
+        composeTestRule.setContent { Screen(state, onSeasonSelected = { season = it }, onTransferClick = { transfer = it }) }
 
-        composeTestRule
-            .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_transfers_impl_loading),
-            )
-            .assertExists()
+        composeTestRule.onNodeWithText("24/25").performClick()
+        composeTestRule.onNodeWithText(userTransfersTestData.first().player.name).performClick()
+
+        assertEquals(Season(2024), season)
+        assertEquals(userTransfersTestData.first().id, transfer)
     }
 
     @Test
-    fun feed_whenLoaded_showsFeed() {
-        composeTestRule.setContent {
-            Box {
-                TransfersScreen(
-                    isSyncing = false,
-                    feedState = TransferFeedUiState.Success(feed = userTransfersTestData),
-                    onTransferClick = {},
-                    onTransferViewed = {},
-                    onTransferSavedChanged = { _, _ -> },
-                    loadNextPage = {},
-                )
-            }
-        }
+    fun markAsReadReportsTheUnreadTransfers() {
+        var marked: List<Int>? = null
+        composeTestRule.setContent { Screen(state, onMarkAsRead = { marked = it }) }
 
-        composeTestRule
-            .onNodeWithText(
-                userTransfersTestData[0].player.name,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.feature_transfers_impl_mark_as_read)).performClick()
 
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    userTransfersTestData[1].player.name,
-                    substring = true,
-                ),
-            )
-
-        composeTestRule
-            .onNodeWithText(
-                userTransfersTestData[1].player.name,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
+        assertEquals(userTransfersTestData.map { it.id }, marked)
     }
 
-    @Test
-    fun feed_whenLoadNextPageExecuted_showsFeedWithNewItems() {
-        composeTestRule.setContent {
-            Box {
-                TransfersScreen(
-                    isSyncing = false,
-                    feedState = TransferFeedUiState.Success(feed = userTransfersTestData),
-                    onTransferClick = {},
-                    onTransferViewed = {},
-                    onTransferSavedChanged = { _, _ -> },
-                    loadNextPage = {},
-                )
-            }
-        }
-
-        composeTestRule
-            .onNodeWithText(
-                userTransfersTestData[0].player.name,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
-
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    userTransfersTestData[4].player.name,
-                    substring = true,
-                ),
-            )
-
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    userTransfersTestData[9].player.name,
-                    substring = true,
-                ),
-            )
-
-        composeTestRule
-            .onNodeWithText(
-                userTransfersTestData[9].player.name,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
+    @Composable
+    private fun Screen(
+        uiState: TransfersUiState,
+        onSeasonSelected: (Season) -> Unit = {},
+        onTransferClick: (Int) -> Unit = {},
+        onMarkAsRead: (List<Int>) -> Unit = {},
+    ) {
+        TransfersScreen(
+            uiState = uiState,
+            isSyncing = false,
+            onSeasonSelected = onSeasonSelected,
+            onTopicSelected = {},
+            onTransferClick = onTransferClick,
+            onMarkAsRead = onMarkAsRead,
+            loadNextPage = {},
+        )
     }
 }

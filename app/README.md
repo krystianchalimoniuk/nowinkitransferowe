@@ -177,6 +177,7 @@ graph TB
   :feature:transfer-details:impl -.-> :core:data
   :feature:transfer-details:impl -.-> :core:designsystem
   :feature:transfer-details:impl -.-> :core:ui
+  :feature:transfer-details:impl -.-> :feature:article-details:api
   :feature:transfer-details:impl -.-> :feature:transfer-details:api
   :feature:transfers:api --> :core:navigation
   :feature:transfers:impl -.-> :core:data

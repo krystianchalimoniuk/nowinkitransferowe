@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Transfer
 import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.model.mapToUserTransfers
@@ -36,7 +37,7 @@ class CompositeUserTransferRepository @Inject constructor(
     private val userDataRepository: UserDataRepository,
 ) : UserTransferRepository {
 
-    override fun observeTransfers(limit: Int): Flow<List<UserTransfer>> = transferRepository.observeTransfers(limit = limit).withUserData()
+    override fun observeTransfers(season: Season?, topic: String?, limit: Int): Flow<List<UserTransfer>> = transferRepository.observeTransfers(season, topic, limit).withUserData()
 
     override fun observeTransfer(id: Int): Flow<UserTransfer?> = transferRepository.observeTransfer(id)
         .map(::listOfNotNull)

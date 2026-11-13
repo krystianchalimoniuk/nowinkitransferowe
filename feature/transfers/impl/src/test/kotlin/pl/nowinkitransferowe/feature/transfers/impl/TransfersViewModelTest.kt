@@ -22,102 +22,103 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Clock
+import kotlinx.datetime.todayIn
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
-import pl.nowinkitransferowe.core.model.mapToUserTransfers
+import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.testing.data.transfersTestData
+import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
 import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import pl.nowinkitransferowe.core.testing.util.TestSyncManager
-import pl.nowinkitransferowe.core.ui.TransferFeedUiState
+import pl.nowinkitransferowe.feature.transfers.impl.navigation.TransfersUiState
 import pl.nowinkitransferowe.feature.transfers.impl.navigation.TransfersViewModel
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 class TransfersViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val syncManager = TestSyncManager()
     private val userDataRepository = TestUserDataRepository()
     private val transferRepository = TestTransferRepository()
-
-    private val userTransferRepository = CompositeUserTransferRepository(
-        transferRepository = transferRepository,
-        userDataRepository = userDataRepository,
-    )
-
-    private val savedStateHandle = SavedStateHandle()
     private lateinit var viewModel: TransfersViewModel
+
+    private val season2425 = Season(2024)
 
     @Before
     fun setup() {
         userDataRepository.setUserData(emptyUserData)
+        transferRepository.clubTopics = mapOf(83 to "premier-league", 86 to "serie-a")
+        transferRepository.sendTransfers(transfersTestData)
         viewModel = TransfersViewModel(
-            syncManager = syncManager,
-            savedStateHandle = savedStateHandle,
+            savedStateHandle = SavedStateHandle(),
+            syncManager = TestSyncManager(),
+            userTransferRepository = CompositeUserTransferRepository(transferRepository, userDataRepository),
+            dictionaryRepository = TestDictionaryRepository(),
             userDataRepository = userDataRepository,
-            userTransferRepository = userTransferRepository,
         )
     }
+
+    private fun success() = assertIs<TransfersUiState.Success>(viewModel.uiState.value)
 
     @Test
     fun stateIsInitiallyLoading() = runTest {
-        assertEquals(TransferFeedUiState.Loading, viewModel.feedUiState.value)
+        assertEquals(TransfersUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun stateIsLoadingWhenAppIsSyncingWithNoTransfers() = runTest {
-        syncManager.setSyncing(true)
+    fun currentSeasonIsShownFirstAndSeasonsGoBackTo1718() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
-
-        assertEquals(true, viewModel.isSyncing.value)
+        val state = success()
+        val current = Season.of(Clock.System.todayIn(Season.TIME_ZONE))
+        assertEquals(current, state.season)
+        assertEquals(current, state.seasons.first())
+        assertEquals(Season(2017), state.seasons.last())
+        assertTrue(state.transfers.all { it.season == current })
     }
 
     @Test
-    fun whenUpdateTransferSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        viewModel.updateTransferSaved(1, true)
+    fun seasonFilterShowsItsTransfersNewestFirst() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        assertEquals(setOf(1), userDataRepository.userData.first().bookmarkedTransfers)
+        viewModel.selectSeason(season2425)
 
-        viewModel.updateTransferSaved(1, false)
-
-        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedTransfers)
+        val expected = transfersTestData.filter { it.season == season2425 }.map { it.id }
+        assertEquals(expected, success().transfers.map { it.id })
+        assertFalse(success().hasMore)
     }
 
     @Test
-    fun transfersUpdatesAfterLoading() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
-        transferRepository.sendTransfers(transfersTestData)
+    fun leagueFilterKeepsTransfersOfItsClubs() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        viewModel.selectSeason(season2425)
 
-        viewModel.updateTransferSaved(transferId = 15000, isChecked = true)
+        viewModel.selectTopic("premier-league")
+        assertEquals(emptyList(), success().transfers)
 
-        val userData = emptyUserData.copy(bookmarkedTransfers = setOf(15000))
-        assertEquals(
-            TransferFeedUiState.Success(feed = transfersTestData.take(TransfersViewModel.PAGE_SIZE).mapToUserTransfers(userData)),
-            viewModel.feedUiState.value,
-        )
+        viewModel.selectTopic("serie-a")
+        assertTrue(success().transfers.isNotEmpty())
+        assertEquals(transfersTestData.filter { it.season == season2425 }.size, success().transfers.size)
     }
 
     @Test
-    fun whenLoadNexPageFunctionIsCalled_transfersUpdates() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
-        transferRepository.sendTransfers(transfersTestData)
+    fun leaguesAreTheLeagueTopicsOnly() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        viewModel.loadNextPage(viewModel.page.value, transfersTestData.size)
-
-        assertEquals(
-            TransferFeedUiState.Success(feed = transfersTestData.take(2 * TransfersViewModel.PAGE_SIZE).mapToUserTransfers(emptyUserData)),
-            viewModel.feedUiState.value,
-        )
+        assertEquals(listOf("premier-league", "serie-a", "ekstraklasa"), success().leagues.map { it.slug })
     }
 
     @Test
-    fun transfersMarkedAsViewedAreSaved() = runTest {
+    fun markingAsReadSavesTheIds() = runTest {
         viewModel.setTransfersViewed(listOf(19580, 15000), true)
 
         assertEquals(setOf(19580, 15000), userDataRepository.userData.first().viewedTransfers)

@@ -28,9 +28,10 @@ interface TransferRepository : Syncable {
     fun observeTransfer(id: Int): Flow<Transfer?>
 
     /**
-     * Newest transfers first, optionally only from [season].
+     * Newest transfers first, optionally only from [season] and to or from a club of the league
+     * [topic].
      */
-    fun observeTransfers(season: Season? = null, limit: Int = Int.MAX_VALUE): Flow<List<Transfer>>
+    fun observeTransfers(season: Season? = null, topic: String? = null, limit: Int = Int.MAX_VALUE): Flow<List<Transfer>>
 
     fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>>
 

@@ -19,10 +19,9 @@
     <string name="feature_transfer_details_impl_select_a_transfer">Wybierz transfer</string>
     <string name="feature_transfer_details_impl_list_label_season">Sezon</string>
     <string name="feature_transfer_details_impl_list_label_date">Data</string>
-    <string name="feature_transfer_details_impl_list_label_club_from">Klub oddający</string>
-    <string name="feature_transfer_details_impl_list_label_club_to">Klub pozyskujący</string>
-    <string name="feature_transfer_details_impl_list_label_price">Cena\n[mln €]</string>
-    <string name="feature_transfer_details_impl_list_label_total_transfer_amount">Łączny dochód z transferów:</string>
-    <string name="feature_transfer_details_impl_transfers_value">Wartość transferów</string>
-    <string name="feature_transfer_details_impl_max_transfer_value">Najwyższy transfer:\n</string>
+    <string name="feature_transfer_details_impl_fee">Kwota</string>
+    <string name="feature_transfer_details_impl_article">Artykuł</string>
+    <string name="feature_transfer_details_impl_player_profile">Profil zawodnika</string>
+    <string name="feature_transfer_details_impl_history">Historia transferów</string>
+    <string name="feature_transfer_details_impl_born">ur. %1$s</string>
 </resources>

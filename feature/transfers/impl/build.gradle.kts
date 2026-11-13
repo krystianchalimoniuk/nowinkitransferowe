@@ -18,8 +18,10 @@ plugins {
     alias(libs.plugins.nowinkitransferowe.android.feature.impl)
     alias(libs.plugins.nowinkitransferowe.android.library.compose)
     alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
+    alias(libs.plugins.roborazzi)
 }
 android {
+    testOptions.unitTests.isIncludeAndroidResources = true
     namespace = "pl.nowinkitransferowe.feature.transfers.impl"
 }
 
