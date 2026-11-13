@@ -50,11 +50,11 @@ import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.core.navigation.rememberNavigationState
 import pl.nowinkitransferowe.core.navigation.toEntries
-import pl.nowinkitransferowe.feature.details.impl.DetailPlaceholder
-import pl.nowinkitransferowe.feature.details.impl.R
-import pl.nowinkitransferowe.feature.details.impl.navigation.newsDetailsEntry
-import pl.nowinkitransferowe.feature.news.api.navigation.NewsNavKey
-import pl.nowinkitransferowe.feature.news.impl.navigation.newsEntry
+import pl.nowinkitransferowe.feature.articledetails.impl.ArticleDetailsPlaceholder
+import pl.nowinkitransferowe.feature.articledetails.impl.R
+import pl.nowinkitransferowe.feature.articledetails.impl.navigation.articleDetailsEntry
+import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
+import pl.nowinkitransferowe.feature.articles.impl.navigation.articlesEntry
 import pl.nowinkitransferowe.uitesthiltmanifest.HiltComponentActivity
 import javax.inject.Inject
 import kotlin.properties.ReadOnlyProperty
@@ -83,7 +83,7 @@ class NewsListDetailScreenTest {
     }
 
     // The strings used for matching in these tests.
-    private val placeholderText by composeTestRule.stringResource(R.string.feature_details_impl_select_an_news)
+    private val placeholderText by composeTestRule.stringResource(R.string.feature_article_details_impl_select_an_news)
     private val listPaneTag = "news:feed"
 
     private val Article.testTag
@@ -97,13 +97,13 @@ class NewsListDetailScreenTest {
     @Composable
     private fun TestNavDisplay() {
         val navigationState = rememberNavigationState(
-            startKey = NewsNavKey,
-            topLevelKeys = setOf(NewsNavKey),
+            startKey = ArticlesNavKey,
+            topLevelKeys = setOf(ArticlesNavKey),
         )
         val navigator = Navigator(navigationState)
         val entryProvider = entryProvider {
-            newsEntry(navigator, detailPlaceholder = { DetailPlaceholder() })
-            newsDetailsEntry(navigator)
+            articlesEntry(navigator, detailPlaceholder = { ArticleDetailsPlaceholder() })
+            articleDetailsEntry(navigator)
         }
         NavDisplay(
             entries = navigationState.toEntries(entryProvider),

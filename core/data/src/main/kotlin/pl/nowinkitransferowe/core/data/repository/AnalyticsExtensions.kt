@@ -19,14 +19,18 @@ package pl.nowinkitransferowe.core.data.repository
 import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 
-internal fun AnalyticsHelper.logNewsResourceBookmarkToggled(newsResourceId: String, isBookmarked: Boolean) {
-    val eventType = if (isBookmarked) "news_resource_saved" else "news_resource_unsaved"
-    val paramKey = if (isBookmarked) "saved_news_resource_id" else "unsaved_news_resource_id"
+internal fun AnalyticsHelper.logArticleBookmarkToggled(articleId: Int, isBookmarked: Boolean) = logBookmarkToggled("article", articleId, isBookmarked)
+
+internal fun AnalyticsHelper.logTransferBookmarkToggled(transferId: Int, isBookmarked: Boolean) = logBookmarkToggled("transfer", transferId, isBookmarked)
+
+/** "article_saved" with "saved_article_id", "transfer_unsaved" with "unsaved_transfer_id" and so on. */
+private fun AnalyticsHelper.logBookmarkToggled(record: String, id: Int, isBookmarked: Boolean) {
+    val action = if (isBookmarked) "saved" else "unsaved"
     logEvent(
         AnalyticsEvent(
-            type = eventType,
+            type = "${record}_$action",
             extras = listOf(
-                AnalyticsEvent.Param(key = paramKey, value = newsResourceId),
+                AnalyticsEvent.Param(key = "${action}_${record}_id", value = id.toString()),
             ),
         ),
     )

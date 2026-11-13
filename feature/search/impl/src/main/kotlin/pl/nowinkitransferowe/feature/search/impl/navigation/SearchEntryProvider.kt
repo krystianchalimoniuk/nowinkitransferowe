@@ -20,18 +20,18 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
-import pl.nowinkitransferowe.feature.details.api.navigation.navigateToNewsDetails
-import pl.nowinkitransferowe.feature.details.transfers.api.navigation.navigateToTransferDetails
+import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
 import pl.nowinkitransferowe.feature.search.api.navigation.SearchNavKey
 import pl.nowinkitransferowe.feature.search.impl.SearchRoute
 import pl.nowinkitransferowe.feature.search.impl.SearchViewModel
+import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
 
 fun EntryProviderScope<NavKey>.searchEntry(navigator: Navigator) {
     entry<SearchNavKey> { key ->
         SearchRoute(
             onBackClick = { navigator.goBack() },
-            onNewsClick = navigator::navigateToNewsDetails,
-            onTransferClick = navigator::navigateToTransferDetails,
+            onArticleClick = navigator::navigateToArticle,
+            onTransferClick = navigator::navigateToTransfer,
             searchViewModel = hiltViewModel<SearchViewModel, SearchViewModel.Factory> { factory ->
                 factory.create(key)
             },

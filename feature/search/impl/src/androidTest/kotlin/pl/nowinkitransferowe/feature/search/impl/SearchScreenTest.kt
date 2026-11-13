@@ -120,11 +120,11 @@ class SearchScreenTest {
     }
 
     @Test
-    fun searchResultWithNewsResources_firstNewsResourcesIsVisible() {
+    fun searchResultWithArticles_firstArticlesIsVisible() {
         composeTestRule.setContent {
             SearchScreen(
                 searchResultUiState = SearchResultUiState.Success(
-                    newsResources = articlesTestData.mapToUserArticles(topicsTestData, userData),
+                    articles = articlesTestData.mapToUserArticles(topicsTestData, userData),
                 ),
             )
         }

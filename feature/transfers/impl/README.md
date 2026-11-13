@@ -20,7 +20,7 @@ graph TB
     end
     subgraph :feature:details-transfers
       direction TB
-      :feature:details-transfers:api[api]:::android-library
+      :feature:transfer-details:api[api]:::android-library
     end
   end
   subgraph :core
@@ -59,14 +59,14 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
-  :feature:details-transfers:api --> :core:navigation
+  :feature:transfer-details:api --> :core:navigation
   :feature:transfers:api --> :core:navigation
   :feature:transfers:impl -.-> :core:data
   :feature:transfers:impl -.-> :core:designsystem
   :feature:transfers:impl -.-> :core:domain
   :feature:transfers:impl -.-> :core:notifications
   :feature:transfers:impl -.-> :core:ui
-  :feature:transfers:impl -.-> :feature:details-transfers:api
+  :feature:transfers:impl -.-> :feature:transfer-details:api
   :feature:transfers:impl -.-> :feature:transfers:api
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;

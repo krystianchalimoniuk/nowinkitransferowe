@@ -20,11 +20,11 @@ graph TB
     end
     subgraph :feature:details
       direction TB
-      :feature:details:api[api]:::android-library
+      :feature:article-details:api[api]:::android-library
     end
     subgraph :feature:details-transfers
       direction TB
-      :feature:details-transfers:api[api]:::android-library
+      :feature:transfer-details:api[api]:::android-library
     end
     subgraph :feature:search
       direction TB
@@ -69,11 +69,11 @@ graph TB
   :feature:bookmarks:impl -.-> :core:designsystem
   :feature:bookmarks:impl -.-> :core:ui
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
-  :feature:bookmarks:impl -.-> :feature:details-transfers:api
-  :feature:bookmarks:impl -.-> :feature:details:api
+  :feature:bookmarks:impl -.-> :feature:transfer-details:api
+  :feature:bookmarks:impl -.-> :feature:article-details:api
   :feature:bookmarks:impl -.-> :feature:search:api
-  :feature:details-transfers:api --> :core:navigation
-  :feature:details:api --> :core:navigation
+  :feature:transfer-details:api --> :core:navigation
+  :feature:article-details:api --> :core:navigation
   :feature:search:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;

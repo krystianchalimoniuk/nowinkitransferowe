@@ -47,7 +47,7 @@ import pl.nowinkitransferowe.core.model.crestUrl
 
 @Composable
 fun TransferListItemCard(
-    userTransferResource: UserTransfer,
+    userTransfer: UserTransfer,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -72,11 +72,11 @@ fun TransferListItemCard(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TransfersResourceTransferListLabel(
-                        label = userTransferResource.season.label,
+                        label = userTransfer.season.label,
                         modifier = Modifier.weight(.12f),
                     )
                     TransfersResourceTransferListLabel(
-                        label = dateFormatted(userTransferResource.date),
+                        label = dateFormatted(userTransfer.date),
                         modifier = Modifier.weight(.14f),
                     )
                     Row(
@@ -85,13 +85,13 @@ fun TransferListItemCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TransfersResourceImage(
-                            userTransferResource.from.crestUrl,
+                            userTransfer.from.crestUrl,
                             pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_crest_placeholder,
                             16.dp,
                             0.dp,
                         )
                         Spacer(modifier = Modifier.width(2.dp))
-                        TransfersResourceTransferListLabel(label = userTransferResource.from.name)
+                        TransfersResourceTransferListLabel(label = userTransfer.from.name)
                     }
                     Row(
                         modifier = Modifier.weight(.32f),
@@ -99,16 +99,16 @@ fun TransferListItemCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TransfersResourceImage(
-                            userTransferResource.to.crestUrl,
+                            userTransfer.to.crestUrl,
                             pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_crest_placeholder,
                             16.dp,
                             0.dp,
                         )
                         Spacer(modifier = Modifier.width(2.dp))
-                        TransfersResourceTransferListLabel(label = userTransferResource.to.name)
+                        TransfersResourceTransferListLabel(label = userTransfer.to.name)
                     }
                     TransfersResourceTransferListLabel(
-                        label = shortPriceValueIfNoInformationOrOnLoan(userTransferResource.fee.label),
+                        label = shortPriceValueIfNoInformationOrOnLoan(userTransfer.fee.label),
                         modifier = Modifier.weight(.1f),
                     )
                 }
@@ -144,8 +144,8 @@ fun TransfersResourceTransferListLabel(
 @Preview("TransfersListItemPreview")
 @Composable
 private fun TransferListItemPreview(
-    @PreviewParameter(UserTransfersResourcePreviewParameterProvider::class)
-    userTransferResources: List<UserTransfer>,
+    @PreviewParameter(UserTransferPreviewParameterProvider::class)
+    userTransfers: List<UserTransfer>,
 ) {
     CompositionLocalProvider(
         LocalInspectionMode provides true,
@@ -153,7 +153,7 @@ private fun TransferListItemPreview(
         NtTheme {
             Surface {
                 TransferListItemCard(
-                    userTransferResource = userTransferResources[0],
+                    userTransfer = userTransfers[0],
                     onClick = {},
                 )
             }

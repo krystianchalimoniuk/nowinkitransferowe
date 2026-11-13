@@ -80,22 +80,22 @@ internal class SystemTrayNotifier @Inject constructor(
             return
         }
 
-        val truncatedNewsResources = articles.take(MAX_NUM_NOTIFICATIONS)
+        val truncatedArticles = articles.take(MAX_NUM_NOTIFICATIONS)
 
-        val newsNotifications = truncatedNewsResources.map { newsResource ->
+        val newsNotifications = truncatedArticles.map { article ->
             createNotification {
                 setSmallIcon(
                     pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
                 )
-                    .setContentTitle(newsResource.title)
+                    .setContentTitle(article.title)
                     .setContentText(
                         HtmlCompat.fromHtml(
-                            newsResource.lead,
+                            article.lead,
                             HtmlCompat.FROM_HTML_MODE_COMPACT,
                         )
                             .toString(),
                     )
-                    .setContentIntent(newsPendingIntent(newsResource))
+                    .setContentIntent(newsPendingIntent(article))
                     .setGroup(NEWS_NOTIFICATION_GROUP)
                     .setAutoCancel(true)
             }
@@ -108,7 +108,7 @@ internal class SystemTrayNotifier @Inject constructor(
                     pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
                 )
                 // Build summary info into InboxStyle template.
-                .setStyle(newsNotificationStyle(truncatedNewsResources, title))
+                .setStyle(newsNotificationStyle(truncatedArticles, title))
                 .setGroup(NEWS_NOTIFICATION_GROUP)
                 .setGroupSummary(true)
                 .setAutoCancel(true)
@@ -119,7 +119,7 @@ internal class SystemTrayNotifier @Inject constructor(
         val notificationManager = NotificationManagerCompat.from(this)
         newsNotifications.forEachIndexed { index, notification ->
             notificationManager.notify(
-                truncatedNewsResources[index].id.hashCode(),
+                truncatedArticles[index].id.hashCode(),
                 notification,
             )
         }
@@ -131,16 +131,16 @@ internal class SystemTrayNotifier @Inject constructor(
             return
         }
 
-        val truncatedTransferResources = transfers.take(MAX_NUM_NOTIFICATIONS)
+        val truncatedTransfers = transfers.take(MAX_NUM_NOTIFICATIONS)
 
-        val newsNotifications = truncatedTransferResources.map { transferResource ->
+        val newsNotifications = truncatedTransfers.map { transfer ->
             createNotification {
                 setSmallIcon(
                     pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
                 )
-                    .setContentTitle("\uD83D\uDC64 ${transferResource.player.name}")
-                    .setContentText("\uD83D\uDD01 ${transferResource.from.name} - ${transferResource.to.name}\n\uD83D\uDCB6 ${transferResource.fee.label}")
-                    .setContentIntent(transferPendingIntent(transferResource))
+                    .setContentTitle("\uD83D\uDC64 ${transfer.player.name}")
+                    .setContentText("\uD83D\uDD01 ${transfer.from.name} - ${transfer.to.name}\n\uD83D\uDCB6 ${transfer.fee.label}")
+                    .setContentIntent(transferPendingIntent(transfer))
                     .setGroup(TRANSFER_NOTIFICATION_GROUP)
                     .setAutoCancel(true)
             }
@@ -155,7 +155,7 @@ internal class SystemTrayNotifier @Inject constructor(
                     pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
                 )
                 // Build summary info into InboxStyle template.
-                .setStyle(transferNotificationStyle(truncatedTransferResources, title))
+                .setStyle(transferNotificationStyle(truncatedTransfers, title))
                 .setGroup(TRANSFER_NOTIFICATION_GROUP)
                 .setGroupSummary(true)
                 .setAutoCancel(true)
@@ -166,7 +166,7 @@ internal class SystemTrayNotifier @Inject constructor(
         val notificationManager = NotificationManagerCompat.from(this)
         newsNotifications.forEachIndexed { index, notification ->
             notificationManager.notify(
-                truncatedTransferResources[index].id.hashCode(),
+                truncatedTransfers[index].id.hashCode(),
                 notification,
             )
         }
@@ -234,10 +234,10 @@ internal class SystemTrayNotifier @Inject constructor(
      * Creates an inbox style summary notification for news updates
      */
     private fun newsNotificationStyle(
-        newsResources: List<Article>,
+        articles: List<Article>,
         title: String,
-    ): InboxStyle = newsResources
-        .fold(InboxStyle()) { inboxStyle, newsResource -> inboxStyle.addLine(newsResource.title) }
+    ): InboxStyle = articles
+        .fold(InboxStyle()) { inboxStyle, article -> inboxStyle.addLine(article.title) }
         .setBigContentTitle(title)
         .setSummaryText(title)
 
@@ -245,10 +245,10 @@ internal class SystemTrayNotifier @Inject constructor(
      * Creates an inbox style summary notification for transfers updates
      */
     private fun transferNotificationStyle(
-        transferResources: List<Transfer>,
+        transfers: List<Transfer>,
         title: String,
-    ): InboxStyle = transferResources
-        .fold(InboxStyle()) { inboxStyle, transferResource -> inboxStyle.addLine("\uD83D\uDC64 ${transferResource.player.name}") }
+    ): InboxStyle = transfers
+        .fold(InboxStyle()) { inboxStyle, transfer -> inboxStyle.addLine("\uD83D\uDC64 ${transfer.player.name}") }
         .setBigContentTitle(title)
         .setSummaryText(title)
 
@@ -303,13 +303,13 @@ private fun Context.ensureNotificationChannelExists() {
 }
 
 private fun Context.newsPendingIntent(
-    newsResource: Article,
+    article: Article,
 ): PendingIntent? = PendingIntent.getActivity(
     this,
     NEWS_NOTIFICATION_REQUEST_CODE,
     Intent().apply {
         action = Intent.ACTION_VIEW
-        data = newsResource.newsDeepLinkUri()
+        data = article.newsDeepLinkUri()
         component = ComponentName(
             packageName,
             TARGET_ACTIVITY_NAME,
@@ -319,13 +319,13 @@ private fun Context.newsPendingIntent(
 )
 
 private fun Context.transferPendingIntent(
-    transferResource: Transfer,
+    transfer: Transfer,
 ): PendingIntent? = PendingIntent.getActivity(
     this,
     TRANSFER_NOTIFICATION_REQUEST_CODE,
     Intent().apply {
         action = Intent.ACTION_VIEW
-        data = transferResource.transferDeepLinkUri()
+        data = transfer.transferDeepLinkUri()
         component = ComponentName(
             packageName,
             TARGET_ACTIVITY_NAME,

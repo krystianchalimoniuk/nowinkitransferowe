@@ -39,7 +39,7 @@ import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.testing.data.savedUserArticlesTestData
 import pl.nowinkitransferowe.core.testing.data.savedUserTransfersTestData
-import pl.nowinkitransferowe.core.ui.NewsFeedUiState
+import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -56,15 +56,15 @@ class BookmarksScreenTest {
     fun loading_showsLoadingSpinner() {
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = NewsFeedUiState.Loading,
+                newsFeedState = ArticleFeedUiState.Loading,
                 transferFeedState = TransferFeedUiState.Loading,
                 onShowSnackbar = { _, _ -> false },
-                removeFromNewsBookmarks = {},
+                removeFromArticleBookmarks = {},
                 removeFromTransferBookmarks = {},
                 onTopicClick = {},
-                onNewsClick = {},
-                onTransferResourceViewed = {},
-                onNewsResourceViewed = {},
+                onArticleClick = {},
+                onTransferViewed = {},
+                onArticleViewed = {},
                 onTransferClick = {},
             )
         }
@@ -80,7 +80,7 @@ class BookmarksScreenTest {
     fun feed_whenHasBookmarks_showsBookmarks() {
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = NewsFeedUiState.Success(
+                newsFeedState = ArticleFeedUiState.Success(
                     savedUserArticlesTestData.take(2),
                 ),
                 transferFeedState = TransferFeedUiState.Success(
@@ -89,12 +89,12 @@ class BookmarksScreenTest {
                     ),
                 ),
                 onShowSnackbar = { _, _ -> false },
-                removeFromNewsBookmarks = {},
+                removeFromArticleBookmarks = {},
                 removeFromTransferBookmarks = {},
                 onTopicClick = {},
-                onNewsResourceViewed = {},
-                onTransferResourceViewed = {},
-                onNewsClick = {},
+                onArticleViewed = {},
+                onTransferViewed = {},
+                onArticleClick = {},
                 onTransferClick = {},
             )
         }
@@ -161,22 +161,22 @@ class BookmarksScreenTest {
 
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = NewsFeedUiState.Success(
+                newsFeedState = ArticleFeedUiState.Success(
                     feed = savedUserArticlesTestData.take(2),
                 ),
                 transferFeedState = TransferFeedUiState.Success(
                     feed = arrayListOf(),
                 ),
                 onShowSnackbar = { _, _ -> false },
-                removeFromNewsBookmarks = { newsResourceId ->
-                    assertEquals(savedUserArticlesTestData[0].id, newsResourceId)
+                removeFromArticleBookmarks = { articleId ->
+                    assertEquals(savedUserArticlesTestData[0].id, articleId)
                     removeNewsFromBookmarksCalled = true
                 },
                 removeFromTransferBookmarks = {},
                 onTopicClick = {},
-                onNewsResourceViewed = {},
-                onTransferResourceViewed = {},
-                onNewsClick = {},
+                onArticleViewed = {},
+                onTransferViewed = {},
+                onArticleClick = {},
                 onTransferClick = {},
             )
         }
@@ -207,7 +207,7 @@ class BookmarksScreenTest {
 
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = NewsFeedUiState.Success(
+                newsFeedState = ArticleFeedUiState.Success(
                     feed = arrayListOf(),
                 ),
                 transferFeedState = TransferFeedUiState.Success(
@@ -216,15 +216,15 @@ class BookmarksScreenTest {
                     ),
                 ),
                 onShowSnackbar = { _, _ -> false },
-                removeFromNewsBookmarks = {},
-                removeFromTransferBookmarks = { transferResourceId ->
-                    assertEquals(savedUserTransfersTestData[0].id, transferResourceId)
+                removeFromArticleBookmarks = {},
+                removeFromTransferBookmarks = { transferId ->
+                    assertEquals(savedUserTransfersTestData[0].id, transferId)
                     removeTransfersFromBookmarksCalled = true
                 },
                 onTopicClick = {},
-                onNewsResourceViewed = {},
-                onTransferResourceViewed = {},
-                onNewsClick = {},
+                onArticleViewed = {},
+                onTransferViewed = {},
+                onArticleClick = {},
                 onTransferClick = {},
             )
         }
@@ -253,15 +253,15 @@ class BookmarksScreenTest {
     fun feed_whenHasNoBookmarks_showsEmptyState() {
         composeTestRule.setContent {
             BookmarksScreen(
-                newsFeedState = NewsFeedUiState.Success(emptyList()),
+                newsFeedState = ArticleFeedUiState.Success(emptyList()),
                 transferFeedState = TransferFeedUiState.Success(emptyList()),
                 onShowSnackbar = { _, _ -> false },
-                removeFromNewsBookmarks = {},
+                removeFromArticleBookmarks = {},
                 removeFromTransferBookmarks = {},
-                onNewsClick = {},
+                onArticleClick = {},
                 onTopicClick = {},
-                onNewsResourceViewed = {},
-                onTransferResourceViewed = {},
+                onArticleViewed = {},
+                onTransferViewed = {},
                 onTransferClick = {},
             )
         }
@@ -287,15 +287,15 @@ class BookmarksScreenTest {
         composeTestRule.setContent {
             CompositionLocalProvider(LocalLifecycleOwner provides testLifecycleOwner) {
                 BookmarksScreen(
-                    newsFeedState = NewsFeedUiState.Success(emptyList()),
+                    newsFeedState = ArticleFeedUiState.Success(emptyList()),
                     transferFeedState = TransferFeedUiState.Success(emptyList()),
                     onShowSnackbar = { _, _ -> false },
-                    removeFromNewsBookmarks = {},
+                    removeFromArticleBookmarks = {},
                     removeFromTransferBookmarks = {},
                     onTopicClick = {},
-                    onNewsClick = {},
-                    onNewsResourceViewed = {},
-                    onTransferResourceViewed = {},
+                    onArticleClick = {},
+                    onArticleViewed = {},
+                    onTransferViewed = {},
                     onTransferClick = {},
                     clearUndoState = {
                         undoStateCleared = true

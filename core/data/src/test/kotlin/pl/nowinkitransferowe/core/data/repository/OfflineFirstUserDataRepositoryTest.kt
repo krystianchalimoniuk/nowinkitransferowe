@@ -25,13 +25,15 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import pl.nowinkitransferowe.core.analytics.NoOpAnalyticsHelper
+import pl.nowinkitransferowe.core.analytics.AnalyticsEvent
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.core.datastoreproto.UserPreferences
 import pl.nowinkitransferowe.core.datastoretest.InMemoryDataStore
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserData
+import pl.nowinkitransferowe.core.testing.util.TestAnalyticsHelper
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class OfflineFirstUserDataRepositoryTest {
     private val testScope = TestScope(UnconfinedTestDispatcher())
@@ -40,7 +42,7 @@ class OfflineFirstUserDataRepositoryTest {
 
     private lateinit var ntPreferencesDataSource: NtPreferencesDataSource
 
-    private val analyticsHelper = NoOpAnalyticsHelper()
+    private val analyticsHelper = TestAnalyticsHelper()
 
     @get:Rule
     val tmpFolder: TemporaryFolder = TemporaryFolder.builder().assureDeletion().build()
@@ -76,7 +78,7 @@ class OfflineFirstUserDataRepositoryTest {
     }
 
     @Test
-    fun offlineFirstUserDataRepository_bookmark_news_resource_logic_delegates_to_nt_preferences() = testScope.runTest {
+    fun offlineFirstUserDataRepository_bookmark_article_logic_delegates_to_nt_preferences() = testScope.runTest {
         subject.setArticleBookmarked(articleId = 0, bookmarked = true)
 
         assertEquals(
@@ -106,7 +108,7 @@ class OfflineFirstUserDataRepositoryTest {
     }
 
     @Test
-    fun offlineFirstUserDataRepository_update_viewed_news_resources_delegates_to_nt_preferences() = runTest {
+    fun offlineFirstUserDataRepository_update_viewed_articles_delegates_to_nt_preferences() = runTest {
         subject.setArticleViewed(articleId = 0, viewed = true)
 
         assertEquals(
@@ -136,7 +138,7 @@ class OfflineFirstUserDataRepositoryTest {
     }
 
     @Test
-    fun offlineFirstUserDataRepository_bookmark_transfer_resource_logic_delegates_to_nt_preferences() = testScope.runTest {
+    fun offlineFirstUserDataRepository_bookmark_transfer_logic_delegates_to_nt_preferences() = testScope.runTest {
         subject.setTransferBookmarked(transferId = 0, bookmarked = true)
 
         assertEquals(
@@ -166,7 +168,7 @@ class OfflineFirstUserDataRepositoryTest {
     }
 
     @Test
-    fun offlineFirstUserDataRepository_update_viewed_transfer_resources_delegates_to_nt_preferences() = runTest {
+    fun offlineFirstUserDataRepository_update_viewed_transfers_delegates_to_nt_preferences() = runTest {
         subject.setTransferViewed(transferId = 0, viewed = true)
 
         assertEquals(
@@ -288,5 +290,14 @@ class OfflineFirstUserDataRepositoryTest {
                 .map { it.isGeneralNotificationAllowed }
                 .first(),
         )
+    }
+
+    @Test
+    fun bookmarking_logs_an_article_or_a_transfer_event() = testScope.runTest {
+        subject.setArticleBookmarked(articleId = 11283, bookmarked = true)
+        subject.setTransferBookmarked(transferId = 19580, bookmarked = false)
+
+        assertTrue(analyticsHelper.hasLogged(AnalyticsEvent("article_saved", listOf(AnalyticsEvent.Param("saved_article_id", "11283")))))
+        assertTrue(analyticsHelper.hasLogged(AnalyticsEvent("transfer_unsaved", listOf(AnalyticsEvent.Param("unsaved_transfer_id", "19580")))))
     }
 }

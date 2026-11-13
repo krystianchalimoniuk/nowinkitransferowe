@@ -23,18 +23,18 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
+import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
 import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksNavKey
 import pl.nowinkitransferowe.feature.bookmarks.impl.BookmarksRoute
-import pl.nowinkitransferowe.feature.details.api.navigation.navigateToNewsDetails
-import pl.nowinkitransferowe.feature.details.transfers.api.navigation.navigateToTransferDetails
 import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
+import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
 
 fun EntryProviderScope<NavKey>.bookmarksEntry(navigator: Navigator) {
     entry<BookmarksNavKey> {
         val snackbarHostState = LocalSnackbarHostState.current
         BookmarksRoute(
-            onNewsClick = navigator::navigateToNewsDetails,
-            onTransferClick = navigator::navigateToTransferDetails,
+            onArticleClick = navigator::navigateToArticle,
+            onTransferClick = navigator::navigateToTransfer,
             onTopicClick = navigator::navigateToSearch,
             onShowSnackbar = { message, action ->
                 snackbarHostState.showSnackbar(

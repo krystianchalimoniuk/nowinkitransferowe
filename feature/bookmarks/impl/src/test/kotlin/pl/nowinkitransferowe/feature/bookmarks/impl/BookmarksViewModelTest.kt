@@ -32,7 +32,7 @@ import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
 import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
-import pl.nowinkitransferowe.core.ui.NewsFeedUiState
+import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -68,7 +68,7 @@ class BookmarksViewModelTest {
 
     @Test
     fun stateIsInitiallyLoading() = runTest {
-        assertEquals(NewsFeedUiState.Loading, viewModel.newsFeedUiState.value)
+        assertEquals(ArticleFeedUiState.Loading, viewModel.newsFeedUiState.value)
         assertEquals(TransferFeedUiState.Loading, viewModel.transferFeedUiState.value)
     }
 
@@ -79,7 +79,7 @@ class BookmarksViewModelTest {
         articleRepository.sendArticles(articlesTestData)
         userDataRepository.setArticleBookmarked(articlesTestData[0].id, true)
         val item = viewModel.newsFeedUiState.value
-        assertIs<NewsFeedUiState.Success>(item)
+        assertIs<ArticleFeedUiState.Success>(item)
         assertEquals(item.feed.size, 1)
 
         collectJob.cancel()
@@ -93,10 +93,10 @@ class BookmarksViewModelTest {
         // Start with the resource saved
         userDataRepository.setArticleBookmarked(articlesTestData[0].id, true)
         // Use viewModel to remove saved resource
-        viewModel.removeFromSavedNewsResources(articlesTestData[0].id)
+        viewModel.removeArticleBookmark(articlesTestData[0].id)
         // Verify list of saved resources is now empty
         val item = viewModel.newsFeedUiState.value
-        assertIs<NewsFeedUiState.Success>(item)
+        assertIs<ArticleFeedUiState.Success>(item)
         assertEquals(item.feed.size, 0)
 
         collectJob.cancel()
@@ -123,7 +123,7 @@ class BookmarksViewModelTest {
         // Start with the resource saved
         userDataRepository.setTransferBookmarked(transfersTestData[0].id, true)
         // Use viewModel to remove saved resource
-        viewModel.removeFromSavedTransferResources(transfersTestData[0].id)
+        viewModel.removeTransferBookmark(transfersTestData[0].id)
         // Verify list of saved resources is now empty
         val item = viewModel.transferFeedUiState.value
         assertIs<TransferFeedUiState.Success>(item)

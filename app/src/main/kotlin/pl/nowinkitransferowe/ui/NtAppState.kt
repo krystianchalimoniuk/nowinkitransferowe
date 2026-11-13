@@ -35,8 +35,8 @@ import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.navigation.NavigationState
 import pl.nowinkitransferowe.core.navigation.rememberNavigationState
 import pl.nowinkitransferowe.core.ui.TrackDisposableJank
+import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksNavKey
-import pl.nowinkitransferowe.feature.news.api.navigation.NewsNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import pl.nowinkitransferowe.navigation.TOP_LEVEL_NAV_ITEMS
 
@@ -49,7 +49,7 @@ fun rememberNtAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): NtAppState {
     val navigationState = rememberNavigationState(
-        startKey = NewsNavKey,
+        startKey = ArticlesNavKey,
         topLevelKeys = TOP_LEVEL_NAV_ITEMS.keys,
     )
 
@@ -100,10 +100,10 @@ class NtAppState(
             userArticleRepository.observeBookmarked(),
             userTransferRepository.observeTransfers(limit = UNREAD_CHECK_LIMIT),
             userTransferRepository.observeBookmarked(),
-        ) { newsResources, bookmarkedArticles, transferResources, bookmarkedTransfersResources ->
+        ) { articles, bookmarkedArticles, transfers, bookmarkedTransfersResources ->
             setOfNotNull(
-                NewsNavKey.takeIf { newsResources.any { !it.hasBeenViewed } },
-                TransfersNavKey.takeIf { transferResources.any { !it.hasBeenViewed } },
+                ArticlesNavKey.takeIf { articles.any { !it.hasBeenViewed } },
+                TransfersNavKey.takeIf { transfers.any { !it.hasBeenViewed } },
                 BookmarksNavKey.takeIf {
                     bookmarkedArticles.any { !it.hasBeenViewed } ||
                         bookmarkedTransfersResources.any { !it.hasBeenViewed }

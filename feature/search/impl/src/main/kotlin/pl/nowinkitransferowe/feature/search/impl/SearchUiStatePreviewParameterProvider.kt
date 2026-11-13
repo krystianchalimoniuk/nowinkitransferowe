@@ -17,7 +17,7 @@
 package pl.nowinkitransferowe.feature.search.impl
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import pl.nowinkitransferowe.core.ui.PreviewParameterData.newsResources
+import pl.nowinkitransferowe.core.ui.PreviewParameterData.articles
 import pl.nowinkitransferowe.core.ui.TransfersPreviewParameterData.transfersResources
 
 /**
@@ -27,8 +27,8 @@ import pl.nowinkitransferowe.core.ui.TransfersPreviewParameterData.transfersReso
 class SearchUiStatePreviewParameterProvider : PreviewParameterProvider<SearchResultUiState> {
     override val values: Sequence<SearchResultUiState> = sequenceOf(
         SearchResultUiState.Success(
-            transferResources = transfersResources,
-            newsResources = newsResources,
+            transfers = transfersResources,
+            articles = articles,
         ),
     )
 }
