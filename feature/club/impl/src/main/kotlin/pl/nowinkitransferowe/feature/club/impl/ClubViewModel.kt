@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.todayIn
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.ClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
@@ -107,6 +108,8 @@ class ClubViewModel @AssistedInject constructor(
     /** Start year of the picked season, [ALL_SEASONS] for all of them, null before a pick. */
     private val pickedSeason = savedStateHandle.getStateFlow<Int?>(SEASON_KEY, null)
 
+    private val currentSeason = Season.of(Clock.System.todayIn(Season.TIME_ZONE))
+
     private val transfers = combine(
         userTransferRepository.observeTransfersOfClub(clubId),
         rumourRepository.observeRumoursOfClub(clubId),
@@ -121,9 +124,11 @@ class ClubViewModel @AssistedInject constructor(
             if (club == null) return@flatMapLatest flowOf(ClubUiState.NotFound)
             combine(tab, pickedSeason, transfers, dictionary) { tab, picked, (transfers, rumours, seasons), (countries, topics) ->
                 val available = (transfers.map { it.season } + seasons.map { it.season }).distinct().sortedDescending()
-                // The newest season until another one (or all of them) is picked
+                // The current season until another one (or all of them) is picked. Transfers
+                // already agreed for the next window make a later season, which is not picked
+                // by itself; without transfers this season, the latest earlier one is.
                 val season = when (picked) {
-                    null -> available.firstOrNull()
+                    null -> available.firstOrNull { it <= currentSeason } ?: available.firstOrNull()
                     ALL_SEASONS -> null
                     else -> Season(picked)
                 }

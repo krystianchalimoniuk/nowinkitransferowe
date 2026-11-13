@@ -21,12 +21,16 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.todayIn
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.RumourStatus
+import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.testing.data.clubsTestData
 import pl.nowinkitransferowe.core.testing.data.fixedRumoursTestData
 import pl.nowinkitransferowe.core.testing.data.topicsTestData
@@ -98,7 +102,7 @@ class ClubViewModelTest {
     }
 
     @Test
-    fun newestSeasonIsPicked_andAllSeasonsCanBeShown() = runTest {
+    fun currentSeasonIsPicked_andAllSeasonsCanBeShown() = runTest {
         val viewModel = viewModel(clubId = 86)
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
         val newest = transfersTestData.filter { (it.to as? ClubRef.Club)?.id == 86 }.maxOf { it.season }
@@ -112,6 +116,21 @@ class ClubViewModelTest {
         val all = assertIs<ClubUiState.Success>(viewModel.uiState.value)
         assertEquals(null, all.season)
         assertEquals(all.transferCount, all.arrivals.size + all.departures.size)
+    }
+
+    @Test
+    fun seasonOfTheNextWindow_isNotPickedByItself() = runTest {
+        val current = Season.of(Clock.System.todayIn(Season.TIME_ZONE))
+        val next = transfersTestData[0].copy(id = 1, date = LocalDate(current.startYear + 1, 7, 1))
+        val now = transfersTestData[0].copy(id = 2, date = LocalDate(current.startYear, 12, 1))
+        transferRepository.sendTransfers(listOf(next, now))
+        val viewModel = viewModel(clubId = 83)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+
+        val state = assertIs<ClubUiState.Success>(viewModel.uiState.value)
+        assertEquals(current, state.season)
+        assertEquals(listOf(Season(current.startYear + 1), current), state.availableSeasons.take(2))
+        assertEquals(listOf(2), state.arrivals.map { it.id })
     }
 
     @Test
