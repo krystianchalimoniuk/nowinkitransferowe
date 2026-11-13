@@ -255,13 +255,14 @@ internal fun NtAppContent(
 
                 Box(
                     // Workaround for https://issuetracker.google.com/338478720
-                    modifier = Modifier.consumeWindowInsets(
-                        if (shouldShowTopAppBar) {
-                            WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
-                        } else {
-                            WindowInsets(0, 0, 0, 0)
-                        },
-                    ),
+                    // The top app bar already sits below the status bar; without it (details,
+                    // settings, search) the screens start below the status bar here, so their back
+                    // and action buttons are not drawn under it.
+                    modifier = if (shouldShowTopAppBar) {
+                        Modifier.consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+                    } else {
+                        Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+                    },
                 ) {
                     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
 
