@@ -50,8 +50,8 @@ import pl.nowinkitransferowe.core.model.Transfer
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.core.navigation.rememberNavigationState
 import pl.nowinkitransferowe.core.navigation.toEntries
-import pl.nowinkitransferowe.feature.details.transfers.impl.DetailsTransferPlaceholder
-import pl.nowinkitransferowe.feature.details.transfers.impl.navigation.transferDetailsEntry
+import pl.nowinkitransferowe.feature.transferdetails.impl.TransferDetailsPlaceholder
+import pl.nowinkitransferowe.feature.transferdetails.impl.navigation.transferDetailsEntry
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import pl.nowinkitransferowe.feature.transfers.impl.navigation.transfersEntry
 import pl.nowinkitransferowe.uitesthiltmanifest.HiltComponentActivity
@@ -81,7 +81,7 @@ class TransferListDetailScreenTest {
     }
 
     // The strings used for matching in these tests.
-    private val placeholderText by composeTestRule.stringResource(pl.nowinkitransferowe.feature.details.transfers.impl.R.string.feature_details_transfers_impl_select_a_transfer)
+    private val placeholderText by composeTestRule.stringResource(pl.nowinkitransferowe.feature.transferdetails.impl.R.string.feature_transfer_details_impl_select_a_transfer)
     private val listPaneTag = "transfers:feed"
 
     private val Transfer.testTag
@@ -100,7 +100,7 @@ class TransferListDetailScreenTest {
         )
         val navigator = Navigator(navigationState)
         val entryProvider = entryProvider {
-            transfersEntry(navigator, detailPlaceholder = { DetailsTransferPlaceholder() })
+            transfersEntry(navigator, detailPlaceholder = { TransferDetailsPlaceholder() })
             transferDetailsEntry(navigator)
         }
         NavDisplay(

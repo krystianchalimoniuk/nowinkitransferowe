@@ -56,9 +56,9 @@ import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_URI_PATTERN
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_URI_PATTERN
 import pl.nowinkitransferowe.core.ui.LocalTimeZone
-import pl.nowinkitransferowe.feature.details.api.navigation.DetailsNewsNavKey
-import pl.nowinkitransferowe.feature.details.transfers.api.navigation.DetailsTransferNavKey
-import pl.nowinkitransferowe.feature.news.api.navigation.NewsNavKey
+import pl.nowinkitransferowe.feature.articledetails.api.navigation.ArticleNavKey
+import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
+import pl.nowinkitransferowe.feature.transferdetails.api.navigation.TransferDetailsNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import pl.nowinkitransferowe.ui.NtApp
 import pl.nowinkitransferowe.ui.rememberNtAppState
@@ -68,12 +68,12 @@ private const val TAG = "MainActivity"
 
 private val newsDeepLinkMatcher = UriDeepLinkMatcher(
     uriPattern = DeepLinkUri(DEEP_LINK_NEWS_URI_PATTERN),
-    serializer = DetailsNewsNavKey.serializer(),
+    serializer = ArticleNavKey.serializer(),
 )
 
 private val transferDeepLinkMatcher = UriDeepLinkMatcher(
     uriPattern = DeepLinkUri(DEEP_LINK_TRANSFER_URI_PATTERN),
-    serializer = DetailsTransferNavKey.serializer(),
+    serializer = TransferDetailsNavKey.serializer(),
 )
 
 /**
@@ -83,7 +83,7 @@ private val transferDeepLinkMatcher = UriDeepLinkMatcher(
 private fun deepLinkKeys(uri: String): List<NavKey> {
     val request = DeepLinkRequest(uri)
     // The ids are numbers; a link with anything else fails to decode and opens the app as usual.
-    runCatching { newsDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(NewsNavKey, it.key) }
+    runCatching { newsDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(ArticlesNavKey, it.key) }
     runCatching { transferDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(TransfersNavKey, it.key) }
     return emptyList()
 }

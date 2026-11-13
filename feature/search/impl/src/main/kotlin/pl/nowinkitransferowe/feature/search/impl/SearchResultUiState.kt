@@ -32,10 +32,10 @@ sealed interface SearchResultUiState {
     data object LoadFailed : SearchResultUiState
 
     data class Success(
-        val transferResources: List<UserTransfer> = emptyList(),
-        val newsResources: List<UserArticle> = emptyList(),
+        val transfers: List<UserTransfer> = emptyList(),
+        val articles: List<UserArticle> = emptyList(),
     ) : SearchResultUiState {
-        fun isEmpty(): Boolean = transferResources.isEmpty() && newsResources.isEmpty()
+        fun isEmpty(): Boolean = transfers.isEmpty() && articles.isEmpty()
     }
 
     /**

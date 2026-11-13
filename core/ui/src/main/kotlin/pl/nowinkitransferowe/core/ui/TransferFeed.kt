@@ -36,8 +36,8 @@ fun LazyStaggeredGridScope.transferFeed(
     highlightSelectedTransfer: Boolean = false,
     onTransferSelected: (Int) -> Unit = {},
     selectedTransferId: Int? = null,
-    onTransferResourcesCheckedChanged: (Int, Boolean) -> Unit,
-    onTransferResourceViewed: (List<Int>) -> Unit,
+    onTransferSavedChanged: (Int, Boolean) -> Unit,
+    onTransferViewed: (List<Int>) -> Unit,
     onTransferClick: (Int) -> Unit = {},
 ) {
     when (feedState) {
@@ -47,27 +47,27 @@ fun LazyStaggeredGridScope.transferFeed(
                 items = feedState.feed,
                 key = { "transfer-${it.id}" },
                 contentType = { "transferFeedItem" },
-            ) { userTransferResource ->
+            ) { userTransfer ->
                 val analyticsHelper = LocalAnalyticsHelper.current
 
-                TransferResourceCardExpanded(
-                    userTransferResource = userTransferResource,
-                    isBookmarked = userTransferResource.isSaved,
+                TransferCard(
+                    userTransfer = userTransfer,
+                    isBookmarked = userTransfer.isSaved,
                     selectedTransferId = selectedTransferId,
                     highlightSelectedTransfer = highlightSelectedTransfer,
                     onClick = {
-                        analyticsHelper.logTransferResourceOpened(
-                            transferResourceId = userTransferResource.id,
+                        analyticsHelper.logTransferOpened(
+                            transferId = userTransfer.id,
                         )
-                        onTransferSelected(userTransferResource.id)
-                        onTransferClick(userTransferResource.id)
-                        onTransferResourceViewed(listOf(userTransferResource.id))
+                        onTransferSelected(userTransfer.id)
+                        onTransferClick(userTransfer.id)
+                        onTransferViewed(listOf(userTransfer.id))
                     },
-                    hasBeenViewed = userTransferResource.hasBeenViewed,
+                    hasBeenViewed = userTransfer.hasBeenViewed,
                     onToggleBookmark = {
-                        onTransferResourcesCheckedChanged(
-                            userTransferResource.id,
-                            !userTransferResource.isSaved,
+                        onTransferSavedChanged(
+                            userTransfer.id,
+                            !userTransfer.isSaved,
                         )
                     },
                     modifier = Modifier

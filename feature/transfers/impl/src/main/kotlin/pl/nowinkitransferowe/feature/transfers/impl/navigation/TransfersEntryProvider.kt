@@ -22,7 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
-import pl.nowinkitransferowe.feature.details.transfers.api.navigation.navigateToTransferDetails
+import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -33,6 +33,6 @@ fun EntryProviderScope<NavKey>.transfersEntry(
     entry<TransfersNavKey>(
         metadata = ListDetailSceneStrategy.listPane(detailPlaceholder = { detailPlaceholder() }),
     ) {
-        TransferRoute(onTransferClick = navigator::navigateToTransferDetails)
+        TransfersRoute(onTransferClick = navigator::navigateToTransfer)
     }
 }

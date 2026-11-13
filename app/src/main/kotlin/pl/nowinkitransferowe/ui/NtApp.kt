@@ -73,16 +73,16 @@ import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalGradientColors
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.core.navigation.toEntries
+import pl.nowinkitransferowe.feature.articledetails.impl.ArticleDetailsPlaceholder
+import pl.nowinkitransferowe.feature.articledetails.impl.navigation.articleDetailsEntry
+import pl.nowinkitransferowe.feature.articles.impl.navigation.articlesEntry
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.LocalSnackbarHostState
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.bookmarksEntry
-import pl.nowinkitransferowe.feature.details.impl.DetailPlaceholder
-import pl.nowinkitransferowe.feature.details.impl.navigation.newsDetailsEntry
-import pl.nowinkitransferowe.feature.details.transfers.impl.DetailsTransferPlaceholder
-import pl.nowinkitransferowe.feature.details.transfers.impl.navigation.transferDetailsEntry
-import pl.nowinkitransferowe.feature.news.impl.navigation.newsEntry
 import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.impl.navigation.searchEntry
 import pl.nowinkitransferowe.feature.settings.impl.SettingsDialog
+import pl.nowinkitransferowe.feature.transferdetails.impl.TransferDetailsPlaceholder
+import pl.nowinkitransferowe.feature.transferdetails.impl.navigation.transferDetailsEntry
 import pl.nowinkitransferowe.feature.transfers.impl.navigation.transfersEntry
 import pl.nowinkitransferowe.navigation.TOP_LEVEL_NAV_ITEMS
 import pl.nowinkitransferowe.feature.settings.impl.R as settingsR
@@ -264,10 +264,10 @@ internal fun NtApp(
                     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
 
                     val entryProvider = entryProvider {
-                        newsEntry(navigator, detailPlaceholder = { DetailPlaceholder() })
-                        transfersEntry(navigator, detailPlaceholder = { DetailsTransferPlaceholder() })
+                        articlesEntry(navigator, detailPlaceholder = { ArticleDetailsPlaceholder() })
+                        transfersEntry(navigator, detailPlaceholder = { TransferDetailsPlaceholder() })
                         bookmarksEntry(navigator)
-                        newsDetailsEntry(navigator)
+                        articleDetailsEntry(navigator)
                         transferDetailsEntry(navigator)
                         searchEntry(navigator)
                     }

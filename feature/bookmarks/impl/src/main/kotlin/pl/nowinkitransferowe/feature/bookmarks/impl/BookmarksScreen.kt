@@ -70,17 +70,17 @@ import pl.nowinkitransferowe.core.designsystem.scrollbar.scrollbarState
 import pl.nowinkitransferowe.core.designsystem.theme.LocalTintTheme
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.UserArticle
-import pl.nowinkitransferowe.core.ui.NewsFeedUiState
+import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
-import pl.nowinkitransferowe.core.ui.UserNewsResourcePreviewParameterProvider
-import pl.nowinkitransferowe.core.ui.newsFeed
+import pl.nowinkitransferowe.core.ui.UserArticlePreviewParameterProvider
+import pl.nowinkitransferowe.core.ui.articleFeed
 import pl.nowinkitransferowe.core.ui.transferFeed
 
 @Composable
 internal fun BookmarksRoute(
-    onNewsClick: (Int) -> Unit,
+    onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     onTopicClick: (String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
@@ -94,15 +94,15 @@ internal fun BookmarksRoute(
         newsFeedState = newsFeedState,
         transferFeedState = transferFeedState,
         onShowSnackbar = onShowSnackbar,
-        removeFromNewsBookmarks = viewModel::removeFromSavedNewsResources,
-        onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
-        removeFromTransferBookmarks = viewModel::removeFromSavedTransferResources,
-        onTransferResourceViewed = { viewModel.setTransferResourceViewed(it, true) },
-        onNewsClick = onNewsClick,
+        removeFromArticleBookmarks = viewModel::removeArticleBookmark,
+        onArticleViewed = { viewModel.setArticleViewed(it, true) },
+        removeFromTransferBookmarks = viewModel::removeTransferBookmark,
+        onTransferViewed = { viewModel.setTransferViewed(it, true) },
+        onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
         onTopicClick = onTopicClick,
         modifier = modifier,
-        shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoNewsBookmark,
+        shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
         undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
         clearUndoState = viewModel::clearUndoState,
     )
@@ -114,14 +114,14 @@ internal fun BookmarksRoute(
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 @Composable
 internal fun BookmarksScreen(
-    newsFeedState: NewsFeedUiState,
+    newsFeedState: ArticleFeedUiState,
     transferFeedState: TransferFeedUiState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
-    removeFromNewsBookmarks: (Int) -> Unit,
-    onNewsResourceViewed: (Int) -> Unit,
+    removeFromArticleBookmarks: (Int) -> Unit,
+    onArticleViewed: (Int) -> Unit,
     removeFromTransferBookmarks: (Int) -> Unit,
-    onTransferResourceViewed: (List<Int>) -> Unit,
-    onNewsClick: (Int) -> Unit,
+    onTransferViewed: (List<Int>) -> Unit,
+    onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -148,7 +148,7 @@ internal fun BookmarksScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
         clearUndoState()
     }
-    if (newsFeedState == NewsFeedUiState.Loading || transferFeedState == TransferFeedUiState.Loading) {
+    if (newsFeedState == ArticleFeedUiState.Loading || transferFeedState == TransferFeedUiState.Loading) {
         LoadingState()
     } else if (itemsAvailable == 0) {
         EmptyState()
@@ -156,11 +156,11 @@ internal fun BookmarksScreen(
         BookmarksGrid(
             newsFeedState = newsFeedState,
             transferFeedState = transferFeedState,
-            removeFromNewsBookmarks = removeFromNewsBookmarks,
-            onNewsResourceViewed = onNewsResourceViewed,
+            removeFromArticleBookmarks = removeFromArticleBookmarks,
+            onArticleViewed = onArticleViewed,
             removeFromTransferBookmarks = removeFromTransferBookmarks,
-            onTransferResourceViewed = onTransferResourceViewed,
-            onNewsClick = onNewsClick,
+            onTransferViewed = onTransferViewed,
+            onArticleClick = onArticleClick,
             onTransferClick = onTransferClick,
             onTopicClick = onTopicClick,
 
@@ -171,13 +171,13 @@ internal fun BookmarksScreen(
 
 @Composable
 fun BookmarksGrid(
-    newsFeedState: NewsFeedUiState,
+    newsFeedState: ArticleFeedUiState,
     transferFeedState: TransferFeedUiState,
-    removeFromNewsBookmarks: (Int) -> Unit,
-    onNewsResourceViewed: (Int) -> Unit,
+    removeFromArticleBookmarks: (Int) -> Unit,
+    onArticleViewed: (Int) -> Unit,
     removeFromTransferBookmarks: (Int) -> Unit,
-    onTransferResourceViewed: (List<Int>) -> Unit,
-    onNewsClick: (Int) -> Unit,
+    onTransferViewed: (List<Int>) -> Unit,
+    onArticleClick: (Int) -> Unit,
     onTopicClick: (String) -> Unit,
     onTransferClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -197,7 +197,7 @@ fun BookmarksGrid(
                 .testTag("bookmarks:feed"),
             state = scrollableState,
         ) {
-            if (newsFeedState is NewsFeedUiState.Success && newsFeedState.feed.isNotEmpty()) {
+            if (newsFeedState is ArticleFeedUiState.Success && newsFeedState.feed.isNotEmpty()) {
                 item(
                     span = StaggeredGridItemSpan.FullLine,
                 ) {
@@ -211,12 +211,12 @@ fun BookmarksGrid(
                     )
                 }
             }
-            newsFeed(
+            articleFeed(
                 feedState = newsFeedState,
-                onNewsResourcesCheckedChanged = { id, _ -> removeFromNewsBookmarks(id) },
-                onNewsResourceViewed = onNewsResourceViewed,
-                onNewsClick = onNewsClick,
-                onNewsSelected = {},
+                onArticleSavedChanged = { id, _ -> removeFromArticleBookmarks(id) },
+                onArticleViewed = onArticleViewed,
+                onArticleClick = onArticleClick,
+                onArticleSelected = {},
                 onTopicClick = onTopicClick,
             )
             if (transferFeedState is TransferFeedUiState.Success && transferFeedState.feed.isNotEmpty()) {
@@ -235,8 +235,8 @@ fun BookmarksGrid(
             }
             transferFeed(
                 transferFeedState,
-                onTransferResourcesCheckedChanged = { id, _ -> removeFromTransferBookmarks(id) },
-                onTransferResourceViewed = onTransferResourceViewed,
+                onTransferSavedChanged = { id, _ -> removeFromTransferBookmarks(id) },
+                onTransferViewed = onTransferViewed,
                 onTransferClick = onTransferClick,
             )
             item(span = StaggeredGridItemSpan.FullLine) {
@@ -263,10 +263,10 @@ fun BookmarksGrid(
 }
 
 @Composable
-fun feedItemsSize(newsFeedState: NewsFeedUiState, transferFeedState: TransferFeedUiState): Int {
+fun feedItemsSize(newsFeedState: ArticleFeedUiState, transferFeedState: TransferFeedUiState): Int {
     val newsFeedSize = when (newsFeedState) {
-        NewsFeedUiState.Loading -> 0
-        is NewsFeedUiState.Success -> newsFeedState.feed.size
+        ArticleFeedUiState.Loading -> 0
+        is ArticleFeedUiState.Success -> newsFeedState.feed.size
     }
     val transferFeedSize = when (transferFeedState) {
         TransferFeedUiState.Loading -> 0
@@ -337,18 +337,18 @@ private fun LoadingStatePreview() {
 @Preview
 @Composable
 private fun BookmarksGridPreview(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
-    userNewsResources: List<UserArticle>,
+    @PreviewParameter(UserArticlePreviewParameterProvider::class)
+    userArticles: List<UserArticle>,
 ) {
     NtTheme {
         BookmarksGrid(
-            newsFeedState = NewsFeedUiState.Success(userNewsResources),
+            newsFeedState = ArticleFeedUiState.Success(userArticles),
             transferFeedState = TransferFeedUiState.Success(emptyList()),
-            removeFromNewsBookmarks = {},
+            removeFromArticleBookmarks = {},
             removeFromTransferBookmarks = {},
-            onNewsResourceViewed = {},
-            onTransferResourceViewed = {},
-            onNewsClick = {},
+            onArticleViewed = {},
+            onTransferViewed = {},
+            onArticleClick = {},
             onTopicClick = {},
             onTransferClick = {},
         )

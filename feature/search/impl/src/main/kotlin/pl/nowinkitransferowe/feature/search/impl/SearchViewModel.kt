@@ -71,8 +71,8 @@ class SearchViewModel @AssistedInject constructor(
                                 // time the user types a letter in the search box, which flickers the screen.
                                 .map<UserSearchResult, SearchResultUiState> { data ->
                                     SearchResultUiState.Success(
-                                        transferResources = data.transfers,
-                                        newsResources = data.articles,
+                                        transfers = data.transfers,
+                                        articles = data.articles,
                                     )
                                 }
                                 .catch { emit(SearchResultUiState.LoadFailed) }
@@ -119,27 +119,27 @@ class SearchViewModel @AssistedInject constructor(
         }
     }
 
-    fun setNewsResourceBookmarked(newsResourceId: Int, isChecked: Boolean) {
+    fun setArticleBookmarked(articleId: Int, isChecked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setArticleBookmarked(newsResourceId, isChecked)
+            userDataRepository.setArticleBookmarked(articleId, isChecked)
         }
     }
 
-    fun setNewsResourceViewed(newsResourceId: Int, viewed: Boolean) {
+    fun setArticleViewed(articleId: Int, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setArticleViewed(newsResourceId, viewed)
+            userDataRepository.setArticleViewed(articleId, viewed)
         }
     }
 
-    fun setTransferResourceBookmarked(transferResourceId: Int, isChecked: Boolean) {
+    fun setTransferBookmarked(transferId: Int, isChecked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setTransferBookmarked(transferResourceId, isChecked)
+            userDataRepository.setTransferBookmarked(transferId, isChecked)
         }
     }
 
-    fun setTransferResourceViewed(transferResourceIds: List<Int>, viewed: Boolean) {
+    fun setTransferViewed(transferIds: List<Int>, viewed: Boolean) {
         viewModelScope.launch {
-            transferResourceIds.forEach {
+            transferIds.forEach {
                 userDataRepository.setTransferViewed(it, viewed)
             }
         }

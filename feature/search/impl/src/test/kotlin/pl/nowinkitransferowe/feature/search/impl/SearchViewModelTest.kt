@@ -113,8 +113,8 @@ class SearchViewModelTest {
 
         val result = viewModel.searchResultUiState.value
         assertIs<SearchResultUiState.Success>(result)
-        assertEquals(listOf(11283), result.newsResources.map { it.id })
-        assertEquals(listOf(14999), result.transferResources.map { it.id })
+        assertEquals(listOf(11283), result.articles.map { it.id })
+        assertEquals(listOf(14999), result.transfers.map { it.id })
     }
 
     @Test
@@ -156,16 +156,16 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun whenToggleNewsResourceSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        val newsResourceId = 123
-        viewModel.setNewsResourceBookmarked(newsResourceId, true)
+    fun whenToggleArticleSavedIsCalled_bookmarkStateIsUpdated() = runTest {
+        val articleId = 123
+        viewModel.setArticleBookmarked(articleId, true)
 
         assertEquals(
-            expected = setOf(newsResourceId),
+            expected = setOf(articleId),
             actual = userDataRepository.userData.first().bookmarkedArticles,
         )
 
-        viewModel.setNewsResourceBookmarked(newsResourceId, false)
+        viewModel.setArticleBookmarked(articleId, false)
 
         assertEquals(
             expected = emptySet(),

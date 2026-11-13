@@ -74,19 +74,19 @@ import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.model.UserTransfer
+import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
 import pl.nowinkitransferowe.core.ui.DevicePreviews
-import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.R.string
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
-import pl.nowinkitransferowe.core.ui.newsFeed
+import pl.nowinkitransferowe.core.ui.articleFeed
 import pl.nowinkitransferowe.core.ui.transferFeed
 import pl.nowinkitransferowe.feature.search.impl.R as searchR
 
 @Composable
 internal fun SearchRoute(
     onBackClick: () -> Unit,
-    onNewsClick: (Int) -> Unit,
+    onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel,
@@ -107,13 +107,13 @@ internal fun SearchRoute(
         onSearchQueryChanged = searchViewModel::onSearchQueryChanged,
         onSearchTriggered = searchViewModel::onSearchTriggered,
         onClearRecentSearches = searchViewModel::clearRecentSearches,
-        onNewsResourcesCheckedChanged = searchViewModel::setNewsResourceBookmarked,
-        onNewsResourceViewed = { searchViewModel.setNewsResourceViewed(it, true) },
-        onTransferResourcesCheckedChanged = searchViewModel::setTransferResourceBookmarked,
-        onTransferResourceViewed = { searchViewModel.setTransferResourceViewed(it, true) },
+        onArticleSavedChanged = searchViewModel::setArticleBookmarked,
+        onArticleViewed = { searchViewModel.setArticleViewed(it, true) },
+        onTransferSavedChanged = searchViewModel::setTransferBookmarked,
+        onTransferViewed = { searchViewModel.setTransferViewed(it, true) },
         onBackClick = onBackClick,
         onTopicClick = searchViewModel::onSearchQueryChanged,
-        onNewsClick = onNewsClick,
+        onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
     )
 }
@@ -127,13 +127,13 @@ internal fun SearchScreen(
     onSearchQueryChanged: (String) -> Unit = {},
     onSearchTriggered: (String) -> Unit = {},
     onClearRecentSearches: () -> Unit = {},
-    onNewsResourcesCheckedChanged: (Int, Boolean) -> Unit = { _, _ -> },
-    onNewsResourceViewed: (Int) -> Unit = {},
-    onTransferResourcesCheckedChanged: (Int, Boolean) -> Unit = { _, _ -> },
-    onTransferResourceViewed: (List<Int>) -> Unit = {},
+    onArticleSavedChanged: (Int, Boolean) -> Unit = { _, _ -> },
+    onArticleViewed: (Int) -> Unit = {},
+    onTransferSavedChanged: (Int, Boolean) -> Unit = { _, _ -> },
+    onTransferViewed: (List<Int>) -> Unit = {},
     onBackClick: () -> Unit = {},
     onTopicClick: (String) -> Unit = {},
-    onNewsClick: (Int) -> Unit = {},
+    onArticleClick: (Int) -> Unit = {},
     onTransferClick: (Int) -> Unit = {},
 ) {
     TrackScreenViewEvent(screenName = "Search")
@@ -183,16 +183,16 @@ internal fun SearchScreen(
                 } else {
                     SearchResultBody(
                         searchQuery = searchQuery,
-                        transferResources = searchResultUiState.transferResources,
-                        newsResources = searchResultUiState.newsResources,
+                        transfers = searchResultUiState.transfers,
+                        articles = searchResultUiState.articles,
                         onSearchTriggered = onSearchTriggered,
                         onTopicClick = onTopicClick,
-                        onNewsClick = onNewsClick,
+                        onArticleClick = onArticleClick,
                         onTransferClick = onTransferClick,
-                        onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
-                        onNewsResourceViewed = onNewsResourceViewed,
-                        onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
-                        onTransferResourceViewed = onTransferResourceViewed,
+                        onArticleSavedChanged = onArticleSavedChanged,
+                        onArticleViewed = onArticleViewed,
+                        onTransferSavedChanged = onTransferSavedChanged,
+                        onTransferViewed = onTransferViewed,
                     )
                 }
             }
@@ -248,16 +248,16 @@ private fun SearchNotReadyBody() {
 @Composable
 private fun SearchResultBody(
     searchQuery: String,
-    transferResources: List<UserTransfer>,
-    newsResources: List<UserArticle>,
+    transfers: List<UserTransfer>,
+    articles: List<UserArticle>,
     onSearchTriggered: (String) -> Unit,
     onTopicClick: (String) -> Unit,
-    onNewsClick: (Int) -> Unit,
+    onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
-    onNewsResourcesCheckedChanged: (Int, Boolean) -> Unit,
-    onNewsResourceViewed: (Int) -> Unit,
-    onTransferResourcesCheckedChanged: (Int, Boolean) -> Unit,
-    onTransferResourceViewed: (List<Int>) -> Unit,
+    onArticleSavedChanged: (Int, Boolean) -> Unit,
+    onArticleViewed: (Int) -> Unit,
+    onTransferSavedChanged: (Int, Boolean) -> Unit,
+    onTransferViewed: (List<Int>) -> Unit,
 ) {
     val state = rememberLazyStaggeredGridState()
     Box(
@@ -271,10 +271,10 @@ private fun SearchResultBody(
             verticalItemSpacing = 24.dp,
             modifier = Modifier
                 .fillMaxSize()
-                .testTag("search:newsResources"),
+                .testTag("search:articles"),
             state = state,
         ) {
-            if (transferResources.isNotEmpty()) {
+            if (transfers.isNotEmpty()) {
                 item(
                     span = StaggeredGridItemSpan.FullLine,
                 ) {
@@ -289,14 +289,14 @@ private fun SearchResultBody(
                 }
 
                 transferFeed(
-                    feedState = TransferFeedUiState.Success(feed = transferResources),
-                    onTransferResourcesCheckedChanged = onTransferResourcesCheckedChanged,
-                    onTransferResourceViewed = onTransferResourceViewed,
+                    feedState = TransferFeedUiState.Success(feed = transfers),
+                    onTransferSavedChanged = onTransferSavedChanged,
+                    onTransferViewed = onTransferViewed,
                     onTransferClick = onTransferClick,
                 )
             }
 
-            if (newsResources.isNotEmpty()) {
+            if (articles.isNotEmpty()) {
                 item(
                     span = StaggeredGridItemSpan.FullLine,
                 ) {
@@ -310,17 +310,17 @@ private fun SearchResultBody(
                     )
                 }
 
-                newsFeed(
-                    feedState = NewsFeedUiState.Success(feed = newsResources),
-                    onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
-                    onNewsResourceViewed = onNewsResourceViewed,
+                articleFeed(
+                    feedState = ArticleFeedUiState.Success(feed = articles),
+                    onArticleSavedChanged = onArticleSavedChanged,
+                    onArticleViewed = onArticleViewed,
                     onTopicClick = onTopicClick,
-                    onNewsSelected = {},
-                    onNewsClick = onNewsClick,
+                    onArticleSelected = {},
+                    onArticleClick = onArticleClick,
                 )
             }
         }
-//        val itemsAvailable = transferResources.size + newsResources.size + 2
+//        val itemsAvailable = transfers.size + articles.size + 2
 //        val scrollbarState = state.scrollbarState(
 //            itemsAvailable = itemsAvailable,
 //        )

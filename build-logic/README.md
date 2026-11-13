@@ -29,7 +29,7 @@ alias, for example `alias(libs.plugins.nowinkitransferowe.android.library)`.
   badging tasks, Gradle managed devices and test APK printing.
 - [`nowinkitransferowe.android.library`](convention/src/main/kotlin/AndroidLibraryConventionPlugin.kt):
   Android library modules. Android and Kotlin options, the `demo` and `prod` flavors, a resource
-  prefix from the module path (for example `feature_news_impl_`), lint and Spotless.
+  prefix from the module path (for example `feature_articles_impl_`), lint and Spotless.
 - [`nowinkitransferowe.jvm.library`](convention/src/main/kotlin/JvmLibraryConventionPlugin.kt):
   pure Kotlin modules such as `core:datastore-proto`.
 - [`nowinkitransferowe.android.test`](convention/src/main/kotlin/AndroidTestConventionPlugin.kt):

@@ -33,7 +33,7 @@ import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.model.UserTransfer
-import pl.nowinkitransferowe.core.ui.NewsFeedUiState
+import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import javax.inject.Inject
 
@@ -44,17 +44,17 @@ class BookmarksViewModel @Inject constructor(
     userTransferRepository: UserTransferRepository,
 ) : ViewModel() {
 
-    var shouldDisplayUndoNewsBookmark by mutableStateOf(false)
-    private var lastRemovedNewsBookmark: BookmarkElement? = null
+    var shouldDisplayUndoBookmark by mutableStateOf(false)
+    private var lastRemovedBookmark: BookmarkElement? = null
 
-    val newsFeedUiState: StateFlow<NewsFeedUiState> =
+    val newsFeedUiState: StateFlow<ArticleFeedUiState> =
         userArticleRepository.observeBookmarked()
-            .map<List<UserArticle>, NewsFeedUiState>(NewsFeedUiState::Success)
-            .onStart { emit(NewsFeedUiState.Loading) }
+            .map<List<UserArticle>, ArticleFeedUiState>(ArticleFeedUiState::Success)
+            .onStart { emit(ArticleFeedUiState.Loading) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = NewsFeedUiState.Loading,
+                initialValue = ArticleFeedUiState.Loading,
             )
     val transferFeedUiState: StateFlow<TransferFeedUiState> =
         userTransferRepository.observeBookmarked()
@@ -66,31 +66,31 @@ class BookmarksViewModel @Inject constructor(
                 initialValue = TransferFeedUiState.Loading,
             )
 
-    fun removeFromSavedNewsResources(newsResourceId: Int) {
+    fun removeArticleBookmark(articleId: Int) {
         viewModelScope.launch {
-            shouldDisplayUndoNewsBookmark = true
-            lastRemovedNewsBookmark = BookmarkElement.News(newsResourceId)
-            userDataRepository.setArticleBookmarked(newsResourceId, false)
+            shouldDisplayUndoBookmark = true
+            lastRemovedBookmark = BookmarkElement.Article(articleId)
+            userDataRepository.setArticleBookmarked(articleId, false)
         }
     }
 
-    fun removeFromSavedTransferResources(transferResourceId: Int) {
+    fun removeTransferBookmark(transferId: Int) {
         viewModelScope.launch {
-            shouldDisplayUndoNewsBookmark = true
-            lastRemovedNewsBookmark = BookmarkElement.Transfer(transferResourceId)
-            userDataRepository.setTransferBookmarked(transferResourceId, false)
+            shouldDisplayUndoBookmark = true
+            lastRemovedBookmark = BookmarkElement.Transfer(transferId)
+            userDataRepository.setTransferBookmarked(transferId, false)
         }
     }
 
-    fun setNewsResourceViewed(newsResourceId: Int, viewed: Boolean) {
+    fun setArticleViewed(articleId: Int, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setArticleViewed(newsResourceId, viewed)
+            userDataRepository.setArticleViewed(articleId, viewed)
         }
     }
 
-    fun setTransferResourceViewed(transferResourceIds: List<Int>, viewed: Boolean) {
+    fun setTransferViewed(transferIds: List<Int>, viewed: Boolean) {
         viewModelScope.launch {
-            transferResourceIds.forEach {
+            transferIds.forEach {
                 userDataRepository.setTransferViewed(it, viewed)
             }
         }
@@ -98,9 +98,9 @@ class BookmarksViewModel @Inject constructor(
 
     fun undoBookmarkRemoval() {
         viewModelScope.launch {
-            lastRemovedNewsBookmark?.let {
+            lastRemovedBookmark?.let {
                 when (it) {
-                    is BookmarkElement.News -> {
+                    is BookmarkElement.Article -> {
                         userDataRepository.setArticleBookmarked(it.id, true)
                     }
 
@@ -114,20 +114,20 @@ class BookmarksViewModel @Inject constructor(
     }
 
     fun clearUndoState() {
-        shouldDisplayUndoNewsBookmark = false
-        lastRemovedNewsBookmark = null
+        shouldDisplayUndoBookmark = false
+        lastRemovedBookmark = null
     }
 }
 
 sealed interface BookmarkUiState {
     data object Loading : BookmarkUiState
     data class Success(
-        val newsFeed: List<UserArticle>,
+        val articleFeed: List<UserArticle>,
         val transfersFeed: List<UserTransfer>,
     ) : BookmarkUiState
 }
 
 sealed class BookmarkElement(open val id: Int) {
-    data class News(override val id: Int) : BookmarkElement(id)
+    data class Article(override val id: Int) : BookmarkElement(id)
     data class Transfer(override val id: Int) : BookmarkElement(id)
 }

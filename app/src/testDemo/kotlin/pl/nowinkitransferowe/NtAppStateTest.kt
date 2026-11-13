@@ -42,9 +42,9 @@ import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.util.TestNetworkMonitor
 import pl.nowinkitransferowe.core.testing.util.TestTimeZoneMonitor
+import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksNavKey
-import pl.nowinkitransferowe.feature.details.transfers.api.navigation.DetailsTransferNavKey
-import pl.nowinkitransferowe.feature.news.api.navigation.NewsNavKey
+import pl.nowinkitransferowe.feature.transferdetails.api.navigation.TransferDetailsNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import pl.nowinkitransferowe.ui.NtAppState
 import pl.nowinkitransferowe.ui.rememberNtAppState
@@ -77,10 +77,10 @@ class NtAppStateTest {
     private lateinit var state: NtAppState
 
     private fun testNavigationState() = NavigationState(
-        startKey = NewsNavKey,
-        topLevelStack = NavBackStack(NewsNavKey),
+        startKey = ArticlesNavKey,
+        topLevelStack = NavBackStack(ArticlesNavKey),
         subStacks = mapOf(
-            NewsNavKey to NavBackStack(NewsNavKey),
+            ArticlesNavKey to NavBackStack(ArticlesNavKey),
             TransfersNavKey to NavBackStack(TransfersNavKey),
             BookmarksNavKey to NavBackStack(BookmarksNavKey),
         ),
@@ -104,8 +104,8 @@ class NtAppStateTest {
             state = remember(navigationState) { testAppState(navigationState, backgroundScope) }
         }
 
-        assertEquals(NewsNavKey, state.navigationState.currentTopLevelKey)
-        assertEquals(NewsNavKey, state.navigationState.currentKey)
+        assertEquals(ArticlesNavKey, state.navigationState.currentTopLevelKey)
+        assertEquals(ArticlesNavKey, state.navigationState.currentKey)
 
         // Navigate to another destination once
         navigator.navigate(BookmarksNavKey)
@@ -128,7 +128,7 @@ class NtAppStateTest {
         }
 
         assertEquals(
-            setOf(NewsNavKey, TransfersNavKey, BookmarksNavKey),
+            setOf(ArticlesNavKey, TransfersNavKey, BookmarksNavKey),
             state.navigationState.topLevelKeys,
         )
     }
@@ -137,7 +137,7 @@ class NtAppStateTest {
     fun ntAppState_deepLinkKeys_openDetailsAboveTheirList() = runTest {
         val navigationState = testNavigationState()
         val navigator = Navigator(navigationState)
-        val details = DetailsTransferNavKey(transferId = 123)
+        val details = TransferDetailsNavKey(transferId = 123)
 
         composeTestRule.setContent {
             state = remember(navigationState) { testAppState(navigationState, backgroundScope) }

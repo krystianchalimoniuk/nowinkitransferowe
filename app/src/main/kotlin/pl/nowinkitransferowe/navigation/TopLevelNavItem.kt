@@ -20,11 +20,11 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import pl.nowinkitransferowe.R
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
+import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksNavKey
-import pl.nowinkitransferowe.feature.news.api.navigation.NewsNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
+import pl.nowinkitransferowe.feature.articles.impl.R as newsR
 import pl.nowinkitransferowe.feature.bookmarks.impl.R as bookmarksR
-import pl.nowinkitransferowe.feature.news.impl.R as newsR
 import pl.nowinkitransferowe.feature.transfers.impl.R as transferR
 
 /**
@@ -48,7 +48,7 @@ data class TopLevelNavItem(
 val NEWS = TopLevelNavItem(
     selectedIcon = NtIcons.Upcoming,
     unselectedIcon = NtIcons.UpcomingBorder,
-    iconTextId = newsR.string.feature_news_impl_title,
+    iconTextId = newsR.string.feature_articles_impl_title,
     titleTextId = R.string.app_name,
 )
 
@@ -67,7 +67,7 @@ val BOOKMARKS = TopLevelNavItem(
 )
 
 val TOP_LEVEL_NAV_ITEMS = mapOf(
-    NewsNavKey to NEWS,
+    ArticlesNavKey to NEWS,
     TransfersNavKey to TRANSFERS,
     BookmarksNavKey to BOOKMARKS,
 )

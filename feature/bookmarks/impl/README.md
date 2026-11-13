@@ -18,13 +18,13 @@ graph TB
       :feature:bookmarks:api[api]:::android-library
       :feature:bookmarks:impl[impl]:::android-feature
     end
-    subgraph :feature:details
+    subgraph :feature:article-details
       direction TB
-      :feature:details:api[api]:::android-library
+      :feature:article-details:api[api]:::android-library
     end
-    subgraph :feature:details-transfers
+    subgraph :feature:transfer-details
       direction TB
-      :feature:details-transfers:api[api]:::android-library
+      :feature:transfer-details:api[api]:::android-library
     end
     subgraph :feature:search
       direction TB
@@ -64,17 +64,17 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
+  :feature:article-details:api --> :core:navigation
   :feature:bookmarks:api --> :core:navigation
   :feature:bookmarks:impl -.-> :core:data
   :feature:bookmarks:impl -.-> :core:designsystem
   :feature:bookmarks:impl -.-> :core:ui
+  :feature:bookmarks:impl -.-> :feature:article-details:api
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
-  :feature:bookmarks:impl -.-> :feature:details-transfers:api
-  :feature:bookmarks:impl -.-> :feature:details:api
   :feature:bookmarks:impl -.-> :feature:search:api
-  :feature:details-transfers:api --> :core:navigation
-  :feature:details:api --> :core:navigation
+  :feature:bookmarks:impl -.-> :feature:transfer-details:api
   :feature:search:api --> :core:navigation
+  :feature:transfer-details:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;

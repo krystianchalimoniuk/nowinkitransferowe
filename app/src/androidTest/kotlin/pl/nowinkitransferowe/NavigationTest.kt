@@ -41,8 +41,8 @@ import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
 import javax.inject.Inject
+import pl.nowinkitransferowe.feature.articles.impl.R as NewsR
 import pl.nowinkitransferowe.feature.bookmarks.impl.R as BookmarksR
-import pl.nowinkitransferowe.feature.news.impl.R as NewsR
 import pl.nowinkitransferowe.feature.settings.impl.R as SettingsR
 import pl.nowinkitransferowe.feature.transfers.impl.R as TransfersR
 
@@ -74,8 +74,8 @@ class NavigationTest {
     lateinit var articleRepository: ArticleRepository
 
     // The strings used for matching in these tests
-    private val navigateUp by composeTestRule.stringResource(NewsR.string.feature_news_impl_navigate_up)
-    private val news by composeTestRule.stringResource(NewsR.string.feature_news_impl_title)
+    private val navigateUp by composeTestRule.stringResource(NewsR.string.feature_articles_impl_navigate_up)
+    private val news by composeTestRule.stringResource(NewsR.string.feature_articles_impl_title)
     private val transfers by composeTestRule.stringResource(TransfersR.string.feature_transfers_impl_title)
     private val darkMode by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_dark_mode_config_dark)
     private val appName by composeTestRule.stringResource(R.string.app_name)
