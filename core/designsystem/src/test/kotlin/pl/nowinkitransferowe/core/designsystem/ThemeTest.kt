@@ -150,7 +150,7 @@ class ThemeTest {
 
     private fun defaultGradientColors(colorScheme: ColorScheme): GradientColors = GradientColors(
         top = colorScheme.inverseOnSurface,
-        bottom = colorScheme.primaryContainer,
+        bottom = colorScheme.primaryContainer.copy(alpha = 0.4f),
         container = colorScheme.surface,
     )
 

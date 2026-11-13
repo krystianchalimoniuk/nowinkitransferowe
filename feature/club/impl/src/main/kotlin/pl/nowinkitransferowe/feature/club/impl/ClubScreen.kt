@@ -63,6 +63,7 @@ import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
+import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
 import pl.nowinkitransferowe.core.model.Club
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.UserTransfer
@@ -212,7 +213,7 @@ private fun Fact(text: String, icon: ImageVector) {
 /** A fact about the club with an icon, like the chips on the website. */
 @Composable
 private fun Fact(text: String, leading: @Composable () -> Unit) {
-    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
+    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.cardContainer) {
         Row(
             Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -302,7 +303,7 @@ private fun LazyListScope.finances(state: ClubUiState.Success) {
 
 @Composable
 private fun Tile(label: String, value: String, modifier: Modifier = Modifier, valueColor: Color = Color.Unspecified) {
-    Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surfaceContainerLow, modifier = modifier) {
+    Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.cardContainer, modifier = modifier) {
         Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
             Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
             Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = valueColor, maxLines = 1)

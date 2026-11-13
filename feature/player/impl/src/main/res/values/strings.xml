@@ -30,8 +30,8 @@
     <string name="feature_player_impl_current_club">Obecny klub</string>
     <string name="feature_player_impl_current_club_since">%1$s · od %2$s</string>
     <string name="feature_player_impl_transfers">Transfery</string>
-    <string name="feature_player_impl_total">Łączna kwota</string>
-    <string name="feature_player_impl_highest">Najwyższy transfer</string>
+    <string name="feature_player_impl_total">Łącznie</string>
+    <string name="feature_player_impl_highest">Najwyższy</string>
     <string name="feature_player_impl_fees_note">Kwoty w mln €. Na wykresie transfery z podaną kwotą i darmowe (0); wypożyczenia i kwoty nieujawnione są w historii niżej.</string>
     <string name="feature_player_impl_articles">Artykuły o zawodniku</string>
     <string name="feature_player_impl_fees">Wartość transferów</string>
