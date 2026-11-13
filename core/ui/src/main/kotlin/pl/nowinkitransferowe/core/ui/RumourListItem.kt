@@ -32,7 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import pl.nowinkitransferowe.core.designsystem.component.NtCrest
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.model.Rumour
 
 /**
@@ -56,7 +56,7 @@ fun RumourListItem(
             .testTag("rumour-item:${rumour.id}"),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        NtCrest(imageUrl = rumour.player.photoUrl, name = rumour.player.name, size = 40.dp)
+        NtPlayerPhoto(photoUrl = rumour.player.photoUrl, name = rumour.player.name, size = 40.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 rumour.player.nationality?.let { CountryFlag(it, contentDescription = null) }

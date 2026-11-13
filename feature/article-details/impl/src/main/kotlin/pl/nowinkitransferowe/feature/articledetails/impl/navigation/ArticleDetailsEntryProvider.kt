@@ -27,6 +27,7 @@ import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArt
 import pl.nowinkitransferowe.feature.articledetails.impl.ArticleDetailsRoute
 import pl.nowinkitransferowe.feature.articledetails.impl.ArticleDetailsViewModel
 import pl.nowinkitransferowe.feature.club.api.navigation.navigateToClub
+import pl.nowinkitransferowe.feature.player.api.navigation.navigateToPlayer
 import pl.nowinkitransferowe.feature.rumours.api.navigation.navigateToRumour
 import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
 
@@ -42,6 +43,7 @@ fun EntryProviderScope<NavKey>.articleDetailsEntry(navigator: Navigator) {
             onArticleLinkClick = navigator::navigateToArticle,
             onRumourClick = { rumour -> navigator.navigateToRumour(rumour.id) },
             onClubClick = navigator::navigateToClub,
+            onPlayerClick = navigator::navigateToPlayer,
             viewModel = hiltViewModel<ArticleDetailsViewModel, ArticleDetailsViewModel.Factory>(
                 key = key.newsId.toString(),
             ) { factory ->

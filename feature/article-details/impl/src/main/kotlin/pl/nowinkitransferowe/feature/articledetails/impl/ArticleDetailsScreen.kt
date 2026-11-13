@@ -63,10 +63,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
 import pl.nowinkitransferowe.core.model.Club
@@ -92,6 +92,7 @@ internal fun ArticleDetailsRoute(
     onArticleLinkClick: (Int) -> Unit,
     onRumourClick: (Rumour) -> Unit,
     onClubClick: (Int) -> Unit,
+    onPlayerClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ArticleDetailsViewModel,
 ) {
@@ -107,6 +108,7 @@ internal fun ArticleDetailsRoute(
         onArticleLinkClick = onArticleLinkClick,
         onRumourClick = onRumourClick,
         onClubClick = onClubClick,
+        onPlayerClick = onPlayerClick,
         darkThemeConfig = darkThemeConfig,
         modifier = modifier.testTag("news:${viewModel.articleId}"),
     )
@@ -130,11 +132,11 @@ internal fun ArticleDetailsScreen(
     onArticleLinkClick: (Int) -> Unit = {},
     onRumourClick: (Rumour) -> Unit = {},
     onClubClick: (Int) -> Unit = {},
+    onPlayerClick: (Int) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     TrackScrollJank(scrollableState = scrollState, stateName = "details:screen")
     val context = LocalContext.current
-    val openInBrowser: (String) -> Unit = { url -> context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) }
 
     when (detailsUiState) {
         ArticleDetailsUiState.Loading -> Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -164,7 +166,7 @@ internal fun ArticleDetailsScreen(
                 detailsUiState.rumour?.let { rumour ->
                     RumourBox(rumour, onClick = { onRumourClick(rumour) }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                 }
-                AboutChips(detailsUiState.clubs, detailsUiState.players, onClubClick = onClubClick, onOpen = openInBrowser)
+                AboutChips(detailsUiState.clubs, detailsUiState.players, onClubClick = onClubClick, onPlayerClick = onPlayerClick)
                 ArticleContent(
                     contentHtml = article.contentHtml,
                     darkTheme = when (darkThemeConfig) {
@@ -285,7 +287,7 @@ private fun RumourBox(rumour: Rumour, onClick: () -> Unit, modifier: Modifier = 
 
 /** Clubs and players the article is about; until their screens exist they open on the website. */
 @Composable
-private fun AboutChips(clubs: List<Club>, players: List<Player>, onClubClick: (Int) -> Unit, onOpen: (String) -> Unit) {
+private fun AboutChips(clubs: List<Club>, players: List<Player>, onClubClick: (Int) -> Unit, onPlayerClick: (Int) -> Unit) {
     if (clubs.isEmpty() && players.isEmpty()) return
     Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
         Text(
@@ -303,9 +305,9 @@ private fun AboutChips(clubs: List<Club>, players: List<Player>, onClubClick: (I
             }
             players.forEach { player ->
                 AssistChip(
-                    onClick = { player.url?.let(onOpen) },
+                    onClick = { onPlayerClick(player.id) },
                     label = { Text(player.name) },
-                    leadingIcon = { NtCrest(imageUrl = player.photoUrl, name = player.name, size = 18.dp) },
+                    leadingIcon = { NtPlayerPhoto(photoUrl = player.photoUrl, name = player.name, size = 18.dp) },
                 )
             }
         }

@@ -113,7 +113,8 @@ class SettingsScreenTest {
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_privacy_policy)).performScrollTo().assertExists()
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_version, "4.0.0")).performScrollTo().assertExists()
         composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_impl_x_content_description)).performScrollTo().assertExists()
-        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_impl_navigate_up)).performClick()
+        // The list is scrolled down by now; on a short screen the back button is off screen
+        composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_impl_navigate_up)).performScrollTo().performClick()
         assertEquals(true, backClicked)
     }
 }

@@ -54,6 +54,7 @@ fun NtCrest(
     modifier: Modifier = Modifier,
     size: Dp = 36.dp,
     shape: Shape = if (size >= 48.dp) RoundedCornerShape(30) else CircleShape,
+    fillShape: Boolean = false,
 ) {
     var showInitials by remember(imageUrl) { mutableStateOf(true) }
     val inspection = LocalInspectionMode.current
@@ -80,14 +81,30 @@ fun NtCrest(
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
+                contentScale = if (fillShape) ContentScale.Crop else ContentScale.Fit,
+                alignment = if (fillShape) Alignment.TopCenter else Alignment.Center,
                 onSuccess = { showInitials = false },
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(size * 0.08f),
+                    .padding(if (fillShape) 0.dp else size * 0.08f),
             )
         }
     }
+}
+
+/**
+ * A player photo in the same shape as the initials shown without one: round at small sizes and a
+ * rounded square from 48 dp. Unlike a crest, the photo fills the shape, cropped from the top so the
+ * face stays in view.
+ */
+@Composable
+fun NtPlayerPhoto(
+    photoUrl: String?,
+    name: String,
+    modifier: Modifier = Modifier,
+    size: Dp = 36.dp,
+) {
+    NtCrest(imageUrl = photoUrl, name = name, modifier = modifier, size = size, fillShape = true)
 }
 
 /** "Real Madryt" -> "RM", "Gavi" -> "GAV". */

@@ -58,9 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.datetime.Clock
 import kotlinx.datetime.todayIn
-import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtOutlinedButton
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
@@ -88,6 +88,7 @@ internal fun RumourRoute(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     onClubClick: (Int) -> Unit = {},
+    onPlayerClick: (Int) -> Unit = {},
     viewModel: RumourViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -100,6 +101,7 @@ internal fun RumourRoute(
         onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
         onClubClick = onClubClick,
+        onPlayerClick = onPlayerClick,
         modifier = modifier,
     )
 }
@@ -117,6 +119,7 @@ internal fun RumourScreen(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     onClubClick: (Int) -> Unit = {},
+    onPlayerClick: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
@@ -156,7 +159,7 @@ internal fun RumourScreen(
                             }
                         }
                     }
-                    PlayerHeader(rumour, uiState.player)
+                    PlayerHeader(rumour, uiState.player, onClick = { onPlayerClick(rumour.player.id) })
                     Route(rumour.from, rumour.to, onClubClick)
                     StageCard(rumour)
                     rumour.transferId?.let { transferId ->
@@ -213,13 +216,19 @@ private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, actions: @C
 }
 
 @Composable
-private fun PlayerHeader(rumour: Rumour, player: Player?) {
+private fun PlayerHeader(rumour: Rumour, player: Player?, onClick: () -> Unit) {
     Row(
-        Modifier.padding(horizontal = 16.dp),
+        Modifier
+            .padding(horizontal = 8.dp)
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(onClick = onClick)
+            .padding(8.dp)
+            .fillMaxWidth()
+            .testTag("rumour:player"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        NtCrest(imageUrl = rumour.player.photoUrl, name = rumour.player.name, size = 64.dp)
+        NtPlayerPhoto(photoUrl = rumour.player.photoUrl, name = rumour.player.name, size = 64.dp)
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
                 rumour.player.name.uppercase(),
