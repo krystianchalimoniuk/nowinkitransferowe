@@ -18,11 +18,11 @@ graph TB
       :feature:search:api[api]:::android-library
       :feature:search:impl[impl]:::android-feature
     end
-    subgraph :feature:details
+    subgraph :feature:article-details
       direction TB
       :feature:article-details:api[api]:::android-library
     end
-    subgraph :feature:details-transfers
+    subgraph :feature:transfer-details
       direction TB
       :feature:transfer-details:api[api]:::android-library
     end
@@ -63,16 +63,16 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
-  :feature:transfer-details:api --> :core:navigation
   :feature:article-details:api --> :core:navigation
   :feature:search:api --> :core:navigation
   :feature:search:impl -.-> :core:data
   :feature:search:impl -.-> :core:designsystem
   :feature:search:impl -.-> :core:domain
   :feature:search:impl -.-> :core:ui
-  :feature:search:impl -.-> :feature:transfer-details:api
   :feature:search:impl -.-> :feature:article-details:api
   :feature:search:impl -.-> :feature:search:api
+  :feature:search:impl -.-> :feature:transfer-details:api
+  :feature:transfer-details:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;

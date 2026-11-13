@@ -13,7 +13,7 @@ config:
 graph TB
   subgraph :feature
     direction TB
-    subgraph :feature:details
+    subgraph :feature:article-details
       direction TB
       :feature:article-details:api[api]:::android-library
       :feature:article-details:impl[impl]:::android-feature

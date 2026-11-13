@@ -13,7 +13,7 @@ config:
 graph TB
   subgraph :feature
     direction TB
-    subgraph :feature:news
+    subgraph :feature:articles
       direction TB
       :feature:articles:api[api]:::android-library
     end

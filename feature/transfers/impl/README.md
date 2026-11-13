@@ -18,7 +18,7 @@ graph TB
       :feature:transfers:api[api]:::android-library
       :feature:transfers:impl[impl]:::android-feature
     end
-    subgraph :feature:details-transfers
+    subgraph :feature:transfer-details
       direction TB
       :feature:transfer-details:api[api]:::android-library
     end
