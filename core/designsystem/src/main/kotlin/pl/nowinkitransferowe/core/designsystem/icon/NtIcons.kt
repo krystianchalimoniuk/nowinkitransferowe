@@ -39,6 +39,7 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material.icons.rounded.Bookmarks
+import androidx.compose.material.icons.rounded.Cake
 import androidx.compose.material.icons.rounded.Campaign
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ChevronRight
@@ -49,6 +50,7 @@ import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material.icons.rounded.Grid3x3
 import androidx.compose.material.icons.rounded.Handshake
+import androidx.compose.material.icons.rounded.Height
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
@@ -61,6 +63,7 @@ import androidx.compose.material.icons.rounded.PrivacyTip
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Stadium
 import androidx.compose.material.icons.rounded.SwapHoriz
 import androidx.compose.material.icons.rounded.SyncAlt
@@ -108,7 +111,10 @@ object NtIcons {
     val MarkAsRead = Icons.Rounded.DoneAll
     val Article = Icons.AutoMirrored.Rounded.Article
     val ArrowDropDown = Icons.Rounded.ArrowDropDown
+    val Cake = Icons.Rounded.Cake
     val EmojiEvents = Icons.Rounded.EmojiEvents
+    val Height = Icons.Rounded.Height
+    val Shield = Icons.Rounded.Shield
     val Forum = Icons.Rounded.Forum
     val History = Icons.Rounded.History
     val Stadium = Icons.Rounded.Stadium

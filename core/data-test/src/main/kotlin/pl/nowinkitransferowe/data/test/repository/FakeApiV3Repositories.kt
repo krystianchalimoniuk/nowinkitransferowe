@@ -19,7 +19,6 @@ package pl.nowinkitransferowe.data.test.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -268,12 +267,21 @@ class FakeClubRepository @Inject constructor(
     override suspend fun syncWith(synchronizer: Synchronizer) = true
 }
 
-class FakePlayerRepository @Inject constructor() : PlayerRepository {
-    override fun observePlayer(id: Int): Flow<Player?> = flowOf(null)
+class FakePlayerRepository @Inject constructor(
+    private val datasource: DemoNtNetworkDataSource,
+) : PlayerRepository {
+    private val players: Flow<List<Player>> = flow {
+        emit(datasource.getPlayers(allIds(datasource, NetworkRecordType.PLAYERS)).map { it.asEntity().asExternalModel() })
+    }
 
-    override fun observePlayers(ids: Set<Int>): Flow<List<Player>> = flowOf(emptyList())
+    override fun observePlayer(id: Int): Flow<Player?> = players.map { list -> list.find { it.id == id } }
 
-    override suspend fun getPlayerBySlug(slug: String): Player? = null
+    override fun observePlayers(ids: Set<Int>): Flow<List<Player>> = players.map { list -> list.filter { it.id in ids }.sortedBy(Player::name) }
+
+    override suspend fun getPlayerBySlug(slug: String): Player? = datasource.getPlayers(allIds(datasource, NetworkRecordType.PLAYERS))
+        .find { it.slug == slug }
+        ?.asEntity()
+        ?.asExternalModel()
 
     override suspend fun syncWith(synchronizer: Synchronizer) = true
 }

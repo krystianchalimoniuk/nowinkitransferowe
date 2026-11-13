@@ -16,7 +16,6 @@
 
 package pl.nowinkitransferowe.feature.transferdetails.impl
 
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,14 +44,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
@@ -77,6 +74,7 @@ internal fun TransferDetailsRoute(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     onClubClick: (Int) -> Unit = {},
+    onPlayerClick: (Int) -> Unit = {},
     viewModel: TransferDetailsViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -90,6 +88,7 @@ internal fun TransferDetailsRoute(
         onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
         onClubClick = onClubClick,
+        onPlayerClick = onPlayerClick,
         modifier = modifier,
     )
 }
@@ -107,6 +106,7 @@ internal fun TransferDetailsScreen(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     onClubClick: (Int) -> Unit = {},
+    onPlayerClick: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
@@ -116,7 +116,6 @@ internal fun TransferDetailsScreen(
 
         is TransferDetailsUiState.Success -> {
             val transfer = uiState.transfer
-            val context = LocalContext.current
             Column(
                 modifier
                     .fillMaxSize()
@@ -143,13 +142,11 @@ internal fun TransferDetailsScreen(
                                 Text(stringResource(R.string.feature_transfer_details_impl_article))
                             }
                         }
-                        uiState.player?.url?.let { url ->
-                            NtOutlinedButton(
-                                onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) },
-                                modifier = Modifier.weight(1f),
-                            ) {
-                                Text(stringResource(R.string.feature_transfer_details_impl_player_profile))
-                            }
+                        NtOutlinedButton(
+                            onClick = { onPlayerClick(transfer.player.id) },
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Text(stringResource(R.string.feature_transfer_details_impl_player_profile))
                         }
                     }
                     if (uiState.history.size > 1) {

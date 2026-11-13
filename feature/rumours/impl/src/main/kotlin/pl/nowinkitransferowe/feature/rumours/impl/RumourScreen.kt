@@ -87,6 +87,7 @@ internal fun RumourRoute(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     onClubClick: (Int) -> Unit = {},
+    onPlayerClick: (Int) -> Unit = {},
     viewModel: RumourViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -99,6 +100,7 @@ internal fun RumourRoute(
         onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
         onClubClick = onClubClick,
+        onPlayerClick = onPlayerClick,
         modifier = modifier,
     )
 }
@@ -116,6 +118,7 @@ internal fun RumourScreen(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     onClubClick: (Int) -> Unit = {},
+    onPlayerClick: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
@@ -155,7 +158,7 @@ internal fun RumourScreen(
                             }
                         }
                     }
-                    PlayerHeader(rumour, uiState.player)
+                    PlayerHeader(rumour, uiState.player, onClick = { onPlayerClick(rumour.player.id) })
                     Route(rumour.from, rumour.to, onClubClick)
                     StageCard(rumour)
                     rumour.transferId?.let { transferId ->
@@ -212,9 +215,15 @@ private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, actions: @C
 }
 
 @Composable
-private fun PlayerHeader(rumour: Rumour, player: Player?) {
+private fun PlayerHeader(rumour: Rumour, player: Player?, onClick: () -> Unit) {
     Row(
-        Modifier.padding(horizontal = 16.dp),
+        Modifier
+            .padding(horizontal = 8.dp)
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(onClick = onClick)
+            .padding(8.dp)
+            .fillMaxWidth()
+            .testTag("rumour:player"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
