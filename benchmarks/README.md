@@ -187,6 +187,7 @@ graph TB
   :feature:player:impl -.-> :core:data
   :feature:player:impl -.-> :core:designsystem
   :feature:player:impl -.-> :core:ui
+  :feature:player:impl -.-> :feature:article-details:api
   :feature:player:impl -.-> :feature:club:api
   :feature:player:impl -.-> :feature:player:api
   :feature:player:impl -.-> :feature:rumours:api
