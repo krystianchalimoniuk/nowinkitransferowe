@@ -59,6 +59,7 @@ import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtOutlinedButton
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
+import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.Player
 import pl.nowinkitransferowe.core.model.UserTransfer
@@ -199,7 +200,7 @@ private fun PlayerHeader(transfer: UserTransfer, player: Player?) {
 private fun RouteCard(from: ClubRef, to: ClubRef, transfer: UserTransfer, onClubClick: (Int) -> Unit) {
     Card(
         shape = MaterialTheme.shapes.extraLarge,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.cardContainer),
         modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
     ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -247,7 +248,7 @@ private fun Facts(transfer: UserTransfer) {
 private fun Fact(label: String, value: String, modifier: Modifier) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.cardContainer),
         modifier = modifier,
     ) {
         Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {

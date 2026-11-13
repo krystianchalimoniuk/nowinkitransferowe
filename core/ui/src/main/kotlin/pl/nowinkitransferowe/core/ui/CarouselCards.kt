@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
+import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.UserTransfer
@@ -90,7 +91,7 @@ private fun CarouselCard(onClick: () -> Unit, modifier: Modifier, content: @Comp
     Card(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.cardContainer),
         modifier = modifier.width(CarouselCardWidth),
     ) {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) { content() }

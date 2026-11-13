@@ -137,7 +137,9 @@ fun NtTheme(
     val emptyGradientColors = GradientColors(container = colorScheme.surfaceColorAtElevation(2.dp))
     val defaultGradientColors = GradientColors(
         top = colorScheme.inverseOnSurface,
-        bottom = colorScheme.primaryContainer,
+        // At full strength the red reaches the colour of filled buttons and the outlines lose
+        // contrast at the bottom of the screen; 40% keeps the accent and both readable
+        bottom = colorScheme.primaryContainer.copy(alpha = 0.4f),
         container = colorScheme.surface,
     )
     val gradientColors = when {
