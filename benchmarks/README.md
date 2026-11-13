@@ -133,6 +133,7 @@ graph TB
   :feature:article-details:impl -.-> :core:designsystem
   :feature:article-details:impl -.-> :core:ui
   :feature:article-details:impl -.-> :feature:article-details:api
+  :feature:article-details:impl -.-> :feature:rumours:api
   :feature:article-details:impl -.-> :feature:search:api
   :feature:articles:api --> :core:navigation
   :feature:articles:impl -.-> :core:data
