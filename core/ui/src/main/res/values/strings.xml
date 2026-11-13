@@ -28,4 +28,19 @@
     <string name="core_ui_card_tap_action">Otwórz szczegóły</string>
     <string name="core_ui_feed_sharing">Udostępnianie feedu</string>
     <string name="core_ui_feed_sharing_data">%1$s: %2$s</string>
+    <!-- API v3 components -->
+    <string name="core_ui_kind_official">Oficjalnie</string>
+    <string name="core_ui_kind_rumour">Plotka</string>
+    <string name="core_ui_kind_video">Wideo</string>
+    <string name="core_ui_stage_speculation">Spekulacja</string>
+    <string name="core_ui_stage_interest">Zainteresowanie</string>
+    <string name="core_ui_stage_talks">Rozmowy</string>
+    <string name="core_ui_stage_close">Blisko</string>
+    <string name="core_ui_stage_agreement">Porozumienie</string>
+    <string name="core_ui_stage_of">%1$d/%2$d</string>
+    <string name="core_ui_stage_up">Etap wyżej niż wcześniej</string>
+    <string name="core_ui_stage_down">Etap niżej niż wcześniej</string>
+    <string name="core_ui_money_in">Wpływy</string>
+    <string name="core_ui_money_out">Wydatki</string>
+    <string name="core_ui_millions">%1$s mln €</string>
 </resources>
