@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,24 @@
 
 package pl.nowinkitransferowe.feature.bookmarks.impl
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,56 +45,39 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
-import pl.nowinkitransferowe.core.designsystem.scrollbar.DraggableScrollbar
-import pl.nowinkitransferowe.core.designsystem.scrollbar.rememberDraggableScroller
-import pl.nowinkitransferowe.core.designsystem.scrollbar.scrollbarState
 import pl.nowinkitransferowe.core.designsystem.theme.LocalTintTheme
-import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserArticle
-import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
+import pl.nowinkitransferowe.core.ui.ArticleListItem
+import pl.nowinkitransferowe.core.ui.BookmarkButton
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
-import pl.nowinkitransferowe.core.ui.TransferFeedUiState
-import pl.nowinkitransferowe.core.ui.UserArticlePreviewParameterProvider
-import pl.nowinkitransferowe.core.ui.articleFeed
-import pl.nowinkitransferowe.core.ui.transferFeed
+import pl.nowinkitransferowe.core.ui.TransferListItem
 
 @Composable
 internal fun BookmarksRoute(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
-    onTopicClick: (String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
     viewModel: BookmarksViewModel = hiltViewModel(),
 ) {
-    val newsFeedState by viewModel.newsFeedUiState.collectAsStateWithLifecycle()
-    val transferFeedState by viewModel.transferFeedUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BookmarksScreen(
-        newsFeedState = newsFeedState,
-        transferFeedState = transferFeedState,
+        uiState = uiState,
+        onTabSelected = viewModel::selectTab,
         onShowSnackbar = onShowSnackbar,
-        removeFromArticleBookmarks = viewModel::removeArticleBookmark,
-        onArticleViewed = { viewModel.setArticleViewed(it, true) },
-        removeFromTransferBookmarks = viewModel::removeTransferBookmark,
-        onTransferViewed = { viewModel.setTransferViewed(it, true) },
+        removeArticleBookmark = viewModel::removeArticleBookmark,
+        removeTransferBookmark = viewModel::removeTransferBookmark,
         onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
-        onTopicClick = onTopicClick,
         modifier = modifier,
         shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
         undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
@@ -109,21 +86,18 @@ internal fun BookmarksRoute(
 }
 
 /**
- * Displays the user's bookmarked articles. Includes support for loading and empty states.
+ * The saved articles and transfers, each kind in its own tab. Removing a bookmark shows a
+ * snackbar that can bring it back.
  */
-@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 @Composable
 internal fun BookmarksScreen(
-    newsFeedState: ArticleFeedUiState,
-    transferFeedState: TransferFeedUiState,
+    uiState: BookmarksUiState,
+    onTabSelected: (SavedTab) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
-    removeFromArticleBookmarks: (Int) -> Unit,
-    onArticleViewed: (Int) -> Unit,
-    removeFromTransferBookmarks: (Int) -> Unit,
-    onTransferViewed: (List<Int>) -> Unit,
+    removeArticleBookmark: (Int) -> Unit,
+    removeTransferBookmark: (Int) -> Unit,
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
-    onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     shouldDisplayUndoBookmark: Boolean = false,
     undoBookmarkRemoval: () -> Unit = {},
@@ -131,8 +105,6 @@ internal fun BookmarksScreen(
 ) {
     val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_impl_removed)
     val undoText = stringResource(id = R.string.feature_bookmarks_impl_undo)
-
-    val itemsAvailable = feedItemsSize(newsFeedState, transferFeedState)
 
     LaunchedEffect(shouldDisplayUndoBookmark) {
         if (shouldDisplayUndoBookmark) {
@@ -148,150 +120,103 @@ internal fun BookmarksScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
         clearUndoState()
     }
-    if (newsFeedState == ArticleFeedUiState.Loading || transferFeedState == TransferFeedUiState.Loading) {
-        LoadingState()
-    } else if (itemsAvailable == 0) {
-        EmptyState()
-    } else {
-        BookmarksGrid(
-            newsFeedState = newsFeedState,
-            transferFeedState = transferFeedState,
-            removeFromArticleBookmarks = removeFromArticleBookmarks,
-            onArticleViewed = onArticleViewed,
-            removeFromTransferBookmarks = removeFromTransferBookmarks,
-            onTransferViewed = onTransferViewed,
-            onArticleClick = onArticleClick,
-            onTransferClick = onTransferClick,
-            onTopicClick = onTopicClick,
 
-        )
+    Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+        when (uiState) {
+            BookmarksUiState.Loading -> NtLoadingWheel(
+                modifier = Modifier
+                    .padding(top = 32.dp)
+                    .testTag("bookmarks:loading"),
+                contentDesc = stringResource(id = R.string.feature_bookmarks_impl_loading),
+            )
+
+            is BookmarksUiState.Success -> Column(
+                Modifier
+                    .widthIn(max = MaxContentWidth)
+                    .fillMaxSize(),
+            ) {
+                SavedTabs(uiState, onTabSelected)
+                when (uiState.tab) {
+                    SavedTab.ARTICLES -> SavedList(
+                        items = uiState.articles,
+                        key = { it.id },
+                        emptyText = R.string.feature_bookmarks_impl_empty_articles,
+                    ) { article ->
+                        ArticleListItem(
+                            article = article,
+                            onClick = { onArticleClick(article.id) },
+                            onToggleBookmark = { removeArticleBookmark(article.id) },
+                        )
+                    }
+
+                    SavedTab.TRANSFERS -> SavedList(
+                        items = uiState.transfers,
+                        key = { it.id },
+                        emptyText = R.string.feature_bookmarks_impl_empty_transfers,
+                    ) { transfer ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            TransferListItem(
+                                transfer = transfer,
+                                onClick = { onTransferClick(transfer.id) },
+                                modifier = Modifier.weight(1f),
+                            )
+                            BookmarkButton(isBookmarked = true, onClick = { removeTransferBookmark(transfer.id) })
+                        }
+                    }
+                }
+            }
+        }
     }
     TrackScreenViewEvent(screenName = "Saved")
 }
 
 @Composable
-fun BookmarksGrid(
-    newsFeedState: ArticleFeedUiState,
-    transferFeedState: TransferFeedUiState,
-    removeFromArticleBookmarks: (Int) -> Unit,
-    onArticleViewed: (Int) -> Unit,
-    removeFromTransferBookmarks: (Int) -> Unit,
-    onTransferViewed: (List<Int>) -> Unit,
-    onArticleClick: (Int) -> Unit,
-    onTopicClick: (String) -> Unit,
-    onTransferClick: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val scrollableState = rememberLazyStaggeredGridState()
-    TrackScrollJank(scrollableState = scrollableState, stateName = "bookmarks:grid")
-    Box(
-        modifier = modifier
-            .fillMaxSize(),
-    ) {
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(300.dp),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalItemSpacing = 24.dp,
-            modifier = Modifier
-                .testTag("bookmarks:feed"),
-            state = scrollableState,
-        ) {
-            if (newsFeedState is ArticleFeedUiState.Success && newsFeedState.feed.isNotEmpty()) {
-                item(
-                    span = StaggeredGridItemSpan.FullLine,
-                ) {
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(stringResource(id = R.string.feature_bookmarks_impl_news))
-                            }
-                        },
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    )
-                }
+private fun SavedTabs(uiState: BookmarksUiState.Success, onSelected: (SavedTab) -> Unit) {
+    PrimaryTabRow(selectedTabIndex = uiState.tab.ordinal) {
+        SavedTab.entries.forEach { tab ->
+            val (label, count) = when (tab) {
+                SavedTab.ARTICLES -> R.string.feature_bookmarks_impl_articles to uiState.articles.size
+                SavedTab.TRANSFERS -> R.string.feature_bookmarks_impl_transfers to uiState.transfers.size
             }
-            articleFeed(
-                feedState = newsFeedState,
-                onArticleSavedChanged = { id, _ -> removeFromArticleBookmarks(id) },
-                onArticleViewed = onArticleViewed,
-                onArticleClick = onArticleClick,
-                onArticleSelected = {},
-                onTopicClick = onTopicClick,
+            Tab(
+                selected = tab == uiState.tab,
+                onClick = { onSelected(tab) },
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                text = { Text(stringResource(R.string.feature_bookmarks_impl_tab, stringResource(label), count)) },
             )
-            if (transferFeedState is TransferFeedUiState.Success && transferFeedState.feed.isNotEmpty()) {
-                item(
-                    span = StaggeredGridItemSpan.FullLine,
-                ) {
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(stringResource(id = R.string.feature_bookmarks_impl_transfers))
-                            }
-                        },
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    )
-                }
-            }
-            transferFeed(
-                transferFeedState,
-                onTransferSavedChanged = { id, _ -> removeFromTransferBookmarks(id) },
-                onTransferViewed = onTransferViewed,
-                onTransferClick = onTransferClick,
-            )
-            item(span = StaggeredGridItemSpan.FullLine) {
-                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
-            }
         }
-        val itemsAvailable = feedItemsSize(newsFeedState, transferFeedState)
-        val scrollbarState = scrollableState.scrollbarState(
-            itemsAvailable = itemsAvailable,
-        )
-        scrollableState.DraggableScrollbar(
-            modifier = Modifier
-                .fillMaxHeight()
-                .windowInsetsPadding(WindowInsets.systemBars)
-                .padding(horizontal = 2.dp)
-                .align(Alignment.CenterEnd),
-            state = scrollbarState,
-            orientation = Orientation.Vertical,
-            onThumbMoved = scrollableState.rememberDraggableScroller(
-                itemsAvailable = itemsAvailable,
-            ),
-        )
     }
 }
 
 @Composable
-fun feedItemsSize(newsFeedState: ArticleFeedUiState, transferFeedState: TransferFeedUiState): Int {
-    val newsFeedSize = when (newsFeedState) {
-        ArticleFeedUiState.Loading -> 0
-        is ArticleFeedUiState.Success -> newsFeedState.feed.size
+private fun <T> SavedList(
+    items: List<T>,
+    key: (T) -> Any,
+    emptyText: Int,
+    itemContent: @Composable (T) -> Unit,
+) {
+    if (items.isEmpty()) {
+        EmptyState(emptyText)
+        return
     }
-    val transferFeedSize = when (transferFeedState) {
-        TransferFeedUiState.Loading -> 0
-        is TransferFeedUiState.Success -> transferFeedState.feed.size
+    val listState = rememberLazyListState()
+    TrackScrollJank(scrollableState = listState, stateName = "bookmarks:feed")
+    LazyColumn(
+        state = listState,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("bookmarks:feed"),
+    ) {
+        items(items, key = key) { itemContent(it) }
     }
-
-    return newsFeedSize + transferFeedSize
 }
 
 @Composable
-private fun LoadingState(modifier: Modifier = Modifier) {
-    NtLoadingWheel(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentSize()
-            .testTag("bookmarks:loading"),
-        contentDesc = stringResource(id = R.string.feature_bookmarks_impl_loading),
-    )
-}
-
-@Composable
-private fun EmptyState(modifier: Modifier = Modifier) {
+private fun EmptyState(text: Int, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .padding(16.dp)
+            .padding(32.dp)
             .fillMaxSize()
             .testTag("bookmarks:empty"),
         verticalArrangement = Arrangement.Center,
@@ -304,61 +229,24 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
             contentDescription = null,
         )
-
-        Spacer(modifier = Modifier.height(48.dp))
-
+        Spacer(modifier = Modifier.height(32.dp))
         Text(
-            text = stringResource(id = R.string.feature_bookmarks_impl_empty_error),
+            text = stringResource(id = text),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
         )
-
         Spacer(modifier = Modifier.height(8.dp))
-
         Text(
             text = stringResource(id = R.string.feature_bookmarks_impl_empty_description),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
 
-@Preview
-@Composable
-private fun LoadingStatePreview() {
-    NtTheme {
-        LoadingState()
-    }
-}
-
-@Preview
-@Composable
-private fun BookmarksGridPreview(
-    @PreviewParameter(UserArticlePreviewParameterProvider::class)
-    userArticles: List<UserArticle>,
-) {
-    NtTheme {
-        BookmarksGrid(
-            newsFeedState = ArticleFeedUiState.Success(userArticles),
-            transferFeedState = TransferFeedUiState.Success(emptyList()),
-            removeFromArticleBookmarks = {},
-            removeFromTransferBookmarks = {},
-            onArticleViewed = {},
-            onTransferViewed = {},
-            onArticleClick = {},
-            onTopicClick = {},
-            onTransferClick = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun EmptyStatePreview() {
-    NtTheme {
-        EmptyState()
-    }
-}
+/** Wide windows keep the list readable instead of stretching the rows. */
+private val MaxContentWidth = 720.dp

@@ -19,6 +19,8 @@ package pl.nowinkitransferowe.core.designsystem.icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.automirrored.rounded.Article
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.automirrored.rounded.ShortText
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
@@ -37,12 +39,19 @@ import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material.icons.rounded.Bookmarks
 import androidx.compose.material.icons.rounded.Campaign
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DoneAll
 import androidx.compose.material.icons.rounded.Grid3x3
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Leaderboard
+import androidx.compose.material.icons.rounded.NotificationsOff
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.PrivacyTip
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Share
@@ -89,4 +98,13 @@ object NtIcons {
     val UpcomingBorder = Icons.Outlined.Upcoming
     val ViewDay = Icons.Rounded.ViewDay
     val MarkAsRead = Icons.Rounded.DoneAll
+    val Article = Icons.AutoMirrored.Rounded.Article
+    val ChevronRight = Icons.Rounded.ChevronRight
+    val DarkMode = Icons.Rounded.DarkMode
+    val Info = Icons.Rounded.Info
+    val Language = Icons.Rounded.Language
+    val NotificationsOff = Icons.Rounded.NotificationsOff
+    val OpenInNew = Icons.AutoMirrored.Rounded.OpenInNew
+    val Palette = Icons.Rounded.Palette
+    val PrivacyTip = Icons.Rounded.PrivacyTip
 }

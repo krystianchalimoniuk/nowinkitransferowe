@@ -17,9 +17,11 @@ plugins {
     alias(libs.plugins.nowinkitransferowe.android.feature.impl)
     alias(libs.plugins.nowinkitransferowe.android.library.compose)
     alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
+    testOptions.unitTests.isIncludeAndroidResources = true
     namespace = "pl.nowinkitransferowe.feature.settings.impl"
 }
 
@@ -27,8 +29,12 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.google.oss.licenses)
     implementation(projects.core.data)
+    implementation(projects.feature.settings.api)
 
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.robolectric)
     testImplementation(projects.core.testing)
+    testImplementation(projects.core.screenshotTesting)
     androidTestImplementation(projects.core.testing)
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)
 }

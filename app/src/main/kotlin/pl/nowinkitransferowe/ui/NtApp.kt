@@ -45,10 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -86,7 +83,8 @@ import pl.nowinkitransferowe.feature.leagues.impl.navigation.leaguesEntry
 import pl.nowinkitransferowe.feature.rumours.impl.navigation.rumoursEntry
 import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.impl.navigation.searchEntry
-import pl.nowinkitransferowe.feature.settings.impl.SettingsDialog
+import pl.nowinkitransferowe.feature.settings.api.navigation.navigateToSettings
+import pl.nowinkitransferowe.feature.settings.impl.navigation.settingsEntry
 import pl.nowinkitransferowe.feature.transferdetails.impl.TransferDetailsPlaceholder
 import pl.nowinkitransferowe.feature.transferdetails.impl.navigation.transferDetailsEntry
 import pl.nowinkitransferowe.feature.transfers.impl.navigation.transfersEntry
@@ -100,8 +98,6 @@ fun NtApp(
     deepLinkKeys: List<NavKey> = emptyList(),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
-
     NtBackground(modifier = modifier) {
         NtGradientBackground(
             gradientColors =
@@ -123,11 +119,8 @@ fun NtApp(
             }
 
             CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
-                NtApp(
+                NtAppContent(
                     appState = appState,
-                    showSettingsDialog = showSettingsDialog,
-                    onSettingsDismissed = { showSettingsDialog = false },
-                    onTopAppBarActionClick = { showSettingsDialog = true },
                     deepLinkKeys = deepLinkKeys,
                     windowAdaptiveInfo = windowAdaptiveInfo,
                 )
@@ -142,11 +135,8 @@ fun NtApp(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
 )
-internal fun NtApp(
+internal fun NtAppContent(
     appState: NtAppState,
-    showSettingsDialog: Boolean,
-    onSettingsDismissed: () -> Unit,
-    onTopAppBarActionClick: () -> Unit,
     modifier: Modifier = Modifier,
     deepLinkKeys: List<NavKey> = emptyList(),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
@@ -161,12 +151,6 @@ internal fun NtApp(
     // Open the destinations of a deep link, e.g. a notification, once
     LaunchedEffect(deepLinkKeys) {
         deepLinkKeys.forEach(navigator::navigate)
-    }
-
-    if (showSettingsDialog) {
-        SettingsDialog(
-            onDismiss = { onSettingsDismissed() },
-        )
     }
 
     NtNavigationSuiteScaffold(
@@ -261,7 +245,7 @@ internal fun NtApp(
                                 contentDescription = stringResource(
                                     id = settingsR.string.feature_settings_impl_top_app_bar_action_icon_description,
                                 ),
-                                onClick = onTopAppBarActionClick,
+                                onClick = { navigator.navigateToSettings() },
                             )
                         },
                     )
@@ -288,6 +272,7 @@ internal fun NtApp(
                         articleDetailsEntry(navigator)
                         transferDetailsEntry(navigator)
                         searchEntry(navigator)
+                        settingsEntry(navigator)
                     }
 
                     NavDisplay(

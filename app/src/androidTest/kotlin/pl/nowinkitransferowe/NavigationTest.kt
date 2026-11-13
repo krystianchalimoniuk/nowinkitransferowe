@@ -83,7 +83,7 @@ class NavigationTest {
     private val leagues by composeTestRule.stringResource(LeaguesR.string.feature_leagues_impl_title)
     private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_impl_title)
     private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_top_app_bar_action_icon_description)
-    private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_dismiss_dialog_button_text)
+    private val settingsBack by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_navigate_up)
 
     @Before
     fun setup() = hiltRule.inject()
@@ -204,7 +204,7 @@ class NavigationTest {
     }
 
     @Test
-    fun whenSettingsIconIsClicked_settingsDialogIsShown() {
+    fun whenSettingsIconIsClicked_settingsScreenIsShown() {
         composeTestRule.apply {
             onNodeWithContentDescription(settings).performClick()
 
@@ -214,12 +214,12 @@ class NavigationTest {
     }
 
     @Test
-    fun whenSettingsDialogDismissed_previousScreenIsDisplayed() {
+    fun whenSettingsScreenIsClosed_previousScreenIsDisplayed() {
         composeTestRule.apply {
-            // Navigate to the saved screen, open the settings dialog, then close it.
+            // Navigate to the saved screen, open the settings, then go back.
             onNodeWithText(saved).performClick()
             onNodeWithContentDescription(settings).performClick()
-            onNodeWithText(ok).performClick()
+            onNodeWithContentDescription(settingsBack).performClick()
 
             // Check that the saved screen is still visible and selected.
             onNode(hasText(saved) and hasTestTag("NtNavItem")).assertIsSelected()
