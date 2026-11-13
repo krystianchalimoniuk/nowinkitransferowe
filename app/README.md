@@ -154,15 +154,19 @@ graph TB
   :feature:bookmarks:impl -.-> :core:ui
   :feature:bookmarks:impl -.-> :feature:article-details:api
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
+  :feature:bookmarks:impl -.-> :feature:rumours:api
   :feature:bookmarks:impl -.-> :feature:transfer-details:api
   :feature:leagues:api --> :core:navigation
   :feature:leagues:impl -.-> :core:designsystem
   :feature:leagues:impl -.-> :core:ui
   :feature:leagues:impl -.-> :feature:leagues:api
   :feature:rumours:api --> :core:navigation
+  :feature:rumours:impl -.-> :core:data
   :feature:rumours:impl -.-> :core:designsystem
   :feature:rumours:impl -.-> :core:ui
+  :feature:rumours:impl -.-> :feature:article-details:api
   :feature:rumours:impl -.-> :feature:rumours:api
+  :feature:rumours:impl -.-> :feature:transfer-details:api
   :feature:search:api --> :core:navigation
   :feature:search:impl -.-> :core:data
   :feature:search:impl -.-> :core:designsystem

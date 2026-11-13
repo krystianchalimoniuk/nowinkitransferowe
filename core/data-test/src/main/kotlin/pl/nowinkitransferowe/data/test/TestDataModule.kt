@@ -29,6 +29,7 @@ import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
+import pl.nowinkitransferowe.core.data.repository.RumourStatsRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
@@ -43,6 +44,7 @@ import pl.nowinkitransferowe.data.test.repository.FakeDictionaryRepository
 import pl.nowinkitransferowe.data.test.repository.FakePlayerRepository
 import pl.nowinkitransferowe.data.test.repository.FakeRecentSearchRepository
 import pl.nowinkitransferowe.data.test.repository.FakeRumourRepository
+import pl.nowinkitransferowe.data.test.repository.FakeRumourStatsRepository
 import pl.nowinkitransferowe.data.test.repository.FakeSearchContentsRepository
 import pl.nowinkitransferowe.data.test.repository.FakeTransferRepository
 import pl.nowinkitransferowe.data.test.repository.FakeUserDataRepository
@@ -85,6 +87,9 @@ internal interface TestDataModule {
 
     @Binds
     fun bindsRumourRepository(repository: FakeRumourRepository): RumourRepository
+
+    @Binds
+    fun bindsRumourStatsRepository(repository: FakeRumourStatsRepository): RumourStatsRepository
 
     @Binds
     fun bindsClubRepository(repository: FakeClubRepository): ClubRepository

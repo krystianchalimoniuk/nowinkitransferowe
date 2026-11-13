@@ -103,7 +103,15 @@ class TestNtNetworkDataSource : NtNetworkDataSource {
 
     override suspend fun getRumours(ids: List<Int>): List<NetworkRumour> = recordsRequest(NetworkRecordType.RUMOURS, ids).let { source.getRumours(ids) }
 
-    override suspend fun getRumourStats(): NetworkRumourStats = source.getRumourStats()
+    var rumourStatsRequests = 0
+
+    var failRumourStats = false
+
+    override suspend fun getRumourStats(): NetworkRumourStats {
+        rumourStatsRequests++
+        if (failRumourStats) throw java.io.IOException("Stats are not available")
+        return source.getRumourStats()
+    }
 
     override suspend fun getClubSeasons(clubId: Int): NetworkClubSeasons = source.getClubSeasons(clubId)
 

@@ -17,7 +17,7 @@
 <resources>
     <string name="feature_bookmarks_impl_title">Zapisane</string>
     <string name="feature_bookmarks_impl_loading">Pobieram zapisane…</string>
-    <string name="feature_bookmarks_impl_empty_description">Dotknij zakładki przy artykule lub transferze,\nżeby wrócić do niego później</string>
+    <string name="feature_bookmarks_impl_empty_description">Dotknij zakładki przy artykule, transferze lub plotce,\nżeby wrócić do nich później</string>
     <string name="feature_bookmarks_impl_removed">Zakładka usunięta</string>
     <string name="feature_bookmarks_impl_undo">COFNIJ</string>
     <string name="feature_bookmarks_impl_articles">Artykuły</string>
@@ -25,4 +25,6 @@
     <string name="feature_bookmarks_impl_empty_articles">Brak zapisanych artykułów</string>
     <string name="feature_bookmarks_impl_empty_transfers">Brak zapisanych transferów</string>
     <string name="feature_bookmarks_impl_transfers">Transfery</string>
+    <string name="feature_bookmarks_impl_rumours">Plotki</string>
+    <string name="feature_bookmarks_impl_empty_rumours">Brak zapisanych plotek</string>
 </resources>

@@ -23,6 +23,8 @@ internal fun AnalyticsHelper.logArticleBookmarkToggled(articleId: Int, isBookmar
 
 internal fun AnalyticsHelper.logTransferBookmarkToggled(transferId: Int, isBookmarked: Boolean) = logBookmarkToggled("transfer", transferId, isBookmarked)
 
+internal fun AnalyticsHelper.logRumourBookmarkToggled(rumourId: Int, isBookmarked: Boolean) = logBookmarkToggled("rumour", rumourId, isBookmarked)
+
 /** "article_saved" with "saved_article_id", "transfer_unsaved" with "unsaved_transfer_id" and so on. */
 private fun AnalyticsHelper.logBookmarkToggled(record: String, id: Int, isBookmarked: Boolean) {
     val action = if (isBookmarked) "saved" else "unsaved"

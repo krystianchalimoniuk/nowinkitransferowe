@@ -56,6 +56,7 @@ import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.theme.LocalTintTheme
 import pl.nowinkitransferowe.core.ui.ArticleListItem
 import pl.nowinkitransferowe.core.ui.BookmarkButton
+import pl.nowinkitransferowe.core.ui.RumourListItem
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferListItem
@@ -64,6 +65,7 @@ import pl.nowinkitransferowe.core.ui.TransferListItem
 internal fun BookmarksRoute(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
+    onRumourClick: (Int) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
     viewModel: BookmarksViewModel = hiltViewModel(),
@@ -76,8 +78,10 @@ internal fun BookmarksRoute(
         onShowSnackbar = onShowSnackbar,
         removeArticleBookmark = viewModel::removeArticleBookmark,
         removeTransferBookmark = viewModel::removeTransferBookmark,
+        removeRumourBookmark = viewModel::removeRumourBookmark,
         onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
+        onRumourClick = onRumourClick,
         modifier = modifier,
         shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
         undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
@@ -99,6 +103,8 @@ internal fun BookmarksScreen(
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    removeRumourBookmark: (Int) -> Unit = {},
+    onRumourClick: (Int) -> Unit = {},
     shouldDisplayUndoBookmark: Boolean = false,
     undoBookmarkRemoval: () -> Unit = {},
     clearUndoState: () -> Unit = {},
@@ -163,6 +169,21 @@ internal fun BookmarksScreen(
                             BookmarkButton(isBookmarked = true, onClick = { removeTransferBookmark(transfer.id) })
                         }
                     }
+
+                    SavedTab.RUMOURS -> SavedList(
+                        items = uiState.rumours,
+                        key = { it.id },
+                        emptyText = R.string.feature_bookmarks_impl_empty_rumours,
+                    ) { rumour ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RumourListItem(
+                                rumour = rumour,
+                                onClick = { onRumourClick(rumour.id) },
+                                modifier = Modifier.weight(1f),
+                            )
+                            BookmarkButton(isBookmarked = true, onClick = { removeRumourBookmark(rumour.id) })
+                        }
+                    }
                 }
             }
         }
@@ -177,6 +198,7 @@ private fun SavedTabs(uiState: BookmarksUiState.Success, onSelected: (SavedTab) 
             val (label, count) = when (tab) {
                 SavedTab.ARTICLES -> R.string.feature_bookmarks_impl_articles to uiState.articles.size
                 SavedTab.TRANSFERS -> R.string.feature_bookmarks_impl_transfers to uiState.transfers.size
+                SavedTab.RUMOURS -> R.string.feature_bookmarks_impl_rumours to uiState.rumours.size
             }
             Tab(
                 selected = tab == uiState.tab,

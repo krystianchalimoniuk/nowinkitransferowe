@@ -27,9 +27,11 @@ import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
 import pl.nowinkitransferowe.core.testing.data.articlesTestData
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
 import pl.nowinkitransferowe.core.testing.data.transfersTestData
 import pl.nowinkitransferowe.core.testing.repository.TestArticleRepository
 import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
+import pl.nowinkitransferowe.core.testing.repository.TestRumourRepository
 import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
@@ -44,6 +46,7 @@ class BookmarksViewModelTest {
     private val userDataRepository = TestUserDataRepository()
     private val articleRepository = TestArticleRepository()
     private val transferRepository = TestTransferRepository()
+    private val rumourRepository = TestRumourRepository()
 
     private lateinit var viewModel: BookmarksViewModel
 
@@ -61,8 +64,10 @@ class BookmarksViewModelTest {
                 transferRepository = transferRepository,
                 userDataRepository = userDataRepository,
             ),
+            rumourRepository = rumourRepository,
         )
         articleRepository.sendArticles(articlesTestData)
+        rumourRepository.sendRumours(rumoursTestData)
         transferRepository.sendTransfers(transfersTestData)
     }
 
@@ -105,6 +110,19 @@ class BookmarksViewModelTest {
         viewModel.undoBookmarkRemoval()
         assertEquals(1, success().articles.size)
         assertEquals(false, viewModel.shouldDisplayUndoBookmark)
+    }
+
+    @Test
+    fun removeRumourBookmark_removesItAndUndoBringsItBack() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        userDataRepository.setRumourBookmarked(rumoursTestData[0].id, true)
+        assertEquals(listOf(rumoursTestData[0].id), success().rumours.map { it.id })
+
+        viewModel.removeRumourBookmark(rumoursTestData[0].id)
+        assertTrue(success().rumours.isEmpty())
+
+        viewModel.undoBookmarkRemoval()
+        assertEquals(1, success().rumours.size)
     }
 
     @Test

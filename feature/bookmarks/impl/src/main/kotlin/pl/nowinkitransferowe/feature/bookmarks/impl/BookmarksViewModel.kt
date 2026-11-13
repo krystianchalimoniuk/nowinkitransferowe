@@ -26,11 +26,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
+import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.model.UserTransfer
 import javax.inject.Inject
@@ -41,6 +46,7 @@ class BookmarksViewModel @Inject constructor(
     private val userDataRepository: UserDataRepository,
     userArticleRepository: UserArticleRepository,
     userTransferRepository: UserTransferRepository,
+    rumourRepository: RumourRepository,
 ) : ViewModel() {
 
     var shouldDisplayUndoBookmark by mutableStateOf(false)
@@ -50,6 +56,10 @@ class BookmarksViewModel @Inject constructor(
         savedStateHandle.getStateFlow(TAB_KEY, SavedTab.ARTICLES),
         userArticleRepository.observeBookmarked(),
         userTransferRepository.observeBookmarked(),
+        userDataRepository.userData
+            .map { it.bookmarkedRumours }
+            .distinctUntilChanged()
+            .flatMapLatest(rumourRepository::observeRumours),
         BookmarksUiState::Success,
     ).stateIn(
         scope = viewModelScope,
@@ -77,11 +87,20 @@ class BookmarksViewModel @Inject constructor(
         }
     }
 
+    fun removeRumourBookmark(rumourId: Int) {
+        viewModelScope.launch {
+            shouldDisplayUndoBookmark = true
+            lastRemovedBookmark = BookmarkElement.Rumour(rumourId)
+            userDataRepository.setRumourBookmarked(rumourId, false)
+        }
+    }
+
     fun undoBookmarkRemoval() {
         viewModelScope.launch {
             when (val removed = lastRemovedBookmark) {
                 is BookmarkElement.Article -> userDataRepository.setArticleBookmarked(removed.id, true)
                 is BookmarkElement.Transfer -> userDataRepository.setTransferBookmarked(removed.id, true)
+                is BookmarkElement.Rumour -> userDataRepository.setRumourBookmarked(removed.id, true)
                 null -> Unit
             }
             clearUndoState()
@@ -94,8 +113,8 @@ class BookmarksViewModel @Inject constructor(
     }
 }
 
-/** The tabs of the saved screen. Saved rumours join them with the rumour screens. */
-enum class SavedTab { ARTICLES, TRANSFERS }
+/** The tabs of the saved screen. */
+enum class SavedTab { ARTICLES, TRANSFERS, RUMOURS }
 
 sealed interface BookmarksUiState {
     data object Loading : BookmarksUiState
@@ -103,12 +122,14 @@ sealed interface BookmarksUiState {
         val tab: SavedTab,
         val articles: List<UserArticle>,
         val transfers: List<UserTransfer>,
+        val rumours: List<Rumour>,
     ) : BookmarksUiState
 }
 
 sealed class BookmarkElement(open val id: Int) {
     data class Article(override val id: Int) : BookmarkElement(id)
     data class Transfer(override val id: Int) : BookmarkElement(id)
+    data class Rumour(override val id: Int) : BookmarkElement(id)
 }
 
 private const val TAB_KEY = "tab"

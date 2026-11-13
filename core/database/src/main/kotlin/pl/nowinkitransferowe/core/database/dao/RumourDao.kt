@@ -53,37 +53,40 @@ interface RumourDao {
     suspend fun deleteRumours(ids: List<Int>)
 
     @Transaction
-    @Query(
-        """
-        SELECT r.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
-            fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
-            tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
-        FROM rumours r
-        LEFT JOIN players p ON p.id = r.player_id
-        LEFT JOIN clubs fc ON fc.id = r.from_club_id
-        LEFT JOIN clubs tc ON tc.id = r.to_club_id
-        WHERE r.id = :id
-        """,
-    )
+    @Query("$SELECT_RUMOURS WHERE r.id = :id")
     fun observeRumour(id: Int): Flow<PopulatedRumour?>
+
+    @Transaction
+    @Query("$SELECT_RUMOURS WHERE r.id IN (:ids) ORDER BY r.updated_at DESC")
+    fun observeRumours(ids: Set<Int>): Flow<List<PopulatedRumour>>
 
     /**
      * Rumours with [status] updated at or after [updatedSince], most recently updated first. Active
-     * rumours of the last 45 days are the board shown on the website.
+     * rumours of the last 45 days are the board shown on the website. [topic] keeps those to or from
+     * a club of that league, [stage] those at that stage.
      */
+    @Transaction
+    @Query(
+        """
+        $SELECT_RUMOURS
+        WHERE r.status = :status AND r.updated_at >= :updatedSince
+            AND (:topic IS NULL OR fc.topic = :topic OR tc.topic = :topic)
+            AND (:stage IS NULL OR r.stage = :stage)
+        ORDER BY r.updated_at DESC
+        """,
+    )
+    fun observeRumours(
+        status: String,
+        updatedSince: Instant,
+        topic: String? = null,
+        stage: Int? = null,
+    ): Flow<List<PopulatedRumour>>
+
     /** Rumours that the article with [articleId] moved to a stage, most recently updated first. */
     @Transaction
     @Query(
         """
-        SELECT r.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
-            fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
-            tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
-        FROM rumours r
-        LEFT JOIN players p ON p.id = r.player_id
-        LEFT JOIN clubs fc ON fc.id = r.from_club_id
-        LEFT JOIN clubs tc ON tc.id = r.to_club_id
+        $SELECT_RUMOURS
         WHERE r.latest_article_id = :articleId
             OR r.id IN (SELECT rumour_id FROM rumour_stages WHERE article_id = :articleId)
         ORDER BY r.updated_at DESC
@@ -92,53 +95,22 @@ interface RumourDao {
     fun observeRumoursOfArticle(articleId: Int): Flow<List<PopulatedRumour>>
 
     @Transaction
-    @Query(
-        """
-        SELECT r.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
-            fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
-            tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
-        FROM rumours r
-        LEFT JOIN players p ON p.id = r.player_id
-        LEFT JOIN clubs fc ON fc.id = r.from_club_id
-        LEFT JOIN clubs tc ON tc.id = r.to_club_id
-        WHERE r.status = :status AND r.updated_at >= :updatedSince
-        ORDER BY r.updated_at DESC
-        """,
-    )
-    fun observeRumours(status: String, updatedSince: Instant): Flow<List<PopulatedRumour>>
-
-    @Transaction
-    @Query(
-        """
-        SELECT r.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
-            fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
-            tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
-        FROM rumours r
-        LEFT JOIN players p ON p.id = r.player_id
-        LEFT JOIN clubs fc ON fc.id = r.from_club_id
-        LEFT JOIN clubs tc ON tc.id = r.to_club_id
-        WHERE r.from_club_id = :clubId OR r.to_club_id = :clubId
-        ORDER BY r.updated_at DESC
-        """,
-    )
+    @Query("$SELECT_RUMOURS WHERE r.from_club_id = :clubId OR r.to_club_id = :clubId ORDER BY r.updated_at DESC")
     fun observeRumoursOfClub(clubId: Int): Flow<List<PopulatedRumour>>
 
     @Transaction
-    @Query(
-        """
-        SELECT r.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
-            fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
-            tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
-        FROM rumours r
-        LEFT JOIN players p ON p.id = r.player_id
-        LEFT JOIN clubs fc ON fc.id = r.from_club_id
-        LEFT JOIN clubs tc ON tc.id = r.to_club_id
-        WHERE r.player_id = :playerId
-        ORDER BY r.updated_at DESC
-        """,
-    )
+    @Query("$SELECT_RUMOURS WHERE r.player_id = :playerId ORDER BY r.updated_at DESC")
     fun observeRumoursOfPlayer(playerId: Int): Flow<List<PopulatedRumour>>
 }
+
+/** Rumours with the current names, photo, nationality and crests of their player and clubs. */
+private const val SELECT_RUMOURS = """
+    SELECT r.*,
+        p.name AS current_player_name, p.photo_url AS player_photo_url, p.nationality AS player_nationality,
+        fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
+        tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
+    FROM rumours r
+    LEFT JOIN players p ON p.id = r.player_id
+    LEFT JOIN clubs fc ON fc.id = r.from_club_id
+    LEFT JOIN clubs tc ON tc.id = r.to_club_id
+"""

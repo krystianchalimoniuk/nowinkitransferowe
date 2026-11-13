@@ -73,6 +73,13 @@ class TestUserDataRepository : UserDataRepository {
         }
     }
 
+    override suspend fun setRumourBookmarked(rumourId: Int, bookmarked: Boolean) {
+        currentUserData.let { current ->
+            val bookmarkedRumours = if (bookmarked) current.bookmarkedRumours + rumourId else current.bookmarkedRumours - rumourId
+            _userData.tryEmit(current.copy(bookmarkedRumours = bookmarkedRumours))
+        }
+    }
+
     override suspend fun setTransferViewed(transferId: Int, viewed: Boolean) = setTransfersViewed(listOf(transferId), viewed)
 
     override suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) {

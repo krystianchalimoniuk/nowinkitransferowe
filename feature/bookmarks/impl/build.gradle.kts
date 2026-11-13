@@ -29,6 +29,7 @@ dependencies {
     implementation(projects.feature.bookmarks.api)
     implementation(projects.feature.articleDetails.api)
     implementation(projects.feature.transferDetails.api)
+    implementation(projects.feature.rumours.api)
     implementation(projects.core.data)
 
     testImplementation(libs.hilt.android.testing)

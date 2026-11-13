@@ -26,6 +26,7 @@ import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArt
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.articles.impl.ArticlesRoute
 import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
+import pl.nowinkitransferowe.feature.rumours.api.navigation.navigateToRumour
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 
@@ -41,6 +42,7 @@ fun EntryProviderScope<NavKey>.articlesEntry(
             onArticleClick = navigator::navigateToArticle,
             onTransferClick = navigator::navigateToTransfer,
             onAllTransfersClick = { navigator.navigate(TransfersNavKey) },
+            onRumourClick = navigator::navigateToRumour,
             onAllRumoursClick = { navigator.navigate(RumoursNavKey) },
         )
     }

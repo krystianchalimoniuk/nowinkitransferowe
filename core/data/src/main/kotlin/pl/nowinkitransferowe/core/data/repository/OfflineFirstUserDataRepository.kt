@@ -43,6 +43,11 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
         analyticsHelper.logTransferBookmarkToggled(transferId = transferId, isBookmarked = bookmarked)
     }
 
+    override suspend fun setRumourBookmarked(rumourId: Int, bookmarked: Boolean) {
+        ntPreferencesDataSource.setRumourBookmarked(rumourId, bookmarked)
+        analyticsHelper.logRumourBookmarkToggled(rumourId = rumourId, isBookmarked = bookmarked)
+    }
+
     override suspend fun setTransferViewed(transferId: Int, viewed: Boolean) = ntPreferencesDataSource.setTransfersViewed(listOf(transferId), viewed)
 
     override suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) = ntPreferencesDataSource.setTransfersViewed(transferIds, viewed)

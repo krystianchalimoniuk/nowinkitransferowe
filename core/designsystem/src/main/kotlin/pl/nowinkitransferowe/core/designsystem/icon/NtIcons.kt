@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.automirrored.rounded.Article
 import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.automirrored.rounded.ShortText
+import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Bookmarks
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.outlined.SyncAlt
 import androidx.compose.material.icons.outlined.Upcoming
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkBorder
@@ -43,7 +45,9 @@ import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DoneAll
+import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material.icons.rounded.Grid3x3
+import androidx.compose.material.icons.rounded.Handshake
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Language
@@ -59,6 +63,7 @@ import androidx.compose.material.icons.rounded.SwapHoriz
 import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material.icons.rounded.Upcoming
 import androidx.compose.material.icons.rounded.ViewDay
+import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -99,6 +104,11 @@ object NtIcons {
     val ViewDay = Icons.Rounded.ViewDay
     val MarkAsRead = Icons.Rounded.DoneAll
     val Article = Icons.AutoMirrored.Rounded.Article
+    val ArrowDropDown = Icons.Rounded.ArrowDropDown
+    val Forum = Icons.Rounded.Forum
+    val Handshake = Icons.Rounded.Handshake
+    val TrendingUp = Icons.AutoMirrored.Rounded.TrendingUp
+    val Visibility = Icons.Rounded.Visibility
     val ChevronRight = Icons.Rounded.ChevronRight
     val DarkMode = Icons.Rounded.DarkMode
     val Info = Icons.Rounded.Info

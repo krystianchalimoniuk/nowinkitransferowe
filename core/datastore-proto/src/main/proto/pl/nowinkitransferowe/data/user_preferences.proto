@@ -62,5 +62,8 @@ message UserPreferences {
     map<int32, bool> bookmarked_transfer_ids = 35;
     map<int32, bool> viewed_transfer_ids = 36;
 
-    // NEXT AVAILABLE ID: 37
+    // Saved rumours, by API v3 id.
+    map<int32, bool> bookmarked_rumour_ids = 37;
+
+    // NEXT AVAILABLE ID: 38
 }

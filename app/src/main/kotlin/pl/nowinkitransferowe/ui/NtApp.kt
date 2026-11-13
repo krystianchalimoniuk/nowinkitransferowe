@@ -80,6 +80,8 @@ import pl.nowinkitransferowe.feature.articles.impl.navigation.articlesEntry
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.LocalSnackbarHostState
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.bookmarksEntry
 import pl.nowinkitransferowe.feature.leagues.impl.navigation.leaguesEntry
+import pl.nowinkitransferowe.feature.rumours.impl.RumourPlaceholder
+import pl.nowinkitransferowe.feature.rumours.impl.navigation.rumourEntry
 import pl.nowinkitransferowe.feature.rumours.impl.navigation.rumoursEntry
 import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.impl.navigation.searchEntry
@@ -266,7 +268,8 @@ internal fun NtAppContent(
                     val entryProvider = entryProvider {
                         articlesEntry(navigator, detailPlaceholder = { ArticleDetailsPlaceholder() })
                         transfersEntry(navigator, detailPlaceholder = { TransferDetailsPlaceholder() })
-                        rumoursEntry()
+                        rumoursEntry(navigator, detailPlaceholder = { RumourPlaceholder() })
+                        rumourEntry(navigator)
                         leaguesEntry()
                         bookmarksEntry(navigator)
                         articleDetailsEntry(navigator)
