@@ -55,8 +55,8 @@ data class UserArticle internal constructor(
         author = article.author,
         tags = article.tags,
         publishedAt = article.publishedAt,
-        isSaved = article.id.toString() in userData.bookmarkedNewsResources,
-        hasBeenViewed = article.id.toString() in userData.viewedNewsResources,
+        isSaved = article.id in userData.bookmarkedArticles,
+        hasBeenViewed = article.id in userData.viewedArticles,
     )
 }
 

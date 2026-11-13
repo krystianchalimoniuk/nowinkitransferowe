@@ -33,13 +33,13 @@ import pl.nowinkitransferowe.core.model.UserArticle
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyStaggeredGridScope.newsFeed(
     feedState: NewsFeedUiState,
-    onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onNewsResourceViewed: (String) -> Unit,
-    selectedNewsId: String? = null,
+    onNewsResourcesCheckedChanged: (Int, Boolean) -> Unit,
+    onNewsResourceViewed: (Int) -> Unit,
+    selectedNewsId: Int? = null,
     highlightSelectedNews: Boolean = false,
-    onNewsClick: (String) -> Unit,
+    onNewsClick: (Int) -> Unit,
     onTopicClick: (String) -> Unit,
-    onNewsSelected: (String?) -> Unit,
+    onNewsSelected: (Int?) -> Unit,
 ) {
     when (feedState) {
         NewsFeedUiState.Loading -> Unit
@@ -55,16 +55,16 @@ fun LazyStaggeredGridScope.newsFeed(
                     isBookmarked = userNewsResource.isSaved,
                     onClick = {
                         analyticsHelper.logNewsResourceOpened(
-                            newsResourceId = userNewsResource.id.toString(),
+                            newsResourceId = userNewsResource.id,
                         )
-                        onNewsSelected(userNewsResource.id.toString())
-                        onNewsClick(userNewsResource.id.toString())
-                        onNewsResourceViewed(userNewsResource.id.toString())
+                        onNewsSelected(userNewsResource.id)
+                        onNewsClick(userNewsResource.id)
+                        onNewsResourceViewed(userNewsResource.id)
                     },
                     hasBeenViewed = userNewsResource.hasBeenViewed,
                     onToggleBookmark = {
                         onNewsResourcesCheckedChanged(
-                            userNewsResource.id.toString(),
+                            userNewsResource.id,
                             !userNewsResource.isSaved,
                         )
                     },

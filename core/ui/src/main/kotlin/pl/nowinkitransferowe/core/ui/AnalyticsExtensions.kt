@@ -36,23 +36,23 @@ fun AnalyticsHelper.logScreenView(screenName: String) {
     )
 }
 
-fun AnalyticsHelper.logNewsResourceOpened(newsResourceId: String) {
+fun AnalyticsHelper.logNewsResourceOpened(newsResourceId: Int) {
     logEvent(
         event = AnalyticsEvent(
             type = "news_resource_opened",
             extras = listOf(
-                AnalyticsEvent.Param("opened_news_resource", newsResourceId),
+                AnalyticsEvent.Param("opened_news_resource", newsResourceId.toString()),
             ),
         ),
     )
 }
 
-fun AnalyticsHelper.logTransferResourceOpened(transferResourceId: String) {
+fun AnalyticsHelper.logTransferResourceOpened(transferResourceId: Int) {
     logEvent(
         event = AnalyticsEvent(
             type = "transfer_resource_opened",
             extras = listOf(
-                AnalyticsEvent.Param("opened_transfer_resource", transferResourceId),
+                AnalyticsEvent.Param("opened_transfer_resource", transferResourceId.toString()),
             ),
         ),
     )

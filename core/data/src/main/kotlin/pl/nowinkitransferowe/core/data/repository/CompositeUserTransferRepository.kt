@@ -46,7 +46,7 @@ class CompositeUserTransferRepository @Inject constructor(
     override fun observeTransfersOfPlayer(playerId: Int): Flow<List<UserTransfer>> = transferRepository.observeTransfersOfPlayer(playerId).withUserData()
 
     override fun observeBookmarked(): Flow<List<UserTransfer>> = userDataRepository.userData
-        .map { userData -> userData.bookmarkedTransferResources.mapNotNullTo(mutableSetOf(), String::toIntOrNull) }
+        .map { userData -> userData.bookmarkedTransfers }
         .distinctUntilChanged()
         .flatMapLatest { ids ->
             if (ids.isEmpty()) flowOf(emptyList()) else transferRepository.observeTransfers(ids).withUserData()

@@ -52,7 +52,7 @@ class DetailsTransferViewModelTest {
             userDataRepository = userDataRepository,
             userTransferRepository = CompositeUserTransferRepository(transferRepository, userDataRepository),
             imageDownloader = TestImageDownloader(),
-            transferResourceId = transfersTestData.first().id.toString(),
+            transferResourceId = transfersTestData.first().id,
         )
     }
 
@@ -70,7 +70,7 @@ class DetailsTransferViewModelTest {
         val playerTransfers = transfersTestData.filter { it.player.id == 832 }
         val expected = DetailsTransferUiState.Success(
             userTransferResource = playerTransfers.mapToUserTransfers(
-                emptyUserData.copy(viewedTransferResources = setOf("19580", "15000")),
+                emptyUserData.copy(viewedTransfers = setOf(19580, 15000)),
             ),
             dataPoints = playerTransfers.sortedBy { it.date }.map {
                 DataPoint(

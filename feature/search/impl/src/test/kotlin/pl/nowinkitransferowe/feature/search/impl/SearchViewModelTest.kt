@@ -157,19 +157,19 @@ class SearchViewModelTest {
 
     @Test
     fun whenToggleNewsResourceSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        val newsResourceId = "123"
+        val newsResourceId = 123
         viewModel.setNewsResourceBookmarked(newsResourceId, true)
 
         assertEquals(
             expected = setOf(newsResourceId),
-            actual = userDataRepository.userData.first().bookmarkedNewsResources,
+            actual = userDataRepository.userData.first().bookmarkedArticles,
         )
 
         viewModel.setNewsResourceBookmarked(newsResourceId, false)
 
         assertEquals(
             expected = emptySet(),
-            actual = userDataRepository.userData.first().bookmarkedNewsResources,
+            actual = userDataRepository.userData.first().bookmarkedArticles,
         )
     }
 }

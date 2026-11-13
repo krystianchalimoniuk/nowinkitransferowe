@@ -137,7 +137,7 @@ class NtAppStateTest {
     fun ntAppState_deepLinkKeys_openDetailsAboveTheirList() = runTest {
         val navigationState = testNavigationState()
         val navigator = Navigator(navigationState)
-        val details = DetailsTransferNavKey(transferId = "123")
+        val details = DetailsTransferNavKey(transferId = 123)
 
         composeTestRule.setContent {
             state = remember(navigationState) { testAppState(navigationState, backgroundScope) }

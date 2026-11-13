@@ -37,7 +37,7 @@ fun EntryProviderScope<NavKey>.newsDetailsEntry(navigator: Navigator) {
             onBackClick = { navigator.goBack() },
             onTopicClick = navigator::navigateToSearch,
             viewModel = hiltViewModel<DetailsViewModel, DetailsViewModel.Factory>(
-                key = key.newsId,
+                key = key.newsId.toString(),
             ) { factory ->
                 factory.create(key.newsId)
             },

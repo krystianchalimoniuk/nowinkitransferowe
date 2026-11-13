@@ -45,7 +45,7 @@ class CompositeUserArticleRepository @Inject constructor(
         .map { it.firstOrNull() }
 
     override fun observeBookmarked(): Flow<List<UserArticle>> = userDataRepository.userData
-        .map { userData -> userData.bookmarkedNewsResources.mapNotNullTo(mutableSetOf(), String::toIntOrNull) }
+        .map { userData -> userData.bookmarkedArticles }
         .distinctUntilChanged()
         .flatMapLatest { ids ->
             if (ids.isEmpty()) flowOf(emptyList()) else articleRepository.observeArticles(ids).withUserData()

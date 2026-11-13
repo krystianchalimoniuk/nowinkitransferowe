@@ -24,7 +24,6 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -40,16 +39,16 @@ import pl.nowinkitransferowe.core.model.UserArticle
 class DetailsViewModel @AssistedInject constructor(
     private val userDataRepository: UserDataRepository,
     userArticleRepository: UserArticleRepository,
-    @Assisted val newsResourceId: String,
+    @Assisted val newsResourceId: Int,
 ) : ViewModel() {
 
     // Waits while the article is not in the database yet, for example a link opened before the
     // first sync.
-    val detailsUiState = (newsResourceId.toIntOrNull()?.let(userArticleRepository::observeArticle) ?: flowOf(null))
+    val detailsUiState = userArticleRepository.observeArticle(newsResourceId)
         .filterNotNull()
         .onEach {
             if (!it.hasBeenViewed) {
-                setNewsResourceViewed(it.id.toString(), true)
+                setNewsResourceViewed(it.id, true)
             }
         }.asResult()
         .map { result ->
@@ -70,21 +69,21 @@ class DetailsViewModel @AssistedInject constructor(
         userData.darkThemeConfig
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DarkThemeConfig.FOLLOW_SYSTEM)
 
-    fun bookmarkNews(newsResourceId: String, bookmarked: Boolean) {
+    fun bookmarkNews(newsResourceId: Int, bookmarked: Boolean) {
         viewModelScope.launch {
-            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, bookmarked) }
+            userDataRepository.setArticleBookmarked(newsResourceId, bookmarked)
         }
     }
 
-    private fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
+    private fun setNewsResourceViewed(newsResourceId: Int, viewed: Boolean) {
         viewModelScope.launch {
-            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleViewed(it, viewed) }
+            userDataRepository.setArticleViewed(newsResourceId, viewed)
         }
     }
 
     @AssistedFactory
     interface Factory {
-        fun create(newsResourceId: String): DetailsViewModel
+        fun create(newsResourceId: Int): DetailsViewModel
     }
 }
 

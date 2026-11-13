@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -48,13 +47,13 @@ class DetailsTransferViewModel @AssistedInject constructor(
     private val userDataRepository: UserDataRepository,
     userTransferRepository: UserTransferRepository,
     private val imageDownloader: ImageDownloader,
-    @Assisted val transferResourceId: String,
+    @Assisted val transferResourceId: Int,
 ) : ViewModel() {
 
     val detailsTransferUiState =
         // Every transfer of the player, newest first; waits while the transfer is not in the
         // database yet.
-        (transferResourceId.toIntOrNull()?.let(userTransferRepository::observeTransfer) ?: flowOf(null))
+        userTransferRepository.observeTransfer(transferResourceId)
             .filterNotNull()
             .map { it.player.id }
             .distinctUntilChanged()
@@ -112,7 +111,7 @@ class DetailsTransferViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(transferResourceId: String): DetailsTransferViewModel
+        fun create(transferResourceId: Int): DetailsTransferViewModel
     }
 }
 

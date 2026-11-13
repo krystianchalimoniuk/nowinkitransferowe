@@ -29,7 +29,7 @@ import pl.nowinkitransferowe.core.model.UserArticle
 fun LazyListScope.userNewsResourceCardItems(
     items: List<UserArticle>,
     onToggleBookmark: (item: UserArticle) -> Unit,
-    onNewsResourceViewed: (String) -> Unit,
+    onNewsResourceViewed: (Int) -> Unit,
     onTopicClick: (String) -> Unit,
     itemModifier: Modifier = Modifier,
 ) = items(
@@ -48,10 +48,10 @@ fun LazyListScope.userNewsResourceCardItems(
             onToggleBookmark = { onToggleBookmark(userNewsResource) },
             onClick = {
                 analyticsHelper.logNewsResourceOpened(
-                    newsResourceId = userNewsResource.id.toString(),
+                    newsResourceId = userNewsResource.id,
                 )
 //                launchCustomChromeTab(context, resourceUrl, backgroundColor)
-                onNewsResourceViewed(userNewsResource.id.toString())
+                onNewsResourceViewed(userNewsResource.id)
             },
             onTopicClick = onTopicClick,
             modifier = itemModifier,

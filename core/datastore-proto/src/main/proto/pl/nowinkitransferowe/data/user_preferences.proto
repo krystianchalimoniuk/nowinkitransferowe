@@ -15,6 +15,7 @@ message UserPreferences {
     // have a Set type so this is the closest we can get to a Set.
     map<string, bool> followed_topic_ids = 4;
     map<string, bool> followed_author_ids = 5;
+    // API v2 bookmarks and read marks with string ids, unused since 4.0 (see 33-36).
     map<string, bool> bookmarked_news_resource_ids = 6;
     map<string, bool> viewed_news_resource_ids = 7;
 
@@ -54,5 +55,12 @@ message UserPreferences {
     // The version of these preferences, used by UserPreferencesMigration.
     int32 schema_version = 32;
 
-    // NEXT AVAILABLE ID: 33
+    // Saved and read articles and transfers, by API v3 id. 4.0 starts them empty instead of
+    // copying the API v2 string ids above.
+    map<int32, bool> bookmarked_article_ids = 33;
+    map<int32, bool> viewed_article_ids = 34;
+    map<int32, bool> bookmarked_transfer_ids = 35;
+    map<int32, bool> viewed_transfer_ids = 36;
+
+    // NEXT AVAILABLE ID: 37
 }

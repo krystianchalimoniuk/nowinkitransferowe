@@ -89,7 +89,7 @@ fun NewsResourceCardExpanded(
     hasBeenViewed: Boolean,
     onToggleBookmark: () -> Unit,
     onClick: () -> Unit,
-    selectedNewsId: String? = null,
+    selectedNewsId: Int? = null,
     highlightSelectedNews: Boolean = false,
     onTopicClick: (String) -> Unit,
 ) {
@@ -106,7 +106,7 @@ fun NewsResourceCardExpanded(
 //    } else {
 //        0
 //    }
-    val isSelected = highlightSelectedNews && userNewsResource.id.toString() == selectedNewsId
+    val isSelected = highlightSelectedNews && userNewsResource.id == selectedNewsId
 
     OutlinedCard(
         onClick = onClick,

@@ -59,7 +59,7 @@ class DetailsViewModelTest {
         viewModel = DetailsViewModel(
             userDataRepository = userDataRepository,
             userArticleRepository = userArticleRepository,
-            newsResourceId = articlesTestData.first().id.toString(),
+            newsResourceId = articlesTestData.first().id,
         )
     }
 
@@ -85,7 +85,7 @@ class DetailsViewModelTest {
         val expected = DetailsUiState.Success(
             userNewsResource = listOf(article).mapToUserArticles(
                 topicsTestData,
-                emptyUserData.copy(viewedNewsResources = setOf(article.id.toString())),
+                emptyUserData.copy(viewedArticles = setOf(article.id)),
             ).single(),
         )
         assertEquals(expected = expected, actual = viewModel.detailsUiState.value)
@@ -93,12 +93,12 @@ class DetailsViewModelTest {
 
     @Test
     fun whenUpdateNewsResourceSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        viewModel.bookmarkNews("123", true)
+        viewModel.bookmarkNews(123, true)
 
-        assertEquals(setOf("123"), userDataRepository.userData.first().bookmarkedNewsResources)
+        assertEquals(setOf(123), userDataRepository.userData.first().bookmarkedArticles)
 
-        viewModel.bookmarkNews("123", false)
+        viewModel.bookmarkNews(123, false)
 
-        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedNewsResources)
+        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedArticles)
     }
 }

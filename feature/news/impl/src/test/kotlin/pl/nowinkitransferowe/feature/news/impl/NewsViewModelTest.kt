@@ -82,13 +82,13 @@ class NewsViewModelTest {
 
     @Test
     fun whenUpdateNewsResourceSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        viewModel.updateNewsResourceSaved("123", true)
+        viewModel.updateNewsResourceSaved(123, true)
 
-        assertEquals(setOf("123"), userDataRepository.userData.first().bookmarkedNewsResources)
+        assertEquals(setOf(123), userDataRepository.userData.first().bookmarkedArticles)
 
-        viewModel.updateNewsResourceSaved("123", false)
+        viewModel.updateNewsResourceSaved(123, false)
 
-        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedNewsResources)
+        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedArticles)
     }
 
     @Test
@@ -96,9 +96,9 @@ class NewsViewModelTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedState.collect() }
         articleRepository.sendArticles(articlesTestData)
 
-        viewModel.updateNewsResourceSaved(newsResourceId = "11283", isChecked = true)
+        viewModel.updateNewsResourceSaved(newsResourceId = 11283, isChecked = true)
 
-        val userData = emptyUserData.copy(bookmarkedNewsResources = setOf("11283"))
+        val userData = emptyUserData.copy(bookmarkedArticles = setOf(11283))
         assertEquals(
             NewsFeedUiState.Success(
                 feed = articlesTestData.take(NewsViewModel.INITIAL_PAGE_SIZE).mapToUserArticles(topicsTestData, userData),

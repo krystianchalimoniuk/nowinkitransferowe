@@ -100,12 +100,12 @@ class NtAppState(
             userArticleRepository.observeBookmarked(),
             userTransferRepository.observeTransfers(limit = UNREAD_CHECK_LIMIT),
             userTransferRepository.observeBookmarked(),
-        ) { newsResources, bookmarkedNewsResources, transferResources, bookmarkedTransfersResources ->
+        ) { newsResources, bookmarkedArticles, transferResources, bookmarkedTransfersResources ->
             setOfNotNull(
                 NewsNavKey.takeIf { newsResources.any { !it.hasBeenViewed } },
                 TransfersNavKey.takeIf { transferResources.any { !it.hasBeenViewed } },
                 BookmarksNavKey.takeIf {
-                    bookmarkedNewsResources.any { !it.hasBeenViewed } ||
+                    bookmarkedArticles.any { !it.hasBeenViewed } ||
                         bookmarkedTransfersResources.any { !it.hasBeenViewed }
                 },
             )

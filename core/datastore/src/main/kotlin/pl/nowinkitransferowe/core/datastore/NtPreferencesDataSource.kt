@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.datastoreproto.DarkThemeConfigProto
 import pl.nowinkitransferowe.core.datastoreproto.UserPreferences
+import pl.nowinkitransferowe.core.datastoreproto.UserPreferencesKt
 import pl.nowinkitransferowe.core.datastoreproto.copy
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserData
@@ -34,10 +35,10 @@ class NtPreferencesDataSource @Inject constructor(
     val userData = userPreferences.data
         .map {
             UserData(
-                bookmarkedNewsResources = it.bookmarkedNewsResourceIdsMap.keys,
-                viewedNewsResources = it.viewedNewsResourceIdsMap.keys,
-                bookmarkedTransferResources = it.bookmarkedTransferResourceIdsMap.keys,
-                viewedTransferResources = it.viewedTransferResourceIdsMap.keys,
+                bookmarkedArticles = it.bookmarkedArticleIdsMap.keys,
+                viewedArticles = it.viewedArticleIdsMap.keys,
+                bookmarkedTransfers = it.bookmarkedTransferIdsMap.keys,
+                viewedTransfers = it.viewedTransferIdsMap.keys,
                 darkThemeConfig = when (it.darkThemeConfig) {
                     null,
                     DarkThemeConfigProto.DARK_THEME_CONFIG_UNSPECIFIED,
@@ -169,71 +170,27 @@ class NtPreferencesDataSource @Inject constructor(
         }
     }
 
-    suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
+    suspend fun setArticleBookmarked(articleId: Int, bookmarked: Boolean) = update {
+        if (bookmarked) bookmarkedArticleIds.put(articleId, true) else bookmarkedArticleIds.remove(articleId)
+    }
+
+    suspend fun setArticlesViewed(articleIds: List<Int>, viewed: Boolean) = update {
+        articleIds.forEach { id -> if (viewed) viewedArticleIds.put(id, true) else viewedArticleIds.remove(id) }
+    }
+
+    suspend fun setTransferBookmarked(transferId: Int, bookmarked: Boolean) = update {
+        if (bookmarked) bookmarkedTransferIds.put(transferId, true) else bookmarkedTransferIds.remove(transferId)
+    }
+
+    suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) = update {
+        transferIds.forEach { id -> if (viewed) viewedTransferIds.put(id, true) else viewedTransferIds.remove(id) }
+    }
+
+    private suspend fun update(block: UserPreferencesKt.Dsl.() -> Unit) {
         try {
-            userPreferences.updateData {
-                it.copy {
-                    if (bookmarked) {
-                        bookmarkedNewsResourceIds.put(newsResourceId, true)
-                    } else {
-                        bookmarkedNewsResourceIds.remove(newsResourceId)
-                    }
-                }
-            }
+            userPreferences.updateData { it.copy(block) }
         } catch (ioException: IOException) {
             Log.e("NtPreferences", "Failed to update user preferences", ioException)
-        }
-    }
-
-    suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
-        setNewsResourcesViewed(listOf(newsResourceId), viewed)
-    }
-
-    suspend fun setNewsResourcesViewed(newsResourceIds: List<String>, viewed: Boolean) {
-        userPreferences.updateData { prefs ->
-            prefs.copy {
-                newsResourceIds.forEach { id ->
-                    if (viewed) {
-                        viewedNewsResourceIds.put(id, true)
-                    } else {
-                        viewedNewsResourceIds.remove(id)
-                    }
-                }
-            }
-        }
-    }
-
-    suspend fun setTransferResourceBookmarked(transferResourceId: String, bookmarked: Boolean) {
-        try {
-            userPreferences.updateData {
-                it.copy {
-                    if (bookmarked) {
-                        bookmarkedTransferResourceIds.put(transferResourceId, true)
-                    } else {
-                        bookmarkedTransferResourceIds.remove(transferResourceId)
-                    }
-                }
-            }
-        } catch (ioException: IOException) {
-            Log.e("NtPreferences", "Failed to update user preferences", ioException)
-        }
-    }
-
-    suspend fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean) {
-        setTransferResourcesViewed(listOf(transferResourceId), viewed)
-    }
-
-    suspend fun setTransferResourcesViewed(transferResourceIds: List<String>, viewed: Boolean) {
-        userPreferences.updateData { prefs ->
-            prefs.copy {
-                transferResourceIds.forEach { id ->
-                    if (viewed) {
-                        viewedTransferResourceIds.put(id, true)
-                    } else {
-                        viewedTransferResourceIds.remove(id)
-                    }
-                }
-            }
         }
     }
 

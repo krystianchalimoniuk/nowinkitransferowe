@@ -61,10 +61,10 @@ class OfflineFirstUserDataRepositoryTest {
     fun offlineFirstUserDataRepository_default_user_data_is_correct() = testScope.runTest {
         assertEquals(
             UserData(
-                bookmarkedNewsResources = emptySet(),
-                viewedNewsResources = emptySet(),
-                bookmarkedTransferResources = emptySet(),
-                viewedTransferResources = emptySet(),
+                bookmarkedArticles = emptySet(),
+                viewedArticles = emptySet(),
+                bookmarkedTransfers = emptySet(),
+                viewedTransfers = emptySet(),
                 darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                 useDynamicColor = false,
                 isNewsNotificationsAllowed = false,
@@ -80,27 +80,27 @@ class OfflineFirstUserDataRepositoryTest {
         subject.setArticleBookmarked(articleId = 0, bookmarked = true)
 
         assertEquals(
-            setOf("0"),
+            setOf(0),
             subject.userData
-                .map { it.bookmarkedNewsResources }
+                .map { it.bookmarkedArticles }
                 .first(),
         )
 
         subject.setArticleBookmarked(articleId = 1, bookmarked = true)
 
         assertEquals(
-            setOf("0", "1"),
+            setOf(0, 1),
             subject.userData
-                .map { it.bookmarkedNewsResources }
+                .map { it.bookmarkedArticles }
                 .first(),
         )
 
         assertEquals(
             ntPreferencesDataSource.userData
-                .map { it.bookmarkedNewsResources }
+                .map { it.bookmarkedArticles }
                 .first(),
             subject.userData
-                .map { it.bookmarkedNewsResources }
+                .map { it.bookmarkedArticles }
                 .first(),
         )
     }
@@ -110,27 +110,27 @@ class OfflineFirstUserDataRepositoryTest {
         subject.setArticleViewed(articleId = 0, viewed = true)
 
         assertEquals(
-            setOf("0"),
+            setOf(0),
             subject.userData
-                .map { it.viewedNewsResources }
+                .map { it.viewedArticles }
                 .first(),
         )
 
         subject.setArticleViewed(articleId = 1, viewed = true)
 
         assertEquals(
-            setOf("0", "1"),
+            setOf(0, 1),
             subject.userData
-                .map { it.viewedNewsResources }
+                .map { it.viewedArticles }
                 .first(),
         )
 
         assertEquals(
             ntPreferencesDataSource.userData
-                .map { it.viewedNewsResources }
+                .map { it.viewedArticles }
                 .first(),
             subject.userData
-                .map { it.viewedNewsResources }
+                .map { it.viewedArticles }
                 .first(),
         )
     }
@@ -140,27 +140,27 @@ class OfflineFirstUserDataRepositoryTest {
         subject.setTransferBookmarked(transferId = 0, bookmarked = true)
 
         assertEquals(
-            setOf("0"),
+            setOf(0),
             subject.userData
-                .map { it.bookmarkedTransferResources }
+                .map { it.bookmarkedTransfers }
                 .first(),
         )
 
         subject.setTransferBookmarked(transferId = 1, bookmarked = true)
 
         assertEquals(
-            setOf("0", "1"),
+            setOf(0, 1),
             subject.userData
-                .map { it.bookmarkedTransferResources }
+                .map { it.bookmarkedTransfers }
                 .first(),
         )
 
         assertEquals(
             ntPreferencesDataSource.userData
-                .map { it.bookmarkedTransferResources }
+                .map { it.bookmarkedTransfers }
                 .first(),
             subject.userData
-                .map { it.bookmarkedTransferResources }
+                .map { it.bookmarkedTransfers }
                 .first(),
         )
     }
@@ -170,27 +170,27 @@ class OfflineFirstUserDataRepositoryTest {
         subject.setTransferViewed(transferId = 0, viewed = true)
 
         assertEquals(
-            setOf("0"),
+            setOf(0),
             subject.userData
-                .map { it.viewedTransferResources }
+                .map { it.viewedTransfers }
                 .first(),
         )
 
         subject.setTransferViewed(transferId = 1, viewed = true)
 
         assertEquals(
-            setOf("0", "1"),
+            setOf(0, 1),
             subject.userData
-                .map { it.viewedTransferResources }
+                .map { it.viewedTransfers }
                 .first(),
         )
 
         assertEquals(
             ntPreferencesDataSource.userData
-                .map { it.viewedTransferResources }
+                .map { it.viewedTransfers }
                 .first(),
             subject.userData
-                .map { it.viewedTransferResources }
+                .map { it.viewedTransfers }
                 .first(),
         )
     }

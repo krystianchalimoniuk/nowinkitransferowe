@@ -34,11 +34,11 @@ import pl.nowinkitransferowe.core.model.UserTransfer
 fun LazyStaggeredGridScope.transferFeed(
     feedState: TransferFeedUiState,
     highlightSelectedTransfer: Boolean = false,
-    onTransferSelected: (String) -> Unit = {},
-    selectedTransferId: String? = null,
-    onTransferResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onTransferResourceViewed: (List<String>) -> Unit,
-    onTransferClick: (String) -> Unit = {},
+    onTransferSelected: (Int) -> Unit = {},
+    selectedTransferId: Int? = null,
+    onTransferResourcesCheckedChanged: (Int, Boolean) -> Unit,
+    onTransferResourceViewed: (List<Int>) -> Unit,
+    onTransferClick: (Int) -> Unit = {},
 ) {
     when (feedState) {
         TransferFeedUiState.Loading -> Unit
@@ -57,16 +57,16 @@ fun LazyStaggeredGridScope.transferFeed(
                     highlightSelectedTransfer = highlightSelectedTransfer,
                     onClick = {
                         analyticsHelper.logTransferResourceOpened(
-                            transferResourceId = userTransferResource.id.toString(),
+                            transferResourceId = userTransferResource.id,
                         )
-                        onTransferSelected(userTransferResource.id.toString())
-                        onTransferClick(userTransferResource.id.toString())
-                        onTransferResourceViewed(arrayListOf(userTransferResource.id.toString()))
+                        onTransferSelected(userTransferResource.id)
+                        onTransferClick(userTransferResource.id)
+                        onTransferResourceViewed(listOf(userTransferResource.id))
                     },
                     hasBeenViewed = userTransferResource.hasBeenViewed,
                     onToggleBookmark = {
                         onTransferResourcesCheckedChanged(
-                            userTransferResource.id.toString(),
+                            userTransferResource.id,
                             !userTransferResource.isSaved,
                         )
                     },

@@ -25,7 +25,7 @@ import pl.nowinkitransferowe.core.model.UserTransfer
 fun LazyListScope.userTransferResourceCardItem(
     items: List<UserTransfer>,
     onToggleBookmark: (item: UserTransfer) -> Unit,
-    onTransferResourceViewed: (String) -> Unit,
+    onTransferResourceViewed: (Int) -> Unit,
     itemModifier: Modifier = Modifier,
 ) = items(
     items = items,
@@ -40,9 +40,9 @@ fun LazyListScope.userTransferResourceCardItem(
             onToggleBookmark = { onToggleBookmark(userTransferResource) },
             onClick = {
                 analyticsHelper.logNewsResourceOpened(
-                    newsResourceId = userTransferResource.id.toString(),
+                    newsResourceId = userTransferResource.id,
                 )
-                onTransferResourceViewed(userTransferResource.id.toString())
+                onTransferResourceViewed(userTransferResource.id)
             },
             modifier = itemModifier,
         )

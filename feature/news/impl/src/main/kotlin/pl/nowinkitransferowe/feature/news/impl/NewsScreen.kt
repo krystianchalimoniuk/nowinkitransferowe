@@ -70,7 +70,7 @@ import pl.nowinkitransferowe.core.ui.newsFeed
 
 @Composable
 fun NewsRoute(
-    onNewsClick: (String) -> Unit,
+    onNewsClick: (Int) -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     highlightSelectedNews: Boolean = false,
@@ -102,14 +102,14 @@ internal fun NewsScreen(
     modifier: Modifier = Modifier,
     isSyncing: Boolean,
     feedState: NewsFeedUiState,
-    selectedNewsId: String? = null,
+    selectedNewsId: Int? = null,
     highlightSelectedNews: Boolean = false,
     loadNextPage: () -> Unit,
-    onNewsClick: (String) -> Unit,
+    onNewsClick: (Int) -> Unit,
     onTopicClick: (String) -> Unit,
-    onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
-    onNewsResourceViewed: (String) -> Unit,
-    onNewsSelected: (String?) -> Unit,
+    onNewsResourcesCheckedChanged: (Int, Boolean) -> Unit,
+    onNewsResourceViewed: (Int) -> Unit,
+    onNewsSelected: (Int?) -> Unit,
 ) {
     val isFeedLoading = feedState is NewsFeedUiState.Loading
 

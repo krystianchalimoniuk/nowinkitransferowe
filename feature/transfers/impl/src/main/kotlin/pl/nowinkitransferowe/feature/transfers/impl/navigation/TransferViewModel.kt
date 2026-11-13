@@ -44,17 +44,17 @@ class TransferViewModel @Inject constructor(
     private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
     val page: StateFlow<Int> = _page.asStateFlow()
 
-    val unreadTransfers: StateFlow<List<String>> =
+    val unreadTransfers: StateFlow<List<Int>> =
         userTransferRepository.observeTransfers()
             .map { transfers ->
-                transfers.filter { !it.hasBeenViewed }.map { it.id.toString() }
+                transfers.filter { !it.hasBeenViewed }.map { it.id }
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = arrayListOf(),
             )
 
-    val selectedTransferId: StateFlow<String?> =
+    val selectedTransferId: StateFlow<Int?> =
         savedStateHandle.getStateFlow(SELECTED_TRANSFER_ID_KEY, initialValue = null)
 
     val transfersCount = userTransferRepository.observeTransferCount().stateIn(
@@ -80,15 +80,15 @@ class TransferViewModel @Inject constructor(
             initialValue = false,
         )
 
-    fun updateTransferResourceSaved(transferResourceId: String, isChecked: Boolean) {
+    fun updateTransferResourceSaved(transferResourceId: Int, isChecked: Boolean) {
         viewModelScope.launch {
-            transferResourceId.toIntOrNull()?.let { userDataRepository.setTransferBookmarked(it, isChecked) }
+            userDataRepository.setTransferBookmarked(transferResourceId, isChecked)
         }
     }
 
-    fun setTransferResourcesViewed(transferResourceIds: List<String>, viewed: Boolean) {
+    fun setTransferResourcesViewed(transferResourceIds: List<Int>, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setTransfersViewed(transferResourceIds.mapNotNull(String::toIntOrNull), viewed)
+            userDataRepository.setTransfersViewed(transferResourceIds, viewed)
         }
     }
 
@@ -100,7 +100,7 @@ class TransferViewModel @Inject constructor(
         }
     }
 
-    fun onTransferClick(transferId: String?) {
+    fun onTransferClick(transferId: Int?) {
         savedStateHandle[SELECTED_TRANSFER_ID_KEY] = transferId
     }
 

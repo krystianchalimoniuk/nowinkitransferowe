@@ -66,32 +66,32 @@ class BookmarksViewModel @Inject constructor(
                 initialValue = TransferFeedUiState.Loading,
             )
 
-    fun removeFromSavedNewsResources(newsResourceId: String) {
+    fun removeFromSavedNewsResources(newsResourceId: Int) {
         viewModelScope.launch {
             shouldDisplayUndoNewsBookmark = true
             lastRemovedNewsBookmark = BookmarkElement.News(newsResourceId)
-            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, false) }
+            userDataRepository.setArticleBookmarked(newsResourceId, false)
         }
     }
 
-    fun removeFromSavedTransferResources(transferResourceId: String) {
+    fun removeFromSavedTransferResources(transferResourceId: Int) {
         viewModelScope.launch {
             shouldDisplayUndoNewsBookmark = true
             lastRemovedNewsBookmark = BookmarkElement.Transfer(transferResourceId)
-            transferResourceId.toIntOrNull()?.let { userDataRepository.setTransferBookmarked(it, false) }
+            userDataRepository.setTransferBookmarked(transferResourceId, false)
         }
     }
 
-    fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
+    fun setNewsResourceViewed(newsResourceId: Int, viewed: Boolean) {
         viewModelScope.launch {
-            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleViewed(it, viewed) }
+            userDataRepository.setArticleViewed(newsResourceId, viewed)
         }
     }
 
-    fun setTransferResourceViewed(transferResourceIds: List<String>, viewed: Boolean) {
+    fun setTransferResourceViewed(transferResourceIds: List<Int>, viewed: Boolean) {
         viewModelScope.launch {
             transferResourceIds.forEach {
-                it.toIntOrNull()?.let { userDataRepository.setTransferViewed(it, viewed) }
+                userDataRepository.setTransferViewed(it, viewed)
             }
         }
     }
@@ -101,11 +101,11 @@ class BookmarksViewModel @Inject constructor(
             lastRemovedNewsBookmark?.let {
                 when (it) {
                     is BookmarkElement.News -> {
-                        it.id.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, true) }
+                        userDataRepository.setArticleBookmarked(it.id, true)
                     }
 
                     is BookmarkElement.Transfer -> {
-                        it.id.toIntOrNull()?.let { userDataRepository.setTransferBookmarked(it, true) }
+                        userDataRepository.setTransferBookmarked(it.id, true)
                     }
                 }
             }
@@ -127,7 +127,7 @@ sealed interface BookmarkUiState {
     ) : BookmarkUiState
 }
 
-sealed class BookmarkElement(open val id: String) {
-    data class News(override val id: String) : BookmarkElement(id)
-    data class Transfer(override val id: String) : BookmarkElement(id)
+sealed class BookmarkElement(open val id: Int) {
+    data class News(override val id: Int) : BookmarkElement(id)
+    data class Transfer(override val id: Int) : BookmarkElement(id)
 }
