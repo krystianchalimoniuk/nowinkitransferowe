@@ -93,6 +93,8 @@ data class PopulatedTransfer(
     val currentPlayerName: String?,
     @ColumnInfo(name = "player_photo_url")
     val playerPhotoUrl: String?,
+    @ColumnInfo(name = "player_nationality")
+    val playerNationality: String? = null,
     @ColumnInfo(name = "current_from_club_name")
     val currentFromClubName: String?,
     @ColumnInfo(name = "from_club_crest_url")
@@ -109,6 +111,7 @@ fun PopulatedTransfer.asExternalModel() = Transfer(
         id = transfer.playerId ?: 0,
         name = currentPlayerName.orCopy(transfer.playerName),
         photoUrl = playerPhotoUrl,
+        nationality = playerNationality,
     ),
     from = clubRef(transfer.fromClubId, currentFromClubName.orCopy(transfer.fromClubName), fromClubCrestUrl, transfer.fromStatus),
     to = clubRef(transfer.toClubId, currentToClubName.orCopy(transfer.toClubName), toClubCrestUrl, transfer.toStatus),

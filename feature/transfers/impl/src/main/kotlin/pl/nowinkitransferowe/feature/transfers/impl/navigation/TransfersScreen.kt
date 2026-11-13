@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,32 +17,19 @@
 package pl.nowinkitransferowe.feature.transfers.impl.navigation
 
 import androidx.activity.compose.ReportDrawnWhen
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,226 +39,166 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
-import pl.nowinkitransferowe.core.designsystem.component.NtButton
 import pl.nowinkitransferowe.core.designsystem.component.NtOverlayLoadingWheel
+import pl.nowinkitransferowe.core.designsystem.component.NtTextButton
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
-import pl.nowinkitransferowe.core.designsystem.scrollbar.DraggableScrollbar
-import pl.nowinkitransferowe.core.designsystem.scrollbar.rememberDraggableScroller
-import pl.nowinkitransferowe.core.designsystem.scrollbar.scrollbarState
-import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserTransfer
-import pl.nowinkitransferowe.core.ui.DevicePreviews
+import pl.nowinkitransferowe.core.model.Season
+import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
-import pl.nowinkitransferowe.core.ui.TransferFeedUiState
-import pl.nowinkitransferowe.core.ui.UserArticlePreviewParameterProvider
-import pl.nowinkitransferowe.core.ui.transferFeed
+import pl.nowinkitransferowe.core.ui.TransferListItem
 import pl.nowinkitransferowe.feature.transfers.impl.R
 
 @Composable
 fun TransfersRoute(
-    modifier: Modifier = Modifier,
-    viewModel: TransfersViewModel = hiltViewModel(),
     onTransferClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
     highlightSelectedTransfer: Boolean = false,
+    viewModel: TransfersViewModel = hiltViewModel(),
 ) {
-    val feedState by viewModel.feedUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
-    val page by viewModel.page.collectAsStateWithLifecycle()
-    val transfersCounts by viewModel.transfersCount.collectAsStateWithLifecycle()
     val selectedTransferId by viewModel.selectedTransferId.collectAsStateWithLifecycle()
-    val unreadTransfers by viewModel.unreadTransfers.collectAsStateWithLifecycle()
     TransfersScreen(
-        modifier = modifier,
-        unreadTransfers = unreadTransfers,
-        onTransferClick = onTransferClick,
+        uiState = uiState,
         isSyncing = isSyncing,
-        feedState = feedState,
-        highlightSelectedTransfer = highlightSelectedTransfer,
         selectedTransferId = selectedTransferId,
-        onTransferSelected = viewModel::onTransferClick,
-        onTransferSavedChanged = viewModel::updateTransferSaved,
-        onTransferViewed = { viewModel.setTransfersViewed(it, true) },
-        loadNextPage = { viewModel.loadNextPage(page = page, transferCount = transfersCounts) },
+        highlightSelectedTransfer = highlightSelectedTransfer,
+        onSeasonSelected = viewModel::selectSeason,
+        onTopicSelected = viewModel::selectTopic,
+        onTransferClick = { id ->
+            viewModel.onTransferClick(id)
+            viewModel.setTransfersViewed(listOf(id), true)
+            onTransferClick(id)
+        },
+        onMarkAsRead = { viewModel.setTransfersViewed(it, true) },
+        loadNextPage = viewModel::loadNextPage,
+        modifier = modifier,
     )
 }
 
+/**
+ * The transfers of a season as on the website, filtered by league, newest first.
+ */
 @Composable
 internal fun TransfersScreen(
-    modifier: Modifier = Modifier,
-    unreadTransfers: List<Int> = arrayListOf(),
-    onTransferClick: (Int) -> Unit,
+    uiState: TransfersUiState,
     isSyncing: Boolean,
-    feedState: TransferFeedUiState,
-    highlightSelectedTransfer: Boolean = false,
-    selectedTransferId: Int? = null,
-    onTransferSelected: (Int) -> Unit = {},
-    onTransferSavedChanged: (Int, Boolean) -> Unit,
-    onTransferViewed: (List<Int>) -> Unit,
+    onSeasonSelected: (Season) -> Unit,
+    onTopicSelected: (String?) -> Unit,
+    onTransferClick: (Int) -> Unit,
+    onMarkAsRead: (List<Int>) -> Unit,
     loadNextPage: () -> Unit,
+    modifier: Modifier = Modifier,
+    selectedTransferId: Int? = null,
+    highlightSelectedTransfer: Boolean = false,
 ) {
-    val isFeedLoading = feedState is TransferFeedUiState.Loading
+    ReportDrawnWhen { !isSyncing && uiState is TransfersUiState.Success }
+    val listState = rememberLazyListState()
+    TrackScrollJank(scrollableState = listState, stateName = "transfers:feed")
 
-    // This code should be called when the UI is ready for use and relates to Time To Full Display.
-    ReportDrawnWhen { !isSyncing && !isFeedLoading }
-
-    val itemsAvailable = feedItemsSize(feedState)
-
-    val state = rememberLazyStaggeredGridState()
-    val scrollbarState = state.scrollbarState(
-        itemsAvailable = itemsAvailable,
-    )
-    LaunchedEffect(feedState) {
-        snapshotFlow {
-            // Get the index of the last visible item
-            val layoutInfo = state.layoutInfo
-            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index
-            lastVisibleItemIndex
-        }.collectLatest { lastVisibleItemIndex ->
-            if (lastVisibleItemIndex != null && lastVisibleItemIndex >= itemsAvailable - 1) {
-                loadNextPage()
-            }
-        }
+    LaunchedEffect(uiState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index to listState.layoutInfo.totalItemsCount }
+            .collectLatest { (last, total) -> if (last != null && last >= total - 3) loadNextPage() }
     }
-    TrackScrollJank(scrollableState = state, stateName = "transfers:feed")
 
-    Box(
-        modifier = modifier
-            .fillMaxSize(),
-    ) {
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(300.dp),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalItemSpacing = 24.dp,
-            modifier = Modifier
-                .testTag("transfers:feed"),
-            state = state,
-        ) {
-            item {
-                AnimatedVisibility(visible = unreadTransfers.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier.padding(end = 16.dp),
-                        horizontalAlignment = Alignment.End,
-                    ) {
-                        NtButton(
-                            onClick = { onTransferViewed(unreadTransfers) },
-                            text = { Text(stringResource(R.string.feature_transfers_impl_mark_as_read)) },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = NtIcons.MarkAsRead,
-                                    contentDescription = "Mark all as read",
-                                )
-                            },
+    Box(modifier.fillMaxSize()) {
+        if (uiState is TransfersUiState.Success) {
+            LazyColumn(
+                state = listState,
+                contentPadding = PaddingValues(bottom = 16.dp),
+                modifier = Modifier
+                    .widthIn(max = 720.dp)
+                    .fillMaxSize()
+                    .align(Alignment.TopCenter)
+                    .testTag("transfers:feed"),
+            ) {
+                item(key = "leagues") { LeagueChips(uiState.leagues, uiState.topic, onTopicSelected) }
+                item(key = "seasons") { SeasonChips(uiState.seasons, uiState.season, onSeasonSelected) }
+                val unread = uiState.transfers.filterNot { it.hasBeenViewed }.map { it.id }
+                if (unread.isNotEmpty()) {
+                    item(key = "markAsRead") {
+                        Box(Modifier.padding(horizontal = 8.dp)) {
+                            NtTextButton(onClick = { onMarkAsRead(unread) }) {
+                                Icon(NtIcons.MarkAsRead, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
+                                Text(stringResource(R.string.feature_transfers_impl_mark_as_read))
+                            }
+                        }
+                    }
+                }
+                if (uiState.transfers.isEmpty()) {
+                    item(key = "empty") {
+                        Text(
+                            stringResource(R.string.feature_transfers_impl_empty),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(32.dp),
                         )
                     }
                 }
-            }
-            transferFeed(
-                feedState = feedState,
-                selectedTransferId = selectedTransferId,
-                highlightSelectedTransfer = highlightSelectedTransfer,
-                onTransferSelected = onTransferSelected,
-                onTransferSavedChanged = onTransferSavedChanged,
-                onTransferViewed = onTransferViewed,
-                onTransferClick = onTransferClick,
-            )
-
-            item(span = StaggeredGridItemSpan.FullLine, contentType = "bottomSpacing") {
-                Column {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    // Add space for the content to clear the "offline" snackbar.
-                    // TODO: Check that the Scaffold handles this correctly in NtApp
-                    // if (isOffline) Spacer(modifier = Modifier.height(48.dp))
-                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+                items(uiState.transfers, key = { it.id }, contentType = { "transfer" }) { transfer ->
+                    TransferListItem(
+                        transfer = transfer,
+                        onClick = { onTransferClick(transfer.id) },
+                        selected = highlightSelectedTransfer && transfer.id == selectedTransferId,
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                    )
                 }
             }
         }
-        AnimatedVisibility(
-            visible = isSyncing || isFeedLoading,
-            enter = slideInVertically(
-                initialOffsetY = { fullHeight -> -fullHeight },
-            ) + fadeIn(),
-            exit = slideOutVertically(
-                targetOffsetY = { fullHeight -> -fullHeight },
-            ) + fadeOut(),
-        ) {
-            val loadingContentDescription = stringResource(id = R.string.feature_transfers_impl_loading)
-            Box(
+        if (isSyncing || uiState is TransfersUiState.Loading) {
+            NtOverlayLoadingWheel(
+                contentDesc = stringResource(R.string.feature_transfers_impl_loading),
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
                     .padding(top = 8.dp),
-            ) {
-                NtOverlayLoadingWheel(
-                    modifier = Modifier
-                        .align(Alignment.Center),
-                    contentDesc = loadingContentDescription,
-                )
-            }
+            )
         }
-        state.DraggableScrollbar(
-            modifier = Modifier
-                .fillMaxHeight()
-                .windowInsetsPadding(WindowInsets.systemBars)
-                .padding(horizontal = 2.dp)
-                .align(Alignment.CenterEnd),
-            state = scrollbarState,
-            orientation = Orientation.Vertical,
-            onThumbMoved = state.rememberDraggableScroller(
-                itemsAvailable = itemsAvailable,
-            ),
-        )
     }
-    TrackScreenViewEvent(screenName = "Transfer")
+    TrackScreenViewEvent(screenName = "Transfers")
 }
 
-private fun feedItemsSize(
-    feedState: TransferFeedUiState,
-): Int {
-    val feedSize = when (feedState) {
-        TransferFeedUiState.Loading -> 0
-        is TransferFeedUiState.Success -> feedState.feed.size
-    }
-
-    return feedSize
-}
-
-@DevicePreviews
 @Composable
-fun TransfersScreenLoading() {
-    NtTheme {
-        TransfersScreen(
-            onTransferClick = {},
-            isSyncing = false,
-            feedState = TransferFeedUiState.Loading,
-            onTransferSavedChanged = { _, _ -> },
-            onTransferViewed = {},
-            loadNextPage = {},
-        )
+private fun LeagueChips(leagues: List<Topic>, selected: String?, onSelected: (String?) -> Unit) {
+    LazyRow(
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        item(key = "all") {
+            FilterChip(
+                selected = selected == null,
+                onClick = { onSelected(null) },
+                label = { Text(stringResource(R.string.feature_transfers_impl_all_leagues)) },
+            )
+        }
+        items(leagues, key = { it.slug }) { league ->
+            FilterChip(
+                selected = league.slug == selected,
+                onClick = { onSelected(if (league.slug == selected) null else league.slug) },
+                label = { Text(league.name) },
+            )
+        }
     }
 }
 
-@DevicePreviews
 @Composable
-fun TransfersScreenPopulatedAndLoading(
-    @PreviewParameter(UserArticlePreviewParameterProvider::class)
-    userTransfers: List<UserTransfer>,
-) {
-    NtTheme {
-        TransfersScreen(
-            onTransferClick = {},
-            isSyncing = true,
-            feedState = TransferFeedUiState.Success(
-                feed = userTransfers,
-            ),
-            onTransferSavedChanged = { _, _ -> },
-            onTransferViewed = {},
-            loadNextPage = {},
-        )
+private fun SeasonChips(seasons: List<Season>, selected: Season, onSelected: (Season) -> Unit) {
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items(seasons, key = { it.startYear }) { season ->
+            FilterChip(
+                selected = season == selected,
+                onClick = { onSelected(season) },
+                label = { Text(season.label) },
+            )
+        }
     }
 }

@@ -22,7 +22,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
+import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.TransferDetailsNavKey
+import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
 import pl.nowinkitransferowe.feature.transferdetails.impl.TransferDetailsRoute
 import pl.nowinkitransferowe.feature.transferdetails.impl.TransferDetailsViewModel
 
@@ -34,6 +36,8 @@ fun EntryProviderScope<NavKey>.transferDetailsEntry(navigator: Navigator) {
         TransferDetailsRoute(
             showBackButton = true,
             onBackClick = { navigator.goBack() },
+            onArticleClick = navigator::navigateToArticle,
+            onTransferClick = navigator::navigateToTransfer,
             viewModel = hiltViewModel<TransferDetailsViewModel, TransferDetailsViewModel.Factory>(
                 key = key.transferId.toString(),
             ) { factory ->

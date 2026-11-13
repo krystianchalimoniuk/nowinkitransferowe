@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,95 +17,75 @@
 package pl.nowinkitransferowe.feature.transferdetails.impl
 
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import org.junit.Rule
 import org.junit.Test
+import pl.nowinkitransferowe.core.testing.data.playersTestData
 import pl.nowinkitransferowe.core.testing.data.userTransfersTestData
+import kotlin.test.assertEquals
 
 class TransferDetailsScreenTest {
-    @get:Rule(order = 1)
+    @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
+    private val fabianski = userTransfersTestData.filter { it.player.id == 832 }
+    private val state = TransferDetailsUiState.Success(transfer = fabianski.first(), player = null, history = fabianski)
+
     @Test
-    fun circularProgressIndicator_whenScreenIsLoading_exists() {
-        composeTestRule.setContent {
-            TransferDetailsScreen(
-                detailsTransferUiState = TransferDetailsUiState.Loading,
-                showBackButton = true,
-                onBackClick = {},
-            )
-        }
+    fun loadingWheelIsShownWhileTheTransferLoads() {
+        composeTestRule.setContent { Screen(TransferDetailsUiState.Loading) }
 
         composeTestRule
-            .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_transfer_details_impl_loading),
-            )
+            .onNodeWithContentDescription(composeTestRule.activity.getString(R.string.feature_transfer_details_impl_loading))
             .assertExists()
     }
 
     @Test
-    fun feed_whenLoaded_showsDetailsScreen() {
-        composeTestRule.setContent {
-            TransferDetailsScreen(
-                detailsTransferUiState = TransferDetailsUiState.Success(
-                    userTransfer = userTransfersTestData,
-                    dataPoints = arrayListOf(
-                        DataPoint(date = "paź 22", price = 0.0f, bitmap = null),
-                    ),
-                ),
-                showBackButton = true,
-                onBackClick = {},
-            )
-        }
+    fun playerRouteFactsAndHistoryAreShown() {
+        composeTestRule.setContent { Screen(state) }
 
-        composeTestRule
-            .onNodeWithText(
-                userTransfersTestData[0].player.name,
-                substring = true,
-            )
-            .assertExists()
+        composeTestRule.onNodeWithText(fabianski.first().player.name.uppercase()).assertExists()
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.feature_transfer_details_impl_history)).assertExists()
+        composeTestRule.onNodeWithText(fabianski.first().season.label).assertExists()
     }
 
     @Test
-    fun whenEntityExistAndHasMoreThanTwoNonFreeTransfer_calculationsAreCorrect() {
+    fun articleAndOtherTransferClicksAreReported() {
+        var article: Int? = null
+        var transfer: Int? = null
+        val varane = userTransfersTestData.first { it.player.id == 10281 }
         composeTestRule.setContent {
-            TransferDetailsScreen(
-                detailsTransferUiState = TransferDetailsUiState.Success(
-                    userTransfer = arrayListOf(
-                        userTransfersTestData[2],
-                        userTransfersTestData[3],
-                    ),
-                    dataPoints = arrayListOf(
-                        DataPoint(date = "lip 24", price = 2.0f, bitmap = null),
-                        DataPoint(date = "lip 24", price = 1.0f, bitmap = null),
-                    ),
-                ),
-                showBackButton = true,
-                onBackClick = {},
+            Screen(
+                TransferDetailsUiState.Success(varane, playersTestData.first(), history = listOf(varane, fabianski.last())),
+                onArticleClick = { article = it },
+                onTransferClick = { transfer = it },
             )
         }
 
-        composeTestRule
-            .onNodeWithText(
-                "3.0 mln €",
-                substring = true,
-            )
-            .assertExists()
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.feature_transfer_details_impl_article)).performClick()
+        composeTestRule.onNodeWithText(fabianski.last().player.name).performClick()
 
-        composeTestRule
-            .onNodeWithText(
-                "Wartość transferów",
-                substring = true,
-            )
-            .assertExists()
+        assertEquals(varane.articleId, article)
+        assertEquals(fabianski.last().id, transfer)
+    }
 
-        composeTestRule
-            .onNodeWithText(
-                "Najwyższy transfer:\n2.0 mln €",
-                substring = true,
-            )
-            .assertExists()
+    @Composable
+    private fun Screen(
+        uiState: TransferDetailsUiState,
+        onArticleClick: (Int) -> Unit = {},
+        onTransferClick: (Int) -> Unit = {},
+    ) {
+        TransferDetailsScreen(
+            uiState = uiState,
+            showBackButton = true,
+            onBackClick = {},
+            onBookmarkChanged = { _, _ -> },
+            onArticleClick = onArticleClick,
+            onTransferClick = onTransferClick,
+        )
     }
 }

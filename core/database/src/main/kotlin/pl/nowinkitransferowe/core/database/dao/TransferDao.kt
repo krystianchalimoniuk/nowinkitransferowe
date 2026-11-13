@@ -44,7 +44,7 @@ interface TransferDao {
     @Query(
         """
         SELECT t.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
+            p.name AS current_player_name, p.photo_url AS player_photo_url, p.nationality AS player_nationality,
             fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
             tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
         FROM transfers t
@@ -56,11 +56,11 @@ interface TransferDao {
     )
     fun observeTransfer(id: Int): Flow<PopulatedTransfer?>
 
-    /** Newest transfers, optionally of one season (its start year). */
+    /** Newest transfers, optionally of one season (its start year) and to or from a club of a league [topic]. */
     @Query(
         """
         SELECT t.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
+            p.name AS current_player_name, p.photo_url AS player_photo_url, p.nationality AS player_nationality,
             fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
             tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
         FROM transfers t
@@ -68,16 +68,17 @@ interface TransferDao {
         LEFT JOIN clubs fc ON fc.id = t.from_club_id
         LEFT JOIN clubs tc ON tc.id = t.to_club_id
         WHERE (:season IS NULL OR t.season = :season)
+            AND (:topic IS NULL OR fc.topic = :topic OR tc.topic = :topic)
         ORDER BY t.date DESC, t.id DESC
         LIMIT :limit
         """,
     )
-    fun observeTransfers(season: Int? = null, limit: Int = Int.MAX_VALUE): Flow<List<PopulatedTransfer>>
+    fun observeTransfers(season: Int? = null, topic: String? = null, limit: Int = Int.MAX_VALUE): Flow<List<PopulatedTransfer>>
 
     @Query(
         """
         SELECT t.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
+            p.name AS current_player_name, p.photo_url AS player_photo_url, p.nationality AS player_nationality,
             fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
             tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
         FROM transfers t
@@ -93,7 +94,7 @@ interface TransferDao {
     @Query(
         """
         SELECT t.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
+            p.name AS current_player_name, p.photo_url AS player_photo_url, p.nationality AS player_nationality,
             fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
             tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
         FROM transfers t
@@ -109,7 +110,7 @@ interface TransferDao {
     @Query(
         """
         SELECT t.*,
-            p.name AS current_player_name, p.photo_url AS player_photo_url,
+            p.name AS current_player_name, p.photo_url AS player_photo_url, p.nationality AS player_nationality,
             fc.name AS current_from_club_name, fc.crest_url AS from_club_crest_url,
             tc.name AS current_to_club_name, tc.crest_url AS to_club_crest_url
         FROM transfers t

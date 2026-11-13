@@ -51,7 +51,7 @@ internal class OfflineFirstTransferRepository @Inject constructor(
 
     override fun observeTransfer(id: Int): Flow<Transfer?> = transferDao.observeTransfer(id).map { it?.asExternalModel() }
 
-    override fun observeTransfers(season: Season?, limit: Int): Flow<List<Transfer>> = transferDao.observeTransfers(season?.startYear, limit).map { it.map(PopulatedTransfer::asExternalModel) }
+    override fun observeTransfers(season: Season?, topic: String?, limit: Int): Flow<List<Transfer>> = transferDao.observeTransfers(season?.startYear, topic, limit).map { it.map(PopulatedTransfer::asExternalModel) }
 
     override fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>> = transferDao.observeTransfersByIds(ids).map { it.map(PopulatedTransfer::asExternalModel) }
 

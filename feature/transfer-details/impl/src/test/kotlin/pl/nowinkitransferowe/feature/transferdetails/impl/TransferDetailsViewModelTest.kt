@@ -17,69 +17,83 @@
 package pl.nowinkitransferowe.feature.transferdetails.impl
 
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
-import pl.nowinkitransferowe.core.model.mapToUserTransfers
+import pl.nowinkitransferowe.core.testing.data.playersTestData
 import pl.nowinkitransferowe.core.testing.data.transfersTestData
+import pl.nowinkitransferowe.core.testing.repository.TestPlayerRepository
 import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
-import pl.nowinkitransferowe.core.testing.util.TestImageDownloader
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNull
 
-@RunWith(RobolectricTestRunner::class)
 class TransferDetailsViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val userDataRepository = TestUserDataRepository()
     private val transferRepository = TestTransferRepository()
+    private val playerRepository = TestPlayerRepository()
 
-    private lateinit var viewModel: TransferDetailsViewModel
+    private fun viewModel(transferId: Int) = TransferDetailsViewModel(
+        userDataRepository = userDataRepository,
+        userTransferRepository = CompositeUserTransferRepository(transferRepository, userDataRepository),
+        playerRepository = playerRepository,
+        transferId = transferId,
+    )
 
     @Before
     fun setup() {
         userDataRepository.setUserData(emptyUserData)
-        viewModel = TransferDetailsViewModel(
-            userDataRepository = userDataRepository,
-            userTransferRepository = CompositeUserTransferRepository(transferRepository, userDataRepository),
-            imageDownloader = TestImageDownloader(),
-            transferId = transfersTestData.first().id,
-        )
+        playerRepository.sendPlayers(playersTestData)
     }
 
     @Test
-    fun stateIsInitiallyLoading() = runTest {
-        assertEquals(TransferDetailsUiState.Loading, viewModel.detailsTransferUiState.value)
+    fun stateIsLoadingUntilTheTransferIsSynced() = runTest {
+        val viewModel = viewModel(19580)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        transferRepository.sendTransfers(emptyList())
+
+        assertEquals(TransferDetailsUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun whenEntityExist_uiStateHasEveryTransferOfThePlayer() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.detailsTransferUiState.collect() }
+    fun transferHistoryOfThePlayerAndViewedMark() = runTest {
+        val viewModel = viewModel(19580)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
         transferRepository.sendTransfers(transfersTestData)
 
-        // Łukasz Fabiański: 19580 (free, 2026) and 15000 (8 mln €, 2018); both are now viewed.
-        val playerTransfers = transfersTestData.filter { it.player.id == 832 }
-        val expected = TransferDetailsUiState.Success(
-            userTransfer = playerTransfers.mapToUserTransfers(
-                emptyUserData.copy(viewedTransfers = setOf(19580, 15000)),
-            ),
-            dataPoints = playerTransfers.sortedBy { it.date }.map {
-                DataPoint(
-                    date = Util.shortcutDate(Util.dateFormatted(it.date)),
-                    price = Util.priceToFloat(it.fee.label),
-                    bitmap = null,
-                )
-            },
-        )
-        assertEquals(expected = expected, actual = viewModel.detailsTransferUiState.value)
+        val state = assertIs<TransferDetailsUiState.Success>(viewModel.uiState.value)
+        assertEquals(19580, state.transfer.id)
+        assertEquals(listOf(19580, 15000), state.history.map { it.id })
+        // Łukasz Fabiański is not among the synced players.
+        assertNull(state.player)
+        assertEquals(setOf(19580), userDataRepository.userData.first().viewedTransfers)
+    }
+
+    @Test
+    fun syncedPlayerIsShown() = runTest {
+        val viewModel = viewModel(14999)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        transferRepository.sendTransfers(transfersTestData)
+
+        val state = assertIs<TransferDetailsUiState.Success>(viewModel.uiState.value)
+        assertEquals("Raphael Varane", state.player?.name)
+    }
+
+    @Test
+    fun bookmarkingSavesTheTransfer() = runTest {
+        viewModel(19580).bookmarkTransfer(19580, true)
+
+        assertEquals(setOf(19580), userDataRepository.userData.first().bookmarkedTransfers)
     }
 }

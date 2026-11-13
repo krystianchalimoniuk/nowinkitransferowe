@@ -33,8 +33,14 @@ class TestTransferRepository : TransferRepository {
 
     override fun observeTransfer(id: Int): Flow<Transfer?> = transfersFlow.map { transfers -> transfers.find { it.id == id } }
 
-    override fun observeTransfers(season: Season?, limit: Int): Flow<List<Transfer>> = transfersFlow.map { transfers ->
-        transfers.filter { season == null || it.season == season }.take(limit)
+    /** League of each club for the [topic] filter; clubs not in it are in no league. */
+    var clubTopics: Map<Int, String> = emptyMap()
+
+    override fun observeTransfers(season: Season?, topic: String?, limit: Int): Flow<List<Transfer>> = transfersFlow.map { transfers ->
+        transfers
+            .filter { season == null || it.season == season }
+            .filter { transfer -> topic == null || listOf(transfer.from, transfer.to).any { it is ClubRef.Club && clubTopics[it.id] == topic } }
+            .take(limit)
     }
 
     override fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>> = transfersFlow.map { transfers -> transfers.filter { it.id in ids } }
