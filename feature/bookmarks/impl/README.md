@@ -26,10 +26,6 @@ graph TB
       direction TB
       :feature:transfer-details:api[api]:::android-library
     end
-    subgraph :feature:search
-      direction TB
-      :feature:search:api[api]:::android-library
-    end
   end
   subgraph :core
     direction TB
@@ -71,9 +67,7 @@ graph TB
   :feature:bookmarks:impl -.-> :core:ui
   :feature:bookmarks:impl -.-> :feature:article-details:api
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
-  :feature:bookmarks:impl -.-> :feature:search:api
   :feature:bookmarks:impl -.-> :feature:transfer-details:api
-  :feature:search:api --> :core:navigation
   :feature:transfer-details:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
