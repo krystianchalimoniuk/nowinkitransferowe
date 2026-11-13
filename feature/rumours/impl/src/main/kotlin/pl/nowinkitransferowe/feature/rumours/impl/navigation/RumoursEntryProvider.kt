@@ -24,6 +24,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
+import pl.nowinkitransferowe.feature.club.api.navigation.navigateToClub
 import pl.nowinkitransferowe.feature.rumours.api.navigation.RumourNavKey
 import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
 import pl.nowinkitransferowe.feature.rumours.api.navigation.navigateToRumour
@@ -54,6 +55,7 @@ fun EntryProviderScope<NavKey>.rumourEntry(navigator: Navigator) {
             onBackClick = { navigator.goBack() },
             onArticleClick = navigator::navigateToArticle,
             onTransferClick = navigator::navigateToTransfer,
+            onClubClick = navigator::navigateToClub,
             viewModel = hiltViewModel<RumourViewModel, RumourViewModel.Factory>(
                 key = key.rumourId.toString(),
             ) { factory ->

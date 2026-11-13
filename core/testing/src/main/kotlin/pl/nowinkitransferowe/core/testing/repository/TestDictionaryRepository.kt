@@ -39,4 +39,8 @@ class TestDictionaryRepository : DictionaryRepository {
     fun sendTopics(topics: List<Topic>) {
         this.topics.value = topics
     }
+
+    fun sendCountries(countries: List<Country>) {
+        this.countries.value = countries
+    }
 }

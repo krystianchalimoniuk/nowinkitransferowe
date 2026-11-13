@@ -23,6 +23,7 @@ import dagger.hilt.testing.TestInstallIn
 import pl.nowinkitransferowe.core.data.di.DataModule
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.ClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
@@ -40,6 +41,7 @@ import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.data.test.repository.FakeArticleRepository
 import pl.nowinkitransferowe.data.test.repository.FakeClubRepository
+import pl.nowinkitransferowe.data.test.repository.FakeClubSeasonsRepository
 import pl.nowinkitransferowe.data.test.repository.FakeDictionaryRepository
 import pl.nowinkitransferowe.data.test.repository.FakePlayerRepository
 import pl.nowinkitransferowe.data.test.repository.FakeRecentSearchRepository
@@ -93,6 +95,9 @@ internal interface TestDataModule {
 
     @Binds
     fun bindsClubRepository(repository: FakeClubRepository): ClubRepository
+
+    @Binds
+    fun bindsClubSeasonsRepository(repository: FakeClubSeasonsRepository): ClubSeasonsRepository
 
     @Binds
     fun bindsPlayerRepository(repository: FakePlayerRepository): PlayerRepository

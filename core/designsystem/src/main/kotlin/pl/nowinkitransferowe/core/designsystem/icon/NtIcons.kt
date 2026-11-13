@@ -45,9 +45,11 @@ import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DoneAll
+import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material.icons.rounded.Grid3x3
 import androidx.compose.material.icons.rounded.Handshake
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Language
@@ -59,6 +61,7 @@ import androidx.compose.material.icons.rounded.PrivacyTip
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.Stadium
 import androidx.compose.material.icons.rounded.SwapHoriz
 import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material.icons.rounded.Upcoming
@@ -105,7 +108,10 @@ object NtIcons {
     val MarkAsRead = Icons.Rounded.DoneAll
     val Article = Icons.AutoMirrored.Rounded.Article
     val ArrowDropDown = Icons.Rounded.ArrowDropDown
+    val EmojiEvents = Icons.Rounded.EmojiEvents
     val Forum = Icons.Rounded.Forum
+    val History = Icons.Rounded.History
+    val Stadium = Icons.Rounded.Stadium
     val Handshake = Icons.Rounded.Handshake
     val TrendingUp = Icons.AutoMirrored.Rounded.TrendingUp
     val Visibility = Icons.Rounded.Visibility

@@ -79,6 +79,7 @@ import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.articles.impl.navigation.articlesEntry
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.LocalSnackbarHostState
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.bookmarksEntry
+import pl.nowinkitransferowe.feature.club.impl.navigation.clubEntry
 import pl.nowinkitransferowe.feature.leagues.impl.navigation.leaguesEntry
 import pl.nowinkitransferowe.feature.rumours.impl.RumourPlaceholder
 import pl.nowinkitransferowe.feature.rumours.impl.navigation.rumourEntry
@@ -270,6 +271,7 @@ internal fun NtAppContent(
                         transfersEntry(navigator, detailPlaceholder = { TransferDetailsPlaceholder() })
                         rumoursEntry(navigator, detailPlaceholder = { RumourPlaceholder() })
                         rumourEntry(navigator)
+                        clubEntry(navigator)
                         leaguesEntry()
                         bookmarksEntry(navigator)
                         articleDetailsEntry(navigator)

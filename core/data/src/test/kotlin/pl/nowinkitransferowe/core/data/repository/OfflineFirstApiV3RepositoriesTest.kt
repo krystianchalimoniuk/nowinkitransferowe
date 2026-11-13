@@ -280,4 +280,16 @@ class OfflineFirstApiV3RepositoriesTest {
         assertFalse(stats.refresh())
         assertEquals(saved, stats.observeRumourStats().first())
     }
+
+    @Test
+    fun club_seasons_are_saved_even_before_the_club_is_synced() = runTest {
+        val seasons = OfflineFirstClubSeasonsRepository(db.statsDao(), db.clubDao(), network)
+
+        assertTrue(seasons.refresh(1298))
+
+        val saved = seasons.observeClubSeasons(1298).first()
+        assertEquals(listOf(Season(2026)), saved.map { it.season })
+        assertEquals(64.5, saved.single().spent)
+        assertEquals(listOf(20540), saved.single().arrivals)
+    }
 }

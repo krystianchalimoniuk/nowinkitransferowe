@@ -44,6 +44,8 @@ class CompositeUserTransferRepository @Inject constructor(
         .withUserData()
         .map { it.firstOrNull() }
 
+    override fun observeTransfersOfClub(clubId: Int): Flow<List<UserTransfer>> = transferRepository.observeTransfersOfClub(clubId).withUserData()
+
     override fun observeTransfersOfPlayer(playerId: Int): Flow<List<UserTransfer>> = transferRepository.observeTransfersOfPlayer(playerId).withUserData()
 
     override fun observeBookmarked(): Flow<List<UserTransfer>> = userDataRepository.userData
