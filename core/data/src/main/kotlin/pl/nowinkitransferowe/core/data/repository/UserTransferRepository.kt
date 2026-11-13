@@ -30,6 +30,9 @@ interface UserTransferRepository {
     fun observeTransfer(id: Int): Flow<UserTransfer?>
 
     /** Every transfer of the player with [playerId], newest first. */
+    /** Transfers to or from the club with [clubId], newest first. */
+    fun observeTransfersOfClub(clubId: Int): Flow<List<UserTransfer>>
+
     fun observeTransfersOfPlayer(playerId: Int): Flow<List<UserTransfer>>
 
     fun observeBookmarked(): Flow<List<UserTransfer>>

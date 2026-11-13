@@ -32,6 +32,7 @@ import pl.nowinkitransferowe.core.data.model.tagEntities
 import pl.nowinkitransferowe.core.data.model.topicEntities
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.ClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
@@ -45,6 +46,7 @@ import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.ArticleKind
 import pl.nowinkitransferowe.core.model.Club
 import pl.nowinkitransferowe.core.model.ClubRef
+import pl.nowinkitransferowe.core.model.ClubSeason
 import pl.nowinkitransferowe.core.model.Country
 import pl.nowinkitransferowe.core.model.HotClub
 import pl.nowinkitransferowe.core.model.Player
@@ -247,12 +249,21 @@ class FakeRumourRepository @Inject constructor(
     override suspend fun syncWith(synchronizer: Synchronizer) = true
 }
 
-class FakeClubRepository @Inject constructor() : ClubRepository {
-    override fun observeClub(id: Int): Flow<Club?> = flowOf(null)
+class FakeClubRepository @Inject constructor(
+    private val datasource: DemoNtNetworkDataSource,
+) : ClubRepository {
+    private val clubs: Flow<List<Club>> = flow {
+        emit(datasource.getClubs(allIds(datasource, NetworkRecordType.CLUBS)).map { it.asEntity().asExternalModel() })
+    }
 
-    override fun observeClubs(ids: Set<Int>): Flow<List<Club>> = flowOf(emptyList())
+    override fun observeClub(id: Int): Flow<Club?> = clubs.map { list -> list.find { it.id == id } }
 
-    override suspend fun getClubBySlug(slug: String): Club? = null
+    override fun observeClubs(ids: Set<Int>): Flow<List<Club>> = clubs.map { list -> list.filter { it.id in ids }.sortedBy(Club::name) }
+
+    override suspend fun getClubBySlug(slug: String): Club? = datasource.getClubs(allIds(datasource, NetworkRecordType.CLUBS))
+        .find { it.slug == slug }
+        ?.asEntity()
+        ?.asExternalModel()
 
     override suspend fun syncWith(synchronizer: Synchronizer) = true
 }
@@ -289,4 +300,26 @@ class FakeRumourStatsRepository @Inject constructor(
     }
 
     override suspend fun refresh() = true
+}
+
+/** The demo seasons of the clubs, as the server would count them. */
+class FakeClubSeasonsRepository @Inject constructor(
+    private val datasource: DemoNtNetworkDataSource,
+) : ClubSeasonsRepository {
+    override fun observeClubSeasons(clubId: Int): Flow<List<ClubSeason>> = flow {
+        emit(
+            datasource.getClubSeasons(clubId).seasons.mapNotNull { season ->
+                ClubSeason(
+                    season = Season.parse(season.season) ?: return@mapNotNull null,
+                    spent = season.spent,
+                    earned = season.earned,
+                    balance = season.balance,
+                    arrivals = season.arrivals,
+                    departures = season.departures,
+                )
+            },
+        )
+    }
+
+    override suspend fun refresh(clubId: Int) = true
 }

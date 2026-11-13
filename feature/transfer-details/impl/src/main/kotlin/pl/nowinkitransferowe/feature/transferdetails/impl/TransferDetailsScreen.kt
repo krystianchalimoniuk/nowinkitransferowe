@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.feature.transferdetails.impl
 
 import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -74,6 +76,7 @@ internal fun TransferDetailsRoute(
     onBackClick: () -> Unit,
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
+    onClubClick: (Int) -> Unit = {},
     viewModel: TransferDetailsViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -86,6 +89,7 @@ internal fun TransferDetailsRoute(
         onBookmarkChanged = viewModel::bookmarkTransfer,
         onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
+        onClubClick = onClubClick,
         modifier = modifier,
     )
 }
@@ -102,6 +106,7 @@ internal fun TransferDetailsScreen(
     onBookmarkChanged: (Int, Boolean) -> Unit,
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
+    onClubClick: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
@@ -130,7 +135,7 @@ internal fun TransferDetailsScreen(
                         BookmarkButton(transfer.isSaved, onClick = { onBookmarkChanged(transfer.id, !transfer.isSaved) })
                     }
                     PlayerHeader(transfer, uiState.player)
-                    RouteCard(transfer.from, transfer.to, transfer)
+                    RouteCard(transfer.from, transfer.to, transfer, onClubClick)
                     Facts(transfer)
                     Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         transfer.articleId?.let { articleId ->
@@ -191,26 +196,33 @@ private fun PlayerHeader(transfer: UserTransfer, player: Player?) {
 }
 
 @Composable
-private fun RouteCard(from: ClubRef, to: ClubRef, transfer: UserTransfer) {
+private fun RouteCard(from: ClubRef, to: ClubRef, transfer: UserTransfer, onClubClick: (Int) -> Unit) {
     Card(
         shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
     ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            RouteClub(from, Modifier.weight(1f))
+            RouteClub(from, Modifier.weight(1f), onClubClick)
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Icon(NtIcons.ArrowForward, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
                 FeeLabel(transfer.fee)
             }
-            RouteClub(to, Modifier.weight(1f))
+            RouteClub(to, Modifier.weight(1f), onClubClick)
         }
     }
 }
 
 @Composable
-private fun RouteClub(club: ClubRef, modifier: Modifier) {
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+private fun RouteClub(club: ClubRef, modifier: Modifier, onClubClick: (Int) -> Unit) {
+    Column(
+        modifier
+            .clip(MaterialTheme.shapes.medium)
+            .then(if (club is ClubRef.Club) Modifier.clickable { onClubClick(club.id) } else Modifier)
+            .padding(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
         ClubCrest(club, size = 56.dp)
         Text(
             club.name,

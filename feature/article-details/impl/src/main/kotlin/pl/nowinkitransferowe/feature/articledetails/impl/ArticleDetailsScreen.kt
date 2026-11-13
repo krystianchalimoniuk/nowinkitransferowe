@@ -91,6 +91,7 @@ internal fun ArticleDetailsRoute(
     onTopicClick: (String) -> Unit,
     onArticleLinkClick: (Int) -> Unit,
     onRumourClick: (Rumour) -> Unit,
+    onClubClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ArticleDetailsViewModel,
 ) {
@@ -105,6 +106,7 @@ internal fun ArticleDetailsRoute(
         onBookmarkChanged = viewModel::bookmarkArticle,
         onArticleLinkClick = onArticleLinkClick,
         onRumourClick = onRumourClick,
+        onClubClick = onClubClick,
         darkThemeConfig = darkThemeConfig,
         modifier = modifier.testTag("news:${viewModel.articleId}"),
     )
@@ -127,6 +129,7 @@ internal fun ArticleDetailsScreen(
     modifier: Modifier = Modifier,
     onArticleLinkClick: (Int) -> Unit = {},
     onRumourClick: (Rumour) -> Unit = {},
+    onClubClick: (Int) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     TrackScrollJank(scrollableState = scrollState, stateName = "details:screen")
@@ -161,7 +164,7 @@ internal fun ArticleDetailsScreen(
                 detailsUiState.rumour?.let { rumour ->
                     RumourBox(rumour, onClick = { onRumourClick(rumour) }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                 }
-                AboutChips(detailsUiState.clubs, detailsUiState.players, onOpen = openInBrowser)
+                AboutChips(detailsUiState.clubs, detailsUiState.players, onClubClick = onClubClick, onOpen = openInBrowser)
                 ArticleContent(
                     contentHtml = article.contentHtml,
                     darkTheme = when (darkThemeConfig) {
@@ -282,7 +285,7 @@ private fun RumourBox(rumour: Rumour, onClick: () -> Unit, modifier: Modifier = 
 
 /** Clubs and players the article is about; until their screens exist they open on the website. */
 @Composable
-private fun AboutChips(clubs: List<Club>, players: List<Player>, onOpen: (String) -> Unit) {
+private fun AboutChips(clubs: List<Club>, players: List<Player>, onClubClick: (Int) -> Unit, onOpen: (String) -> Unit) {
     if (clubs.isEmpty() && players.isEmpty()) return
     Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
         Text(
@@ -293,7 +296,7 @@ private fun AboutChips(clubs: List<Club>, players: List<Player>, onOpen: (String
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             clubs.forEach { club ->
                 AssistChip(
-                    onClick = { club.url?.let(onOpen) },
+                    onClick = { onClubClick(club.id) },
                     label = { Text(club.name) },
                     leadingIcon = { NtCrest(imageUrl = club.crestUrl, name = club.name, size = 18.dp) },
                 )

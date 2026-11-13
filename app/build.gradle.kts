@@ -73,6 +73,8 @@ dependencies {
     implementation(projects.feature.articles.impl)
     implementation(projects.feature.transfers.api)
     implementation(projects.feature.transfers.impl)
+    implementation(projects.feature.club.api)
+    implementation(projects.feature.club.impl)
     implementation(projects.feature.rumours.api)
     implementation(projects.feature.rumours.impl)
     implementation(projects.feature.leagues.api)

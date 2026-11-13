@@ -22,6 +22,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.ClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
 import pl.nowinkitransferowe.core.data.repository.DefaultRecentSearchRepository
@@ -29,6 +30,7 @@ import pl.nowinkitransferowe.core.data.repository.DefaultSearchContentsRepositor
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstArticleRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstClubRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstDictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstPlayerRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstRumourRepository
@@ -74,6 +76,11 @@ abstract class DataModule {
     internal abstract fun bindsRumourStatsRepository(
         rumourStatsRepository: OfflineFirstRumourStatsRepository,
     ): RumourStatsRepository
+
+    @Binds
+    internal abstract fun bindsClubSeasonsRepository(
+        clubSeasonsRepository: OfflineFirstClubSeasonsRepository,
+    ): ClubSeasonsRepository
 
     @Binds
     internal abstract fun bindsClubRepository(

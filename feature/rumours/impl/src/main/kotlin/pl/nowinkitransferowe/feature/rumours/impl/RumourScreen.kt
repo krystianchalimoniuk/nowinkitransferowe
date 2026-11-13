@@ -45,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -85,6 +86,7 @@ internal fun RumourRoute(
     onBackClick: () -> Unit,
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
+    onClubClick: (Int) -> Unit = {},
     viewModel: RumourViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -96,6 +98,7 @@ internal fun RumourRoute(
         onBookmarkChanged = viewModel::bookmarkRumour,
         onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
+        onClubClick = onClubClick,
         modifier = modifier,
     )
 }
@@ -112,6 +115,7 @@ internal fun RumourScreen(
     onBookmarkChanged: (Boolean) -> Unit,
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
+    onClubClick: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
@@ -152,7 +156,7 @@ internal fun RumourScreen(
                         }
                     }
                     PlayerHeader(rumour, uiState.player)
-                    Route(rumour.from, rumour.to)
+                    Route(rumour.from, rumour.to, onClubClick)
                     StageCard(rumour)
                     rumour.transferId?.let { transferId ->
                         NtOutlinedButton(
@@ -233,23 +237,30 @@ private fun PlayerHeader(rumour: Rumour, player: Player?) {
 }
 
 @Composable
-private fun Route(from: ClubRef?, to: ClubRef) {
+private fun Route(from: ClubRef?, to: ClubRef, onClubClick: (Int) -> Unit) {
     Card(
         shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
     ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            RouteClub(from, Modifier.weight(1f))
+            RouteClub(from, Modifier.weight(1f), onClubClick)
             Icon(NtIcons.ArrowForward, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
-            RouteClub(to, Modifier.weight(1f))
+            RouteClub(to, Modifier.weight(1f), onClubClick)
         }
     }
 }
 
 @Composable
-private fun RouteClub(club: ClubRef?, modifier: Modifier) {
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+private fun RouteClub(club: ClubRef?, modifier: Modifier, onClubClick: (Int) -> Unit) {
+    Column(
+        modifier
+            .clip(MaterialTheme.shapes.medium)
+            .then(if (club is ClubRef.Club) Modifier.clickable { onClubClick(club.id) } else Modifier)
+            .padding(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
         if (club != null) {
             ClubCrest(club, size = 56.dp)
             Text(club.name, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
