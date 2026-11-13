@@ -66,6 +66,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
 import pl.nowinkitransferowe.core.model.Club
@@ -306,7 +307,7 @@ private fun AboutChips(clubs: List<Club>, players: List<Player>, onClubClick: (I
                 AssistChip(
                     onClick = { onPlayerClick(player.id) },
                     label = { Text(player.name) },
-                    leadingIcon = { NtCrest(imageUrl = player.photoUrl, name = player.name, size = 18.dp) },
+                    leadingIcon = { NtPlayerPhoto(photoUrl = player.photoUrl, name = player.name, size = 18.dp) },
                 )
             }
         }

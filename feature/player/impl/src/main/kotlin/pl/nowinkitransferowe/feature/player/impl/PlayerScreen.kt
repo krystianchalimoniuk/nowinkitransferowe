@@ -65,8 +65,8 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.todayIn
-import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
@@ -222,7 +222,7 @@ private fun Header(state: PlayerUiState.Success) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        NtCrest(imageUrl = player.photoUrl, name = player.name, size = 64.dp)
+        NtPlayerPhoto(photoUrl = player.photoUrl, name = player.name, size = 64.dp)
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(player.name.uppercase(), style = MaterialTheme.typography.headlineMedium.copy(fontStyle = FontStyle.Italic))
             val details = state.countries.map { it.name } + listOfNotNull(player.position)

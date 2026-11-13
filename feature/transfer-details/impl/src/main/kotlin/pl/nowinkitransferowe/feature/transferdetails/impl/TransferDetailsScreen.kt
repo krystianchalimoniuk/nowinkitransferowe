@@ -51,9 +51,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtOutlinedButton
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
@@ -176,7 +176,7 @@ private fun PlayerHeader(transfer: UserTransfer, player: Player?) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        NtCrest(imageUrl = transfer.player.photoUrl, name = transfer.player.name, size = 64.dp)
+        NtPlayerPhoto(photoUrl = transfer.player.photoUrl, name = transfer.player.name, size = 64.dp)
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
                 transfer.player.name.uppercase(),

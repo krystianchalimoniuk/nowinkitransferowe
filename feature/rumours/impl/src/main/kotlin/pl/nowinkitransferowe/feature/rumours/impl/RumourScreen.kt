@@ -58,9 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.datetime.Clock
 import kotlinx.datetime.todayIn
-import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtOutlinedButton
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
@@ -228,7 +228,7 @@ private fun PlayerHeader(rumour: Rumour, player: Player?, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        NtCrest(imageUrl = rumour.player.photoUrl, name = rumour.player.name, size = 64.dp)
+        NtPlayerPhoto(photoUrl = rumour.player.photoUrl, name = rumour.player.name, size = 64.dp)
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
                 rumour.player.name.uppercase(),

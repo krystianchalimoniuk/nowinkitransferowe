@@ -33,7 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import pl.nowinkitransferowe.core.designsystem.component.NtCrest
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
 import pl.nowinkitransferowe.core.model.ClubRef
@@ -51,7 +51,7 @@ fun TransferCarouselCard(
 ) {
     CarouselCard(onClick, modifier) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            NtCrest(imageUrl = transfer.player.photoUrl, name = transfer.player.name, size = 32.dp)
+            NtPlayerPhoto(photoUrl = transfer.player.photoUrl, name = transfer.player.name, size = 32.dp)
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(transfer.player.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 FeeLabel(transfer.fee)
@@ -70,7 +70,7 @@ fun RumourCarouselCard(
 ) {
     CarouselCard(onClick, modifier) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            NtCrest(imageUrl = rumour.player.photoUrl, name = rumour.player.name, size = 32.dp)
+            NtPlayerPhoto(photoUrl = rumour.player.photoUrl, name = rumour.player.name, size = 32.dp)
             Column {
                 Text(rumour.player.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
