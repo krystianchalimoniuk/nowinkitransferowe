@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,25 @@
 package pl.nowinkitransferowe.feature.articles.impl
 
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.hasScrollToNodeAction
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import org.junit.Rule
 import org.junit.Test
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
+import pl.nowinkitransferowe.core.testing.data.topicsTestData
 import pl.nowinkitransferowe.core.testing.data.userArticlesTestData
+import pl.nowinkitransferowe.core.testing.data.userTransfersTestData
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
-import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
+import kotlin.test.assertEquals
 
 class ArticlesScreenTest {
 
@@ -39,142 +45,70 @@ class ArticlesScreenTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
-    @Test
-    fun circularProgressIndicator_whenScreenIsLoading_exists() {
-        composeTestRule.setContent {
-            Box {
-                ArticlesScreen(
-                    isSyncing = false,
-                    feedState = ArticleFeedUiState.Loading,
-                    onArticleClick = {},
-                    onTopicClick = {},
-                    loadNextPage = {},
-                    onArticleSavedChanged = { _, _ -> },
-                    onArticleSelected = {},
-                    onArticleViewed = {},
-                )
-            }
-        }
+    private val state = HomeUiState.Success(
+        tab = HomeTab.ALL,
+        topic = null,
+        topics = topicsTestData,
+        featured = userArticlesTestData.first(),
+        latest = userArticlesTestData.drop(1),
+        transfers = userTransfersTestData,
+        rumours = rumoursTestData,
+        hasMore = false,
+    )
 
-        composeTestRule
-            .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_articles_impl_loading),
-            )
-            .assertExists()
+    @Test
+    fun featuredArticleCarouselsAndLatestAreShown() {
+        composeTestRule.setContent { Screen(state) }
+
+        composeTestRule.onNodeWithText(userArticlesTestData.first().title.uppercase()).assertExists()
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.feature_articles_impl_transfer_window)).assertExists()
+        composeTestRule.onNodeWithTag("news:feed").performScrollToNode(hasText(userArticlesTestData.last().title))
+        composeTestRule.onNodeWithText(userArticlesTestData.last().title).assertExists()
     }
 
     @Test
-    fun circularProgressIndicator_whenScreenIsSyncing_exists() {
-        composeTestRule.setContent {
-            Box {
-                ArticlesScreen(
-                    isSyncing = true,
-                    feedState = ArticleFeedUiState.Success(emptyList()),
-                    onArticleClick = {},
-                    onTopicClick = {},
-                    loadNextPage = {},
-                    onArticleSavedChanged = { _, _ -> },
-                    onArticleSelected = {},
-                    onArticleViewed = {},
-                )
-            }
-        }
+    fun selectedTabIsMarkedAndTabClicksAreReported() {
+        var selected: HomeTab? = null
+        composeTestRule.setContent { Screen(state.copy(tab = HomeTab.RUMOURS), onTabSelected = { selected = it }) }
 
-        composeTestRule
-            .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_articles_impl_loading),
-            )
-            .assertExists()
+        composeTestRule.onNode(tab(R.string.feature_articles_impl_tab_rumours)).assertIsSelected()
+        composeTestRule.onNode(tab(R.string.feature_articles_impl_tab_official)).performClick()
+
+        assertEquals(HomeTab.OFFICIAL, selected)
     }
 
     @Test
-    fun feed_whenLoaded_showsFeed() {
-        composeTestRule.setContent {
-            Box {
-                ArticlesScreen(
-                    isSyncing = false,
-                    feedState = ArticleFeedUiState.Success(feed = userArticlesTestData),
-                    onArticleClick = {},
-                    onTopicClick = {},
-                    loadNextPage = {},
-                    onArticleSavedChanged = { _, _ -> },
-                    onArticleSelected = {},
-                    onArticleViewed = {},
-                )
-            }
-        }
+    fun articleClickReportsItsId() {
+        var clicked: Int? = null
+        composeTestRule.setContent { Screen(state, onArticleClick = { clicked = it }) }
 
-        composeTestRule
-            .onNodeWithText(
-                userArticlesTestData[0].title,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
+        composeTestRule.onNodeWithText(userArticlesTestData.first().title.uppercase()).performClick()
 
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    userArticlesTestData[1].title,
-                    substring = true,
-                ),
-            )
-
-        composeTestRule
-            .onNodeWithText(
-                userArticlesTestData[1].title,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
+        assertEquals(userArticlesTestData.first().id, clicked)
     }
 
-    @Test
-    fun feed_whenLoadNextPageExecuted_showsFeedWithNewItems() {
-        composeTestRule.setContent {
-            Box {
-                ArticlesScreen(
-                    isSyncing = false,
-                    feedState = ArticleFeedUiState.Success(feed = userArticlesTestData),
-                    onArticleClick = {},
-                    onTopicClick = {},
-                    loadNextPage = {},
-                    onArticleSavedChanged = { _, _ -> },
-                    onArticleSelected = {},
-                    onArticleViewed = {},
-                )
-            }
-        }
+    /** A tab with the given label; the rumours section below has the same "Plotki" title. */
+    private fun tab(label: Int) = hasText(composeTestRule.activity.getString(label)) and
+        SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Tab)
 
-        composeTestRule
-            .onNodeWithText(
-                userArticlesTestData[0].title,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
-
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    userArticlesTestData[4].title,
-                    substring = true,
-                ),
-            )
-        composeTestRule.onNode(hasScrollToNodeAction())
-            .performScrollToNode(
-                hasText(
-                    userArticlesTestData[9].title,
-                    substring = true,
-                ),
-            )
-
-        composeTestRule
-            .onNodeWithText(
-                userArticlesTestData[9].title,
-                substring = true,
-            )
-            .assertExists()
-            .assertHasClickAction()
+    @Composable
+    private fun Screen(
+        uiState: HomeUiState,
+        onTabSelected: (HomeTab) -> Unit = {},
+        onArticleClick: (Int) -> Unit = {},
+    ) {
+        ArticlesScreen(
+            uiState = uiState,
+            isSyncing = false,
+            onTabSelected = onTabSelected,
+            onTopicSelected = {},
+            onArticleClick = onArticleClick,
+            onArticleSavedChanged = { _, _ -> },
+            onTransferClick = {},
+            onAllTransfersClick = {},
+            onRumourClick = {},
+            onAllRumoursClick = {},
+            loadNextPage = {},
+        )
     }
 }

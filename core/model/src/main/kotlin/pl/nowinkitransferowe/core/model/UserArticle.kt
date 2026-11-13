@@ -36,10 +36,14 @@ data class UserArticle internal constructor(
     val newsSource: String?,
     val author: Author?,
     val tags: List<String>,
+    val featuredUntil: Instant?,
     val publishedAt: Instant,
     val isSaved: Boolean,
     val hasBeenViewed: Boolean,
 ) {
+    /** Picked by the editors until [featuredUntil]. */
+    fun isFeatured(now: Instant): Boolean = featuredUntil != null && now < featuredUntil
+
     constructor(article: Article, topics: Map<String, Topic>, userData: UserData) : this(
         id = article.id,
         url = article.url,
@@ -54,6 +58,7 @@ data class UserArticle internal constructor(
         newsSource = article.newsSource,
         author = article.author,
         tags = article.tags,
+        featuredUntil = article.featuredUntil,
         publishedAt = article.publishedAt,
         isSaved = article.id in userData.bookmarkedArticles,
         hasBeenViewed = article.id in userData.viewedArticles,

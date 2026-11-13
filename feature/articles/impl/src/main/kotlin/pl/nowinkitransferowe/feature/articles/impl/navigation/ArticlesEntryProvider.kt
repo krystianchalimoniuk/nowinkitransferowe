@@ -25,7 +25,9 @@ import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.articles.impl.ArticlesRoute
-import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
+import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
+import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
+import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.articlesEntry(
@@ -37,7 +39,9 @@ fun EntryProviderScope<NavKey>.articlesEntry(
     ) {
         ArticlesRoute(
             onArticleClick = navigator::navigateToArticle,
-            onTopicClick = navigator::navigateToSearch,
+            onTransferClick = navigator::navigateToTransfer,
+            onAllTransfersClick = { navigator.navigate(TransfersNavKey) },
+            onAllRumoursClick = { navigator.navigate(RumoursNavKey) },
         )
     }
 }

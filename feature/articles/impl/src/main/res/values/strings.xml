@@ -19,7 +19,12 @@
     <string name="feature_articles_impl_done">Gotowane</string>
     <string name="feature_articles_impl_loading">Ładowanie nowinek…</string>
     <string name="feature_articles_impl_navigate_up">Nawiguj wyżej</string>
-    <string name="feature_articles_impl_onboarding_guidance_title">Czym jesteś zainteresowany?</string>
-    <string name="feature_articles_impl_onboarding_guidance_subtitle">Zmiany katogorii, które obserwujesz pojawią się tu. Zacznij obserwować aby coś się pojawiło.</string>
+    <string name="feature_articles_impl_tab_all">Wszystko</string>
+    <string name="feature_articles_impl_tab_official">Oficjalnie</string>
+    <string name="feature_articles_impl_tab_rumours">Plotki</string>
+    <string name="feature_articles_impl_all_topics">Wszystkie</string>
+    <string name="feature_articles_impl_transfer_window">Okno transferowe</string>
+    <string name="feature_articles_impl_rumours">Plotki</string>
+    <string name="feature_articles_impl_latest">Najnowsze</string>
 
 </resources>

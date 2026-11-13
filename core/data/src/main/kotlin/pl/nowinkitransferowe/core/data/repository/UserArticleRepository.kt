@@ -17,14 +17,19 @@
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
+import pl.nowinkitransferowe.core.model.ArticleKind
 import pl.nowinkitransferowe.core.model.UserArticle
 
 /**
  * Articles joined with the user's data and with the names of their topics.
  */
 interface UserArticleRepository {
-    /** The newest [limit] articles. */
-    fun observeArticles(limit: Int = Int.MAX_VALUE): Flow<List<UserArticle>>
+    /** The newest [limit] articles, optionally only of [kinds] and filed under [topic]. */
+    fun observeArticles(
+        kinds: Set<ArticleKind>? = null,
+        topic: String? = null,
+        limit: Int = Int.MAX_VALUE,
+    ): Flow<List<UserArticle>>
 
     fun observeArticle(id: Int): Flow<UserArticle?>
 
