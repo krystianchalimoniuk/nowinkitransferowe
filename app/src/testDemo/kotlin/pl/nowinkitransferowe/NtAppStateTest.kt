@@ -32,12 +32,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import pl.nowinkitransferowe.core.data.repository.CompositeUserNewsResourceRepository
-import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
+import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
+import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
 import pl.nowinkitransferowe.core.navigation.NavigationState
 import pl.nowinkitransferowe.core.navigation.Navigator
-import pl.nowinkitransferowe.core.testing.repository.TestNewsRepository
-import pl.nowinkitransferowe.core.testing.repository.TestTransferResourceRepository
+import pl.nowinkitransferowe.core.testing.repository.TestArticleRepository
+import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
+import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.util.TestNetworkMonitor
 import pl.nowinkitransferowe.core.testing.util.TestTimeZoneMonitor
@@ -67,10 +68,10 @@ class NtAppStateTest {
     private val timeZoneMonitor = TestTimeZoneMonitor()
 
     private val userDataRepository = TestUserDataRepository()
-    private val userNewsResourceRepository =
-        CompositeUserNewsResourceRepository(TestNewsRepository(), userDataRepository)
-    private val userTransferResourceRepository =
-        CompositeUserTransferResourceRepository(TestTransferResourceRepository(), userDataRepository)
+    private val userArticleRepository =
+        CompositeUserArticleRepository(TestArticleRepository(), TestDictionaryRepository(), userDataRepository)
+    private val userTransferRepository =
+        CompositeUserTransferRepository(TestTransferRepository(), userDataRepository)
 
     // Subject under test.
     private lateinit var state: NtAppState
@@ -89,8 +90,8 @@ class NtAppStateTest {
         navigationState = navigationState,
         coroutineScope = coroutineScope,
         networkMonitor = networkMonitor,
-        userNewsResourceRepository = userNewsResourceRepository,
-        userTransferResourceRepository = userTransferResourceRepository,
+        userArticleRepository = userArticleRepository,
+        userTransferRepository = userTransferRepository,
         timeZoneMonitor = timeZoneMonitor,
     )
 
@@ -120,8 +121,8 @@ class NtAppStateTest {
         composeTestRule.setContent {
             state = rememberNtAppState(
                 networkMonitor = networkMonitor,
-                userNewsResourceRepository = userNewsResourceRepository,
-                userTransferResourceRepository = userTransferResourceRepository,
+                userArticleRepository = userArticleRepository,
+                userTransferRepository = userTransferRepository,
                 timeZoneMonitor = timeZoneMonitor,
             )
         }

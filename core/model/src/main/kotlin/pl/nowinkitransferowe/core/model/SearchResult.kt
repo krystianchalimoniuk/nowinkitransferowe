@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package pl.nowinkitransferowe.core.model
 
-/** An entity that holds the search result */
+/** Articles and transfers matching a search query, newest first. */
 data class SearchResult(
-    val transferResources: List<TransferResource> = emptyList(),
-    val newsResources: List<NewsResource> = emptyList(),
+    val articles: List<Article> = emptyList(),
+    val transfers: List<Transfer> = emptyList(),
 )

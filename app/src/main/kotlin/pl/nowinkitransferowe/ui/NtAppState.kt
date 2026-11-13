@@ -28,8 +28,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.TimeZone
-import pl.nowinkitransferowe.core.data.repository.UserNewsResourceRepository
-import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
+import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
+import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.navigation.NavigationState
@@ -43,8 +43,8 @@ import pl.nowinkitransferowe.navigation.TOP_LEVEL_NAV_ITEMS
 @Composable
 fun rememberNtAppState(
     networkMonitor: NetworkMonitor,
-    userNewsResourceRepository: UserNewsResourceRepository,
-    userTransferResourceRepository: UserTransferResourceRepository,
+    userArticleRepository: UserArticleRepository,
+    userTransferRepository: UserTransferRepository,
     timeZoneMonitor: TimeZoneMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): NtAppState {
@@ -59,16 +59,16 @@ fun rememberNtAppState(
         navigationState,
         coroutineScope,
         networkMonitor,
-        userNewsResourceRepository,
-        userTransferResourceRepository,
+        userArticleRepository,
+        userTransferRepository,
         timeZoneMonitor,
     ) {
         NtAppState(
             navigationState = navigationState,
             coroutineScope = coroutineScope,
             networkMonitor = networkMonitor,
-            userNewsResourceRepository = userNewsResourceRepository,
-            userTransferResourceRepository = userTransferResourceRepository,
+            userArticleRepository = userArticleRepository,
+            userTransferRepository = userTransferRepository,
             timeZoneMonitor = timeZoneMonitor,
         )
     }
@@ -79,8 +79,8 @@ class NtAppState(
     val navigationState: NavigationState,
     coroutineScope: CoroutineScope,
     networkMonitor: NetworkMonitor,
-    userNewsResourceRepository: UserNewsResourceRepository,
-    userTransferResourceRepository: UserTransferResourceRepository,
+    userArticleRepository: UserArticleRepository,
+    userTransferRepository: UserTransferRepository,
     timeZoneMonitor: TimeZoneMonitor,
 ) {
     val isOffline = networkMonitor.isOnline
@@ -92,14 +92,14 @@ class NtAppState(
         )
 
     /**
-     * The top level nav keys that have unread news or transfer resources.
+     * The top level nav keys that have unread articles or transfers among the newest ones.
      */
     val topLevelNavKeysWithUnreadResources: StateFlow<Set<NavKey>> =
         combine(
-            userNewsResourceRepository.observeAll(),
-            userNewsResourceRepository.observeAllBookmarked(),
-            userTransferResourceRepository.observeAll(),
-            userTransferResourceRepository.observeAllBookmarked(),
+            userArticleRepository.observeArticles(limit = UNREAD_CHECK_LIMIT),
+            userArticleRepository.observeBookmarked(),
+            userTransferRepository.observeTransfers(limit = UNREAD_CHECK_LIMIT),
+            userTransferRepository.observeBookmarked(),
         ) { newsResources, bookmarkedNewsResources, transferResources, bookmarkedTransfersResources ->
             setOfNotNull(
                 NewsNavKey.takeIf { newsResources.any { !it.hasBeenViewed } },
@@ -134,3 +134,6 @@ private fun NavigationTrackingSideEffect(navigationState: NavigationState) {
         onDispose {}
     }
 }
+
+/** How many of the newest articles and transfers are checked for the unread dot. */
+private const val UNREAD_CHECK_LIMIT = 50

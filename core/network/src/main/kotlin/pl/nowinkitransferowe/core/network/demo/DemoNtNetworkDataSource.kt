@@ -28,19 +28,16 @@ import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
 import pl.nowinkitransferowe.core.network.model.NetworkArticle
 import pl.nowinkitransferowe.core.network.model.NetworkChange
-import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkChanges
 import pl.nowinkitransferowe.core.network.model.NetworkClub
 import pl.nowinkitransferowe.core.network.model.NetworkClubSeasons
 import pl.nowinkitransferowe.core.network.model.NetworkCountry
 import pl.nowinkitransferowe.core.network.model.NetworkLeagues
-import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
 import pl.nowinkitransferowe.core.network.model.NetworkPlayer
 import pl.nowinkitransferowe.core.network.model.NetworkRumour
 import pl.nowinkitransferowe.core.network.model.NetworkRumourStats
 import pl.nowinkitransferowe.core.network.model.NetworkTopic
 import pl.nowinkitransferowe.core.network.model.NetworkTransfer
-import pl.nowinkitransferowe.core.network.model.NetworkTransferResource
 import javax.inject.Inject
 
 /**
@@ -51,14 +48,6 @@ class DemoNtNetworkDataSource @Inject constructor(
     private val networkJson: Json,
     private val assets: DemoAssetManager = JvmUnitTestDemoAssetManager,
 ) : NtNetworkDataSource {
-    override suspend fun getTransferResources(ids: String?): List<NetworkTransferResource> = getDemoDataFromJson(TRANSFERS_ASSET)
-
-    override suspend fun getNewsResources(ids: String?): List<NetworkNewsResource> = getDemoDataFromJson(NEWS_ASSET)
-
-    override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> = getNewsResources().mapToChangeList(NetworkNewsResource::id)
-
-    override suspend fun getTransferResourceChangeList(after: Int?): List<NetworkChangeList> = getTransferResources().mapToChangeList(NetworkTransferResource::id)
-
     // API v3: the assets in v3/ are a small set of records recorded from the website. A record's
     // id is also its change list version.
 
@@ -102,7 +91,7 @@ class DemoNtNetworkDataSource @Inject constructor(
 
     private suspend fun getArticles(): List<NetworkArticle> = getDemoDataFromJson(ARTICLES_ASSET)
 
-    private suspend fun getTransfers(): List<NetworkTransfer> = getDemoDataFromJson(TRANSFERS_V3_ASSET)
+    private suspend fun getTransfers(): List<NetworkTransfer> = getDemoDataFromJson(TRANSFERS_ASSET)
 
     private suspend fun getClubs(): List<NetworkClub> = getDemoDataFromJson(CLUBS_ASSET)
 
@@ -123,10 +112,8 @@ class DemoNtNetworkDataSource @Inject constructor(
     }
 
     companion object {
-        private const val NEWS_ASSET = "news.json"
-        private const val TRANSFERS_ASSET = "transfers.json"
         private const val ARTICLES_ASSET = "v3/articles.json"
-        private const val TRANSFERS_V3_ASSET = "v3/transfers.json"
+        private const val TRANSFERS_ASSET = "v3/transfers.json"
         private const val CLUBS_ASSET = "v3/clubs.json"
         private const val PLAYERS_ASSET = "v3/players.json"
         private const val RUMOURS_ASSET = "v3/rumours.json"
@@ -144,17 +131,3 @@ class DemoNtNetworkDataSource @Inject constructor(
  * The records whose id is in [ids], like the API, which skips ids it does not know.
  */
 private fun <T> List<T>.withIds(ids: List<Int>, idGetter: (T) -> Int): List<T> = filter { idGetter(it) in ids }
-
-/**
- * Converts a list of [T] to change list of all the items in it where [idGetter] defines the
- * [NetworkChangeList.id]
- */
-fun <T> List<T>.mapToChangeList(
-    idGetter: (T) -> Int,
-) = mapIndexed { index, item ->
-    NetworkChangeList(
-        id = idGetter(item).toString(),
-        changeListVersion = idGetter(item),
-        isDelete = false,
-    )
-}

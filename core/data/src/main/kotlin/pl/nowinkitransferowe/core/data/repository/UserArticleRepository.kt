@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package pl.nowinkitransferowe.core.database.model
+package pl.nowinkitransferowe.core.data.repository
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Fts4
+import kotlinx.coroutines.flow.Flow
+import pl.nowinkitransferowe.core.model.UserArticle
 
-@Entity(tableName = "transferResourcesFts")
-@Fts4
-data class TransferResourceFtsEntity(
+/**
+ * Articles joined with the user's data and with the names of their topics.
+ */
+interface UserArticleRepository {
+    /** The newest [limit] articles. */
+    fun observeArticles(limit: Int = Int.MAX_VALUE): Flow<List<UserArticle>>
 
-    @ColumnInfo(name = "transferResourceId")
-    val transferResourceId: String,
+    fun observeArticle(id: Int): Flow<UserArticle?>
 
-    @ColumnInfo(name = "name")
-    val name: String,
-)
+    fun observeBookmarked(): Flow<List<UserArticle>>
 
-fun TransferResourceEntity.asFtsEntity() = TransferResourceFtsEntity(
-    transferResourceId = id,
-    name = name,
-)
+    fun observeArticleCount(): Flow<Int>
+}

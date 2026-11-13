@@ -77,7 +77,7 @@ class OfflineFirstUserDataRepositoryTest {
 
     @Test
     fun offlineFirstUserDataRepository_bookmark_news_resource_logic_delegates_to_nt_preferences() = testScope.runTest {
-        subject.setNewsResourceBookmarked(newsResourceId = "0", bookmarked = true)
+        subject.setArticleBookmarked(articleId = 0, bookmarked = true)
 
         assertEquals(
             setOf("0"),
@@ -86,7 +86,7 @@ class OfflineFirstUserDataRepositoryTest {
                 .first(),
         )
 
-        subject.setNewsResourceBookmarked(newsResourceId = "1", bookmarked = true)
+        subject.setArticleBookmarked(articleId = 1, bookmarked = true)
 
         assertEquals(
             setOf("0", "1"),
@@ -107,7 +107,7 @@ class OfflineFirstUserDataRepositoryTest {
 
     @Test
     fun offlineFirstUserDataRepository_update_viewed_news_resources_delegates_to_nt_preferences() = runTest {
-        subject.setNewsResourceViewed(newsResourceId = "0", viewed = true)
+        subject.setArticleViewed(articleId = 0, viewed = true)
 
         assertEquals(
             setOf("0"),
@@ -116,7 +116,7 @@ class OfflineFirstUserDataRepositoryTest {
                 .first(),
         )
 
-        subject.setNewsResourceViewed(newsResourceId = "1", viewed = true)
+        subject.setArticleViewed(articleId = 1, viewed = true)
 
         assertEquals(
             setOf("0", "1"),
@@ -137,7 +137,7 @@ class OfflineFirstUserDataRepositoryTest {
 
     @Test
     fun offlineFirstUserDataRepository_bookmark_transfer_resource_logic_delegates_to_nt_preferences() = testScope.runTest {
-        subject.setTransferResourceBookmarked(transferResourceId = "0", bookmarked = true)
+        subject.setTransferBookmarked(transferId = 0, bookmarked = true)
 
         assertEquals(
             setOf("0"),
@@ -146,7 +146,7 @@ class OfflineFirstUserDataRepositoryTest {
                 .first(),
         )
 
-        subject.setTransferResourceBookmarked(transferResourceId = "1", bookmarked = true)
+        subject.setTransferBookmarked(transferId = 1, bookmarked = true)
 
         assertEquals(
             setOf("0", "1"),
@@ -167,7 +167,7 @@ class OfflineFirstUserDataRepositoryTest {
 
     @Test
     fun offlineFirstUserDataRepository_update_viewed_transfer_resources_delegates_to_nt_preferences() = runTest {
-        subject.setTransferResourceViewed(transferResourceId = "0", viewed = true)
+        subject.setTransferViewed(transferId = 0, viewed = true)
 
         assertEquals(
             setOf("0"),
@@ -176,7 +176,7 @@ class OfflineFirstUserDataRepositoryTest {
                 .first(),
         )
 
-        subject.setTransferResourceViewed(transferResourceId = "1", viewed = true)
+        subject.setTransferViewed(transferId = 1, viewed = true)
 
         assertEquals(
             setOf("0", "1"),

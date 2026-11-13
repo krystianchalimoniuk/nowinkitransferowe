@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
-import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
+import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import javax.inject.Inject
@@ -38,16 +38,16 @@ import javax.inject.Inject
 class TransferViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     syncManager: SyncManager,
-    userTransferResourceRepository: UserTransferResourceRepository,
+    userTransferRepository: UserTransferRepository,
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
     private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
     val page: StateFlow<Int> = _page.asStateFlow()
 
     val unreadTransfers: StateFlow<List<String>> =
-        userTransferResourceRepository.observeAll()
-            .map { transferResources ->
-                transferResources.filter { !it.hasBeenViewed }.map { it.id }
+        userTransferRepository.observeTransfers()
+            .map { transfers ->
+                transfers.filter { !it.hasBeenViewed }.map { it.id.toString() }
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -57,17 +57,14 @@ class TransferViewModel @Inject constructor(
     val selectedTransferId: StateFlow<String?> =
         savedStateHandle.getStateFlow(SELECTED_TRANSFER_ID_KEY, initialValue = null)
 
-    val transfersCount = userTransferResourceRepository.getCount().stateIn(
+    val transfersCount = userTransferRepository.observeTransferCount().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = 0,
     )
 
     val feedUiState: StateFlow<TransferFeedUiState> = _page.flatMapLatest {
-        userTransferResourceRepository.observeAllPages(
-            PAGE_SIZE * it,
-            0,
-        )
+        userTransferRepository.observeTransfers(limit = PAGE_SIZE * it)
     }.map { updatedList ->
         TransferFeedUiState.Success(updatedList)
     }.stateIn(
@@ -85,13 +82,13 @@ class TransferViewModel @Inject constructor(
 
     fun updateTransferResourceSaved(transferResourceId: String, isChecked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setTransferResourceBookmarked(transferResourceId, isChecked)
+            transferResourceId.toIntOrNull()?.let { userDataRepository.setTransferBookmarked(it, isChecked) }
         }
     }
 
     fun setTransferResourcesViewed(transferResourceIds: List<String>, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setTransferResourceViewed(transferResourceIds, viewed)
+            userDataRepository.setTransfersViewed(transferResourceIds.mapNotNull(String::toIntOrNull), viewed)
         }
     }
 

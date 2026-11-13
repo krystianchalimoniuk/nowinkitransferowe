@@ -26,8 +26,6 @@ import pl.nowinkitransferowe.core.database.NtDatabase
 internal abstract class DatabaseTest {
 
     protected lateinit var db: NtDatabase
-    protected lateinit var newsResourceDao: NewsResourceDao
-    protected lateinit var transferResourceDao: TransferResourceDao
     protected lateinit var articleDao: ArticleDao
     protected lateinit var transferDao: TransferDao
     protected lateinit var clubDao: ClubDao
@@ -45,8 +43,6 @@ internal abstract class DatabaseTest {
                 NtDatabase::class.java,
             ).build()
         }
-        newsResourceDao = db.newsResourceDao()
-        transferResourceDao = db.transferResourceDao()
         articleDao = db.articleDao()
         transferDao = db.transferDao()
         clubDao = db.clubDao()

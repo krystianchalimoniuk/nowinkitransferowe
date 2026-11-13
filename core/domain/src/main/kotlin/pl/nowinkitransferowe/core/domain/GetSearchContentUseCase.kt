@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,12 @@ package pl.nowinkitransferowe.core.domain
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
-import pl.nowinkitransferowe.core.model.SearchResult
-import pl.nowinkitransferowe.core.model.UserData
-import pl.nowinkitransferowe.core.model.UserNewsResource
 import pl.nowinkitransferowe.core.model.UserSearchResult
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.model.mapToUserArticles
+import pl.nowinkitransferowe.core.model.mapToUserTransfers
 import javax.inject.Inject
 
 /**
@@ -32,28 +31,20 @@ import javax.inject.Inject
  */
 class GetSearchContentUseCase @Inject constructor(
     private val searchContentsRepository: SearchContentsRepository,
+    private val dictionaryRepository: DictionaryRepository,
     private val userDataRepository: UserDataRepository,
 ) {
 
     operator fun invoke(
         searchQuery: String,
-    ): Flow<UserSearchResult> = searchContentsRepository.searchContents(searchQuery)
-        .mapToUserSearchResult(userDataRepository.userData)
-}
-
-private fun Flow<SearchResult>.mapToUserSearchResult(userDataStream: Flow<UserData>): Flow<UserSearchResult> = combine(userDataStream) { searchResult, userData ->
-    UserSearchResult(
-        transferResources = searchResult.transferResources.map { transfer ->
-            UserTransferResource(
-                transferResource = transfer,
-                userData = userData,
-            )
-        },
-        newsResources = searchResult.newsResources.map { news ->
-            UserNewsResource(
-                newsResource = news,
-                userData = userData,
-            )
-        },
-    )
+    ): Flow<UserSearchResult> = combine(
+        searchContentsRepository.searchContents(searchQuery),
+        dictionaryRepository.observeTopics(),
+        userDataRepository.userData,
+    ) { searchResult, topics, userData ->
+        UserSearchResult(
+            articles = searchResult.articles.mapToUserArticles(topics, userData),
+            transfers = searchResult.transfers.mapToUserTransfers(userData),
+        )
+    }
 }

@@ -17,16 +17,16 @@
 package pl.nowinkitransferowe.core.notifications
 
 import android.graphics.Bitmap
+import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.GeneralNotificationResource
-import pl.nowinkitransferowe.core.model.NewsResource
-import pl.nowinkitransferowe.core.model.TransferResource
+import pl.nowinkitransferowe.core.model.Transfer
 import javax.inject.Inject
 
 /**
  * Implementation of [Notifier] which does nothing. Useful for tests and previews.
  */
 internal class NoOpNotifier @Inject constructor() : Notifier {
-    override fun postNewsNotifications(newsResources: List<NewsResource>) = Unit
-    override fun postTransferNotifications(transferResource: List<TransferResource>) = Unit
+    override fun postArticleNotifications(articles: List<Article>) = Unit
+    override fun postTransferNotifications(transfers: List<Transfer>) = Unit
     override fun postGeneralNotification(generalNotificationResource: GeneralNotificationResource, bitmap: Bitmap?) = Unit
 }

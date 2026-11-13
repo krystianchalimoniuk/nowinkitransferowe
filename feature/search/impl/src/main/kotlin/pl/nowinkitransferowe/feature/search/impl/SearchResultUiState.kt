@@ -16,8 +16,8 @@
 
 package pl.nowinkitransferowe.feature.search.impl
 
-import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.model.UserArticle
+import pl.nowinkitransferowe.core.model.UserTransfer
 
 sealed interface SearchResultUiState {
     data object Loading : SearchResultUiState
@@ -32,8 +32,8 @@ sealed interface SearchResultUiState {
     data object LoadFailed : SearchResultUiState
 
     data class Success(
-        val transferResources: List<UserTransferResource> = emptyList(),
-        val newsResources: List<UserNewsResource> = emptyList(),
+        val transferResources: List<UserTransfer> = emptyList(),
+        val newsResources: List<UserArticle> = emptyList(),
     ) : SearchResultUiState {
         fun isEmpty(): Boolean = transferResources.isEmpty() && newsResources.isEmpty()
     }

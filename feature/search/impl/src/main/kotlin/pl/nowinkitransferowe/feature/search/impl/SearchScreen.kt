@@ -72,8 +72,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.model.UserArticle
+import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.ui.DevicePreviews
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.R.string
@@ -248,8 +248,8 @@ private fun SearchNotReadyBody() {
 @Composable
 private fun SearchResultBody(
     searchQuery: String,
-    transferResources: List<UserTransferResource>,
-    newsResources: List<UserNewsResource>,
+    transferResources: List<UserTransfer>,
+    newsResources: List<UserArticle>,
     onSearchTriggered: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onNewsClick: (String) -> Unit,

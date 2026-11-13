@@ -23,7 +23,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.testing.data.userNewsResourcesTestData
+import pl.nowinkitransferowe.core.testing.data.userArticlesTestData
 
 class NewsResourceCardTest {
     @get:Rule
@@ -31,7 +31,7 @@ class NewsResourceCardTest {
 
     @Test
     fun testMetaDataDisplay_withCategory() {
-        val newsWithKnownResourceType = userNewsResourcesTestData[0]
+        val newsWithKnownResourceType = userArticlesTestData[0]
         lateinit var dateFormatted: String
 
         composeTestRule.setContent {
@@ -44,7 +44,7 @@ class NewsResourceCardTest {
                 onTopicClick = {},
             )
 
-            dateFormatted = dateFormatted(publishDate = newsWithKnownResourceType.publishDate)
+            dateFormatted = dateFormatted(newsWithKnownResourceType.publishedAt)
         }
 
         composeTestRule
@@ -52,7 +52,7 @@ class NewsResourceCardTest {
                 composeTestRule.activity.getString(
                     R.string.core_ui_card_meta_data_text,
                     dateFormatted,
-                    newsWithKnownResourceType.category.combineNameWithEmoji(),
+                    newsWithKnownResourceType.topics.first().name,
                 ),
             )
             .assertExists()
@@ -60,7 +60,7 @@ class NewsResourceCardTest {
 
     @Test
     fun testUnreadDot_displayedWhenUnread() {
-        val unreadNews = userNewsResourcesTestData[2]
+        val unreadNews = userArticlesTestData[2]
 
         composeTestRule.setContent {
             NewsResourceCardExpanded(
@@ -84,7 +84,7 @@ class NewsResourceCardTest {
 
     @Test
     fun testUnreadDot_notDisplayedWhenRead() {
-        val readNews = userNewsResourcesTestData[0]
+        val readNews = userArticlesTestData[0]
 
         composeTestRule.setContent {
             NewsResourceCardExpanded(

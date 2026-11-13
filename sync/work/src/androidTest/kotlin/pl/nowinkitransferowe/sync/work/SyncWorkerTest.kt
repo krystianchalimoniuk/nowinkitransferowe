@@ -105,7 +105,7 @@ class SyncWorkerTest {
     }
 
     @Test
-    fun syncWorkSavesTheApiV3DemoData() = runBlocking {
+    fun syncWorkSucceedsAndSavesTheDemoData() = runBlocking {
         val request = SyncWorker.startUpSyncWork()
         val workManager = WorkManager.getInstance(context)
         val testDriver = WorkManagerTestInitHelper.getTestDriver(context)!!
@@ -113,13 +113,9 @@ class SyncWorkerTest {
         workManager.enqueue(request).result.get()
         testDriver.setAllConstraintsMet(request.id)
 
-        // The API v2 sync that still runs next to it does not finish in this test environment, so
-        // the test waits for the API v3 data instead of the end of the work. Once API v2 is
-        // removed, this can wait for WorkInfo.State.SUCCEEDED.
-        awaitUntil {
-            clubRepository.observeClub(86).first()?.isStub == false &&
-                (playerRepository.observePlayer(10281).first()?.isStub == false)
-        }
+        awaitUntil { workManager.getWorkInfoById(request.id).get()?.state == WorkInfo.State.SUCCEEDED }
+        assertEquals(false, clubRepository.observeClub(86).first()?.isStub)
+        assertEquals(false, playerRepository.observePlayer(10281).first()?.isStub)
         assertEquals(12, dictionaryRepository.observeTopics().first().size)
         assertEquals(40, articleRepository.observeArticles().first().size)
         assertEquals(110, transferRepository.observeTransfers().first().size)
@@ -140,6 +136,6 @@ class SyncWorkerTest {
             if (condition()) return
             delay(100)
         }
-        error("The API v3 data did not arrive in 30 s")
+        error("The sync did not finish in 30 s")
     }
 }

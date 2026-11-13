@@ -22,29 +22,27 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
+import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
 import pl.nowinkitransferowe.core.data.repository.DefaultRecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.DefaultSearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
-import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstArticleRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstClubRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstDictionaryRepository
-import pl.nowinkitransferowe.core.data.repository.OfflineFirstNewsRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstPlayerRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstRumourRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstTransferRepository
-import pl.nowinkitransferowe.core.data.repository.OfflineFirstTransferResourceRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstUserDataRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
-import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
+import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
+import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.ConnectivityManagerNetworkMonitor
-import pl.nowinkitransferowe.core.data.util.DatabaseUpdatingMonitor
-import pl.nowinkitransferowe.core.data.util.DefaultDatabaseUpdatingMonitor
 import pl.nowinkitransferowe.core.data.util.DefaultImageDownLoader
 import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
@@ -54,16 +52,6 @@ import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
-
-    @Binds
-    internal abstract fun bindsNewsResourceRepository(
-        newsRepository: OfflineFirstNewsRepository,
-    ): NewsRepository
-
-    @Binds
-    internal abstract fun bindsTransferResourceRepository(
-        newsRepository: OfflineFirstTransferResourceRepository,
-    ): TransferResourceRepository
 
     @Binds
     internal abstract fun bindsArticleRepository(
@@ -96,6 +84,16 @@ abstract class DataModule {
     ): DictionaryRepository
 
     @Binds
+    internal abstract fun bindsUserArticleRepository(
+        userArticleRepository: CompositeUserArticleRepository,
+    ): UserArticleRepository
+
+    @Binds
+    internal abstract fun bindsUserTransferRepository(
+        userTransferRepository: CompositeUserTransferRepository,
+    ): UserTransferRepository
+
+    @Binds
     internal abstract fun bindsUserDataRepository(
         userDataRepository: OfflineFirstUserDataRepository,
     ): UserDataRepository
@@ -117,9 +115,6 @@ abstract class DataModule {
 
     @Binds
     internal abstract fun binds(impl: TimeZoneBroadcastMonitor): TimeZoneMonitor
-
-    @Binds
-    internal abstract fun bindsDatabaseUpdatingMonitor(defaultDatabaseUpdatingMonitor: DefaultDatabaseUpdatingMonitor): DatabaseUpdatingMonitor
 
     @Binds
     internal abstract fun bindsImageDownloader(defaultImageDownLoader: DefaultImageDownLoader): ImageDownloader

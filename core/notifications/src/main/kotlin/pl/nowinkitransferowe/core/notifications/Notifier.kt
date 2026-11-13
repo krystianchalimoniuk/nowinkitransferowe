@@ -17,16 +17,16 @@
 package pl.nowinkitransferowe.core.notifications
 
 import android.graphics.Bitmap
+import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.GeneralNotificationResource
-import pl.nowinkitransferowe.core.model.NewsResource
-import pl.nowinkitransferowe.core.model.TransferResource
+import pl.nowinkitransferowe.core.model.Transfer
 
 /**
  * Interface for creating notifications in the app
  */
 interface Notifier {
-    fun postNewsNotifications(newsResources: List<NewsResource>)
-    fun postTransferNotifications(transferResource: List<TransferResource>)
+    fun postArticleNotifications(articles: List<Article>)
+    fun postTransferNotifications(transfers: List<Transfer>)
     fun postGeneralNotification(
         generalNotificationResource: GeneralNotificationResource,
         bitmap: Bitmap? = null,

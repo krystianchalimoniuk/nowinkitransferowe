@@ -35,6 +35,9 @@ interface TransferDao {
     @Query("DELETE FROM transfers WHERE id IN (:ids)")
     suspend fun deleteTransfers(ids: List<Int>)
 
+    @Query("SELECT COUNT(*) FROM transfers")
+    fun observeTransferCount(): Flow<Int>
+
     @Query("SELECT id FROM transfers WHERE id IN (:ids)")
     suspend fun getExistingIds(ids: Set<Int>): List<Int>
 

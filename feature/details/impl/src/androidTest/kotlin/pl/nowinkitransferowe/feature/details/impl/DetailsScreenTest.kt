@@ -23,7 +23,7 @@ import androidx.compose.ui.test.onNodeWithText
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
-import pl.nowinkitransferowe.core.testing.data.userNewsResourcesTestData
+import pl.nowinkitransferowe.core.testing.data.userArticlesTestData
 import pl.nowinkitransferowe.core.ui.dateFormatted
 
 class DetailsScreenTest {
@@ -54,7 +54,7 @@ class DetailsScreenTest {
     fun feed_whenLoaded_showsDetailsScreen() {
         composeTestRule.setContent {
             DetailsScreen(
-                detailsUiState = DetailsUiState.Success(userNewsResourcesTestData.first()),
+                detailsUiState = DetailsUiState.Success(userArticlesTestData.first()),
                 showBackButton = true,
                 onBackClick = {},
                 onTopicClick = {},
@@ -65,7 +65,7 @@ class DetailsScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[0].title,
+                userArticlesTestData[0].title,
                 substring = true,
             )
             .assertExists()
@@ -73,12 +73,12 @@ class DetailsScreenTest {
 
     @Test
     fun testMetaDataDisplay_withCategory() {
-        val newsWithKnownResourceType = userNewsResourcesTestData[0]
+        val newsWithKnownResourceType = userArticlesTestData[0]
         lateinit var dateFormatted: String
 
         composeTestRule.setContent {
             DetailsScreen(
-                detailsUiState = DetailsUiState.Success(userNewsResourcesTestData.first()),
+                detailsUiState = DetailsUiState.Success(userArticlesTestData.first()),
                 showBackButton = true,
                 onBackClick = {},
                 onTopicClick = {},
@@ -86,7 +86,7 @@ class DetailsScreenTest {
                 darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
             )
 
-            dateFormatted = dateFormatted(publishDate = newsWithKnownResourceType.publishDate)
+            dateFormatted = dateFormatted(newsWithKnownResourceType.publishedAt)
         }
 
         composeTestRule
@@ -94,7 +94,7 @@ class DetailsScreenTest {
                 composeTestRule.activity.getString(
                     pl.nowinkitransferowe.core.ui.R.string.core_ui_card_meta_data_text,
                     dateFormatted,
-                    newsWithKnownResourceType.category.combineNameWithEmoji(),
+                    newsWithKnownResourceType.topics.first().name,
                 ),
             )
             .assertExists()

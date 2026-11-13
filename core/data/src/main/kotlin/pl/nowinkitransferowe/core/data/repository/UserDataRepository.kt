@@ -27,30 +27,15 @@ interface UserDataRepository {
      */
     val userData: Flow<UserData>
 
-    /**
-     * Updates the bookmarked status for a news resource
-     */
-    suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean)
+    suspend fun setArticleBookmarked(articleId: Int, bookmarked: Boolean)
 
-    /**
-     * Updates the viewed status for a news resource
-     */
-    suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean)
+    suspend fun setArticleViewed(articleId: Int, viewed: Boolean)
 
-    /**
-     * Updates the bookmarked status for a transfer resource
-     */
-    suspend fun setTransferResourceBookmarked(transferResourceId: String, bookmarked: Boolean)
+    suspend fun setTransferBookmarked(transferId: Int, bookmarked: Boolean)
 
-    /**
-     * Updates the viewed status for a transfer resource
-     */
-    suspend fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean)
+    suspend fun setTransferViewed(transferId: Int, viewed: Boolean)
 
-    /**
-     * Updates the viewed status for a transfer resource
-     */
-    suspend fun setTransferResourceViewed(transferResourceIds: List<String>, viewed: Boolean)
+    suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean)
 
     /**
      * Sets the desired dark theme config.

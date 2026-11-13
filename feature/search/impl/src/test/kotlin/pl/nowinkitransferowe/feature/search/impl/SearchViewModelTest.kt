@@ -28,8 +28,9 @@ import org.junit.Test
 import pl.nowinkitransferowe.core.analytics.NoOpAnalyticsHelper
 import pl.nowinkitransferowe.core.domain.GetRecentSearchQueriesUseCase
 import pl.nowinkitransferowe.core.domain.GetSearchContentUseCase
-import pl.nowinkitransferowe.core.testing.data.newsResourcesTestData
-import pl.nowinkitransferowe.core.testing.data.transferResourceTestData
+import pl.nowinkitransferowe.core.testing.data.articlesTestData
+import pl.nowinkitransferowe.core.testing.data.transfersTestData
+import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
 import pl.nowinkitransferowe.core.testing.repository.TestRecentSearchRepository
 import pl.nowinkitransferowe.core.testing.repository.TestSearchContentsRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
@@ -39,6 +40,7 @@ import pl.nowinkitransferowe.feature.search.api.navigation.SearchNavKey
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class SearchViewModelTest {
 
@@ -49,6 +51,7 @@ class SearchViewModelTest {
     private val searchContentsRepository = TestSearchContentsRepository()
     private val getSearchContentsUseCase = GetSearchContentUseCase(
         searchContentsRepository = searchContentsRepository,
+        dictionaryRepository = TestDictionaryRepository(),
         userDataRepository = userDataRepository,
     )
     private val recentSearchRepository = TestRecentSearchRepository()
@@ -78,8 +81,8 @@ class SearchViewModelTest {
 
     @Test
     fun stateIsEmptyQuery_withEmptySearchQuery() = runTest {
-        searchContentsRepository.addNewsResources(newsResourcesTestData)
-        searchContentsRepository.addTransferResources(transferResourceTestData)
+        searchContentsRepository.addArticles(articlesTestData)
+        searchContentsRepository.addTransfers(transfersTestData)
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
 
         viewModel.onSearchQueryChanged("")
@@ -92,11 +95,26 @@ class SearchViewModelTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
         viewModel.onSearchQueryChanged("XXX")
 
-        searchContentsRepository.addNewsResources(newsResourcesTestData)
-        searchContentsRepository.addTransferResources(transferResourceTestData)
+        searchContentsRepository.addArticles(articlesTestData)
+        searchContentsRepository.addTransfers(transfersTestData)
 
         val result = viewModel.searchResultUiState.value
         assertIs<SearchResultUiState.Success>(result)
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun matchingArticlesAndTransfersAreReturned() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
+        searchContentsRepository.addArticles(articlesTestData)
+        searchContentsRepository.addTransfers(transfersTestData)
+
+        viewModel.onSearchQueryChanged("Varane")
+
+        val result = viewModel.searchResultUiState.value
+        assertIs<SearchResultUiState.Success>(result)
+        assertEquals(listOf(11283), result.newsResources.map { it.id })
+        assertEquals(listOf(14999), result.transferResources.map { it.id })
     }
 
     @Test
@@ -119,8 +137,8 @@ class SearchViewModelTest {
 
     @Test
     fun searchTextWithSpacesAndOneLetter_isEmptyQuery() = runTest {
-        searchContentsRepository.addNewsResources(newsResourcesTestData)
-        searchContentsRepository.addTransferResources(transferResourceTestData)
+        searchContentsRepository.addArticles(articlesTestData)
+        searchContentsRepository.addTransfers(transfersTestData)
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
 
         viewModel.onSearchQueryChanged("   a")

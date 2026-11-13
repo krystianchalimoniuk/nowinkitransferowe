@@ -69,7 +69,7 @@ import pl.nowinkitransferowe.core.designsystem.scrollbar.rememberDraggableScroll
 import pl.nowinkitransferowe.core.designsystem.scrollbar.scrollbarState
 import pl.nowinkitransferowe.core.designsystem.theme.LocalTintTheme
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserNewsResource
+import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
@@ -338,7 +338,7 @@ private fun LoadingStatePreview() {
 @Composable
 private fun BookmarksGridPreview(
     @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
-    userNewsResources: List<UserNewsResource>,
+    userNewsResources: List<UserArticle>,
 ) {
     NtTheme {
         BookmarksGrid(

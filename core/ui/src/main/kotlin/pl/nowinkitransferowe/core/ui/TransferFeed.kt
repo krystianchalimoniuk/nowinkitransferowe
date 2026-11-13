@@ -24,7 +24,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pl.nowinkitransferowe.core.analytics.LocalAnalyticsHelper
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.model.UserTransfer
 
 /**
  * An extension on [LazyListScope] defining a feed with news resources.
@@ -57,16 +57,16 @@ fun LazyStaggeredGridScope.transferFeed(
                     highlightSelectedTransfer = highlightSelectedTransfer,
                     onClick = {
                         analyticsHelper.logTransferResourceOpened(
-                            transferResourceId = userTransferResource.id,
+                            transferResourceId = userTransferResource.id.toString(),
                         )
-                        onTransferSelected(userTransferResource.id)
-                        onTransferClick(userTransferResource.id)
-                        onTransferResourceViewed(arrayListOf(userTransferResource.id))
+                        onTransferSelected(userTransferResource.id.toString())
+                        onTransferClick(userTransferResource.id.toString())
+                        onTransferResourceViewed(arrayListOf(userTransferResource.id.toString()))
                     },
                     hasBeenViewed = userTransferResource.hasBeenViewed,
                     onToggleBookmark = {
                         onTransferResourcesCheckedChanged(
-                            userTransferResource.id,
+                            userTransferResource.id.toString(),
                             !userTransferResource.isSaved,
                         )
                     },
@@ -95,6 +95,6 @@ sealed interface TransferFeedUiState {
         /**
          * The list of news resources contained in this feed.
          */
-        val feed: List<UserTransferResource>,
+        val feed: List<UserTransfer>,
     ) : TransferFeedUiState
 }

@@ -64,7 +64,7 @@ import pl.nowinkitransferowe.core.designsystem.scrollbar.DraggableScrollbar
 import pl.nowinkitransferowe.core.designsystem.scrollbar.rememberDraggableScroller
 import pl.nowinkitransferowe.core.designsystem.scrollbar.scrollbarState
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.ui.DevicePreviews
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
@@ -260,7 +260,7 @@ fun TransferScreenLoading() {
 @Composable
 fun TransferScreenPopulatedAndLoading(
     @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
-    userTransferResources: List<UserTransferResource>,
+    userTransferResources: List<UserTransfer>,
 ) {
     NtTheme {
         TransferScreen(

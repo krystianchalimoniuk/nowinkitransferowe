@@ -1,0 +1,1694 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "872d9e59e892f238cd79ec3404b19cdc",
+    "entities": [
+      {
+        "tableName": "recentSearchQueries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`query` TEXT NOT NULL, `queriedDate` INTEGER NOT NULL, PRIMARY KEY(`query`))",
+        "fields": [
+          {
+            "fieldPath": "query",
+            "columnName": "query",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "queriedDate",
+            "columnName": "queriedDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "query"
+          ]
+        }
+      },
+      {
+        "tableName": "articles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `url` TEXT NOT NULL, `title` TEXT NOT NULL, `kind` TEXT NOT NULL, `lead` TEXT NOT NULL, `content_html` TEXT NOT NULL, `image_url` TEXT, `thumbnail_url` TEXT, `image_source` TEXT, `news_source` TEXT, `author_name` TEXT, `author_avatar_url` TEXT, `featured_until` INTEGER, `published_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lead",
+            "columnName": "lead",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentHtml",
+            "columnName": "content_html",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "image_url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "thumbnailUrl",
+            "columnName": "thumbnail_url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageSource",
+            "columnName": "image_source",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "newsSource",
+            "columnName": "news_source",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "authorName",
+            "columnName": "author_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "authorAvatarUrl",
+            "columnName": "author_avatar_url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "featuredUntil",
+            "columnName": "featured_until",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "publishedAt",
+            "columnName": "published_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_articles_published_at",
+            "unique": false,
+            "columnNames": [
+              "published_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_articles_published_at` ON `${TABLE_NAME}` (`published_at`)"
+          },
+          {
+            "name": "index_articles_kind",
+            "unique": false,
+            "columnNames": [
+              "kind"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_articles_kind` ON `${TABLE_NAME}` (`kind`)"
+          }
+        ]
+      },
+      {
+        "tableName": "article_topics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`article_id` INTEGER NOT NULL, `topic` TEXT NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`article_id`, `topic`), FOREIGN KEY(`article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "articleId",
+            "columnName": "article_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "topic",
+            "columnName": "topic",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "article_id",
+            "topic"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_article_topics_topic",
+            "unique": false,
+            "columnNames": [
+              "topic"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_article_topics_topic` ON `${TABLE_NAME}` (`topic`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "articles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "article_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "article_clubs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`article_id` INTEGER NOT NULL, `club_id` INTEGER NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`article_id`, `club_id`), FOREIGN KEY(`article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "articleId",
+            "columnName": "article_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clubId",
+            "columnName": "club_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "article_id",
+            "club_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_article_clubs_club_id",
+            "unique": false,
+            "columnNames": [
+              "club_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_article_clubs_club_id` ON `${TABLE_NAME}` (`club_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "articles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "article_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "clubs",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "club_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "article_players",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`article_id` INTEGER NOT NULL, `player_id` INTEGER NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`article_id`, `player_id`), FOREIGN KEY(`article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`player_id`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "articleId",
+            "columnName": "article_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerId",
+            "columnName": "player_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "article_id",
+            "player_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_article_players_player_id",
+            "unique": false,
+            "columnNames": [
+              "player_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_article_players_player_id` ON `${TABLE_NAME}` (`player_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "articles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "article_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "players",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "player_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "article_tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`article_id` INTEGER NOT NULL, `tag` TEXT NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`article_id`, `tag`), FOREIGN KEY(`article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "articleId",
+            "columnName": "article_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tag",
+            "columnName": "tag",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "article_id",
+            "tag"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_article_tags_tag",
+            "unique": false,
+            "columnNames": [
+              "tag"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_article_tags_tag` ON `${TABLE_NAME}` (`tag`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "articles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "article_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "articles_fts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`title` TEXT NOT NULL, `lead` TEXT NOT NULL, content=`articles`)",
+        "fields": [
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lead",
+            "columnName": "lead",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": []
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "articles",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_articles_fts_BEFORE_UPDATE BEFORE UPDATE ON `articles` BEGIN DELETE FROM `articles_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_articles_fts_BEFORE_DELETE BEFORE DELETE ON `articles` BEGIN DELETE FROM `articles_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_articles_fts_AFTER_UPDATE AFTER UPDATE ON `articles` BEGIN INSERT INTO `articles_fts`(`docid`, `title`, `lead`) VALUES (NEW.`rowid`, NEW.`title`, NEW.`lead`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_articles_fts_AFTER_INSERT AFTER INSERT ON `articles` BEGIN INSERT INTO `articles_fts`(`docid`, `title`, `lead`) VALUES (NEW.`rowid`, NEW.`title`, NEW.`lead`); END"
+        ]
+      },
+      {
+        "tableName": "transfers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `player_id` INTEGER, `player_name` TEXT NOT NULL, `from_club_id` INTEGER, `from_club_name` TEXT, `from_status` TEXT, `to_club_id` INTEGER, `to_club_name` TEXT, `to_status` TEXT, `fee_kind` TEXT NOT NULL, `fee_label` TEXT NOT NULL, `fee_millions` REAL, `date` TEXT NOT NULL, `season` INTEGER NOT NULL, `article_id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`player_id`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`from_club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`to_club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerId",
+            "columnName": "player_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "playerName",
+            "columnName": "player_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromClubId",
+            "columnName": "from_club_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "fromClubName",
+            "columnName": "from_club_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fromStatus",
+            "columnName": "from_status",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "toClubId",
+            "columnName": "to_club_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "toClubName",
+            "columnName": "to_club_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "toStatus",
+            "columnName": "to_status",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "feeKind",
+            "columnName": "fee_kind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feeLabel",
+            "columnName": "fee_label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feeMillions",
+            "columnName": "fee_millions",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articleId",
+            "columnName": "article_id",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_transfers_player_id",
+            "unique": false,
+            "columnNames": [
+              "player_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transfers_player_id` ON `${TABLE_NAME}` (`player_id`)"
+          },
+          {
+            "name": "index_transfers_from_club_id",
+            "unique": false,
+            "columnNames": [
+              "from_club_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transfers_from_club_id` ON `${TABLE_NAME}` (`from_club_id`)"
+          },
+          {
+            "name": "index_transfers_to_club_id",
+            "unique": false,
+            "columnNames": [
+              "to_club_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transfers_to_club_id` ON `${TABLE_NAME}` (`to_club_id`)"
+          },
+          {
+            "name": "index_transfers_article_id",
+            "unique": false,
+            "columnNames": [
+              "article_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transfers_article_id` ON `${TABLE_NAME}` (`article_id`)"
+          },
+          {
+            "name": "index_transfers_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transfers_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_transfers_season",
+            "unique": false,
+            "columnNames": [
+              "season"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transfers_season` ON `${TABLE_NAME}` (`season`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "players",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "player_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "clubs",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "from_club_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "clubs",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "to_club_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "articles",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "article_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "transfers_fts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`player_name` TEXT NOT NULL, `from_club_name` TEXT, `to_club_name` TEXT, content=`transfers`)",
+        "fields": [
+          {
+            "fieldPath": "playerName",
+            "columnName": "player_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromClubName",
+            "columnName": "from_club_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "toClubName",
+            "columnName": "to_club_name",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": []
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "transfers",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_transfers_fts_BEFORE_UPDATE BEFORE UPDATE ON `transfers` BEGIN DELETE FROM `transfers_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_transfers_fts_BEFORE_DELETE BEFORE DELETE ON `transfers` BEGIN DELETE FROM `transfers_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_transfers_fts_AFTER_UPDATE AFTER UPDATE ON `transfers` BEGIN INSERT INTO `transfers_fts`(`docid`, `player_name`, `from_club_name`, `to_club_name`) VALUES (NEW.`rowid`, NEW.`player_name`, NEW.`from_club_name`, NEW.`to_club_name`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_transfers_fts_AFTER_INSERT AFTER INSERT ON `transfers` BEGIN INSERT INTO `transfers_fts`(`docid`, `player_name`, `from_club_name`, `to_club_name`) VALUES (NEW.`rowid`, NEW.`player_name`, NEW.`from_club_name`, NEW.`to_club_name`); END"
+        ]
+      },
+      {
+        "tableName": "clubs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `slug` TEXT, `name` TEXT NOT NULL, `url` TEXT, `crest_url` TEXT, `full_name` TEXT, `country` TEXT, `city` TEXT, `founded` INTEGER, `stadium` TEXT, `stadium_capacity` INTEGER, `website` TEXT, `topic` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "slug",
+            "columnName": "slug",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "crestUrl",
+            "columnName": "crest_url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "full_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "country",
+            "columnName": "country",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "city",
+            "columnName": "city",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "founded",
+            "columnName": "founded",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "stadium",
+            "columnName": "stadium",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "stadiumCapacity",
+            "columnName": "stadium_capacity",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "website",
+            "columnName": "website",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "topic",
+            "columnName": "topic",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_clubs_slug",
+            "unique": true,
+            "columnNames": [
+              "slug"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_clubs_slug` ON `${TABLE_NAME}` (`slug`)"
+          },
+          {
+            "name": "index_clubs_topic",
+            "unique": false,
+            "columnNames": [
+              "topic"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_clubs_topic` ON `${TABLE_NAME}` (`topic`)"
+          }
+        ]
+      },
+      {
+        "tableName": "clubs_fts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`name` TEXT NOT NULL, `full_name` TEXT, `city` TEXT, content=`clubs`)",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "full_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "city",
+            "columnName": "city",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": []
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "clubs",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_clubs_fts_BEFORE_UPDATE BEFORE UPDATE ON `clubs` BEGIN DELETE FROM `clubs_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_clubs_fts_BEFORE_DELETE BEFORE DELETE ON `clubs` BEGIN DELETE FROM `clubs_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_clubs_fts_AFTER_UPDATE AFTER UPDATE ON `clubs` BEGIN INSERT INTO `clubs_fts`(`docid`, `name`, `full_name`, `city`) VALUES (NEW.`rowid`, NEW.`name`, NEW.`full_name`, NEW.`city`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_clubs_fts_AFTER_INSERT AFTER INSERT ON `clubs` BEGIN INSERT INTO `clubs_fts`(`docid`, `name`, `full_name`, `city`) VALUES (NEW.`rowid`, NEW.`name`, NEW.`full_name`, NEW.`city`); END"
+        ]
+      },
+      {
+        "tableName": "players",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `slug` TEXT, `name` TEXT NOT NULL, `url` TEXT, `photo_url` TEXT, `full_name` TEXT, `birth_date` TEXT, `birth_place` TEXT, `nationality` TEXT, `nationality2` TEXT, `position_group` TEXT, `position` TEXT, `height_cm` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "slug",
+            "columnName": "slug",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "photoUrl",
+            "columnName": "photo_url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "full_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "birthDate",
+            "columnName": "birth_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "birthPlace",
+            "columnName": "birth_place",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "nationality",
+            "columnName": "nationality",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "nationality2",
+            "columnName": "nationality2",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "positionGroup",
+            "columnName": "position_group",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "heightCm",
+            "columnName": "height_cm",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_players_slug",
+            "unique": true,
+            "columnNames": [
+              "slug"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_players_slug` ON `${TABLE_NAME}` (`slug`)"
+          }
+        ]
+      },
+      {
+        "tableName": "players_fts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`name` TEXT NOT NULL, `full_name` TEXT, content=`players`)",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "full_name",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": []
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "players",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_players_fts_BEFORE_UPDATE BEFORE UPDATE ON `players` BEGIN DELETE FROM `players_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_players_fts_BEFORE_DELETE BEFORE DELETE ON `players` BEGIN DELETE FROM `players_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_players_fts_AFTER_UPDATE AFTER UPDATE ON `players` BEGIN INSERT INTO `players_fts`(`docid`, `name`, `full_name`) VALUES (NEW.`rowid`, NEW.`name`, NEW.`full_name`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_players_fts_AFTER_INSERT AFTER INSERT ON `players` BEGIN INSERT INTO `players_fts`(`docid`, `name`, `full_name`) VALUES (NEW.`rowid`, NEW.`name`, NEW.`full_name`); END"
+        ]
+      },
+      {
+        "tableName": "rumours",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `player_id` INTEGER NOT NULL, `player_name` TEXT NOT NULL, `from_club_id` INTEGER, `from_club_name` TEXT, `to_club_id` INTEGER NOT NULL, `to_club_name` TEXT NOT NULL, `stage` INTEGER NOT NULL, `previous_stage` INTEGER, `fee` TEXT, `status` TEXT NOT NULL, `transfer_id` INTEGER, `updated_at` INTEGER NOT NULL, `latest_article_id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`player_id`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`from_club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`to_club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`transfer_id`) REFERENCES `transfers`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`latest_article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerId",
+            "columnName": "player_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerName",
+            "columnName": "player_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromClubId",
+            "columnName": "from_club_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "fromClubName",
+            "columnName": "from_club_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "toClubId",
+            "columnName": "to_club_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toClubName",
+            "columnName": "to_club_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stage",
+            "columnName": "stage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "previousStage",
+            "columnName": "previous_stage",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "fee",
+            "columnName": "fee",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transferId",
+            "columnName": "transfer_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latestArticleId",
+            "columnName": "latest_article_id",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_rumours_status_updated_at",
+            "unique": false,
+            "columnNames": [
+              "status",
+              "updated_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rumours_status_updated_at` ON `${TABLE_NAME}` (`status`, `updated_at`)"
+          },
+          {
+            "name": "index_rumours_player_id",
+            "unique": false,
+            "columnNames": [
+              "player_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rumours_player_id` ON `${TABLE_NAME}` (`player_id`)"
+          },
+          {
+            "name": "index_rumours_from_club_id",
+            "unique": false,
+            "columnNames": [
+              "from_club_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rumours_from_club_id` ON `${TABLE_NAME}` (`from_club_id`)"
+          },
+          {
+            "name": "index_rumours_to_club_id",
+            "unique": false,
+            "columnNames": [
+              "to_club_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rumours_to_club_id` ON `${TABLE_NAME}` (`to_club_id`)"
+          },
+          {
+            "name": "index_rumours_transfer_id",
+            "unique": false,
+            "columnNames": [
+              "transfer_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rumours_transfer_id` ON `${TABLE_NAME}` (`transfer_id`)"
+          },
+          {
+            "name": "index_rumours_latest_article_id",
+            "unique": false,
+            "columnNames": [
+              "latest_article_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rumours_latest_article_id` ON `${TABLE_NAME}` (`latest_article_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "players",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "player_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "clubs",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "from_club_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "clubs",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "to_club_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "transfers",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "transfer_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "articles",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "latest_article_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "rumour_stages",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rumour_id` INTEGER NOT NULL, `position` INTEGER NOT NULL, `stage` INTEGER NOT NULL, `at` INTEGER NOT NULL, `article_id` INTEGER, PRIMARY KEY(`rumour_id`, `position`), FOREIGN KEY(`rumour_id`) REFERENCES `rumours`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "rumourId",
+            "columnName": "rumour_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stage",
+            "columnName": "stage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "at",
+            "columnName": "at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "articleId",
+            "columnName": "article_id",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "rumour_id",
+            "position"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_rumour_stages_article_id",
+            "unique": false,
+            "columnNames": [
+              "article_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rumour_stages_article_id` ON `${TABLE_NAME}` (`article_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "rumours",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rumour_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "articles",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "article_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "topics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`slug` TEXT NOT NULL, `name` TEXT NOT NULL, `kind` TEXT NOT NULL, PRIMARY KEY(`slug`))",
+        "fields": [
+          {
+            "fieldPath": "slug",
+            "columnName": "slug",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "slug"
+          ]
+        }
+      },
+      {
+        "tableName": "countries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "fields": [
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "code"
+          ]
+        }
+      },
+      {
+        "tableName": "league_seasons",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`season` INTEGER NOT NULL, `is_current` INTEGER NOT NULL, PRIMARY KEY(`season`))",
+        "fields": [
+          {
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCurrent",
+            "columnName": "is_current",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "season"
+          ]
+        }
+      },
+      {
+        "tableName": "leagues",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`season` INTEGER NOT NULL, `topic` TEXT NOT NULL, `spent` REAL NOT NULL, `earned` REAL NOT NULL, `balance` REAL NOT NULL, `transfers` INTEGER NOT NULL, `position` INTEGER NOT NULL, `top_arrivals` TEXT NOT NULL, `top_departures` TEXT NOT NULL, PRIMARY KEY(`season`, `topic`))",
+        "fields": [
+          {
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "topic",
+            "columnName": "topic",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "spent",
+            "columnName": "spent",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "earned",
+            "columnName": "earned",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "balance",
+            "columnName": "balance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transfers",
+            "columnName": "transfers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "topArrivals",
+            "columnName": "top_arrivals",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "topDepartures",
+            "columnName": "top_departures",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "season",
+            "topic"
+          ]
+        }
+      },
+      {
+        "tableName": "league_clubs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`season` INTEGER NOT NULL, `topic` TEXT NOT NULL, `club_id` INTEGER NOT NULL, `spent` REAL NOT NULL, `earned` REAL NOT NULL, `balance` REAL NOT NULL, `arrivals` INTEGER NOT NULL, `departures` INTEGER NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`season`, `topic`, `club_id`), FOREIGN KEY(`season`, `topic`) REFERENCES `leagues`(`season`, `topic`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "topic",
+            "columnName": "topic",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clubId",
+            "columnName": "club_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "spent",
+            "columnName": "spent",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "earned",
+            "columnName": "earned",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "balance",
+            "columnName": "balance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "arrivals",
+            "columnName": "arrivals",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "departures",
+            "columnName": "departures",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "season",
+            "topic",
+            "club_id"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "leagues",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "season",
+              "topic"
+            ],
+            "referencedColumns": [
+              "season",
+              "topic"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "club_seasons",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`club_id` INTEGER NOT NULL, `season` INTEGER NOT NULL, `spent` REAL NOT NULL, `earned` REAL NOT NULL, `balance` REAL NOT NULL, `arrivals` TEXT NOT NULL, `departures` TEXT NOT NULL, PRIMARY KEY(`club_id`, `season`), FOREIGN KEY(`club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "clubId",
+            "columnName": "club_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "spent",
+            "columnName": "spent",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "earned",
+            "columnName": "earned",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "balance",
+            "columnName": "balance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "arrivals",
+            "columnName": "arrivals",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "departures",
+            "columnName": "departures",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "club_id",
+            "season"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "clubs",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "club_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "rumour_stats",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`season` INTEGER NOT NULL, `active` INTEGER NOT NULL, `confirmed` INTEGER NOT NULL, `failed` INTEGER NOT NULL, `show_accuracy` INTEGER NOT NULL, `days_to_confirm` REAL, PRIMARY KEY(`season`))",
+        "fields": [
+          {
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "confirmed",
+            "columnName": "confirmed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "failed",
+            "columnName": "failed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showAccuracy",
+            "columnName": "show_accuracy",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "daysToConfirm",
+            "columnName": "days_to_confirm",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "season"
+          ]
+        }
+      },
+      {
+        "tableName": "rumour_stage_accuracy",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`season` INTEGER NOT NULL, `stage` INTEGER NOT NULL, `confirmed` INTEGER NOT NULL, `closed` INTEGER NOT NULL, PRIMARY KEY(`season`, `stage`), FOREIGN KEY(`season`) REFERENCES `rumour_stats`(`season`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stage",
+            "columnName": "stage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "confirmed",
+            "columnName": "confirmed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "closed",
+            "columnName": "closed",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "season",
+            "stage"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "rumour_stats",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "season"
+            ],
+            "referencedColumns": [
+              "season"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "rumour_hot_clubs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`season` INTEGER NOT NULL, `club_id` INTEGER NOT NULL, `rumours` INTEGER NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`season`, `club_id`), FOREIGN KEY(`season`) REFERENCES `rumour_stats`(`season`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "season",
+            "columnName": "season",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clubId",
+            "columnName": "club_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rumours",
+            "columnName": "rumours",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "season",
+            "club_id"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "rumour_stats",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "season"
+            ],
+            "referencedColumns": [
+              "season"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "fetch_times",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`key` TEXT NOT NULL, `fetched_at` INTEGER NOT NULL, PRIMARY KEY(`key`))",
+        "fields": [
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fetchedAt",
+            "columnName": "fetched_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "key"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_fetch_times_fetched_at",
+            "unique": false,
+            "columnNames": [
+              "fetched_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_fetch_times_fetched_at` ON `${TABLE_NAME}` (`fetched_at`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '872d9e59e892f238cd79ec3404b19cdc')"
+    ]
+  }
+}

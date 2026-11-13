@@ -34,6 +34,8 @@ interface TransferRepository : Syncable {
 
     fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>>
 
+    fun observeTransferCount(): Flow<Int>
+
     fun observeTransfersOfClub(clubId: Int): Flow<List<Transfer>>
 
     fun observeTransfersOfPlayer(playerId: Int): Flow<List<Transfer>>

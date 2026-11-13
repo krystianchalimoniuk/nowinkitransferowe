@@ -24,40 +24,16 @@ import pl.nowinkitransferowe.core.database.NtDatabase
 import pl.nowinkitransferowe.core.database.dao.ArticleDao
 import pl.nowinkitransferowe.core.database.dao.ClubDao
 import pl.nowinkitransferowe.core.database.dao.DictionaryDao
-import pl.nowinkitransferowe.core.database.dao.NewsResourceDao
-import pl.nowinkitransferowe.core.database.dao.NewsResourceFtsDao
 import pl.nowinkitransferowe.core.database.dao.PlayerDao
 import pl.nowinkitransferowe.core.database.dao.RecentSearchQueryDao
 import pl.nowinkitransferowe.core.database.dao.RumourDao
 import pl.nowinkitransferowe.core.database.dao.SearchDao
 import pl.nowinkitransferowe.core.database.dao.StatsDao
 import pl.nowinkitransferowe.core.database.dao.TransferDao
-import pl.nowinkitransferowe.core.database.dao.TransferResourceDao
-import pl.nowinkitransferowe.core.database.dao.TransferResourceFtsDao
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal object DaosModule {
-
-    @Provides
-    fun providesNewsResourceDao(
-        database: NtDatabase,
-    ): NewsResourceDao = database.newsResourceDao()
-
-    @Provides
-    fun providesNewsResourceFtsDao(
-        database: NtDatabase,
-    ): NewsResourceFtsDao = database.newsResourceFtsDao()
-
-    @Provides
-    fun providesTransfersResourceDao(
-        database: NtDatabase,
-    ): TransferResourceDao = database.transferResourceDao()
-
-    @Provides
-    fun providesTransfersResourceFtsDao(
-        database: NtDatabase,
-    ): TransferResourceFtsDao = database.transferResourceFtsDao()
 
     @Provides
     fun providesRecentSearchQueryDao(

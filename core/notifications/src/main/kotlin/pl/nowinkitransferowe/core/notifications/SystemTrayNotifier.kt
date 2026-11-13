@@ -36,9 +36,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.core.text.HtmlCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.GeneralNotificationResource
-import pl.nowinkitransferowe.core.model.NewsResource
-import pl.nowinkitransferowe.core.model.TransferResource
+import pl.nowinkitransferowe.core.model.Transfer
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -73,14 +73,14 @@ internal class SystemTrayNotifier @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : Notifier {
 
-    override fun postNewsNotifications(
-        newsResources: List<NewsResource>,
+    override fun postArticleNotifications(
+        articles: List<Article>,
     ) = with(context) {
         if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
             return
         }
 
-        val truncatedNewsResources = newsResources.take(MAX_NUM_NOTIFICATIONS)
+        val truncatedNewsResources = articles.take(MAX_NUM_NOTIFICATIONS)
 
         val newsNotifications = truncatedNewsResources.map { newsResource ->
             createNotification {
@@ -90,7 +90,7 @@ internal class SystemTrayNotifier @Inject constructor(
                     .setContentTitle(newsResource.title)
                     .setContentText(
                         HtmlCompat.fromHtml(
-                            newsResource.description,
+                            newsResource.lead,
                             HtmlCompat.FROM_HTML_MODE_COMPACT,
                         )
                             .toString(),
@@ -126,20 +126,20 @@ internal class SystemTrayNotifier @Inject constructor(
         notificationManager.notify(NEWS_NOTIFICATION_SUMMARY_ID, summaryNotification)
     }
 
-    override fun postTransferNotifications(transferResource: List<TransferResource>) = with(context) {
+    override fun postTransferNotifications(transfers: List<Transfer>) = with(context) {
         if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
             return
         }
 
-        val truncatedTransferResources = transferResource.take(MAX_NUM_NOTIFICATIONS)
+        val truncatedTransferResources = transfers.take(MAX_NUM_NOTIFICATIONS)
 
         val newsNotifications = truncatedTransferResources.map { transferResource ->
             createNotification {
                 setSmallIcon(
                     pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
                 )
-                    .setContentTitle("\uD83D\uDC64 ${HtmlCompat.fromHtml(transferResource.name, HtmlCompat.FROM_HTML_MODE_COMPACT)}")
-                    .setContentText("\uD83D\uDD01 ${transferResource.clubFrom} - ${transferResource.clubTo}\n\uD83D\uDCB6 ${transferResource.price}")
+                    .setContentTitle("\uD83D\uDC64 ${transferResource.player.name}")
+                    .setContentText("\uD83D\uDD01 ${transferResource.from.name} - ${transferResource.to.name}\n\uD83D\uDCB6 ${transferResource.fee.label}")
                     .setContentIntent(transferPendingIntent(transferResource))
                     .setGroup(TRANSFER_NOTIFICATION_GROUP)
                     .setAutoCancel(true)
@@ -234,7 +234,7 @@ internal class SystemTrayNotifier @Inject constructor(
      * Creates an inbox style summary notification for news updates
      */
     private fun newsNotificationStyle(
-        newsResources: List<NewsResource>,
+        newsResources: List<Article>,
         title: String,
     ): InboxStyle = newsResources
         .fold(InboxStyle()) { inboxStyle, newsResource -> inboxStyle.addLine(newsResource.title) }
@@ -245,10 +245,10 @@ internal class SystemTrayNotifier @Inject constructor(
      * Creates an inbox style summary notification for transfers updates
      */
     private fun transferNotificationStyle(
-        transferResources: List<TransferResource>,
+        transferResources: List<Transfer>,
         title: String,
     ): InboxStyle = transferResources
-        .fold(InboxStyle()) { inboxStyle, transferResource -> inboxStyle.addLine("\uD83D\uDC64 ${HtmlCompat.fromHtml(transferResource.name, HtmlCompat.FROM_HTML_MODE_COMPACT)}") }
+        .fold(InboxStyle()) { inboxStyle, transferResource -> inboxStyle.addLine("\uD83D\uDC64 ${transferResource.player.name}") }
         .setBigContentTitle(title)
         .setSummaryText(title)
 
@@ -303,7 +303,7 @@ private fun Context.ensureNotificationChannelExists() {
 }
 
 private fun Context.newsPendingIntent(
-    newsResource: NewsResource,
+    newsResource: Article,
 ): PendingIntent? = PendingIntent.getActivity(
     this,
     NEWS_NOTIFICATION_REQUEST_CODE,
@@ -319,7 +319,7 @@ private fun Context.newsPendingIntent(
 )
 
 private fun Context.transferPendingIntent(
-    transferResource: TransferResource,
+    transferResource: Transfer,
 ): PendingIntent? = PendingIntent.getActivity(
     this,
     TRANSFER_NOTIFICATION_REQUEST_CODE,
@@ -345,5 +345,5 @@ private fun Context.generalNotificationPendingIntent(generalNotificationResource
     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
 )
 
-private fun NewsResource.newsDeepLinkUri() = "$DEEP_LINK_NEWS_BASE_PATH/$id".toUri()
-private fun TransferResource.transferDeepLinkUri() = "$DEEP_LINK_TRANSFER_BASE_PATH/$id".toUri()
+private fun Article.newsDeepLinkUri() = "$DEEP_LINK_NEWS_BASE_PATH/$id".toUri()
+private fun Transfer.transferDeepLinkUri() = "$DEEP_LINK_TRANSFER_BASE_PATH/$id".toUri()

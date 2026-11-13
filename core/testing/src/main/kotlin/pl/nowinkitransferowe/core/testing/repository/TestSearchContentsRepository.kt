@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,33 +22,27 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import org.jetbrains.annotations.TestOnly
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
-import pl.nowinkitransferowe.core.model.NewsResource
+import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.SearchResult
-import pl.nowinkitransferowe.core.model.TransferResource
+import pl.nowinkitransferowe.core.model.Transfer
 
 class TestSearchContentsRepository : SearchContentsRepository {
 
-    private val cachedTransferResources = MutableStateFlow(emptyList<TransferResource>())
-    private val cachedNewsResources = MutableStateFlow(emptyList<NewsResource>())
+    private val cachedArticles = MutableStateFlow(emptyList<Article>())
+    private val cachedTransfers = MutableStateFlow(emptyList<Transfer>())
 
-    override suspend fun populateFtsData() = Unit
-
-    override fun searchContents(searchQuery: String): Flow<SearchResult> = combine(cachedTransferResources, cachedNewsResources) { transfers, news ->
+    override fun searchContents(searchQuery: String): Flow<SearchResult> = combine(cachedArticles, cachedTransfers) { articles, transfers ->
         SearchResult(
-            transferResources = transfers.filter {
-                searchQuery in it.name
-            },
-            newsResources = news.filter {
-                searchQuery in it.title || searchQuery in it.topics
-            },
+            articles = articles.filter { searchQuery in it.title || it.tags.any { tag -> searchQuery in tag } },
+            transfers = transfers.filter { searchQuery in it.player.name },
         )
     }
 
-    override fun getSearchContentsCount(): Flow<Int> = combine(cachedTransferResources, cachedNewsResources) { transfers, news -> transfers.size + news.size }
+    override fun getSearchContentsCount(): Flow<Int> = combine(cachedArticles, cachedTransfers) { articles, transfers -> articles.size + transfers.size }
 
     @TestOnly
-    fun addTransferResources(transferResources: List<TransferResource>) = cachedTransferResources.update { it + transferResources }
+    fun addArticles(articles: List<Article>) = cachedArticles.update { it + articles }
 
     @TestOnly
-    fun addNewsResources(newsResources: List<NewsResource>) = cachedNewsResources.update { it + newsResources }
+    fun addTransfers(transfers: List<Transfer>) = cachedTransfers.update { it + transfers }
 }

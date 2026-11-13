@@ -19,13 +19,10 @@ package pl.nowinkitransferowe.core.datastore
 /**
  * Class summarizing the local version of each model for sync.
  *
- * [transferResourceVersion] and [newsResourceVersion] belong to API v2 and go away with it. The
- * other versions are the last applied versions of the API v3 change lists, where 0 means that
- * nothing was synced yet.
+ * The versions are the last applied versions of the API v3 change lists, where 0 means that
+ * nothing was synced yet. The API v2 versions stay unused in the proto.
  */
 data class ChangeListVersions(
-    val transferResourceVersion: Int = -1,
-    val newsResourceVersion: Int = -1,
     val articleVersion: Int = 0,
     val transferVersion: Int = 0,
     val rumourVersion: Int = 0,

@@ -28,11 +28,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
-import pl.nowinkitransferowe.core.data.repository.UserNewsResourceRepository
-import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
-import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
+import pl.nowinkitransferowe.core.model.UserArticle
+import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import javax.inject.Inject
@@ -40,16 +40,16 @@ import javax.inject.Inject
 @HiltViewModel
 class BookmarksViewModel @Inject constructor(
     private val userDataRepository: UserDataRepository,
-    userNewsResourceRepository: UserNewsResourceRepository,
-    userTransferResourceRepository: UserTransferResourceRepository,
+    userArticleRepository: UserArticleRepository,
+    userTransferRepository: UserTransferRepository,
 ) : ViewModel() {
 
     var shouldDisplayUndoNewsBookmark by mutableStateOf(false)
     private var lastRemovedNewsBookmark: BookmarkElement? = null
 
     val newsFeedUiState: StateFlow<NewsFeedUiState> =
-        userNewsResourceRepository.observeAllBookmarked()
-            .map<List<UserNewsResource>, NewsFeedUiState>(NewsFeedUiState::Success)
+        userArticleRepository.observeBookmarked()
+            .map<List<UserArticle>, NewsFeedUiState>(NewsFeedUiState::Success)
             .onStart { emit(NewsFeedUiState.Loading) }
             .stateIn(
                 scope = viewModelScope,
@@ -57,8 +57,8 @@ class BookmarksViewModel @Inject constructor(
                 initialValue = NewsFeedUiState.Loading,
             )
     val transferFeedUiState: StateFlow<TransferFeedUiState> =
-        userTransferResourceRepository.observeAllBookmarked()
-            .map<List<UserTransferResource>, TransferFeedUiState>(TransferFeedUiState::Success)
+        userTransferRepository.observeBookmarked()
+            .map<List<UserTransfer>, TransferFeedUiState>(TransferFeedUiState::Success)
             .onStart { emit(TransferFeedUiState.Loading) }
             .stateIn(
                 scope = viewModelScope,
@@ -70,7 +70,7 @@ class BookmarksViewModel @Inject constructor(
         viewModelScope.launch {
             shouldDisplayUndoNewsBookmark = true
             lastRemovedNewsBookmark = BookmarkElement.News(newsResourceId)
-            userDataRepository.setNewsResourceBookmarked(newsResourceId, false)
+            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, false) }
         }
     }
 
@@ -78,20 +78,20 @@ class BookmarksViewModel @Inject constructor(
         viewModelScope.launch {
             shouldDisplayUndoNewsBookmark = true
             lastRemovedNewsBookmark = BookmarkElement.Transfer(transferResourceId)
-            userDataRepository.setTransferResourceBookmarked(transferResourceId, false)
+            transferResourceId.toIntOrNull()?.let { userDataRepository.setTransferBookmarked(it, false) }
         }
     }
 
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceViewed(newsResourceId, viewed)
+            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleViewed(it, viewed) }
         }
     }
 
     fun setTransferResourceViewed(transferResourceIds: List<String>, viewed: Boolean) {
         viewModelScope.launch {
             transferResourceIds.forEach {
-                userDataRepository.setTransferResourceViewed(it, viewed)
+                it.toIntOrNull()?.let { userDataRepository.setTransferViewed(it, viewed) }
             }
         }
     }
@@ -101,11 +101,11 @@ class BookmarksViewModel @Inject constructor(
             lastRemovedNewsBookmark?.let {
                 when (it) {
                     is BookmarkElement.News -> {
-                        userDataRepository.setNewsResourceBookmarked(it.id, true)
+                        it.id.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, true) }
                     }
 
                     is BookmarkElement.Transfer -> {
-                        userDataRepository.setTransferResourceBookmarked(it.id, true)
+                        it.id.toIntOrNull()?.let { userDataRepository.setTransferBookmarked(it, true) }
                     }
                 }
             }
@@ -122,8 +122,8 @@ class BookmarksViewModel @Inject constructor(
 sealed interface BookmarkUiState {
     data object Loading : BookmarkUiState
     data class Success(
-        val newsFeed: List<UserNewsResource>,
-        val transfersFeed: List<UserTransferResource>,
+        val newsFeed: List<UserArticle>,
+        val transfersFeed: List<UserTransfer>,
     ) : BookmarkUiState
 }
 

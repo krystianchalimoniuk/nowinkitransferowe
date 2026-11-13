@@ -28,8 +28,6 @@ import androidx.work.workDataOf
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.common.network.Dispatcher
@@ -38,12 +36,9 @@ import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
-import pl.nowinkitransferowe.core.data.repository.NewsRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
-import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
-import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.datastore.ChangeListVersions
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.sync.work.initializers.SyncConstraints
@@ -59,15 +54,12 @@ internal class SyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val ntPreferences: NtPreferencesDataSource,
-    private val transferResourceRepository: TransferResourceRepository,
-    private val newsRepository: NewsRepository,
     private val dictionaryRepository: DictionaryRepository,
     private val articleRepository: ArticleRepository,
     private val transferRepository: TransferRepository,
     private val rumourRepository: RumourRepository,
     private val clubRepository: ClubRepository,
     private val playerRepository: PlayerRepository,
-    private val searchContentsRepository: SearchContentsRepository,
     @Dispatcher(NtDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
     private val subscriber: Subscriber,
@@ -83,17 +75,11 @@ internal class SyncWorker @AssistedInject constructor(
             subscriber.subscribeToSync()
             subscriber.subscribeToGeneral()
 
-            val syncedSuccessfully = awaitAll(
-                async { syncApiV3() },
-                // API v2 feeds the 3.x screens until they move to the API v3 repositories.
-                async { transferResourceRepository.sync() },
-                async { newsRepository.sync() },
-            ).all { it }
+            val syncedSuccessfully = syncApiV3()
 
             analyticsHelper.logSyncFinished(syncedSuccessfully)
 
             if (syncedSuccessfully) {
-                searchContentsRepository.populateFtsData()
                 Result.success()
             } else {
                 Result.retry()

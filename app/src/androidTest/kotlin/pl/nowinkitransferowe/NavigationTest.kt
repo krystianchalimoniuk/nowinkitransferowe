@@ -38,7 +38,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.data.repository.NewsRepository
+import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
 import javax.inject.Inject
 import pl.nowinkitransferowe.feature.bookmarks.impl.R as BookmarksR
@@ -71,7 +71,7 @@ class NavigationTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var newsRepository: NewsRepository
+    lateinit var articleRepository: ArticleRepository
 
     // The strings used for matching in these tests
     private val navigateUp by composeTestRule.stringResource(NewsR.string.feature_news_impl_navigate_up)
@@ -259,7 +259,7 @@ class NavigationTest {
         composeTestRule.apply {
             // Select the last news
             val newsItem = runBlocking {
-                newsRepository.getNewsResources().first()[4]
+                articleRepository.observeArticles().first()[4]
             }
             onNodeWithTag("news:feed").performScrollToNode(hasText(newsItem.title))
             onNodeWithText(newsItem.title).performClick()

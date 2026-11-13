@@ -44,9 +44,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
+import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.TransferResource
+import pl.nowinkitransferowe.core.model.Transfer
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.core.navigation.rememberNavigationState
 import pl.nowinkitransferowe.core.navigation.toEntries
@@ -73,18 +73,18 @@ class TransferListDetailScreenTest {
     val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
 
     @Inject
-    lateinit var transferRepository: TransferResourceRepository
+    lateinit var transferRepository: TransferRepository
 
     /** Convenience function for getting all transfer during tests, */
-    private fun getTransfers(): List<TransferResource> = runBlocking {
-        transferRepository.getTransferResources().first()
+    private fun getTransfers(): List<Transfer> = runBlocking {
+        transferRepository.observeTransfers().first()
     }
 
     // The strings used for matching in these tests.
     private val placeholderText by composeTestRule.stringResource(pl.nowinkitransferowe.feature.details.transfers.impl.R.string.feature_details_transfers_impl_select_a_transfer)
     private val listPaneTag = "transfers:feed"
 
-    private val TransferResource.testTag
+    private val Transfer.testTag
         get() = "transfer:${this.id}"
 
     @Before
@@ -151,7 +151,7 @@ class TransferListDetailScreenTest {
             }
 
             val firstTransfers = getTransfers().first()
-            onNodeWithText(firstTransfers.name).performClick()
+            onNodeWithText(firstTransfers.player.name).performClick()
 
             onNodeWithTag(listPaneTag).assertIsDisplayed()
             onNodeWithText(placeholderText).assertIsNotDisplayed()
@@ -170,7 +170,7 @@ class TransferListDetailScreenTest {
             }
 
             val firstTransfers = getTransfers().first()
-            onNodeWithText(firstTransfers.name).performClick()
+            onNodeWithText(firstTransfers.player.name).performClick()
 
             onNodeWithTag(listPaneTag).assertIsNotDisplayed()
             onNodeWithText(placeholderText).assertIsNotDisplayed()
@@ -195,7 +195,7 @@ class TransferListDetailScreenTest {
             }
 
             val firstTransfers = getTransfers().first()
-            onNodeWithText(firstTransfers.name).performClick()
+            onNodeWithText(firstTransfers.player.name).performClick()
 
             waitForIdle()
             Espresso.pressBack()
@@ -215,7 +215,7 @@ class TransferListDetailScreenTest {
             }
 
             val firstTransfers = getTransfers().first()
-            onNodeWithText(firstTransfers.name).performClick()
+            onNodeWithText(firstTransfers.player.name).performClick()
             waitForIdle()
             Espresso.pressBack()
 

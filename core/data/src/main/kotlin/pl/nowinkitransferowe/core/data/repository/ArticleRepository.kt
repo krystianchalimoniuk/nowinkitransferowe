@@ -38,6 +38,8 @@ interface ArticleRepository : Syncable {
 
     fun observeArticles(ids: Set<Int>): Flow<List<Article>>
 
+    fun observeArticleCount(): Flow<Int>
+
     fun observeArticlesAboutClub(clubId: Int): Flow<List<Article>>
 
     fun observeArticlesAboutPlayer(playerId: Int): Flow<List<Article>>

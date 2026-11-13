@@ -22,7 +22,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.testing.data.userTransferResourcesTestData
+import pl.nowinkitransferowe.core.testing.data.userTransfersTestData
 
 class DetailsTransferScreenTest {
     @get:Rule(order = 1)
@@ -50,7 +50,7 @@ class DetailsTransferScreenTest {
         composeTestRule.setContent {
             DetailsTransferScreen(
                 detailsTransferUiState = DetailsTransferUiState.Success(
-                    userTransferResource = userTransferResourcesTestData,
+                    userTransferResource = userTransfersTestData,
                     dataPoints = arrayListOf(
                         DataPoint(date = "paź 22", price = 0.0f, bitmap = null),
                     ),
@@ -62,7 +62,7 @@ class DetailsTransferScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userTransferResourcesTestData[0].name,
+                userTransfersTestData[0].player.name,
                 substring = true,
             )
             .assertExists()
@@ -74,12 +74,12 @@ class DetailsTransferScreenTest {
             DetailsTransferScreen(
                 detailsTransferUiState = DetailsTransferUiState.Success(
                     userTransferResource = arrayListOf(
-                        userTransferResourcesTestData[2],
-                        userTransferResourcesTestData[3],
+                        userTransfersTestData[2],
+                        userTransfersTestData[3],
                     ),
                     dataPoints = arrayListOf(
-                        DataPoint(date = "paź 22", price = 0.5f, bitmap = null),
-                        DataPoint(date = "paź 22", price = 34.5f, bitmap = null),
+                        DataPoint(date = "lip 24", price = 2.0f, bitmap = null),
+                        DataPoint(date = "lip 24", price = 1.0f, bitmap = null),
                     ),
                 ),
                 showBackButton = true,
@@ -89,7 +89,7 @@ class DetailsTransferScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                "35.0 mln €",
+                "3.0 mln €",
                 substring = true,
             )
             .assertExists()
@@ -103,7 +103,7 @@ class DetailsTransferScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                "Najwyższy transfer:\n34.5 mln €",
+                "Najwyższy transfer:\n2.0 mln €",
                 substring = true,
             )
             .assertExists()

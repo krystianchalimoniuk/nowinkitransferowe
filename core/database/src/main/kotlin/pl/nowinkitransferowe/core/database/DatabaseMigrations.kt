@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.core.database
 
+import androidx.room.DeleteTable
 import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
 
@@ -167,4 +168,11 @@ internal object DatabaseMigrations {
             )
         }
     }
+
+    /** The API v2 tables; the app reads API v3 only. */
+    @DeleteTable(tableName = "news_resources")
+    @DeleteTable(tableName = "newsResourcesFts")
+    @DeleteTable(tableName = "transfer_resources")
+    @DeleteTable(tableName = "transferResourcesFts")
+    class Schema3to4 : AutoMigrationSpec
 }
