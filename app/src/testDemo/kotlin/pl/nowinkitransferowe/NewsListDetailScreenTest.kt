@@ -153,7 +153,7 @@ class NewsListDetailScreenTest {
             }
 
             val firstNews = getNews().first()
-            onNodeWithText(firstNews.title).performClick()
+            onNodeWithText(firstNews.title, ignoreCase = true).performClick()
 
             onNodeWithTag(listPaneTag).assertIsDisplayed()
             onNodeWithText(placeholderText).assertIsNotDisplayed()
@@ -172,7 +172,7 @@ class NewsListDetailScreenTest {
             }
 
             val firstNews = getNews().first()
-            onNodeWithText(firstNews.title).performClick()
+            onNodeWithText(firstNews.title, ignoreCase = true).performClick()
 
             onNodeWithTag(listPaneTag).assertIsNotDisplayed()
             onNodeWithText(placeholderText).assertIsNotDisplayed()
@@ -197,7 +197,7 @@ class NewsListDetailScreenTest {
             }
 
             val firstNews = getNews().first()
-            onNodeWithText(firstNews.title).performClick()
+            onNodeWithText(firstNews.title, ignoreCase = true).performClick()
 
             waitForIdle()
             Espresso.pressBack()
@@ -217,7 +217,7 @@ class NewsListDetailScreenTest {
             }
 
             val firstNews = getNews().first()
-            onNodeWithText(firstNews.title).performClick()
+            onNodeWithText(firstNews.title, ignoreCase = true).performClick()
             waitForIdle()
             Espresso.pressBack()
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,14 @@ import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.screenshottesting.DefaultTestDevices
 import pl.nowinkitransferowe.core.screenshottesting.captureForDevice
 import pl.nowinkitransferowe.core.screenshottesting.captureMultiDevice
-import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
-import pl.nowinkitransferowe.core.ui.UserArticlePreviewParameterProvider
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
+import pl.nowinkitransferowe.core.testing.data.topicsTestData
+import pl.nowinkitransferowe.core.testing.data.userArticlesTestData
+import pl.nowinkitransferowe.core.testing.data.userTransfersTestData
 import java.util.TimeZone
 
 /**
- * Screenshot tests for the [ForYouScreen].
+ * Screenshot tests of the home screen on a phone, a foldable and a tablet.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -46,13 +48,8 @@ import java.util.TimeZone
 @LooperMode(LooperMode.Mode.PAUSED)
 class ArticlesScreenScreenshotTests {
 
-    /**
-     * Use a test activity to set the content on.
-     */
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
-
-    private val userArticles = UserArticlePreviewParameterProvider().values.first()
 
     @Before
     fun setTimeZone() {
@@ -61,82 +58,67 @@ class ArticlesScreenScreenshotTests {
     }
 
     @Test
-    fun newsScreenPopulatedFeed() {
+    fun homeScreenPopulated() {
         composeTestRule.captureMultiDevice("ArticlesScreenPopulatedFeed") {
-            NtTheme {
-                ArticlesScreen(
-                    isSyncing = false,
-                    feedState = ArticleFeedUiState.Success(
-                        feed = userArticles,
-                    ),
-                    onArticleSavedChanged = { _, _ -> },
-                    onArticleViewed = {},
-                    onTopicClick = {},
-                    onArticleClick = {},
-                    onArticleSelected = {},
-                    loadNextPage = {},
-                )
-            }
+            NtTheme { NtBackground { HomeScreen(populatedState()) } }
         }
     }
 
     @Test
-    fun newsScreenLoading() {
-        composeTestRule.captureMultiDevice("ArticlesScreenLoading") {
-            NtTheme {
-                ArticlesScreen(
-                    isSyncing = false,
-                    feedState = ArticleFeedUiState.Loading,
-                    onArticleSavedChanged = { _, _ -> },
-                    onArticleViewed = {},
-                    onTopicClick = {},
-                    onArticleClick = {},
-                    onArticleSelected = {},
-                    loadNextPage = {},
-                )
-            }
-        }
-    }
-
-    @Test
-    fun newsScreenPopulatedAndLoading() {
-        composeTestRule.captureMultiDevice("ArticlesScreenPopulatedAndLoading") {
-            ArticlesScreenPopulatedAndLoading()
-        }
-    }
-
-    @Test
-    fun newsScreenPopulatedAndLoading_dark() {
+    fun homeScreenPopulated_dark() {
         composeTestRule.captureForDevice(
             deviceName = "phone_dark",
             deviceSpec = DefaultTestDevices.PHONE.spec,
-            screenshotName = "ArticlesScreenPopulatedAndLoading",
+            screenshotName = "ArticlesScreenPopulatedFeed",
             darkMode = true,
         ) {
-            ArticlesScreenPopulatedAndLoading()
+            NtTheme { NtBackground { HomeScreen(populatedState()) } }
         }
     }
 
-    @Composable
-    private fun ArticlesScreenPopulatedAndLoading() {
-        NtTheme {
-            NtBackground {
-                NtTheme {
-                    ArticlesScreen(
-                        isSyncing = true,
-                        feedState = ArticleFeedUiState.Success(
-                            feed = userArticles,
-                        ),
-                        onArticleSavedChanged = { _, _ -> },
-                        onArticleViewed = {},
-                        onTopicClick = {},
-                        onArticleClick = {},
-                        onArticleSelected = {},
-                        loadNextPage = {},
-
-                    )
-                }
-            }
+    @Test
+    fun homeScreenTopicSelected() {
+        composeTestRule.captureForDevice(
+            deviceName = "phone",
+            deviceSpec = DefaultTestDevices.PHONE.spec,
+            screenshotName = "ArticlesScreenTopicSelected",
+        ) {
+            NtTheme { NtBackground { HomeScreen(populatedState().copy(tab = HomeTab.OFFICIAL, topic = "premier-league")) } }
         }
+    }
+
+    @Test
+    fun homeScreenLoading() {
+        composeTestRule.captureMultiDevice("ArticlesScreenLoading") {
+            NtTheme { NtBackground { HomeScreen(HomeUiState.Loading) } }
+        }
+    }
+
+    private fun populatedState() = HomeUiState.Success(
+        tab = HomeTab.ALL,
+        topic = null,
+        topics = topicsTestData,
+        featured = userArticlesTestData.first(),
+        latest = userArticlesTestData.drop(1),
+        transfers = userTransfersTestData,
+        rumours = rumoursTestData,
+        hasMore = false,
+    )
+
+    @Composable
+    private fun HomeScreen(uiState: HomeUiState) {
+        ArticlesScreen(
+            uiState = uiState,
+            isSyncing = false,
+            onTabSelected = {},
+            onTopicSelected = {},
+            onArticleClick = {},
+            onArticleSavedChanged = { _, _ -> },
+            onTransferClick = {},
+            onAllTransfersClick = {},
+            onRumourClick = {},
+            onAllRumoursClick = {},
+            loadNextPage = {},
+        )
     }
 }

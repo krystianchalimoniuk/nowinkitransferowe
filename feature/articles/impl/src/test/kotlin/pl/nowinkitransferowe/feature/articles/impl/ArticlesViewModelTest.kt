@@ -22,113 +22,135 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Clock
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
-import pl.nowinkitransferowe.core.model.mapToUserArticles
+import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
+import pl.nowinkitransferowe.core.model.ArticleKind
 import pl.nowinkitransferowe.core.testing.data.articlesTestData
-import pl.nowinkitransferowe.core.testing.data.topicsTestData
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
+import pl.nowinkitransferowe.core.testing.data.transfersTestData
 import pl.nowinkitransferowe.core.testing.repository.TestArticleRepository
 import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
+import pl.nowinkitransferowe.core.testing.repository.TestRumourRepository
+import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import pl.nowinkitransferowe.core.testing.util.TestSyncManager
-import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.days
 
 class ArticlesViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val syncManager = TestSyncManager()
     private val userDataRepository = TestUserDataRepository()
     private val articleRepository = TestArticleRepository()
+    private val transferRepository = TestTransferRepository()
+    private val rumourRepository = TestRumourRepository()
+    private val dictionaryRepository = TestDictionaryRepository()
 
-    private val userArticleRepository = CompositeUserArticleRepository(
-        articleRepository = articleRepository,
-        dictionaryRepository = TestDictionaryRepository(),
-        userDataRepository = userDataRepository,
-    )
-
-    private val savedStateHandle = SavedStateHandle()
     private lateinit var viewModel: ArticlesViewModel
 
     @Before
     fun setup() {
         userDataRepository.setUserData(emptyUserData)
         viewModel = ArticlesViewModel(
-            syncManager = syncManager,
-            savedStateHandle = savedStateHandle,
+            savedStateHandle = SavedStateHandle(),
+            syncManager = TestSyncManager(),
             userDataRepository = userDataRepository,
-            userArticleRepository = userArticleRepository,
+            userArticleRepository = CompositeUserArticleRepository(articleRepository, dictionaryRepository, userDataRepository),
+            userTransferRepository = CompositeUserTransferRepository(transferRepository, userDataRepository),
+            rumourRepository = rumourRepository,
+            dictionaryRepository = dictionaryRepository,
         )
+        articleRepository.sendArticles(articlesTestData)
+        transferRepository.sendTransfers(transfersTestData)
+        rumourRepository.sendRumours(rumoursTestData)
     }
+
+    private fun success() = assertIs<HomeUiState.Success>(viewModel.uiState.value)
 
     @Test
     fun stateIsInitiallyLoading() = runTest {
-        assertEquals(ArticleFeedUiState.Loading, viewModel.feedState.value)
+        assertEquals(HomeUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun stateIsLoadingWhenAppIsSyncingWithNoNews() = runTest {
-        syncManager.setSyncing(true)
+    fun newestArticleIsFeaturedAndTheRestFollow() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
-
-        assertEquals(true, viewModel.isSyncing.value)
+        val state = success()
+        assertEquals(articlesTestData.first().id, state.featured?.id)
+        assertEquals(articlesTestData.drop(1).take(ArticlesViewModel.PAGE_SIZE).map { it.id }, state.latest.map { it.id })
+        assertTrue(state.showTransfers)
+        assertTrue(state.showRumours)
+        assertEquals(transfersTestData.take(ArticlesViewModel.CAROUSEL_SIZE).map { it.id }, state.transfers.map { it.id })
+        assertEquals(rumoursTestData.map { it.id }, state.rumours.map { it.id })
     }
 
     @Test
-    fun whenUpdateArticleSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        viewModel.updateArticleSaved(123, true)
+    fun editorsPickIsFeaturedBeforeTheNewest() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        val picked = articlesTestData[3].copy(featuredUntil = Clock.System.now() + 1.days)
+        articleRepository.sendArticles(articlesTestData.map { if (it.id == picked.id) picked else it })
 
-        assertEquals(setOf(123), userDataRepository.userData.first().bookmarkedArticles)
-
-        viewModel.updateArticleSaved(123, false)
-
-        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedArticles)
+        assertEquals(picked.id, success().featured?.id)
+        assertFalse(success().latest.any { it.id == picked.id })
     }
 
     @Test
-    fun firstPageShowsTheNewestArticlesWithTheUserData() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedState.collect() }
-        articleRepository.sendArticles(articlesTestData)
+    fun officialTabShowsOfficialArticlesAndTransfersOnly() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        viewModel.updateArticleSaved(articleId = 11283, isChecked = true)
+        viewModel.selectTab(HomeTab.OFFICIAL)
 
-        val userData = emptyUserData.copy(bookmarkedArticles = setOf(11283))
-        assertEquals(
-            ArticleFeedUiState.Success(
-                feed = articlesTestData.take(ArticlesViewModel.INITIAL_PAGE_SIZE).mapToUserArticles(topicsTestData, userData),
-            ),
-            viewModel.feedState.value,
-        )
+        val state = success()
+        val articles = listOfNotNull(state.featured) + state.latest
+        assertTrue(articles.isNotEmpty())
+        assertTrue(articles.all { it.kind == ArticleKind.OFFICIAL })
+        assertTrue(state.showTransfers)
+        assertFalse(state.showRumours)
     }
 
     @Test
-    fun whenLoadNexPageFunctionIsCalled_articlesUpdates() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedState.collect() }
-        articleRepository.sendArticles(articlesTestData)
+    fun topicFiltersArticlesAndHidesTheCarousels() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        viewModel.loadNextPage(viewModel.page.value, articlesTestData.size)
+        viewModel.selectTopic("serie-a")
 
-        assertEquals(
-            ArticleFeedUiState.Success(
-                feed = articlesTestData.take(2 * ArticlesViewModel.INITIAL_PAGE_SIZE).mapToUserArticles(topicsTestData, emptyUserData),
-            ),
-            viewModel.feedState.value,
-        )
+        val state = success()
+        val articles = listOfNotNull(state.featured) + state.latest
+        assertEquals(listOf(11283), articles.map { it.id })
+        assertFalse(state.showTransfers)
+        assertFalse(state.showRumours)
+
+        viewModel.selectTopic(null)
+        assertTrue(success().showTransfers)
     }
 
     @Test
-    fun articleShowsTheNamesOfItsTopics() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedState.collect() }
-        articleRepository.sendArticles(articlesTestData)
+    fun nextPageLoadsUntilAllArticlesAreShown() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        assertTrue(success().hasMore)
 
-        val feed = (viewModel.feedState.value as ArticleFeedUiState.Success).feed
-        assertEquals(listOf("Premier League"), feed.first().topics.map { it.name })
-        assertEquals(emptyList(), feed[3].topics)
+        viewModel.loadNextPage()
+
+        val state = success()
+        assertFalse(state.hasMore)
+        assertEquals(articlesTestData.size, 1 + state.latest.size)
+    }
+
+    @Test
+    fun savingAnArticleUpdatesTheUserData() = runTest {
+        viewModel.updateArticleSaved(11283, true)
+
+        assertEquals(setOf(11283), userDataRepository.userData.first().bookmarkedArticles)
     }
 }

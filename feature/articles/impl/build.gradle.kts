@@ -29,7 +29,9 @@ android {
 dependencies {
     implementation(projects.feature.articles.api)
     implementation(projects.feature.articleDetails.api)
-    implementation(projects.feature.search.api)
+    implementation(projects.feature.rumours.api)
+    implementation(projects.feature.transferDetails.api)
+    implementation(projects.feature.transfers.api)
     implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(libs.accompanist.permissions)
     implementation(projects.core.data)
