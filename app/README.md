@@ -43,6 +43,11 @@ graph TB
       :feature:search:api[api]:::android-library
       :feature:search:impl[impl]:::android-feature
     end
+    subgraph :feature:club
+      direction TB
+      :feature:club:api[api]:::android-library
+      :feature:club:impl[impl]:::android-feature
+    end
     subgraph :feature:rumours
       direction TB
       :feature:rumours:api[api]:::android-library
@@ -97,6 +102,8 @@ graph TB
   :app -.-> :feature:articles:impl
   :app -.-> :feature:bookmarks:api
   :app -.-> :feature:bookmarks:impl
+  :app -.-> :feature:club:api
+  :app -.-> :feature:club:impl
   :app -.-> :feature:leagues:api
   :app -.-> :feature:leagues:impl
   :app -.-> :feature:rumours:api
@@ -135,6 +142,7 @@ graph TB
   :feature:article-details:impl -.-> :core:designsystem
   :feature:article-details:impl -.-> :core:ui
   :feature:article-details:impl -.-> :feature:article-details:api
+  :feature:article-details:impl -.-> :feature:club:api
   :feature:article-details:impl -.-> :feature:rumours:api
   :feature:article-details:impl -.-> :feature:search:api
   :feature:articles:api --> :core:navigation
@@ -156,6 +164,13 @@ graph TB
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
   :feature:bookmarks:impl -.-> :feature:rumours:api
   :feature:bookmarks:impl -.-> :feature:transfer-details:api
+  :feature:club:api --> :core:navigation
+  :feature:club:impl -.-> :core:data
+  :feature:club:impl -.-> :core:designsystem
+  :feature:club:impl -.-> :core:ui
+  :feature:club:impl -.-> :feature:club:api
+  :feature:club:impl -.-> :feature:rumours:api
+  :feature:club:impl -.-> :feature:transfer-details:api
   :feature:leagues:api --> :core:navigation
   :feature:leagues:impl -.-> :core:designsystem
   :feature:leagues:impl -.-> :core:ui
@@ -165,6 +180,7 @@ graph TB
   :feature:rumours:impl -.-> :core:designsystem
   :feature:rumours:impl -.-> :core:ui
   :feature:rumours:impl -.-> :feature:article-details:api
+  :feature:rumours:impl -.-> :feature:club:api
   :feature:rumours:impl -.-> :feature:rumours:api
   :feature:rumours:impl -.-> :feature:transfer-details:api
   :feature:search:api --> :core:navigation
@@ -185,6 +201,7 @@ graph TB
   :feature:transfer-details:impl -.-> :core:designsystem
   :feature:transfer-details:impl -.-> :core:ui
   :feature:transfer-details:impl -.-> :feature:article-details:api
+  :feature:transfer-details:impl -.-> :feature:club:api
   :feature:transfer-details:impl -.-> :feature:transfer-details:api
   :feature:transfers:api --> :core:navigation
   :feature:transfers:impl -.-> :core:data
