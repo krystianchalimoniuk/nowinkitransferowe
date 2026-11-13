@@ -16,7 +16,6 @@
 
 package pl.nowinkitransferowe.core.designsystem.theme
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
@@ -38,7 +37,6 @@ data class NtColors(
     val onRumourContainer: Color,
 )
 
-@VisibleForTesting
 internal val LightNtColors = NtColors(
     success = Color(0xFF16803F),
     onSuccess = Color(0xFFFFFFFF),
@@ -51,7 +49,6 @@ internal val LightNtColors = NtColors(
     onRumourContainer = Color(0xFF2A1700),
 )
 
-@VisibleForTesting
 internal val DarkNtColors = NtColors(
     success = Color(0xFF5CC983),
     onSuccess = Color(0xFF0B2914),

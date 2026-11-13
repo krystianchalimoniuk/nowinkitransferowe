@@ -25,6 +25,8 @@ import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.SyncAlt
 import androidx.compose.material.icons.outlined.Upcoming
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material.icons.rounded.Bookmarks
@@ -47,6 +49,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 object NtIcons {
     val Add = Icons.Rounded.Add
     val ArrowBack = Icons.AutoMirrored.Rounded.ArrowBack
+    val ArrowDownward = Icons.Rounded.ArrowDownward
+    val ArrowUpward = Icons.Rounded.ArrowUpward
     val Arrows = Icons.Rounded.SyncAlt
     val ArrowsBorder = Icons.Outlined.SyncAlt
     val Bookmark = Icons.Rounded.Bookmark

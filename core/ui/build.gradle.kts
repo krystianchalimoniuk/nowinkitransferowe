@@ -17,12 +17,14 @@ plugins {
     alias(libs.plugins.nowinkitransferowe.android.library)
     alias(libs.plugins.nowinkitransferowe.android.library.compose)
     alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    testOptions.unitTests.isIncludeAndroidResources = true
     namespace = "pl.nowinkitransferowe.core.ui"
 }
 
@@ -35,6 +37,12 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.coil.kt)
     implementation(libs.coil.kt.compose)
+
+    testImplementation(libs.androidx.compose.ui.test)
+    testImplementation(libs.androidx.compose.ui.testManifest)
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.robolectric)
+    testImplementation(projects.core.screenshotTesting)
 
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)
