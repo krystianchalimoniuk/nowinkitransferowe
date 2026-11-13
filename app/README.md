@@ -43,6 +43,11 @@ graph TB
       :feature:search:api[api]:::android-library
       :feature:search:impl[impl]:::android-feature
     end
+    subgraph :feature:player
+      direction TB
+      :feature:player:api[api]:::android-library
+      :feature:player:impl[impl]:::android-feature
+    end
     subgraph :feature:club
       direction TB
       :feature:club:api[api]:::android-library
@@ -106,6 +111,8 @@ graph TB
   :app -.-> :feature:club:impl
   :app -.-> :feature:leagues:api
   :app -.-> :feature:leagues:impl
+  :app -.-> :feature:player:api
+  :app -.-> :feature:player:impl
   :app -.-> :feature:rumours:api
   :app -.-> :feature:rumours:impl
   :app -.-> :feature:search:api
@@ -143,6 +150,7 @@ graph TB
   :feature:article-details:impl -.-> :core:ui
   :feature:article-details:impl -.-> :feature:article-details:api
   :feature:article-details:impl -.-> :feature:club:api
+  :feature:article-details:impl -.-> :feature:player:api
   :feature:article-details:impl -.-> :feature:rumours:api
   :feature:article-details:impl -.-> :feature:search:api
   :feature:articles:api --> :core:navigation
@@ -175,12 +183,21 @@ graph TB
   :feature:leagues:impl -.-> :core:designsystem
   :feature:leagues:impl -.-> :core:ui
   :feature:leagues:impl -.-> :feature:leagues:api
+  :feature:player:api --> :core:navigation
+  :feature:player:impl -.-> :core:data
+  :feature:player:impl -.-> :core:designsystem
+  :feature:player:impl -.-> :core:ui
+  :feature:player:impl -.-> :feature:club:api
+  :feature:player:impl -.-> :feature:player:api
+  :feature:player:impl -.-> :feature:rumours:api
+  :feature:player:impl -.-> :feature:transfer-details:api
   :feature:rumours:api --> :core:navigation
   :feature:rumours:impl -.-> :core:data
   :feature:rumours:impl -.-> :core:designsystem
   :feature:rumours:impl -.-> :core:ui
   :feature:rumours:impl -.-> :feature:article-details:api
   :feature:rumours:impl -.-> :feature:club:api
+  :feature:rumours:impl -.-> :feature:player:api
   :feature:rumours:impl -.-> :feature:rumours:api
   :feature:rumours:impl -.-> :feature:transfer-details:api
   :feature:search:api --> :core:navigation
@@ -202,6 +219,7 @@ graph TB
   :feature:transfer-details:impl -.-> :core:ui
   :feature:transfer-details:impl -.-> :feature:article-details:api
   :feature:transfer-details:impl -.-> :feature:club:api
+  :feature:transfer-details:impl -.-> :feature:player:api
   :feature:transfer-details:impl -.-> :feature:transfer-details:api
   :feature:transfers:api --> :core:navigation
   :feature:transfers:impl -.-> :core:data
