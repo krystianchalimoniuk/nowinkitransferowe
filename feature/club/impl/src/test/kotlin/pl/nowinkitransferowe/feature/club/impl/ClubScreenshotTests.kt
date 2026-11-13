@@ -31,6 +31,7 @@ import org.robolectric.annotation.LooperMode
 import pl.nowinkitransferowe.core.designsystem.component.NtBackground
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.ClubRef
+import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.screenshottesting.DefaultTestDevices
 import pl.nowinkitransferowe.core.screenshottesting.captureForDevice
 import pl.nowinkitransferowe.core.screenshottesting.captureMultiDevice
@@ -66,12 +67,12 @@ class ClubScreenshotTests {
     }
 
     @Test
-    fun clubScreen_arrivals() {
-        composeTestRule.captureForDevice("phone", DefaultTestDevices.PHONE.spec, "ClubScreenArrivals") { Screen(ClubTab.ARRIVALS) }
+    fun clubScreen_arrivals_allSeasons() {
+        composeTestRule.captureForDevice("phone", DefaultTestDevices.PHONE.spec, "ClubScreenArrivalsAllSeasons") { Screen(ClubTab.ARRIVALS, season = null) }
     }
 
     @Composable
-    private fun Screen(tab: ClubTab) {
+    private fun Screen(tab: ClubTab, season: Season? = westHamSeasonsTestData.first().season) {
         NtTheme {
             NtBackground {
                 ClubScreen(
@@ -81,9 +82,12 @@ class ClubScreenshotTests {
                         league = topicsTestData[0],
                         tab = tab,
                         seasons = westHamSeasonsTestData,
+                        availableSeasons = westHamSeasonsTestData.map { it.season },
+                        season = season,
                         arrivals = userTransfersTestData.filter { (it.to as? ClubRef.Club)?.id == 83 },
                         departures = emptyList(),
                         rumours = emptyList(),
+                        transferCount = 2,
                     ),
                     showBackButton = true,
                     onBackClick = {},

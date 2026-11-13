@@ -26,6 +26,7 @@ import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
 import pl.nowinkitransferowe.core.model.ClubRef
+import pl.nowinkitransferowe.core.model.RumourStatus
 import pl.nowinkitransferowe.core.testing.data.clubsTestData
 import pl.nowinkitransferowe.core.testing.data.fixedRumoursTestData
 import pl.nowinkitransferowe.core.testing.data.topicsTestData
@@ -94,6 +95,33 @@ class ClubViewModelTest {
         assertTrue(state.arrivals.all { (it.to as ClubRef.Club).id == 83 })
         assertTrue(state.departures.isEmpty())
         assertEquals(listOf(83), seasonsRepository.refreshedClubs)
+    }
+
+    @Test
+    fun newestSeasonIsPicked_andAllSeasonsCanBeShown() = runTest {
+        val viewModel = viewModel(clubId = 86)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        val newest = transfersTestData.filter { (it.to as? ClubRef.Club)?.id == 86 }.maxOf { it.season }
+
+        val picked = assertIs<ClubUiState.Success>(viewModel.uiState.value)
+        assertEquals(newest, picked.season)
+        assertTrue(picked.arrivals.all { it.season == newest })
+
+        viewModel.selectSeason(null)
+
+        val all = assertIs<ClubUiState.Success>(viewModel.uiState.value)
+        assertEquals(null, all.season)
+        assertEquals(all.transferCount, all.arrivals.size + all.departures.size)
+    }
+
+    @Test
+    fun rumours_areOnlyTheActiveOnes() = runTest {
+        val old = fixedRumoursTestData[0].copy(id = 77, from = ClubRef.Club(83, "West Ham United"), status = RumourStatus.CONFIRMED)
+        rumourRepository.sendRumours(listOf(old))
+        val viewModel = viewModel(clubId = 83)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+
+        assertTrue(assertIs<ClubUiState.Success>(viewModel.uiState.value).rumours.isEmpty())
     }
 
     @Test

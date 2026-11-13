@@ -30,11 +30,13 @@
     <string name="feature_club_impl_tab_departures">Odeszli</string>
     <string name="feature_club_impl_tab_rumours">Plotki</string>
     <string name="feature_club_impl_spent">Wydatki %1$s</string>
+    <string name="feature_club_impl_spent_total">Wydatki łącznie</string>
+    <string name="feature_club_impl_all_seasons">Wszystkie</string>
     <string name="feature_club_impl_earned">Wpływy</string>
     <string name="feature_club_impl_balance">Bilans</string>
     <string name="feature_club_impl_spending_by_season">Wydatki i wpływy</string>
-    <string name="feature_club_impl_no_finances">Brak transferów z kwotą</string>
+    <string name="feature_club_impl_no_finances">Brak transferów z kwotą w tym sezonie</string>
     <string name="feature_club_impl_no_arrivals">Brak transferów do klubu</string>
     <string name="feature_club_impl_no_departures">Brak transferów z klubu</string>
-    <string name="feature_club_impl_no_rumours">Brak plotek o klubie</string>
+    <string name="feature_club_impl_no_rumours">Brak aktywnych plotek o klubie</string>
 </resources>

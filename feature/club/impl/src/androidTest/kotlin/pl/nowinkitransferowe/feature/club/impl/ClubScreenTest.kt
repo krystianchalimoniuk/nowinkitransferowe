@@ -60,17 +60,35 @@ class ClubScreenTest {
                     league = topicsTestData[0],
                     tab = tab,
                     seasons = seasons,
+                    availableSeasons = seasons.map { it.season },
+                    season = seasons.firstOrNull()?.season,
                     arrivals = arrivals,
                     departures = emptyList(),
                     rumours = emptyList(),
+                    transferCount = arrivals.size,
                 ),
                 showBackButton = true,
                 onBackClick = {},
                 onTabSelected = { this.tab = it },
                 onTransferClick = { transfer = it },
                 onRumourClick = {},
+                onSeasonSelected = {
+                    season = it
+                    seasonPicked = true
+                },
             )
         }
+    }
+
+    private var season: Season? = null
+    private var seasonPicked = false
+
+    @Test
+    fun seasonChips_reportThePick() {
+        setContent(ClubTab.ARRIVALS, listOf(ClubSeason(Season(2026), 313.0, 30.0, -283.0, emptyList(), emptyList())))
+        composeTestRule.onNodeWithText(string(R.string.feature_club_impl_all_seasons)).performClick()
+        assertEquals(true, seasonPicked)
+        assertEquals(null, season)
     }
 
     @Test

@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.ClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
@@ -40,6 +41,7 @@ import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.ClubSeason
 import pl.nowinkitransferowe.core.model.Country
 import pl.nowinkitransferowe.core.model.Rumour
+import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.UserTransfer
 
@@ -53,8 +55,9 @@ sealed interface ClubUiState {
     data object NotFound : ClubUiState
 
     /**
-     * The [club] with its [country] and [league] names, its [seasons] newest first, and its
-     * transfers in and out and rumours, newest first.
+     * The [club] with its [country] and [league] names and its spending [seasons], newest first.
+     * [arrivals] and [departures] are of the picked [season] (all of them when it is null), newest
+     * first; [rumours] are its active ones, as on the board.
      */
     data class Success(
         val club: Club,
@@ -62,11 +65,29 @@ sealed interface ClubUiState {
         val league: Topic?,
         val tab: ClubTab,
         val seasons: List<ClubSeason>,
+        val availableSeasons: List<Season>,
+        val season: Season?,
         val arrivals: List<UserTransfer>,
         val departures: List<UserTransfer>,
         val rumours: List<Rumour>,
+        val transferCount: Int,
     ) : ClubUiState {
-        val transferCount: Int get() = arrivals.size + departures.size
+        /** Spending of the picked season, or of all seasons together. */
+        val finances: ClubSeason?
+            get() = if (season != null) {
+                seasons.find { it.season == season }
+            } else {
+                seasons.takeIf { it.isNotEmpty() }?.let { all ->
+                    ClubSeason(
+                        season = all.first().season,
+                        spent = all.sumOf { it.spent },
+                        earned = all.sumOf { it.earned },
+                        balance = all.sumOf { it.balance },
+                        arrivals = all.flatMap { it.arrivals },
+                        departures = all.flatMap { it.departures },
+                    )
+                }
+            }
     }
 }
 
@@ -83,6 +104,9 @@ class ClubViewModel @AssistedInject constructor(
 
     private val tab = savedStateHandle.getStateFlow(TAB_KEY, ClubTab.FINANCES)
 
+    /** Start year of the picked season, [ALL_SEASONS] for all of them, null before a pick. */
+    private val pickedSeason = savedStateHandle.getStateFlow<Int?>(SEASON_KEY, null)
+
     private val transfers = combine(
         userTransferRepository.observeTransfersOfClub(clubId),
         rumourRepository.observeRumoursOfClub(clubId),
@@ -95,16 +119,28 @@ class ClubViewModel @AssistedInject constructor(
     val uiState: StateFlow<ClubUiState> = clubRepository.observeClub(clubId)
         .flatMapLatest { club ->
             if (club == null) return@flatMapLatest flowOf(ClubUiState.NotFound)
-            combine(tab, transfers, dictionary) { tab, (transfers, rumours, seasons), (countries, topics) ->
+            combine(tab, pickedSeason, transfers, dictionary) { tab, picked, (transfers, rumours, seasons), (countries, topics) ->
+                val available = (transfers.map { it.season } + seasons.map { it.season }).distinct().sortedDescending()
+                // The newest season until another one (or all of them) is picked
+                val season = when (picked) {
+                    null -> available.firstOrNull()
+                    ALL_SEASONS -> null
+                    else -> Season(picked)
+                }
+                val shown = if (season == null) transfers else transfers.filter { it.season == season }
+                val now = Clock.System.now()
                 ClubUiState.Success(
                     club = club,
                     country = countries.find { it.code == club.country },
                     league = topics.find { it.slug == club.topic },
                     tab = tab,
                     seasons = seasons.sortedByDescending { it.season },
-                    arrivals = transfers.filter { it.to.isClub(clubId) },
-                    departures = transfers.filter { it.from.isClub(clubId) },
-                    rumours = rumours,
+                    availableSeasons = available,
+                    season = season,
+                    arrivals = shown.filter { it.to.isClub(clubId) },
+                    departures = shown.filter { it.from.isClub(clubId) },
+                    rumours = rumours.filter { it.isFresh(now) },
+                    transferCount = transfers.size,
                 )
             }
         }
@@ -119,6 +155,11 @@ class ClubViewModel @AssistedInject constructor(
         savedStateHandle[TAB_KEY] = tab
     }
 
+    /** Picks [season], or all seasons when it is null. */
+    fun selectSeason(season: Season?) {
+        savedStateHandle[SEASON_KEY] = season?.startYear ?: ALL_SEASONS
+    }
+
     private fun ClubRef?.isClub(id: Int) = this is ClubRef.Club && this.id == id
 
     @AssistedFactory
@@ -128,5 +169,7 @@ class ClubViewModel @AssistedInject constructor(
 
     private companion object {
         const val TAB_KEY = "tab"
+        const val SEASON_KEY = "season"
+        const val ALL_SEASONS = 0
     }
 }

@@ -32,8 +32,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,7 +64,8 @@ import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
 import pl.nowinkitransferowe.core.model.Club
-import pl.nowinkitransferowe.core.model.ClubSeason
+import pl.nowinkitransferowe.core.model.Season
+import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.ui.CountryFlag
 import pl.nowinkitransferowe.core.ui.RumourListItem
 import pl.nowinkitransferowe.core.ui.SpendingBars
@@ -86,6 +89,7 @@ internal fun ClubRoute(
         showBackButton = showBackButton,
         onBackClick = onBackClick,
         onTabSelected = viewModel::selectTab,
+        onSeasonSelected = viewModel::selectSeason,
         onTransferClick = onTransferClick,
         onRumourClick = onRumourClick,
         modifier = modifier,
@@ -105,6 +109,7 @@ internal fun ClubScreen(
     onTransferClick: (Int) -> Unit,
     onRumourClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    onSeasonSelected: (Season?) -> Unit = {},
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         when (uiState) {
@@ -134,10 +139,13 @@ internal fun ClubScreen(
                 item(key = "top") { TopRow(showBackButton, onBackClick, uiState.club) }
                 item(key = "header") { Header(uiState) }
                 item(key = "tabs") { Tabs(uiState, onTabSelected) }
+                if (uiState.tab != ClubTab.RUMOURS && uiState.availableSeasons.isNotEmpty()) {
+                    item(key = "seasons") { SeasonChips(uiState.availableSeasons, uiState.season, onSeasonSelected) }
+                }
                 when (uiState.tab) {
-                    ClubTab.FINANCES -> finances(uiState.seasons)
-                    ClubTab.ARRIVALS -> transfers(uiState.arrivals, R.string.feature_club_impl_no_arrivals, onTransferClick)
-                    ClubTab.DEPARTURES -> transfers(uiState.departures, R.string.feature_club_impl_no_departures, onTransferClick)
+                    ClubTab.FINANCES -> finances(uiState)
+                    ClubTab.ARRIVALS -> transfers(uiState.arrivals, uiState.season, R.string.feature_club_impl_no_arrivals, onTransferClick)
+                    ClubTab.DEPARTURES -> transfers(uiState.departures, uiState.season, R.string.feature_club_impl_no_departures, onTransferClick)
                     ClubTab.RUMOURS -> {
                         if (uiState.rumours.isEmpty()) item(key = "empty") { Empty(R.string.feature_club_impl_no_rumours) }
                         items(uiState.rumours, key = { "rumour:${it.id}" }) { rumour ->
@@ -241,8 +249,30 @@ private fun Tabs(state: ClubUiState.Success, onSelected: (ClubTab) -> Unit) {
     }
 }
 
-private fun LazyListScope.finances(seasons: List<ClubSeason>) {
-    val latest = seasons.firstOrNull()
+/** "Wszystkie" and the seasons with transfers, newest first, like on the transfers list. */
+@Composable
+private fun SeasonChips(seasons: List<Season>, selected: Season?, onSelected: (Season?) -> Unit) {
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.testTag("club:seasons"),
+    ) {
+        item(key = "all") {
+            FilterChip(
+                selected = selected == null,
+                onClick = { onSelected(null) },
+                label = { Text(stringResource(R.string.feature_club_impl_all_seasons)) },
+            )
+        }
+        items(seasons, key = { it.startYear }) { season ->
+            FilterChip(selected = season == selected, onClick = { onSelected(season) }, label = { Text(season.label) })
+        }
+    }
+}
+
+private fun LazyListScope.finances(state: ClubUiState.Success) {
+    val seasons = state.seasons
+    val latest = state.finances
     if (latest == null) {
         item(key = "empty") { Empty(R.string.feature_club_impl_no_finances) }
         return
@@ -250,7 +280,9 @@ private fun LazyListScope.finances(seasons: List<ClubSeason>) {
     item(key = "tiles") {
         Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val colors = LocalNtColors.current
-            Tile(stringResource(R.string.feature_club_impl_spent, latest.season.label), millionsLabel(latest.spent), Modifier.weight(1f))
+            val spentLabel = state.season?.let { stringResource(R.string.feature_club_impl_spent, it.label) }
+                ?: stringResource(R.string.feature_club_impl_spent_total)
+            Tile(spentLabel, millionsLabel(latest.spent), Modifier.weight(1f))
             Tile(stringResource(R.string.feature_club_impl_earned), millionsLabel(latest.earned), Modifier.weight(1f))
             Tile(
                 stringResource(R.string.feature_club_impl_balance),
@@ -278,14 +310,24 @@ private fun Tile(label: String, value: String, modifier: Modifier = Modifier, va
     }
 }
 
+/** Transfers of one season, or of all of them under a header for each season. */
 private fun LazyListScope.transfers(
-    transfers: List<pl.nowinkitransferowe.core.model.UserTransfer>,
+    transfers: List<UserTransfer>,
+    season: Season?,
     emptyText: Int,
     onTransferClick: (Int) -> Unit,
 ) {
     if (transfers.isEmpty()) item(key = "empty") { Empty(emptyText) }
-    items(transfers, key = { "transfer:${it.id}" }) { transfer ->
-        TransferListItem(transfer, onClick = { onTransferClick(transfer.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+    val groups = if (season != null) mapOf(season to transfers) else transfers.groupBy { it.season }
+    groups.forEach { (groupSeason, seasonTransfers) ->
+        if (season == null) {
+            item(key = "season:${groupSeason.startYear}") {
+                NtSectionHeader(groupSeason.label, Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
+            }
+        }
+        items(seasonTransfers, key = { "transfer:${it.id}" }) { transfer ->
+            TransferListItem(transfer, onClick = { onTransferClick(transfer.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+        }
     }
 }
 
