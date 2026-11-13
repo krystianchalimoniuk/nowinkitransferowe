@@ -44,6 +44,8 @@ import pl.nowinkitransferowe.core.testing.util.TestNetworkMonitor
 import pl.nowinkitransferowe.core.testing.util.TestTimeZoneMonitor
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.bookmarks.api.navigation.BookmarksNavKey
+import pl.nowinkitransferowe.feature.leagues.api.navigation.LeaguesNavKey
+import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.TransferDetailsNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import pl.nowinkitransferowe.ui.NtAppState
@@ -128,7 +130,7 @@ class NtAppStateTest {
         }
 
         assertEquals(
-            setOf(ArticlesNavKey, TransfersNavKey, BookmarksNavKey),
+            setOf(ArticlesNavKey, TransfersNavKey, RumoursNavKey, LeaguesNavKey, BookmarksNavKey),
             state.navigationState.topLevelKeys,
         )
     }

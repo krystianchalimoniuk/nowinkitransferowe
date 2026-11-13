@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,73 +16,82 @@
 
 package pl.nowinkitransferowe.core.designsystem.component
 
-import androidx.annotation.StringRes
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 
+/**
+ * The top app bar of the sections: [title] on the left (the logo or [NtSectionTitle]) and the
+ * [actions] on the right, as in the 4.0 mockups.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NtTopAppBar(
-    @StringRes titleRes: Int,
-    navigationIcon: ImageVector,
-    navigationIconContentDescription: String,
-    actionIcon: ImageVector,
-    actionIconContentDescription: String,
+    title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
-    onNavigationClick: () -> Unit = {},
-    onActionClick: () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(id = titleRes)) },
-        navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = navigationIcon,
-                    contentDescription = navigationIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = onActionClick) {
-                Icon(
-                    imageVector = actionIcon,
-                    contentDescription = actionIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-        },
+    TopAppBar(
+        title = title,
+        actions = actions,
         colors = colors,
         modifier = modifier.testTag("ntTopAppBar"),
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/** An icon button for [NtTopAppBar], for example search or settings. */
+@Composable
+fun NtTopAppBarAction(
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/** A section title like on the website: Barlow Condensed, italic, upper case. */
+@Composable
+fun NtSectionTitle(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text.uppercase(),
+        style = MaterialTheme.typography.headlineMedium.copy(fontStyle = FontStyle.Italic),
+        maxLines = 1,
+        modifier = modifier,
+    )
+}
+
 @Preview("Top App Bar")
 @Composable
 private fun NtTopAppBarPreview() {
     NtTheme {
         NtTopAppBar(
-            titleRes = android.R.string.untitled,
-            navigationIcon = NtIcons.Search,
-            navigationIconContentDescription = "Navigation icon",
-            actionIcon = NtIcons.MoreVert,
-            actionIconContentDescription = "Action icon",
+            title = { NtSectionTitle("Transfery") },
+            actions = {
+                NtTopAppBarAction(NtIcons.Search, "Szukaj", onClick = {})
+                NtTopAppBarAction(NtIcons.Settings, "Ustawienia", onClick = {})
+            },
         )
     }
 }

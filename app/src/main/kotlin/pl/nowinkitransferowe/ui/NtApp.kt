@@ -67,17 +67,23 @@ import androidx.navigation3.ui.NavDisplay
 import pl.nowinkitransferowe.R
 import pl.nowinkitransferowe.core.designsystem.component.NtBackground
 import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
+import pl.nowinkitransferowe.core.designsystem.component.NtLogo
 import pl.nowinkitransferowe.core.designsystem.component.NtNavigationSuiteScaffold
+import pl.nowinkitransferowe.core.designsystem.component.NtSectionTitle
 import pl.nowinkitransferowe.core.designsystem.component.NtTopAppBar
+import pl.nowinkitransferowe.core.designsystem.component.NtTopAppBarAction
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalGradientColors
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.core.navigation.toEntries
 import pl.nowinkitransferowe.feature.articledetails.impl.ArticleDetailsPlaceholder
 import pl.nowinkitransferowe.feature.articledetails.impl.navigation.articleDetailsEntry
+import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.articles.impl.navigation.articlesEntry
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.LocalSnackbarHostState
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.bookmarksEntry
+import pl.nowinkitransferowe.feature.leagues.impl.navigation.leaguesEntry
+import pl.nowinkitransferowe.feature.rumours.impl.navigation.rumoursEntry
 import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.impl.navigation.searchEntry
 import pl.nowinkitransferowe.feature.settings.impl.SettingsDialog
@@ -232,22 +238,32 @@ internal fun NtApp(
                         ?: error("Top level nav item not found for ${appState.navigationState.currentTopLevelKey}")
 
                     NtTopAppBar(
-                        titleRes = destination.titleTextId,
-                        navigationIcon = NtIcons.Search,
-                        navigationIconContentDescription = stringResource(
-                            id = settingsR.string.feature_settings_impl_top_app_bar_navigation_icon_description,
-                        ),
-                        actionIcon = NtIcons.Settings,
-                        actionIconContentDescription = stringResource(
-                            id = settingsR.string.feature_settings_impl_top_app_bar_action_icon_description,
-                        ),
+                        title = {
+                            if (appState.navigationState.currentTopLevelKey == ArticlesNavKey) {
+                                NtLogo()
+                            } else {
+                                NtSectionTitle(stringResource(destination.titleTextId))
+                            }
+                        },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color.Transparent,
                         ),
-                        onActionClick = {
-                            onTopAppBarActionClick()
+                        actions = {
+                            NtTopAppBarAction(
+                                icon = NtIcons.Search,
+                                contentDescription = stringResource(
+                                    id = settingsR.string.feature_settings_impl_top_app_bar_navigation_icon_description,
+                                ),
+                                onClick = { navigator.navigateToSearch() },
+                            )
+                            NtTopAppBarAction(
+                                icon = NtIcons.Settings,
+                                contentDescription = stringResource(
+                                    id = settingsR.string.feature_settings_impl_top_app_bar_action_icon_description,
+                                ),
+                                onClick = onTopAppBarActionClick,
+                            )
                         },
-                        onNavigationClick = { navigator.navigateToSearch() },
                     )
                 }
 
@@ -266,6 +282,8 @@ internal fun NtApp(
                     val entryProvider = entryProvider {
                         articlesEntry(navigator, detailPlaceholder = { ArticleDetailsPlaceholder() })
                         transfersEntry(navigator, detailPlaceholder = { TransferDetailsPlaceholder() })
+                        rumoursEntry()
+                        leaguesEntry()
                         bookmarksEntry(navigator)
                         articleDetailsEntry(navigator)
                         transferDetailsEntry(navigator)

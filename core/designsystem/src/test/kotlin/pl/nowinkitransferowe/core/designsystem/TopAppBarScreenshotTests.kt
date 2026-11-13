@@ -34,7 +34,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.annotation.LooperMode
+import pl.nowinkitransferowe.core.designsystem.component.NtLogo
 import pl.nowinkitransferowe.core.designsystem.component.NtTopAppBar
+import pl.nowinkitransferowe.core.designsystem.component.NtTopAppBarAction
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.screenshottesting.DefaultRoborazziOptions
@@ -82,11 +84,11 @@ class TopAppBarScreenshotTests {
     @Composable
     private fun NtTopAppBarExample() {
         NtTopAppBar(
-            titleRes = android.R.string.untitled,
-            navigationIcon = NtIcons.Search,
-            navigationIconContentDescription = "Navigation icon",
-            actionIcon = NtIcons.MoreVert,
-            actionIconContentDescription = "Action icon",
+            title = { NtLogo() },
+            actions = {
+                NtTopAppBarAction(NtIcons.Search, "Szukaj", onClick = {})
+                NtTopAppBarAction(NtIcons.Settings, "Ustawienia", onClick = {})
+            },
         )
     }
 }

@@ -22,6 +22,10 @@ import androidx.compose.material.icons.automirrored.rounded.ShortText
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.Campaign
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Leaderboard
+import androidx.compose.material.icons.outlined.SwapHoriz
 import androidx.compose.material.icons.outlined.SyncAlt
 import androidx.compose.material.icons.outlined.Upcoming
 import androidx.compose.material.icons.rounded.Add
@@ -30,14 +34,18 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material.icons.rounded.Bookmarks
+import androidx.compose.material.icons.rounded.Campaign
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DoneAll
 import androidx.compose.material.icons.rounded.Grid3x3
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Leaderboard
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.SwapHoriz
 import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material.icons.rounded.Upcoming
 import androidx.compose.material.icons.rounded.ViewDay
@@ -48,6 +56,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
  */
 object NtIcons {
     val Add = Icons.Rounded.Add
+    val Home = Icons.Rounded.Home
+    val HomeBorder = Icons.Outlined.Home
+    val Transfers = Icons.Rounded.SwapHoriz
+    val TransfersBorder = Icons.Outlined.SwapHoriz
+    val Rumours = Icons.Rounded.Campaign
+    val RumoursBorder = Icons.Outlined.Campaign
+    val Leagues = Icons.Rounded.Leaderboard
+    val LeaguesBorder = Icons.Outlined.Leaderboard
     val ArrowBack = Icons.AutoMirrored.Rounded.ArrowBack
     val ArrowDownward = Icons.Rounded.ArrowDownward
     val ArrowUpward = Icons.Rounded.ArrowUpward

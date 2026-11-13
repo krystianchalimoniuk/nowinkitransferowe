@@ -22,7 +22,6 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -43,6 +42,8 @@ import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermission
 import javax.inject.Inject
 import pl.nowinkitransferowe.feature.articles.impl.R as NewsR
 import pl.nowinkitransferowe.feature.bookmarks.impl.R as BookmarksR
+import pl.nowinkitransferowe.feature.leagues.impl.R as LeaguesR
+import pl.nowinkitransferowe.feature.rumours.impl.R as RumoursR
 import pl.nowinkitransferowe.feature.settings.impl.R as SettingsR
 import pl.nowinkitransferowe.feature.transfers.impl.R as TransfersR
 
@@ -75,10 +76,11 @@ class NavigationTest {
 
     // The strings used for matching in these tests
     private val navigateUp by composeTestRule.stringResource(NewsR.string.feature_articles_impl_navigate_up)
-    private val news by composeTestRule.stringResource(NewsR.string.feature_articles_impl_title)
+    private val news by composeTestRule.stringResource(R.string.home)
     private val transfers by composeTestRule.stringResource(TransfersR.string.feature_transfers_impl_title)
     private val darkMode by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_dark_mode_config_dark)
-    private val appName by composeTestRule.stringResource(R.string.app_name)
+    private val rumours by composeTestRule.stringResource(RumoursR.string.feature_rumours_impl_title)
+    private val leagues by composeTestRule.stringResource(LeaguesR.string.feature_leagues_impl_title)
     private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_impl_title)
     private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_top_app_bar_action_icon_description)
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_dismiss_dialog_button_text)
@@ -170,18 +172,21 @@ class NavigationTest {
     @Test
     fun topLevelDestinations_showTopBarWithTitle() {
         composeTestRule.apply {
-            // Verify that the top bar contains the app name on the first screen.
-            onNodeWithText(appName).assertExists()
+            // The home screen shows the /N/ logo in the top bar.
+            onNodeWithText("/NOWINKI TRANSFEROWE/").assertExists()
 
-            // Go to the saved tab, verify that the top bar contains "saved". This means
-            // we'll have 2 elements with the text "saved" on screen. One in the top bar, and
-            // one in the bottom navigation.
+            // The other sections show their name in upper case, next to the label in the bar.
             onNodeWithText(saved).performClick()
-            onAllNodesWithText(saved).assertCountEquals(2)
+            onNodeWithText(saved.uppercase()).assertExists()
 
-            // As above but for the transfers tab.
             onNodeWithText(transfers).performClick()
-            onAllNodesWithText(transfers).assertCountEquals(2)
+            onNodeWithText(transfers.uppercase()).assertExists()
+
+            onNodeWithText(rumours).performClick()
+            onNodeWithText(rumours.uppercase()).assertExists()
+
+            onNodeWithText(leagues).performClick()
+            onNodeWithText(leagues.uppercase()).assertExists()
         }
     }
 
