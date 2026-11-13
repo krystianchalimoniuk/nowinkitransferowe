@@ -62,12 +62,13 @@ import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.model.UserTransfer
+import pl.nowinkitransferowe.core.model.crestUrl
 
 @Composable
 fun TransferResourceCardExpanded(
     modifier: Modifier = Modifier,
-    userTransferResource: UserTransferResource,
+    userTransferResource: UserTransfer,
     isBookmarked: Boolean,
     selectedTransferId: String? = null,
     highlightSelectedTransfer: Boolean = false,
@@ -76,7 +77,7 @@ fun TransferResourceCardExpanded(
     onClick: () -> Unit,
 ) {
     val clickActionLabel = stringResource(R.string.core_ui_card_tap_action)
-    val isSelected = highlightSelectedTransfer && userTransferResource.id == selectedTransferId
+    val isSelected = highlightSelectedTransfer && userTransferResource.id.toString() == selectedTransferId
 
     OutlinedCard(
         onClick = onClick,
@@ -124,7 +125,7 @@ fun TransferResourceCardExpanded(
 
                 Spacer(modifier = Modifier.height(16.dp))
                 TransfersResourceFootballerName(
-                    name = userTransferResource.name,
+                    name = userTransferResource.player.name,
                     modifier = Modifier.widthIn(180.dp),
                 )
                 Spacer(modifier = Modifier.height(32.dp))
@@ -138,13 +139,13 @@ fun TransferResourceCardExpanded(
                         modifier = Modifier.width(80.dp),
                     ) {
                         TransfersResourceImage(
-                            userTransferResource.clubFromImg,
+                            userTransferResource.from.crestUrl,
                             pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_crest_placeholder,
                             40.dp,
                             0.dp,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        TransfersResourceClubName(name = userTransferResource.clubFrom)
+                        TransfersResourceClubName(name = userTransferResource.from.name)
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {
@@ -163,20 +164,20 @@ fun TransferResourceCardExpanded(
                         modifier = Modifier.width(80.dp),
                     ) {
                         TransfersResourceImage(
-                            userTransferResource.clubToImg,
+                            userTransferResource.to.crestUrl,
                             pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_crest_placeholder,
                             40.dp,
                             0.dp,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        TransfersResourceClubName(name = userTransferResource.clubTo)
+                        TransfersResourceClubName(name = userTransferResource.to.name)
                     }
                 }
                 Spacer(modifier = Modifier.height(48.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TransfersResourceFootballerPrice(price = userTransferResource.price)
+                    TransfersResourceFootballerPrice(price = userTransferResource.fee.label)
                     Spacer(modifier = Modifier.width(8.dp))
                     if (!hasBeenViewed) {
                         NotificationDot(
@@ -236,11 +237,10 @@ fun TransfersResourceImage(
     size: Dp,
     cornerShape: Dp,
 ) {
-    val imageBaseUrl = "https://nowinkitransferowe.pl/Images/"
-    var isLoading by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(imageUrl != null) }
+    var isError by remember { mutableStateOf(imageUrl == null) }
     val imageLoader = rememberAsyncImagePainter(
-        model = "$imageBaseUrl$imageUrl",
+        model = imageUrl,
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
@@ -280,7 +280,7 @@ fun TransfersResourceImage(
 @Composable
 private fun ExpandedNewsResourcePreview(
     @PreviewParameter(UserTransfersResourcePreviewParameterProvider::class)
-    userTransferResources: List<UserTransferResource>,
+    userTransferResources: List<UserTransfer>,
 ) {
     CompositionLocalProvider(
         LocalInspectionMode provides true,

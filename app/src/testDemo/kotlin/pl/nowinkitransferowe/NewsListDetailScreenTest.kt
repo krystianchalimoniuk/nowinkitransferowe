@@ -44,9 +44,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import pl.nowinkitransferowe.core.data.repository.NewsRepository
+import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.NewsResource
+import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.core.navigation.rememberNavigationState
 import pl.nowinkitransferowe.core.navigation.toEntries
@@ -75,18 +75,18 @@ class NewsListDetailScreenTest {
     val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
 
     @Inject
-    lateinit var newsRepository: NewsRepository
+    lateinit var articleRepository: ArticleRepository
 
     /** Convenience function for getting all news during tests, */
-    private fun getNews(): List<NewsResource> = runBlocking {
-        newsRepository.getNewsResources().first()
+    private fun getNews(): List<Article> = runBlocking {
+        articleRepository.observeArticles().first()
     }
 
     // The strings used for matching in these tests.
     private val placeholderText by composeTestRule.stringResource(R.string.feature_details_impl_select_an_news)
     private val listPaneTag = "news:feed"
 
-    private val NewsResource.testTag
+    private val Article.testTag
         get() = "news:${this.id}"
 
     @Before

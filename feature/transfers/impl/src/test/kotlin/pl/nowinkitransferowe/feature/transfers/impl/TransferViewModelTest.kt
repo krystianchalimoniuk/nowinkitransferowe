@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferResourceRepository
-import pl.nowinkitransferowe.core.model.TransferResource
-import pl.nowinkitransferowe.core.model.UserTransferResource
-import pl.nowinkitransferowe.core.testing.repository.TestTransferResourceRepository
+import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
+import pl.nowinkitransferowe.core.model.mapToUserTransfers
+import pl.nowinkitransferowe.core.testing.data.transfersTestData
+import pl.nowinkitransferowe.core.testing.repository.TestTransferRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
@@ -44,9 +43,9 @@ class TransferViewModelTest {
 
     private val syncManager = TestSyncManager()
     private val userDataRepository = TestUserDataRepository()
-    private val transferRepository = TestTransferResourceRepository()
+    private val transferRepository = TestTransferRepository()
 
-    private val userTransferResourceRepository = CompositeUserTransferResourceRepository(
+    private val userTransferRepository = CompositeUserTransferRepository(
         transferRepository = transferRepository,
         userDataRepository = userDataRepository,
     )
@@ -56,11 +55,12 @@ class TransferViewModelTest {
 
     @Before
     fun setup() {
+        userDataRepository.setUserData(emptyUserData)
         viewModel = TransferViewModel(
             syncManager = syncManager,
             savedStateHandle = savedStateHandle,
             userDataRepository = userDataRepository,
-            userTransferResourceRepository = userTransferResourceRepository,
+            userTransferRepository = userTransferRepository,
         )
     }
 
@@ -75,220 +75,51 @@ class TransferViewModelTest {
 
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
 
-        assertEquals(
-            true,
-            viewModel.isSyncing.value,
-        )
+        assertEquals(true, viewModel.isSyncing.value)
     }
 
     @Test
     fun whenUpdateTransferResourceSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        val transferResourceId = "1"
-        viewModel.updateTransferResourceSaved(transferResourceId, true)
+        viewModel.updateTransferResourceSaved("1", true)
 
-        assertEquals(
-            expected = setOf(transferResourceId),
-            actual = userDataRepository.userData.first().bookmarkedTransferResources,
-        )
+        assertEquals(setOf("1"), userDataRepository.userData.first().bookmarkedTransferResources)
 
-        viewModel.updateTransferResourceSaved(transferResourceId, false)
+        viewModel.updateTransferResourceSaved("1", false)
 
-        assertEquals(
-            expected = emptySet(),
-            actual = userDataRepository.userData.first().bookmarkedTransferResources,
-        )
+        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedTransferResources)
     }
 
     @Test
     fun transferResourcesUpdatesAfterLoading() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
-        val userData = emptyUserData
-        transferRepository.sendTransferResources(sampleTransferResources)
+        transferRepository.sendTransfers(transfersTestData)
 
-        val bookmarkedTransferResourceId = "2"
-        viewModel.updateTransferResourceSaved(
-            transferResourceId = bookmarkedTransferResourceId,
-            isChecked = true,
-        )
+        viewModel.updateTransferResourceSaved(transferResourceId = "15000", isChecked = true)
 
-        val userDataExpected = userData.copy(
-            bookmarkedTransferResources = setOf(bookmarkedTransferResourceId),
+        val userData = emptyUserData.copy(bookmarkedTransferResources = setOf("15000"))
+        assertEquals(
+            TransferFeedUiState.Success(feed = transfersTestData.take(TransferViewModel.PAGE_SIZE).mapToUserTransfers(userData)),
+            viewModel.feedUiState.value,
         )
-
-        val expected = TransferFeedUiState.Success(
-            feed = listOf(
-                UserTransferResource(transferResource = sampleTransferResources[0], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[1], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[2], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[3], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[4], userDataExpected),
-            ),
-        )
-        assertEquals(expected, viewModel.feedUiState.value)
     }
 
     @Test
     fun whenLoadNexPageFunctionIsCalled_transferResourcesUpdates() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
-        val userData = emptyUserData
-        transferRepository.sendTransferResources(sampleTransferResources)
-        val bookmarkedTransferResourceId = "2"
-        viewModel.updateTransferResourceSaved(
-            transferResourceId = bookmarkedTransferResourceId,
-            isChecked = true,
-        )
+        transferRepository.sendTransfers(transfersTestData)
 
-        val userDataExpected = userData.copy(
-            bookmarkedTransferResources = setOf(bookmarkedTransferResourceId),
+        viewModel.loadNextPage(viewModel.page.value, transfersTestData.size)
+
+        assertEquals(
+            TransferFeedUiState.Success(feed = transfersTestData.take(2 * TransferViewModel.PAGE_SIZE).mapToUserTransfers(emptyUserData)),
+            viewModel.feedUiState.value,
         )
-        viewModel.loadNextPage(viewModel.page.value, sampleTransferResources.size)
-        val expected = TransferFeedUiState.Success(
-            feed = listOf(
-                UserTransferResource(transferResource = sampleTransferResources[0], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[1], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[2], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[3], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[4], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[5], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[6], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[7], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[8], userDataExpected),
-                UserTransferResource(transferResource = sampleTransferResources[9], userDataExpected),
-            ),
-        )
-        assertEquals(expected = expected, actual = viewModel.feedUiState.value)
     }
 
-    val sampleTransferResources = listOf(
-        TransferResource(
-            id = "1",
-            name = "Phil Bardsley",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "Burnley FC",
-            clubToImg = "burnley_herbb.png",
-            clubFrom = "Stockport",
-            clubFromImg = "stockportcounty_herbb.png",
-            price = "za darmo",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "2",
-            name = "Derek Cornelius",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "Vancouver",
-            clubToImg = "vancouverwhitecaps_herbb.png",
-            clubFrom = "Malmo FF",
-            clubFromImg = "malmo_herbb.png",
-            price = "nie ujawniono",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "3",
-            name = "Allan Saint-Maximeu",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "AJ Auxerre",
-            clubToImg = "auxerre_herbb.png",
-            clubFrom = "Saint-Etienne",
-            clubFromImg = "saintetiennenw2_herbb.png",
-            price = "0,5 mln \u20ac",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "4",
-            name = "Robin Le Normand",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "Atletico Madryt",
-            clubToImg = "atletico2_herbb.png",
-            clubFrom = "Real Sociedad",
-            clubFromImg = "sociedad_herbb.png",
-            price = "34,5 mln €",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "5",
-            name = "Jonathan Clauss",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "OGC Nice",
-            clubToImg = "auxerre_herbb.png",
-            clubFrom = "Olympique Marsylia",
-            clubFromImg = "marsylia_herbb.png",
-            price = "5 mln €",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "6",
-            name = "Lucas Piazon",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "Avs FS",
-            clubToImg = "avsfs_herbb.png",
-            clubFrom = "SC Braga",
-            clubFromImg = "braga_herbb.png",
-            price = "za darmo",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "7",
-            name = "Malang Sarr",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "RC Lens",
-            clubToImg = "lens_herbb.png",
-            clubFrom = "Chelsea FC",
-            clubFromImg = "chelsea_herbb.png",
-            price = "za darmo",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "8",
-            name = "Jesper Lindstrom",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "Everton FC",
-            clubToImg = "everton_herbb.png",
-            clubFrom = "SSC Napoli",
-            clubFromImg = "napolinowe_herbb.png",
-            price = "wypożyczenie",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "9",
-            name = "Fabian Mrozek",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "IF Brommapojkarna",
-            clubToImg = "ifbromma_herbb.png",
-            clubFrom = "Liverpool FC",
-            clubFromImg = "liverpool_herbb.png",
-            price = "wypożyczenie",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-        TransferResource(
-            id = "10",
-            name = "Kristopher Vida",
-            footballerImg = "aa11twarz.jpg",
-            clubTo = "Tatabanyai SC",
-            clubToImg = "tatabanya_herbb.png",
-            clubFrom = "Kisvarda FC",
-            clubFromImg = "kisvarda_herbb.jpg",
-            price = "za darmo",
-            url = "6592/Inne/nowinki-transferowe-na-zywo-",
-            season = "23/24",
-            publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-        ),
-    )
+    @Test
+    fun transfersMarkedAsViewedAreSaved() = runTest {
+        viewModel.setTransferResourcesViewed(listOf("19580", "15000"), true)
+
+        assertEquals(setOf("19580", "15000"), userDataRepository.userData.first().viewedTransferResources)
+    }
 }

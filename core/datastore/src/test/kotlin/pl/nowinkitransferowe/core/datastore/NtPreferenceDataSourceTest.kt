@@ -114,15 +114,14 @@ class NtPreferenceDataSourceTest {
     }
 
     @Test
-    fun apiV3ChangeListVersionsAreSavedNextToTheV2Ones() = runTest {
-        val nothingSynced = ChangeListVersions(transferResourceVersion = 0, newsResourceVersion = 0)
-        assertEquals(nothingSynced, subject.getChangeListVersions())
+    fun changeListVersionsAreSaved() = runTest {
+        assertEquals(ChangeListVersions(), subject.getChangeListVersions())
 
-        subject.updateChangeListVersion { copy(articleVersion = 120, playerVersion = 7) }
-        subject.updateChangeListVersion { copy(newsResourceVersion = 3) }
+        subject.updateChangeListVersion { copy(articleVersion = 120) }
+        subject.updateChangeListVersion { copy(playerVersion = 7) }
 
         assertEquals(
-            nothingSynced.copy(newsResourceVersion = 3, articleVersion = 120, playerVersion = 7),
+            ChangeListVersions(articleVersion = 120, playerVersion = 7),
             subject.getChangeListVersions(),
         )
     }

@@ -17,31 +17,18 @@
 package pl.nowinkitransferowe.core.network
 
 import pl.nowinkitransferowe.core.network.model.NetworkArticle
-import pl.nowinkitransferowe.core.network.model.NetworkChangeList
 import pl.nowinkitransferowe.core.network.model.NetworkChanges
 import pl.nowinkitransferowe.core.network.model.NetworkClub
 import pl.nowinkitransferowe.core.network.model.NetworkClubSeasons
 import pl.nowinkitransferowe.core.network.model.NetworkCountry
 import pl.nowinkitransferowe.core.network.model.NetworkLeagues
-import pl.nowinkitransferowe.core.network.model.NetworkNewsResource
 import pl.nowinkitransferowe.core.network.model.NetworkPlayer
 import pl.nowinkitransferowe.core.network.model.NetworkRumour
 import pl.nowinkitransferowe.core.network.model.NetworkRumourStats
 import pl.nowinkitransferowe.core.network.model.NetworkTopic
 import pl.nowinkitransferowe.core.network.model.NetworkTransfer
-import pl.nowinkitransferowe.core.network.model.NetworkTransferResource
 
 interface NtNetworkDataSource {
-    suspend fun getTransferResources(ids: String? = null): List<NetworkTransferResource>
-
-    suspend fun getNewsResources(ids: String? = null): List<NetworkNewsResource>
-
-    suspend fun getNewsResourceChangeList(after: Int? = null): List<NetworkChangeList>
-
-    suspend fun getTransferResourceChangeList(after: Int? = null): List<NetworkChangeList>
-
-    // API v3. The v2 calls above stay until the repositories move to v3.
-
     /**
      * Changes of [type] with a version greater than [after], at most [limit] of them.
      */

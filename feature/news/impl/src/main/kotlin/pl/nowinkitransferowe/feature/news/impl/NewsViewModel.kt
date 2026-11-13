@@ -29,8 +29,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
-import pl.nowinkitransferowe.core.data.repository.UserNewsResourceRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import javax.inject.Inject
@@ -40,7 +40,7 @@ class NewsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     syncManager: SyncManager,
     private val userDataRepository: UserDataRepository,
-    private val userNewsResourceRepository: UserNewsResourceRepository,
+    private val userArticleRepository: UserArticleRepository,
 ) : ViewModel() {
 
     val selectedNewsId: StateFlow<String?> =
@@ -48,7 +48,7 @@ class NewsViewModel @Inject constructor(
 
     private val _page: MutableStateFlow<Int> = MutableStateFlow(1)
     val page: StateFlow<Int> = _page.asStateFlow()
-    val newsCount = userNewsResourceRepository.getCount().stateIn(
+    val newsCount = userArticleRepository.observeArticleCount().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = 0,
@@ -62,7 +62,7 @@ class NewsViewModel @Inject constructor(
 
     val feedState: StateFlow<NewsFeedUiState> =
         _page.flatMapLatest {
-            userNewsResourceRepository.observeAllPages(INITIAL_PAGE_SIZE * it, 0)
+            userArticleRepository.observeArticles(limit = INITIAL_PAGE_SIZE * it)
         }.distinctUntilChanged()
             .map { updatedList ->
                 NewsFeedUiState.Success(updatedList)
@@ -74,13 +74,13 @@ class NewsViewModel @Inject constructor(
 
     fun updateNewsResourceSaved(newsResourceId: String, isChecked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceBookmarked(newsResourceId, isChecked)
+            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, isChecked) }
         }
     }
 
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceViewed(newsResourceId, viewed)
+            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleViewed(it, viewed) }
         }
     }
 

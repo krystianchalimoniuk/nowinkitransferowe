@@ -42,9 +42,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.annotation.LooperMode
+import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
-import pl.nowinkitransferowe.core.data.repository.UserNewsResourceRepository
-import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
+import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
@@ -97,10 +97,10 @@ class NtAppScreenSizesScreenshotTests {
     lateinit var userDataRepository: UserDataRepository
 
     @Inject
-    lateinit var userTransferResourceRepository: UserTransferResourceRepository
+    lateinit var userTransferRepository: UserTransferRepository
 
     @Inject
-    lateinit var userNewsResourceRepository: UserNewsResourceRepository
+    lateinit var userArticleRepository: UserArticleRepository
 
     @Before
     fun setup() {
@@ -124,8 +124,8 @@ class NtAppScreenSizesScreenshotTests {
                     NtTheme {
                         val fakeAppState = rememberNtAppState(
                             networkMonitor = networkMonitor,
-                            userNewsResourceRepository = userNewsResourceRepository,
-                            userTransferResourceRepository = userTransferResourceRepository,
+                            userArticleRepository = userArticleRepository,
+                            userTransferRepository = userTransferRepository,
                             timeZoneMonitor = timeZoneMonitor,
                         )
                         NtApp(

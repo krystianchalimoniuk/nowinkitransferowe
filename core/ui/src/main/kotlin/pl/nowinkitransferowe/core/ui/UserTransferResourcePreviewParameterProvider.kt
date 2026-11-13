@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,83 +17,54 @@
 package pl.nowinkitransferowe.core.ui
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import kotlinx.datetime.Instant
-import pl.nowinkitransferowe.core.model.DarkThemeConfig
-import pl.nowinkitransferowe.core.model.TransferResource
-import pl.nowinkitransferowe.core.model.UserData
-import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import kotlinx.datetime.LocalDate
+import pl.nowinkitransferowe.core.model.ClubRef
+import pl.nowinkitransferowe.core.model.Fee
+import pl.nowinkitransferowe.core.model.FeeKind
+import pl.nowinkitransferowe.core.model.NoClubStatus
+import pl.nowinkitransferowe.core.model.PlayerRef
+import pl.nowinkitransferowe.core.model.Transfer
+import pl.nowinkitransferowe.core.model.UserTransfer
+import pl.nowinkitransferowe.core.model.mapToUserTransfers
 import pl.nowinkitransferowe.core.ui.TransfersPreviewParameterData.transfersResources
 
 /**
  * This [PreviewParameterProvider](https://developer.android.com/reference/kotlin/androidx/compose/ui/tooling/preview/PreviewParameterProvider)
- * provides list of [UserNewsResource] for Composable previews.
+ * provides list of [UserTransfer] for Composable previews.
  */
-class UserTransfersResourcePreviewParameterProvider : PreviewParameterProvider<List<UserTransferResource>> {
+class UserTransfersResourcePreviewParameterProvider : PreviewParameterProvider<List<UserTransfer>> {
 
-    override val values: Sequence<List<UserTransferResource>> = sequenceOf(transfersResources)
+    override val values: Sequence<List<UserTransfer>> = sequenceOf(transfersResources)
 }
 
 object TransfersPreviewParameterData {
-    private val userData: UserData = UserData(
-        bookmarkedNewsResources = setOf("1", "3"),
-        viewedNewsResources = setOf("1", "2", "4"),
-        bookmarkedTransferResources = setOf("2", "3"),
-        viewedTransferResources = setOf("2,3"),
-        darkThemeConfig = DarkThemeConfig.DARK,
-        useDynamicColor = false,
-        isNewsNotificationsAllowed = true,
-        isTransfersNotificationsAllowed = true,
-        isGeneralNotificationAllowed = true,
-    )
-    val transfersResources = listOf(
-        UserTransferResource(
-            transferResource = TransferResource(
-                id = "1",
-                name = "Phil Bardsley",
-                footballerImg = "aa11twarz.jpg",
-                clubTo = "Burnley FC",
-                clubToImg = "burnley_herbb.png",
-                clubFrom = "Stockport",
-                clubFromImg = "stockportcounty_herbb.png",
-                price = "za darmo",
-                url = "6592/Inne/nowinki-transferowe-na-zywo-",
-                season = "23/24",
-                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-            ),
-            userData = userData,
+    val transfersResources: List<UserTransfer> = listOf(
+        Transfer(
+            id = 1,
+            player = PlayerRef(id = 1, name = "Phil Bardsley"),
+            from = ClubRef.Club(id = 1, name = "Stockport"),
+            to = ClubRef.Club(id = 2, name = "Burnley FC"),
+            fee = Fee(kind = FeeKind.FREE, label = "za darmo", millionsOfEuro = null),
+            date = LocalDate(2024, 7, 1),
+            articleId = null,
         ),
-        UserTransferResource(
-            transferResource = TransferResource(
-                id = "2",
-                name = "Derek Cornelius",
-                footballerImg = "aa11twarz.jpg",
-                clubTo = "Vancouver",
-                clubToImg = "vancouverwhitecaps_herbb.png",
-                clubFrom = "Malmo FF",
-                clubFromImg = "malmo_herbb.png",
-                price = "nie ujawniono",
-                url = "6592/Inne/nowinki-transferowe-na-zywo-",
-                season = "23/24",
-                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-            ),
-            userData = userData,
+        Transfer(
+            id = 2,
+            player = PlayerRef(id = 2, name = "Raphael Varane"),
+            from = ClubRef.NoClub(status = NoClubStatus.FREE_AGENT, name = "Bez klubu"),
+            to = ClubRef.Club(id = 3, name = "Como 1907"),
+            fee = Fee(kind = FeeKind.AMOUNT, label = "1,5 mln €", millionsOfEuro = 1.5),
+            date = LocalDate(2024, 7, 29),
+            articleId = null,
         ),
-        UserTransferResource(
-            transferResource = TransferResource(
-                id = "3",
-                name = "aa11twarz.jpg",
-                footballerImg = "AJ Auxerre",
-                clubTo = "AJ Auxerre",
-                clubToImg = "auxerre_herbb.png",
-                clubFrom = "Saint-Etienne",
-                clubFromImg = "saintetiennenw2_herbb.png",
-                price = "0,5 mln \u20ac",
-                url = "6592/Inne/nowinki-transferowe-na-zywo-",
-                season = "23/24",
-                publishDate = Instant.parse("2022-10-06T23:00:00.000Z"),
-            ),
-            userData = userData,
+        Transfer(
+            id = 3,
+            player = PlayerRef(id = 3, name = "Mason Greenwood"),
+            from = ClubRef.Club(id = 4, name = "Manchester United"),
+            to = ClubRef.Club(id = 5, name = "Olympique Marsylia"),
+            fee = Fee(kind = FeeKind.LOAN, label = "wypożyczenie", millionsOfEuro = null),
+            date = LocalDate(2024, 7, 18),
+            articleId = null,
         ),
-    )
+    ).mapToUserTransfers(PreviewParameterData.userData)
 }

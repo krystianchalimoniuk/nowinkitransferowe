@@ -64,7 +64,7 @@ val urlProperties = listOf("secrets.defaults.properties", "local.properties")
 
 androidComponents {
     onVariants { variant ->
-        listOf("BASE_URL", "BACKEND_URL", "API_URL", "IMAGES_URL").forEach { name ->
+        listOf("BASE_URL", "API_URL").forEach { name ->
             variant.buildConfigFields!!.put(
                 name,
                 urlProperties.map { properties ->

@@ -85,7 +85,7 @@ import pl.nowinkitransferowe.core.designsystem.component.NtGradientBackground
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.ui.DevicePreviews
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
@@ -173,7 +173,7 @@ fun DetailsTransferScreen(
 
 @Composable
 fun DetailsTransferBody(
-    userTransferResources: List<UserTransferResource>,
+    userTransferResources: List<UserTransfer>,
     dataPoints: List<DataPoint>,
     state: LazyListState,
 ) {
@@ -205,7 +205,7 @@ fun DetailsTransferBody(
 
                             Spacer(modifier = Modifier.height(24.dp))
                             TransfersResourceFootballerName(
-                                name = userTransferResources.first().name,
+                                name = userTransferResources.first().player.name,
                                 modifier = Modifier.widthIn(180.dp),
                             )
                         }
@@ -260,19 +260,19 @@ fun DetailsTransferBody(
                             TransfersResourceTransferListLabel(label = stringResource(id = R.string.feature_details_transfers_impl_list_label_total_transfer_amount))
                             TransfersResourceTransferListLabel(
                                 label = calculateTransferSum(
-                                    userTransferResources.map { it.price },
+                                    userTransferResources.map { it.fee.label },
                                 ),
                             )
                         }
                         Spacer(modifier = Modifier.height(10.dp))
-                        if (hasMoreThanOrEqualTwoCashTransfers(userTransferResources.map { it.price })) {
+                        if (hasMoreThanOrEqualTwoCashTransfers(userTransferResources.map { it.fee.label })) {
                             TransfersResourceChartTitle(
                                 label = stringResource(R.string.feature_details_transfers_impl_transfers_value),
                                 Modifier.padding(horizontal = 8.dp),
                             )
                             TransfersResourceMaxTransferValue(
                                 label = stringResource(R.string.feature_details_transfers_impl_max_transfer_value),
-                                value = calculateMaxTransferValue(prices = userTransferResources.map { it.price }),
+                                value = calculateMaxTransferValue(prices = userTransferResources.map { it.fee.label }),
                                 modifier = Modifier
                                     .align(Alignment.End)
                                     .padding(top = 25.dp, end = 16.dp),
@@ -568,21 +568,17 @@ fun LineChart(
 @Composable
 fun DetailsScreenPopulated(
     @PreviewParameter(UserTransfersResourcePreviewParameterProvider::class)
-    userTransferResources: List<UserTransferResource>,
+    userTransferResources: List<UserTransfer>,
 ) {
     NtTheme {
         NtBackground {
             DetailsTransferScreen(
                 detailsTransferUiState = DetailsTransferUiState.Success(
                     userTransferResources,
-                    userTransferResources.sortedBy { it.publishDate }.map {
+                    userTransferResources.sortedBy { it.date }.map {
                         DataPoint(
-                            date = shortcutDate(
-                                dateFormatted(
-                                    publishDate = it.publishDate,
-                                ),
-                            ),
-                            price = priceToFloat(it.price),
+                            date = shortcutDate(dateFormatted(it.date)),
+                            price = priceToFloat(it.fee.label),
                             bitmap = null,
                         )
                     },

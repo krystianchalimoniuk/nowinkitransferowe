@@ -37,8 +37,8 @@ import androidx.lifecycle.testing.TestLifecycleOwner
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.testing.data.userNewsResourcesTestData
-import pl.nowinkitransferowe.core.testing.data.userTransferResourcesTestData
+import pl.nowinkitransferowe.core.testing.data.savedUserArticlesTestData
+import pl.nowinkitransferowe.core.testing.data.savedUserTransfersTestData
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import kotlin.test.assertEquals
@@ -81,10 +81,10 @@ class BookmarksScreenTest {
         composeTestRule.setContent {
             BookmarksScreen(
                 newsFeedState = NewsFeedUiState.Success(
-                    userNewsResourcesTestData.take(2),
+                    savedUserArticlesTestData.take(2),
                 ),
                 transferFeedState = TransferFeedUiState.Success(
-                    feed = userTransferResourcesTestData.take(
+                    feed = savedUserTransfersTestData.take(
                         2,
                     ),
                 ),
@@ -101,7 +101,7 @@ class BookmarksScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[0].title,
+                savedUserArticlesTestData[0].title,
                 substring = true,
             )
             .assertExists()
@@ -110,14 +110,14 @@ class BookmarksScreenTest {
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userNewsResourcesTestData[1].title,
+                    savedUserArticlesTestData[1].title,
                     substring = true,
                 ),
             )
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[1].title,
+                savedUserArticlesTestData[1].title,
                 substring = true,
             )
             .assertExists()
@@ -126,13 +126,13 @@ class BookmarksScreenTest {
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userTransferResourcesTestData[0].name,
+                    savedUserTransfersTestData[0].player.name,
                     substring = true,
                 ),
             )
         composeTestRule
             .onNodeWithText(
-                userTransferResourcesTestData[0].name,
+                savedUserTransfersTestData[0].player.name,
                 substring = true,
             )
             .assertExists()
@@ -141,14 +141,14 @@ class BookmarksScreenTest {
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userTransferResourcesTestData[1].name,
+                    savedUserTransfersTestData[1].player.name,
                     substring = true,
                 ),
             )
 
         composeTestRule
             .onNodeWithText(
-                userTransferResourcesTestData[1].name,
+                savedUserTransfersTestData[1].player.name,
                 substring = true,
             )
             .assertExists()
@@ -162,14 +162,14 @@ class BookmarksScreenTest {
         composeTestRule.setContent {
             BookmarksScreen(
                 newsFeedState = NewsFeedUiState.Success(
-                    feed = userNewsResourcesTestData.take(2),
+                    feed = savedUserArticlesTestData.take(2),
                 ),
                 transferFeedState = TransferFeedUiState.Success(
                     feed = arrayListOf(),
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = { newsResourceId ->
-                    assertEquals(userNewsResourcesTestData[0].id, newsResourceId)
+                    assertEquals(savedUserArticlesTestData[0].id.toString(), newsResourceId)
                     removeNewsFromBookmarksCalled = true
                 },
                 removeFromTransferBookmarks = {},
@@ -189,7 +189,7 @@ class BookmarksScreenTest {
             ).filter(
                 hasAnyAncestor(
                     hasText(
-                        userNewsResourcesTestData[0].title,
+                        savedUserArticlesTestData[0].title,
                         substring = true,
                     ),
                 ),
@@ -211,14 +211,14 @@ class BookmarksScreenTest {
                     feed = arrayListOf(),
                 ),
                 transferFeedState = TransferFeedUiState.Success(
-                    feed = userTransferResourcesTestData.take(
+                    feed = savedUserTransfersTestData.take(
                         2,
                     ),
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromNewsBookmarks = {},
                 removeFromTransferBookmarks = { transferResourceId ->
-                    assertEquals(userTransferResourcesTestData[0].id, transferResourceId)
+                    assertEquals(savedUserTransfersTestData[0].id.toString(), transferResourceId)
                     removeTransfersFromBookmarksCalled = true
                 },
                 onTopicClick = {},
@@ -237,7 +237,7 @@ class BookmarksScreenTest {
             ).filter(
                 hasAnyAncestor(
                     hasText(
-                        userTransferResourcesTestData[0].name,
+                        savedUserTransfersTestData[0].player.name,
                         substring = true,
                     ),
                 ),

@@ -23,7 +23,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -31,29 +31,27 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.nowinkitransferowe.core.common.result.Result
 import pl.nowinkitransferowe.core.common.result.asResult
-import pl.nowinkitransferowe.core.data.repository.NewsRepository
+import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
-import pl.nowinkitransferowe.core.model.UserNewsResource
+import pl.nowinkitransferowe.core.model.UserArticle
 
 @HiltViewModel(assistedFactory = DetailsViewModel.Factory::class)
 class DetailsViewModel @AssistedInject constructor(
     private val userDataRepository: UserDataRepository,
-    newsRepository: NewsRepository,
+    userArticleRepository: UserArticleRepository,
     @Assisted val newsResourceId: String,
 ) : ViewModel() {
 
-    val detailsUiState = if (newsResourceId == null) {
-        flowOf()
-    } else {
-        newsRepository.getNewsResource(newsResourceId)
-    }.combine(userDataRepository.userData) { newsResource, userData ->
-        UserNewsResource(newsResource, userData)
-    }.onEach {
-        if (!it.hasBeenViewed) {
-            setNewsResourceViewed(it.id, true)
-        }
-    }.asResult()
+    // Waits while the article is not in the database yet, for example a link opened before the
+    // first sync.
+    val detailsUiState = (newsResourceId.toIntOrNull()?.let(userArticleRepository::observeArticle) ?: flowOf(null))
+        .filterNotNull()
+        .onEach {
+            if (!it.hasBeenViewed) {
+                setNewsResourceViewed(it.id.toString(), true)
+            }
+        }.asResult()
         .map { result ->
             when (result) {
                 is Result.Success -> {
@@ -74,13 +72,13 @@ class DetailsViewModel @AssistedInject constructor(
 
     fun bookmarkNews(newsResourceId: String, bookmarked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceBookmarked(newsResourceId, bookmarked)
+            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, bookmarked) }
         }
     }
 
     private fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceViewed(newsResourceId, viewed)
+            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleViewed(it, viewed) }
         }
     }
 
@@ -91,7 +89,7 @@ class DetailsViewModel @AssistedInject constructor(
 }
 
 sealed interface DetailsUiState {
-    data class Success(val userNewsResource: UserNewsResource) : DetailsUiState
+    data class Success(val userNewsResource: UserArticle) : DetailsUiState
     data object Error : DetailsUiState
     data object Loading : DetailsUiState
 }

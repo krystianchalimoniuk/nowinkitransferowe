@@ -24,11 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import pl.nowinkitransferowe.core.analytics.LocalAnalyticsHelper
-import pl.nowinkitransferowe.core.model.UserNewsResource
+import pl.nowinkitransferowe.core.model.UserArticle
 
 fun LazyListScope.userNewsResourceCardItems(
-    items: List<UserNewsResource>,
-    onToggleBookmark: (item: UserNewsResource) -> Unit,
+    items: List<UserArticle>,
+    onToggleBookmark: (item: UserArticle) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     itemModifier: Modifier = Modifier,
@@ -36,7 +36,7 @@ fun LazyListScope.userNewsResourceCardItems(
     items = items,
     key = { it.id },
     itemContent = { userNewsResource ->
-        val resourceUrl = Uri.parse(userNewsResource.imageUrl)
+        val resourceUrl = Uri.parse(userNewsResource.url)
         val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
         val context = LocalContext.current
         val analyticsHelper = LocalAnalyticsHelper.current
@@ -48,10 +48,10 @@ fun LazyListScope.userNewsResourceCardItems(
             onToggleBookmark = { onToggleBookmark(userNewsResource) },
             onClick = {
                 analyticsHelper.logNewsResourceOpened(
-                    newsResourceId = userNewsResource.id,
+                    newsResourceId = userNewsResource.id.toString(),
                 )
 //                launchCustomChromeTab(context, resourceUrl, backgroundColor)
-                onNewsResourceViewed(userNewsResource.id)
+                onNewsResourceViewed(userNewsResource.id.toString())
             },
             onTopicClick = onTopicClick,
             modifier = itemModifier,

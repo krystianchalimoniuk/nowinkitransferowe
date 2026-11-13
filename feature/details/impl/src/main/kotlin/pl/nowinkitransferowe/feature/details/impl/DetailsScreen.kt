@@ -72,8 +72,7 @@ import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
-import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.core.network.BuildConfig
+import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.ui.BookmarkButton
 import pl.nowinkitransferowe.core.ui.DevicePreviews
 import pl.nowinkitransferowe.core.ui.NewsResourceAuthor
@@ -156,7 +155,7 @@ internal fun DetailsScreen(
                         userNewsResource = detailsUiState.userNewsResource,
                         onToggleBookmark = {
                             onBookmarkChanged(
-                                detailsUiState.userNewsResource.id,
+                                detailsUiState.userNewsResource.id.toString(),
                                 !detailsUiState.userNewsResource.isSaved,
                             )
                         },
@@ -176,7 +175,7 @@ private fun DetailsToolbar(
     modifier: Modifier = Modifier,
     showBackButton: Boolean = true,
     onBackClick: () -> Unit = {},
-    userNewsResource: UserNewsResource,
+    userNewsResource: UserArticle,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -199,13 +198,7 @@ private fun DetailsToolbar(
             Spacer(modifier = Modifier.width(1.dp))
         }
         val context = LocalContext.current
-        val shareIntent = getShareIntent(
-            url = prepareUrl(
-                id = userNewsResource.id,
-                title = userNewsResource.title,
-                category = userNewsResource.category.serializedName,
-            ),
-        )
+        val shareIntent = getShareIntent(url = userNewsResource.url)
         IconButton(
             onClick = {
                 startActivity(
@@ -233,38 +226,8 @@ private fun getShareIntent(url: String): Intent {
 }
 
 @Composable
-private fun prepareUrl(id: String, title: String, category: String) = "${BuildConfig.BASE_URL}$id/${
-    category.replace(
-        " ",
-        "-",
-    )
-}/${escapeTitle(title = title)}"
-
-@Composable
-private fun escapeTitle(title: String): String = title.lowercase()
-    .replace(" ", "-")
-    .replace("!", "-")
-    .replace(":", "")
-    .replace("?", "-")
-    .replace(",", "")
-    .replace("ą", "a")
-    .replace("ć", "c")
-    .replace("ę", "e")
-    .replace("ł", "l")
-    .replace("ń", "n")
-    .replace("ó", "o")
-    .replace("ś", "s")
-    .replace("ż", "z")
-    .replace("ź", "z")
-    .replace("'", "")
-    .replace("(", "")
-    .replace(")", "")
-    .replace("[", "")
-    .replace("]", "")
-
-@Composable
 private fun DetailsBody(
-    userNewsResource: UserNewsResource,
+    userNewsResource: UserArticle,
     onToggleBookmark: () -> Unit,
     onTopicClick: (String) -> Unit,
     darkThemeConfig: DarkThemeConfig,
@@ -290,21 +253,21 @@ private fun DetailsBody(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     NewsResourceMetaData(
-                        userNewsResource.publishDate,
-                        userNewsResource.category.combineNameWithEmoji(),
+                        userNewsResource.publishedAt,
+                        userNewsResource.topics.firstOrNull()?.name.orEmpty(),
                         textStyle = MaterialTheme.typography.labelMedium,
                     )
                 }
                 Spacer(modifier = Modifier.height(14.dp))
                 NewsResourceDetailsDescription(
-                    userNewsResource.description,
+                    userNewsResource.contentHtml,
                     shouldUserDarkTheme = shouldUseDarkTheme(
                         darkThemeConfig = darkThemeConfig,
                     ),
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 NewsResourceTopics(
-                    topics = userNewsResource.topics,
+                    topics = userNewsResource.tags,
                     onTopicClick = onTopicClick,
                 )
                 Spacer(modifier = Modifier.height(32.dp))
@@ -318,14 +281,14 @@ private fun DetailsBody(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TransfersResourceImage(
-                            imageUrl = userNewsResource.authPic,
+                            imageUrl = userNewsResource.author?.avatarUrl,
                             placeHolderRes = pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_author_picture_placeholder,
                             size = 60.dp,
                             cornerShape = 32.dp,
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         NewsResourceAuthor(
-                            newsResourceAuthor = userNewsResource.author,
+                            newsResourceAuthor = userNewsResource.author?.name.orEmpty(),
                             modifier = Modifier.width(80.dp),
                         )
                     }
@@ -339,7 +302,7 @@ private fun DetailsBody(
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = modifier,
                         )
-                        NewsResourceSrc(newsResourceSrc = userNewsResource.src)
+                        NewsResourceSrc(newsResourceSrc = userNewsResource.newsSource.orEmpty())
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -452,7 +415,7 @@ fun ColumnScope.NewsResourceDetailsDescription(description: String, shouldUserDa
 @Composable
 fun DetailsScreenPopulated(
     @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
-    userNewsResources: List<UserNewsResource>,
+    userNewsResources: List<UserArticle>,
 ) {
     NtTheme {
         NtBackground {

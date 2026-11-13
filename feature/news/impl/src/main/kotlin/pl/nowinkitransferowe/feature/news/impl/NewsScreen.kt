@@ -60,7 +60,7 @@ import pl.nowinkitransferowe.core.designsystem.scrollbar.DraggableScrollbar
 import pl.nowinkitransferowe.core.designsystem.scrollbar.rememberDraggableScroller
 import pl.nowinkitransferowe.core.designsystem.scrollbar.scrollbarState
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserNewsResource
+import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.ui.DevicePreviews
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
@@ -249,7 +249,7 @@ fun ForYouScreenLoading() {
 @Composable
 fun ForYouScreenPopulatedAndLoading(
     @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
-    userNewsResources: List<UserNewsResource>,
+    userNewsResources: List<UserArticle>,
 ) {
     NtTheme {
         NewsScreen(

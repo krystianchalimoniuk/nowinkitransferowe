@@ -24,20 +24,21 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.nowinkitransferowe.core.common.result.Result
 import pl.nowinkitransferowe.core.common.result.asResult
-import pl.nowinkitransferowe.core.data.repository.TransferResourceRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
+import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.ImageDownloader
-import pl.nowinkitransferowe.core.model.UserTransferResource
-import pl.nowinkitransferowe.core.model.mapToUserTransferResources
-import pl.nowinkitransferowe.core.network.BuildConfig
+import pl.nowinkitransferowe.core.model.UserTransfer
+import pl.nowinkitransferowe.core.model.crestUrl
 import pl.nowinkitransferowe.feature.details.transfers.impl.Util.dateFormatted
 import pl.nowinkitransferowe.feature.details.transfers.impl.Util.priceToFloat
 import pl.nowinkitransferowe.feature.details.transfers.impl.Util.shortcutDate
@@ -45,18 +46,21 @@ import pl.nowinkitransferowe.feature.details.transfers.impl.Util.shortcutDate
 @HiltViewModel(assistedFactory = DetailsTransferViewModel.Factory::class)
 class DetailsTransferViewModel @AssistedInject constructor(
     private val userDataRepository: UserDataRepository,
-    transferRepository: TransferResourceRepository,
+    userTransferRepository: UserTransferRepository,
     private val imageDownloader: ImageDownloader,
     @Assisted val transferResourceId: String,
 ) : ViewModel() {
 
     val detailsTransferUiState =
-        transferRepository.getTransferResource(transferResourceId)
-            .flatMapLatest { transferRepository.getTransferResourceByName(it.name) }
-            .combine(userDataRepository.userData) { transferResources, userData ->
-                val userTransferResource = transferResources.mapToUserTransferResources(userData)
-                Pair(userTransferResource, getChartDataPoint(userTransferResource))
-            }.onEach {
+        // Every transfer of the player, newest first; waits while the transfer is not in the
+        // database yet.
+        (transferResourceId.toIntOrNull()?.let(userTransferRepository::observeTransfer) ?: flowOf(null))
+            .filterNotNull()
+            .map { it.player.id }
+            .distinctUntilChanged()
+            .flatMapLatest(userTransferRepository::observeTransfersOfPlayer)
+            .map { transfers -> Pair(transfers, getChartDataPoint(transfers)) }
+            .onEach {
                 it.first.onEach { item ->
                     if (!item.hasBeenViewed) {
                         setTransferResourceViewed(item.id, true)
@@ -81,18 +85,18 @@ class DetailsTransferViewModel @AssistedInject constructor(
                 DetailsTransferUiState.Loading,
             )
 
-    private fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean) {
+    private fun setTransferResourceViewed(transferId: Int, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setTransferResourceViewed(transferResourceId, viewed)
+            userDataRepository.setTransferViewed(transferId, viewed)
         }
     }
 
-    private suspend fun getChartDataPoint(userTransferResource: List<UserTransferResource>): List<DataPoint> {
+    private suspend fun getChartDataPoint(userTransferResource: List<UserTransfer>): List<DataPoint> {
         val dataPoints = mutableListOf<DataPoint>()
-        userTransferResource.sortedBy { it.id.toInt() }.forEach {
-            val date = shortcutDate(dateFormatted(it.publishDate))
-            val price = priceToFloat(it.price)
-            val bitmap = imageDownloader.loadImage("${BuildConfig.IMAGES_URL}${it.clubToImg}")
+        userTransferResource.sortedWith(compareBy<UserTransfer> { it.date }.thenBy { it.id }).forEach {
+            val date = shortcutDate(dateFormatted(it.date))
+            val price = priceToFloat(it.fee.label)
+            val bitmap = it.to.crestUrl?.let { url -> imageDownloader.loadImage(url) }
             val scaledBitmap =
                 bitmap?.let { it1 -> Bitmap.createScaledBitmap(it1, 80, 80, false) }
             dataPoints.add(
@@ -114,7 +118,7 @@ class DetailsTransferViewModel @AssistedInject constructor(
 
 sealed interface DetailsTransferUiState {
     data class Success(
-        val userTransferResource: List<UserTransferResource>,
+        val userTransferResource: List<UserTransfer>,
         val dataPoints: List<DataPoint>,
     ) : DetailsTransferUiState
 

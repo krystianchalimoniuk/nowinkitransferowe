@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,35 +26,28 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import pl.nowinkitransferowe.core.data.repository.CompositeUserNewsResourceRepository
-import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.core.testing.data.newsResourcesTestData
-import pl.nowinkitransferowe.core.testing.repository.TestNewsRepository
+import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
+import pl.nowinkitransferowe.core.model.mapToUserArticles
+import pl.nowinkitransferowe.core.testing.data.articlesTestData
+import pl.nowinkitransferowe.core.testing.data.topicsTestData
+import pl.nowinkitransferowe.core.testing.repository.TestArticleRepository
+import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import kotlin.test.assertEquals
 
-/**
- * To learn more about how this test handles Flows created with stateIn, see
- * https://developer.android.com/kotlin/flow/test#statein
- *
- * These tests use Robolectric because the subject under test (the ViewModel) uses
- * `SavedStateHandle.toRoute` which has a dependency on `android.os.Bundle`.
- *
- * TODO: Remove Robolectric if/when AndroidX Navigation API is updated to remove Android dependency.
- *  *  See https://issuetracker.google.com/340966212.
- */
 @RunWith(RobolectricTestRunner::class)
 class DetailsViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val userDataRepository = TestUserDataRepository()
-    private val newsRepository = TestNewsRepository()
+    private val articleRepository = TestArticleRepository()
 
-    private val userNewsResourceRepository = CompositeUserNewsResourceRepository(
-        newsRepository = newsRepository,
+    private val userArticleRepository = CompositeUserArticleRepository(
+        articleRepository = articleRepository,
+        dictionaryRepository = TestDictionaryRepository(),
         userDataRepository = userDataRepository,
     )
 
@@ -62,10 +55,11 @@ class DetailsViewModelTest {
 
     @Before
     fun setup() {
+        userDataRepository.setUserData(emptyUserData)
         viewModel = DetailsViewModel(
             userDataRepository = userDataRepository,
-            newsRepository = newsRepository,
-            newsResourceId = newsResourcesTestData.first().id,
+            userArticleRepository = userArticleRepository,
+            newsResourceId = articlesTestData.first().id.toString(),
         )
     }
 
@@ -74,49 +68,37 @@ class DetailsViewModelTest {
         assertEquals(DetailsUiState.Loading, viewModel.detailsUiState.value)
     }
 
-//    @Test
-//    fun whenEntityIsNotExist_uiStateIsError() = runTest {
-//        val collectJob =
-//            launch(UnconfinedTestDispatcher()) { viewModel.detailsUiState.collect() }
-//        savedStateHandle[DEEP_LINK_NEWS_RESOURCE_ID_KEY] = "11"
-//        newsRepository.sendNewsResources(newsResourcesTestData)
-//        assertEquals(expected = DetailsUiState.Error, actual = viewModel.detailsUiState.value)
-//        collectJob.cancel()
-//    }
+    @Test
+    fun stateStaysLoadingUntilTheArticleIsSynced() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.detailsUiState.collect() }
+        articleRepository.sendArticles(emptyList())
+
+        assertEquals(DetailsUiState.Loading, viewModel.detailsUiState.value)
+    }
 
     @Test
-    fun whenEntityExist_uiStateIsSuccess() = runTest {
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.detailsUiState.collect() }
-        newsRepository.sendNewsResources(newsResourcesTestData)
-        userDataRepository.setDynamicColorPreference(false)
+    fun whenEntityExist_uiStateIsSuccessAndTheArticleIsMarkedAsViewed() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.detailsUiState.collect() }
+        articleRepository.sendArticles(articlesTestData)
+
+        val article = articlesTestData.first()
         val expected = DetailsUiState.Success(
-            userNewsResource = UserNewsResource(
-                newsResource = newsResourcesTestData[0],
-                userData = emptyUserData.copy(
-                    viewedNewsResources = setOf(newsResourcesTestData[0].id),
-                ),
-            ),
+            userNewsResource = listOf(article).mapToUserArticles(
+                topicsTestData,
+                emptyUserData.copy(viewedNewsResources = setOf(article.id.toString())),
+            ).single(),
         )
         assertEquals(expected = expected, actual = viewModel.detailsUiState.value)
-        collectJob.cancel()
     }
 
     @Test
     fun whenUpdateNewsResourceSavedIsCalled_bookmarkStateIsUpdated() = runTest {
-        val newsResourceId = "123"
-        viewModel.bookmarkNews(newsResourceId, true)
+        viewModel.bookmarkNews("123", true)
 
-        assertEquals(
-            expected = setOf(newsResourceId),
-            actual = userDataRepository.userData.first().bookmarkedNewsResources,
-        )
+        assertEquals(setOf("123"), userDataRepository.userData.first().bookmarkedNewsResources)
 
-        viewModel.bookmarkNews(newsResourceId, false)
+        viewModel.bookmarkNews("123", false)
 
-        assertEquals(
-            expected = emptySet(),
-            actual = userDataRepository.userData.first().bookmarkedNewsResources,
-        )
+        assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedNewsResources)
     }
 }

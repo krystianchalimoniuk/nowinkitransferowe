@@ -71,8 +71,8 @@ class SearchViewModel @AssistedInject constructor(
                                 // time the user types a letter in the search box, which flickers the screen.
                                 .map<UserSearchResult, SearchResultUiState> { data ->
                                     SearchResultUiState.Success(
-                                        transferResources = data.transferResources,
-                                        newsResources = data.newsResources,
+                                        transferResources = data.transfers,
+                                        newsResources = data.articles,
                                     )
                                 }
                                 .catch { emit(SearchResultUiState.LoadFailed) }
@@ -121,26 +121,26 @@ class SearchViewModel @AssistedInject constructor(
 
     fun setNewsResourceBookmarked(newsResourceId: String, isChecked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceBookmarked(newsResourceId, isChecked)
+            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleBookmarked(it, isChecked) }
         }
     }
 
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceViewed(newsResourceId, viewed)
+            newsResourceId.toIntOrNull()?.let { userDataRepository.setArticleViewed(it, viewed) }
         }
     }
 
     fun setTransferResourceBookmarked(transferResourceId: String, isChecked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setTransferResourceBookmarked(transferResourceId, isChecked)
+            transferResourceId.toIntOrNull()?.let { userDataRepository.setTransferBookmarked(it, isChecked) }
         }
     }
 
     fun setTransferResourceViewed(transferResourceIds: List<String>, viewed: Boolean) {
         viewModelScope.launch {
             transferResourceIds.forEach {
-                userDataRepository.setTransferResourceViewed(it, viewed)
+                it.toIntOrNull()?.let { userDataRepository.setTransferViewed(it, viewed) }
             }
         }
     }

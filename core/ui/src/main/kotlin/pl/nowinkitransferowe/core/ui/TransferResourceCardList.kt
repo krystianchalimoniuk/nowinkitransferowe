@@ -20,11 +20,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
 import pl.nowinkitransferowe.core.analytics.LocalAnalyticsHelper
-import pl.nowinkitransferowe.core.model.UserTransferResource
+import pl.nowinkitransferowe.core.model.UserTransfer
 
 fun LazyListScope.userTransferResourceCardItem(
-    items: List<UserTransferResource>,
-    onToggleBookmark: (item: UserTransferResource) -> Unit,
+    items: List<UserTransfer>,
+    onToggleBookmark: (item: UserTransfer) -> Unit,
     onTransferResourceViewed: (String) -> Unit,
     itemModifier: Modifier = Modifier,
 ) = items(
@@ -40,9 +40,9 @@ fun LazyListScope.userTransferResourceCardItem(
             onToggleBookmark = { onToggleBookmark(userTransferResource) },
             onClick = {
                 analyticsHelper.logNewsResourceOpened(
-                    newsResourceId = userTransferResource.id,
+                    newsResourceId = userTransferResource.id.toString(),
                 )
-                onTransferResourceViewed(userTransferResource.id)
+                onTransferResourceViewed(userTransferResource.id.toString())
             },
             modifier = itemModifier,
         )

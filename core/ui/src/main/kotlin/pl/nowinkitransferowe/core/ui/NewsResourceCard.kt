@@ -66,14 +66,16 @@ import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaZoneId
 import pl.nowinkitransferowe.core.designsystem.R.drawable
 import pl.nowinkitransferowe.core.designsystem.component.NtIconToggleButton
 import pl.nowinkitransferowe.core.designsystem.component.NtTopicTag
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserNewsResource
+import pl.nowinkitransferowe.core.model.UserArticle
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
@@ -82,7 +84,7 @@ import java.util.Locale
 @Composable
 fun NewsResourceCardExpanded(
     modifier: Modifier = Modifier,
-    userNewsResource: UserNewsResource,
+    userNewsResource: UserArticle,
     isBookmarked: Boolean,
     hasBeenViewed: Boolean,
     onToggleBookmark: () -> Unit,
@@ -104,7 +106,7 @@ fun NewsResourceCardExpanded(
 //    } else {
 //        0
 //    }
-    val isSelected = highlightSelectedNews && userNewsResource.id == selectedNewsId
+    val isSelected = highlightSelectedNews && userNewsResource.id.toString() == selectedNewsId
 
     OutlinedCard(
         onClick = onClick,
@@ -124,7 +126,7 @@ fun NewsResourceCardExpanded(
     ) {
         Column {
             Row {
-                NewsResourceHeaderImage(userNewsResource.imageUrl)
+                NewsResourceHeaderImage(userNewsResource.thumbnailUrl ?: userNewsResource.imageUrl)
             }
             Box(
                 modifier = Modifier.padding(16.dp),
@@ -165,17 +167,17 @@ fun NewsResourceCardExpanded(
                             Spacer(modifier = Modifier.size(6.dp))
                         }
                         NewsResourceMetaData(
-                            userNewsResource.publishDate,
-                            userNewsResource.category.combineNameWithEmoji(),
+                            userNewsResource.publishedAt,
+                            userNewsResource.topics.firstOrNull()?.name.orEmpty(),
                         )
                     }
                     Spacer(modifier = Modifier.height(14.dp))
                     NewsResourceShortDescription(
-                        userNewsResource.description,
+                        userNewsResource.lead,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     NewsResourceTopics(
-                        topics = userNewsResource.topics,
+                        topics = userNewsResource.tags,
                         onTopicClick = onTopicClick,
                     )
                 }
@@ -229,11 +231,10 @@ fun NewsResourceHeaderImage(
     headerImageUrl: String?,
     height: Dp = 180.dp,
 ) {
-    val imageBaseUrl = "https://nowinkitransferowe.pl/Images/"
-    var isLoading by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(headerImageUrl != null) }
+    var isError by remember { mutableStateOf(headerImageUrl == null) }
     val imageLoader = rememberAsyncImagePainter(
-        model = "$imageBaseUrl$headerImageUrl",
+        model = headerImageUrl,
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
@@ -340,6 +341,12 @@ fun dateFormatted(publishDate: Instant, style: FormatStyle = FormatStyle.MEDIUM)
     .format(publishDate.toJavaInstant())
 
 @Composable
+fun dateFormatted(date: LocalDate, style: FormatStyle = FormatStyle.MEDIUM): String = DateTimeFormatter
+    .ofLocalizedDate(style)
+    .withLocale(Locale.getDefault())
+    .format(date.toJavaLocalDate())
+
+@Composable
 fun NewsResourceMetaData(
     publishDate: Instant,
     resourceType: String,
@@ -419,7 +426,7 @@ fun trimDescription(text: String, limiter: Int): String {
 @Composable
 private fun ExpandedNewsResourcePreview(
     @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
-    userNewsResources: List<UserNewsResource>,
+    userNewsResources: List<UserArticle>,
 ) {
     CompositionLocalProvider(
         LocalInspectionMode provides true,

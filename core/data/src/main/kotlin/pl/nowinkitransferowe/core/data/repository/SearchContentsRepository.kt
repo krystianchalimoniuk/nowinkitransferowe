@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,12 @@ import pl.nowinkitransferowe.core.model.SearchResult
  * Data layer interface for the search feature.
  */
 interface SearchContentsRepository {
-
     /**
-     * Populate the fts tables for the search contents.
-     */
-    suspend fun populateFtsData()
-
-    /**
-     * Query the contents matched with the [searchQuery] and returns it as a [Flow] of [SearchResult]
+     * Articles and transfers matching [searchQuery]; the full-text indexes follow the tables, so
+     * there is nothing to fill in first.
      */
     fun searchContents(searchQuery: String): Flow<SearchResult>
 
+    /** How many records can be searched; 0 until the first sync. */
     fun getSearchContentsCount(): Flow<Int>
 }

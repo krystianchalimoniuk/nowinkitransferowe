@@ -17,7 +17,9 @@
 package pl.nowinkitransferowe.feature.details.transfers.impl
 
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toJavaLocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -95,4 +97,12 @@ object Util {
         .withLocale(Locale.forLanguageTag("pl"))
         .withZone(ZoneId.of("Europe/Warsaw"))
         .format(publishDate.toJavaInstant())
+
+    fun dateFormatted(
+        date: LocalDate,
+        style: FormatStyle = FormatStyle.MEDIUM,
+    ): String = DateTimeFormatter
+        .ofLocalizedDate(style)
+        .withLocale(Locale.forLanguageTag("pl"))
+        .format(date.toJavaLocalDate())
 }

@@ -24,7 +24,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pl.nowinkitransferowe.core.analytics.LocalAnalyticsHelper
-import pl.nowinkitransferowe.core.model.UserNewsResource
+import pl.nowinkitransferowe.core.model.UserArticle
 
 /**
  * An extension on [LazyListScope] defining a feed with news resources.
@@ -55,16 +55,16 @@ fun LazyStaggeredGridScope.newsFeed(
                     isBookmarked = userNewsResource.isSaved,
                     onClick = {
                         analyticsHelper.logNewsResourceOpened(
-                            newsResourceId = userNewsResource.id,
+                            newsResourceId = userNewsResource.id.toString(),
                         )
-                        onNewsSelected(userNewsResource.id)
-                        onNewsClick(userNewsResource.id)
-                        onNewsResourceViewed(userNewsResource.id)
+                        onNewsSelected(userNewsResource.id.toString())
+                        onNewsClick(userNewsResource.id.toString())
+                        onNewsResourceViewed(userNewsResource.id.toString())
                     },
                     hasBeenViewed = userNewsResource.hasBeenViewed,
                     onToggleBookmark = {
                         onNewsResourcesCheckedChanged(
-                            userNewsResource.id,
+                            userNewsResource.id.toString(),
                             !userNewsResource.isSaved,
                         )
                     },
@@ -96,6 +96,6 @@ sealed interface NewsFeedUiState {
         /**
          * The list of news resources contained in this feed.
          */
-        val feed: List<UserNewsResource>,
+        val feed: List<UserArticle>,
     ) : NewsFeedUiState
 }

@@ -36,29 +36,15 @@ class FakeUserDataRepository @Inject constructor(
     override val userData: Flow<UserData> =
         ntPreferencesDataSource.userData
 
-    override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
-        ntPreferencesDataSource.setNewsResourceBookmarked(newsResourceId, bookmarked)
-    }
+    override suspend fun setArticleBookmarked(articleId: Int, bookmarked: Boolean) = ntPreferencesDataSource.setNewsResourceBookmarked(articleId.toString(), bookmarked)
 
-    override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) = ntPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
+    override suspend fun setArticleViewed(articleId: Int, viewed: Boolean) = ntPreferencesDataSource.setNewsResourceViewed(articleId.toString(), viewed)
 
-    override suspend fun setTransferResourceBookmarked(
-        transferResourceId: String,
-        bookmarked: Boolean,
-    ) {
-        ntPreferencesDataSource.setTransferResourceBookmarked(transferResourceId, bookmarked)
-    }
+    override suspend fun setTransferBookmarked(transferId: Int, bookmarked: Boolean) = ntPreferencesDataSource.setTransferResourceBookmarked(transferId.toString(), bookmarked)
 
-    override suspend fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean) {
-        ntPreferencesDataSource.setTransferResourceViewed(transferResourceId, viewed)
-    }
+    override suspend fun setTransferViewed(transferId: Int, viewed: Boolean) = ntPreferencesDataSource.setTransferResourceViewed(transferId.toString(), viewed)
 
-    override suspend fun setTransferResourceViewed(
-        transferResourceIds: List<String>,
-        viewed: Boolean,
-    ) {
-        ntPreferencesDataSource.setTransferResourcesViewed(transferResourceIds, viewed)
-    }
+    override suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) = ntPreferencesDataSource.setTransferResourcesViewed(transferIds.map(Int::toString), viewed)
 
     override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         ntPreferencesDataSource.setDarkThemeConfig(darkThemeConfig)

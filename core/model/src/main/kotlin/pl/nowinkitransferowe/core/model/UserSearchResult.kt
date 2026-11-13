@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package pl.nowinkitransferowe.core.model
 
+/** A [SearchResult] with the user's data. */
 data class UserSearchResult(
-    val transferResources: List<UserTransferResource> = emptyList(),
-    val newsResources: List<UserNewsResource> = emptyList(),
+    val articles: List<UserArticle> = emptyList(),
+    val transfers: List<UserTransfer> = emptyList(),
 )

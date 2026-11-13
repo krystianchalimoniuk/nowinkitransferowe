@@ -22,7 +22,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.testing.data.userTransferResourcesTestData
+import pl.nowinkitransferowe.core.testing.data.userTransfersTestData
 
 class TransferResourceCardTest {
     @get:Rule
@@ -30,7 +30,7 @@ class TransferResourceCardTest {
 
     @Test
     fun testUnreadDot_displayedWhenUnread() {
-        val unreadTransfers = userTransferResourcesTestData[2]
+        val unreadTransfers = userTransfersTestData[2]
 
         composeTestRule.setContent {
             TransferResourceCardExpanded(
@@ -53,7 +53,7 @@ class TransferResourceCardTest {
 
     @Test
     fun testUnreadDot_notDisplayedWhenRead() {
-        val readTransfer = userTransferResourcesTestData[0]
+        val readTransfer = userTransfersTestData[0]
 
         composeTestRule.setContent {
             TransferResourceCardExpanded(

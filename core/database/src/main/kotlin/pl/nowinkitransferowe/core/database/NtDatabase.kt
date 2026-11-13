@@ -23,16 +23,12 @@ import androidx.room.TypeConverters
 import pl.nowinkitransferowe.core.database.dao.ArticleDao
 import pl.nowinkitransferowe.core.database.dao.ClubDao
 import pl.nowinkitransferowe.core.database.dao.DictionaryDao
-import pl.nowinkitransferowe.core.database.dao.NewsResourceDao
-import pl.nowinkitransferowe.core.database.dao.NewsResourceFtsDao
 import pl.nowinkitransferowe.core.database.dao.PlayerDao
 import pl.nowinkitransferowe.core.database.dao.RecentSearchQueryDao
 import pl.nowinkitransferowe.core.database.dao.RumourDao
 import pl.nowinkitransferowe.core.database.dao.SearchDao
 import pl.nowinkitransferowe.core.database.dao.StatsDao
 import pl.nowinkitransferowe.core.database.dao.TransferDao
-import pl.nowinkitransferowe.core.database.dao.TransferResourceDao
-import pl.nowinkitransferowe.core.database.dao.TransferResourceFtsDao
 import pl.nowinkitransferowe.core.database.model.ArticleClubEntity
 import pl.nowinkitransferowe.core.database.model.ArticleEntity
 import pl.nowinkitransferowe.core.database.model.ArticleFtsEntity
@@ -48,8 +44,6 @@ import pl.nowinkitransferowe.core.database.model.HotClubEntity
 import pl.nowinkitransferowe.core.database.model.LeagueClubEntity
 import pl.nowinkitransferowe.core.database.model.LeagueEntity
 import pl.nowinkitransferowe.core.database.model.LeagueSeasonEntity
-import pl.nowinkitransferowe.core.database.model.NewsResourceEntity
-import pl.nowinkitransferowe.core.database.model.NewsResourceFtsEntity
 import pl.nowinkitransferowe.core.database.model.PlayerEntity
 import pl.nowinkitransferowe.core.database.model.PlayerFtsEntity
 import pl.nowinkitransferowe.core.database.model.RecentSearchQueryEntity
@@ -60,20 +54,13 @@ import pl.nowinkitransferowe.core.database.model.StageAccuracyEntity
 import pl.nowinkitransferowe.core.database.model.TopicEntity
 import pl.nowinkitransferowe.core.database.model.TransferEntity
 import pl.nowinkitransferowe.core.database.model.TransferFtsEntity
-import pl.nowinkitransferowe.core.database.model.TransferResourceEntity
-import pl.nowinkitransferowe.core.database.model.TransferResourceFtsEntity
 import pl.nowinkitransferowe.core.database.util.InstantConverter
 import pl.nowinkitransferowe.core.database.util.IntListConverter
 import pl.nowinkitransferowe.core.database.util.LocalDateConverter
 
 @Database(
     entities = [
-        NewsResourceEntity::class,
-        NewsResourceFtsEntity::class,
-        TransferResourceEntity::class,
-        TransferResourceFtsEntity::class,
         RecentSearchQueryEntity::class,
-        // API v3 (the v2 tables above go away once the repositories use v3)
         ArticleEntity::class,
         ArticleTopicEntity::class,
         ArticleClubEntity::class,
@@ -99,10 +86,11 @@ import pl.nowinkitransferowe.core.database.util.LocalDateConverter
         HotClubEntity::class,
         FetchTimeEntity::class,
     ],
-    version = 3,
+    version = 4,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = DatabaseMigrations.Schema1to2::class),
         AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4, spec = DatabaseMigrations.Schema3to4::class),
     ],
     exportSchema = true,
 )
@@ -114,10 +102,6 @@ import pl.nowinkitransferowe.core.database.util.LocalDateConverter
 // Public so that the repository tests in core:data can run against an in-memory database, with
 // its foreign keys, instead of fakes. The app gets the DAOs from DaosModule.
 abstract class NtDatabase : RoomDatabase() {
-    abstract fun newsResourceDao(): NewsResourceDao
-    abstract fun newsResourceFtsDao(): NewsResourceFtsDao
-    abstract fun transferResourceDao(): TransferResourceDao
-    abstract fun transferResourceFtsDao(): TransferResourceFtsDao
     abstract fun recentSearchQueryDao(): RecentSearchQueryDao
     abstract fun articleDao(): ArticleDao
     abstract fun transferDao(): TransferDao

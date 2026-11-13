@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.model.asEntity
@@ -33,10 +34,12 @@ import pl.nowinkitransferowe.core.database.dao.PlayerDao
 import pl.nowinkitransferowe.core.database.model.PopulatedArticle
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.datastore.ChangeListVersions
+import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.ArticleKind
 import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
+import pl.nowinkitransferowe.core.notifications.Notifier
 import javax.inject.Inject
 
 internal class OfflineFirstArticleRepository @Inject constructor(
@@ -44,6 +47,8 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     private val clubDao: ClubDao,
     private val playerDao: PlayerDao,
     private val network: NtNetworkDataSource,
+    private val ntPreferencesDataSource: NtPreferencesDataSource,
+    private val notifier: Notifier,
 ) : ArticleRepository {
 
     override fun observeArticle(id: Int): Flow<Article?> = articleDao.observeArticle(id).map { it?.asExternalModel() }
@@ -57,27 +62,42 @@ internal class OfflineFirstArticleRepository @Inject constructor(
 
     override fun observeArticles(ids: Set<Int>): Flow<List<Article>> = articleDao.observeArticlesByIds(ids).map { it.map(PopulatedArticle::asExternalModel) }
 
+    override fun observeArticleCount(): Flow<Int> = articleDao.observeArticleCount()
+
     override fun observeArticlesAboutClub(clubId: Int): Flow<List<Article>> = articleDao.observeArticlesAboutClub(clubId).map { it.map(PopulatedArticle::asExternalModel) }
 
     override fun observeArticlesAboutPlayer(playerId: Int): Flow<List<Article>> = articleDao.observeArticlesAboutPlayer(playerId).map { it.map(PopulatedArticle::asExternalModel) }
 
-    override suspend fun syncWith(synchronizer: Synchronizer): Boolean = synchronizer.syncChanges(
-        versionReader = ChangeListVersions::articleVersion,
-        changesFetcher = { after -> network.getChanges(NetworkRecordType.ARTICLES, after) },
-        versionUpdater = { copy(articleVersion = it) },
-        modelDeleter = articleDao::deleteArticles,
-        modelUpdater = { ids ->
-            val articles = network.getArticles(ids)
-            // Articles carry only the ids of their clubs and players.
-            clubDao.insertOrIgnoreClubs(articles.flatMap { it.clubIds }.distinct().map { clubStub(it, null) })
-            playerDao.insertOrIgnorePlayers(articles.flatMap { it.playerIds }.distinct().map { playerStub(it, null) })
-            articleDao.upsertArticles(
-                articles = articles.map { it.asEntity() },
-                topics = articles.flatMap { it.topicEntities() },
-                clubs = articles.flatMap { it.clubEntities() },
-                players = articles.flatMap { it.playerEntities() },
-                tags = articles.flatMap { it.tagEntities() },
-            )
-        },
-    )
+    override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
+        // Nothing is announced on the first sync, which downloads every article.
+        val isFirstSync = synchronizer.getChangeListVersions().articleVersion == 0
+        val addedIds = mutableSetOf<Int>()
+        val synced = synchronizer.syncChanges(
+            versionReader = ChangeListVersions::articleVersion,
+            changesFetcher = { after -> network.getChanges(NetworkRecordType.ARTICLES, after) },
+            versionUpdater = { copy(articleVersion = it) },
+            modelDeleter = articleDao::deleteArticles,
+            modelUpdater = { ids ->
+                val articles = network.getArticles(ids)
+                if (!isFirstSync) {
+                    val existingIds = articleDao.getExistingIds(ids.toSet()).toSet()
+                    addedIds += articles.map { it.id }.filter { it !in existingIds }
+                }
+                // Articles carry only the ids of their clubs and players.
+                clubDao.insertOrIgnoreClubs(articles.flatMap { it.clubIds }.distinct().map { clubStub(it, null) })
+                playerDao.insertOrIgnorePlayers(articles.flatMap { it.playerIds }.distinct().map { playerStub(it, null) })
+                articleDao.upsertArticles(
+                    articles = articles.map { it.asEntity() },
+                    topics = articles.flatMap { it.topicEntities() },
+                    clubs = articles.flatMap { it.clubEntities() },
+                    players = articles.flatMap { it.playerEntities() },
+                    tags = articles.flatMap { it.tagEntities() },
+                )
+            },
+        )
+        if (synced && addedIds.isNotEmpty() && ntPreferencesDataSource.userData.first().isNewsNotificationsAllowed) {
+            notifier.postArticleNotifications(observeArticles(addedIds).first())
+        }
+        return synced
+    }
 }

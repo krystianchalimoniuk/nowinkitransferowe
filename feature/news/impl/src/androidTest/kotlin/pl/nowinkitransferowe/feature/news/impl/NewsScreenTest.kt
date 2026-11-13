@@ -27,7 +27,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.testing.data.userNewsResourcesTestData
+import pl.nowinkitransferowe.core.testing.data.userArticlesTestData
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
 import pl.nowinkitransferowe.core.ui.NewsFeedUiState
 
@@ -93,7 +93,7 @@ class NewsScreenTest {
             Box {
                 NewsScreen(
                     isSyncing = false,
-                    feedState = NewsFeedUiState.Success(feed = userNewsResourcesTestData),
+                    feedState = NewsFeedUiState.Success(feed = userArticlesTestData),
                     onNewsClick = {},
                     onTopicClick = {},
                     loadNextPage = {},
@@ -106,7 +106,7 @@ class NewsScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[0].title,
+                userArticlesTestData[0].title,
                 substring = true,
             )
             .assertExists()
@@ -115,14 +115,14 @@ class NewsScreenTest {
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userNewsResourcesTestData[1].title,
+                    userArticlesTestData[1].title,
                     substring = true,
                 ),
             )
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[1].title,
+                userArticlesTestData[1].title,
                 substring = true,
             )
             .assertExists()
@@ -135,7 +135,7 @@ class NewsScreenTest {
             Box {
                 NewsScreen(
                     isSyncing = false,
-                    feedState = NewsFeedUiState.Success(feed = userNewsResourcesTestData),
+                    feedState = NewsFeedUiState.Success(feed = userArticlesTestData),
                     onNewsClick = {},
                     onTopicClick = {},
                     loadNextPage = {},
@@ -148,7 +148,7 @@ class NewsScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[0].title,
+                userArticlesTestData[0].title,
                 substring = true,
             )
             .assertExists()
@@ -157,21 +157,21 @@ class NewsScreenTest {
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userNewsResourcesTestData[4].title,
+                    userArticlesTestData[4].title,
                     substring = true,
                 ),
             )
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userNewsResourcesTestData[9].title,
+                    userArticlesTestData[9].title,
                     substring = true,
                 ),
             )
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[9].title,
+                userArticlesTestData[9].title,
                 substring = true,
             )
             .assertExists()

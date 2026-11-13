@@ -57,3 +57,6 @@ enum class NoClubStatus {
         fun fromApi(value: String?): NoClubStatus = entries.find { it.name == value } ?: UNKNOWN
     }
 }
+
+/** The crest of the club on this side, or null when there is no club or no crest. */
+val ClubRef.crestUrl: String? get() = (this as? ClubRef.Club)?.crestUrl

@@ -49,78 +49,37 @@ class TestUserDataRepository : UserDataRepository {
 
     private val currentUserData get() = _userData.replayCache.firstOrNull() ?: emptyUserData
 
-    override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
+    override suspend fun setArticleBookmarked(articleId: Int, bookmarked: Boolean) {
         currentUserData.let { current ->
-            val bookmarkedNews = if (bookmarked) {
-                current.bookmarkedNewsResources + newsResourceId
-            } else {
-                current.bookmarkedNewsResources - newsResourceId
-            }
-
-            _userData.tryEmit(current.copy(bookmarkedNewsResources = bookmarkedNews))
+            val id = articleId.toString()
+            val bookmarkedArticles = if (bookmarked) current.bookmarkedNewsResources + id else current.bookmarkedNewsResources - id
+            _userData.tryEmit(current.copy(bookmarkedNewsResources = bookmarkedArticles))
         }
     }
 
-    override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
+    override suspend fun setArticleViewed(articleId: Int, viewed: Boolean) {
         currentUserData.let { current ->
-            _userData.tryEmit(
-                current.copy(
-                    viewedNewsResources =
-                    if (viewed) {
-                        current.viewedNewsResources + newsResourceId
-                    } else {
-                        current.viewedNewsResources - newsResourceId
-                    },
-                ),
-            )
+            val id = articleId.toString()
+            val viewedArticles = if (viewed) current.viewedNewsResources + id else current.viewedNewsResources - id
+            _userData.tryEmit(current.copy(viewedNewsResources = viewedArticles))
         }
     }
 
-    override suspend fun setTransferResourceBookmarked(
-        transferResourceId: String,
-        bookmarked: Boolean,
-    ) {
+    override suspend fun setTransferBookmarked(transferId: Int, bookmarked: Boolean) {
         currentUserData.let { current ->
-            val bookmarkedTransfers = if (bookmarked) {
-                current.bookmarkedTransferResources + transferResourceId
-            } else {
-                current.bookmarkedTransferResources - transferResourceId
-            }
-
+            val id = transferId.toString()
+            val bookmarkedTransfers = if (bookmarked) current.bookmarkedTransferResources + id else current.bookmarkedTransferResources - id
             _userData.tryEmit(current.copy(bookmarkedTransferResources = bookmarkedTransfers))
         }
     }
 
-    override suspend fun setTransferResourceViewed(transferResourceId: String, viewed: Boolean) {
-        currentUserData.let { current ->
-            _userData.tryEmit(
-                current.copy(
-                    viewedTransferResources =
-                    if (viewed) {
-                        current.viewedTransferResources + transferResourceId
-                    } else {
-                        current.viewedTransferResources - transferResourceId
-                    },
-                ),
-            )
-        }
-    }
+    override suspend fun setTransferViewed(transferId: Int, viewed: Boolean) = setTransfersViewed(listOf(transferId), viewed)
 
-    override suspend fun setTransferResourceViewed(
-        transferResourceIds: List<String>,
-        viewed: Boolean,
-    ) {
+    override suspend fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) {
         currentUserData.let { current ->
-            _userData.tryEmit(
-                current.copy(
-                    viewedTransferResources =
-                    if (viewed) {
-                        current.viewedNewsResources + transferResourceIds
-                    } else {
-                        current.viewedTransferResources - transferResourceIds.toSet()
-                    },
-                ),
-            )
+            val ids = transferIds.map(Int::toString).toSet()
+            val viewedTransfers = if (viewed) current.viewedTransferResources + ids else current.viewedTransferResources - ids
+            _userData.tryEmit(current.copy(viewedTransferResources = viewedTransfers))
         }
     }
 

@@ -47,8 +47,8 @@ import pl.nowinkitransferowe.MainActivityUiState.Loading
 import pl.nowinkitransferowe.MainActivityUiState.Success
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.analytics.LocalAnalyticsHelper
-import pl.nowinkitransferowe.core.data.repository.UserNewsResourceRepository
-import pl.nowinkitransferowe.core.data.repository.UserTransferResourceRepository
+import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
+import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
@@ -106,10 +106,10 @@ class MainActivity : ComponentActivity() {
     lateinit var analyticsHelper: AnalyticsHelper
 
     @Inject
-    lateinit var userNewsResourceRepository: UserNewsResourceRepository
+    lateinit var userArticleRepository: UserArticleRepository
 
     @Inject
-    lateinit var userTransferResourceRepository: UserTransferResourceRepository
+    lateinit var userTransferRepository: UserTransferRepository
 
     private val viewModel: MainActivityViewModel by viewModels()
 
@@ -172,8 +172,8 @@ class MainActivity : ComponentActivity() {
 
             val appState = rememberNtAppState(
                 networkMonitor = networkMonitor,
-                userNewsResourceRepository = userNewsResourceRepository,
-                userTransferResourceRepository = userTransferResourceRepository,
+                userArticleRepository = userArticleRepository,
+                userTransferRepository = userTransferRepository,
                 timeZoneMonitor = timeZoneMonitor,
             )
 

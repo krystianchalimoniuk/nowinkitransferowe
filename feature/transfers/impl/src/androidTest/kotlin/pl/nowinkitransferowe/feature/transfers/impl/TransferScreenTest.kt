@@ -27,7 +27,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import org.junit.Rule
 import org.junit.Test
-import pl.nowinkitransferowe.core.testing.data.userTransferResourcesTestData
+import pl.nowinkitransferowe.core.testing.data.userTransfersTestData
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
 import pl.nowinkitransferowe.core.ui.TransferFeedUiState
 import pl.nowinkitransferowe.feature.transfers.impl.navigation.TransferScreen
@@ -89,7 +89,7 @@ class TransferScreenTest {
             Box {
                 TransferScreen(
                     isSyncing = false,
-                    feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
+                    feedState = TransferFeedUiState.Success(feed = userTransfersTestData),
                     onTransferClick = {},
                     onTransferResourceViewed = {},
                     onTransferResourcesCheckedChanged = { _, _ -> },
@@ -100,7 +100,7 @@ class TransferScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userTransferResourcesTestData[0].name,
+                userTransfersTestData[0].player.name,
                 substring = true,
             )
             .assertExists()
@@ -109,14 +109,14 @@ class TransferScreenTest {
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userTransferResourcesTestData[1].name,
+                    userTransfersTestData[1].player.name,
                     substring = true,
                 ),
             )
 
         composeTestRule
             .onNodeWithText(
-                userTransferResourcesTestData[1].name,
+                userTransfersTestData[1].player.name,
                 substring = true,
             )
             .assertExists()
@@ -129,7 +129,7 @@ class TransferScreenTest {
             Box {
                 TransferScreen(
                     isSyncing = false,
-                    feedState = TransferFeedUiState.Success(feed = userTransferResourcesTestData),
+                    feedState = TransferFeedUiState.Success(feed = userTransfersTestData),
                     onTransferClick = {},
                     onTransferResourceViewed = {},
                     onTransferResourcesCheckedChanged = { _, _ -> },
@@ -140,7 +140,7 @@ class TransferScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userTransferResourcesTestData[0].name,
+                userTransfersTestData[0].player.name,
                 substring = true,
             )
             .assertExists()
@@ -149,7 +149,7 @@ class TransferScreenTest {
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userTransferResourcesTestData[4].name,
+                    userTransfersTestData[4].player.name,
                     substring = true,
                 ),
             )
@@ -157,14 +157,14 @@ class TransferScreenTest {
         composeTestRule.onNode(hasScrollToNodeAction())
             .performScrollToNode(
                 hasText(
-                    userTransferResourcesTestData[9].name,
+                    userTransfersTestData[9].player.name,
                     substring = true,
                 ),
             )
 
         composeTestRule
             .onNodeWithText(
-                userTransferResourcesTestData[9].name,
+                userTransfersTestData[9].player.name,
                 substring = true,
             )
             .assertExists()

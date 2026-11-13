@@ -240,8 +240,6 @@ class NtPreferencesDataSource @Inject constructor(
     suspend fun getChangeListVersions() = userPreferences.data
         .map {
             ChangeListVersions(
-                transferResourceVersion = it.transferResourcesChangeListVersion,
-                newsResourceVersion = it.newsResourceChangeListVersion,
                 articleVersion = it.articleChangeListVersion,
                 transferVersion = it.transferChangeListVersion,
                 rumourVersion = it.rumourChangeListVersion,
@@ -259,8 +257,6 @@ class NtPreferencesDataSource @Inject constructor(
             userPreferences.updateData { currentPreferences ->
                 val updatedChangeListVersions = update(
                     ChangeListVersions(
-                        transferResourceVersion = currentPreferences.transferResourcesChangeListVersion,
-                        newsResourceVersion = currentPreferences.newsResourceChangeListVersion,
                         articleVersion = currentPreferences.articleChangeListVersion,
                         transferVersion = currentPreferences.transferChangeListVersion,
                         rumourVersion = currentPreferences.rumourChangeListVersion,
@@ -270,9 +266,6 @@ class NtPreferencesDataSource @Inject constructor(
                 )
 
                 currentPreferences.copy {
-                    transferResourcesChangeListVersion =
-                        updatedChangeListVersions.transferResourceVersion
-                    newsResourceChangeListVersion = updatedChangeListVersions.newsResourceVersion
                     articleChangeListVersion = updatedChangeListVersions.articleVersion
                     transferChangeListVersion = updatedChangeListVersions.transferVersion
                     rumourChangeListVersion = updatedChangeListVersions.rumourVersion

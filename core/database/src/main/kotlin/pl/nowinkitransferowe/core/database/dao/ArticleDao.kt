@@ -114,6 +114,9 @@ interface ArticleDao {
     ): Flow<List<PopulatedArticle>>
 
     @Transaction
+    @Query("SELECT COUNT(*) FROM articles")
+    fun observeArticleCount(): Flow<Int>
+
     @Query("SELECT * FROM articles WHERE id IN (:ids) ORDER BY published_at DESC")
     fun observeArticlesByIds(ids: Set<Int>): Flow<List<PopulatedArticle>>
 

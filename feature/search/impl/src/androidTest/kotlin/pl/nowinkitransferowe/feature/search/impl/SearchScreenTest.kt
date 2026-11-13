@@ -29,8 +29,9 @@ import org.junit.Test
 import pl.nowinkitransferowe.core.data.model.RecentSearchQuery
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserData
-import pl.nowinkitransferowe.core.model.UserNewsResource
-import pl.nowinkitransferowe.core.testing.data.newsResourcesTestData
+import pl.nowinkitransferowe.core.model.mapToUserArticles
+import pl.nowinkitransferowe.core.testing.data.articlesTestData
+import pl.nowinkitransferowe.core.testing.data.topicsTestData
 
 /**
  * UI test for checking the correct behaviour of the Search screen.
@@ -123,12 +124,7 @@ class SearchScreenTest {
         composeTestRule.setContent {
             SearchScreen(
                 searchResultUiState = SearchResultUiState.Success(
-                    newsResources = newsResourcesTestData.map {
-                        UserNewsResource(
-                            newsResource = it,
-                            userData = userData,
-                        )
-                    },
+                    newsResources = articlesTestData.mapToUserArticles(topicsTestData, userData),
                 ),
             )
         }
@@ -137,7 +133,7 @@ class SearchScreenTest {
             .onNodeWithText(newsString)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText(newsResourcesTestData[0].title)
+            .onNodeWithText(articlesTestData[0].title)
             .assertIsDisplayed()
     }
 
