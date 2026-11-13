@@ -33,6 +33,9 @@ interface UserArticleRepository {
 
     fun observeArticle(id: Int): Flow<UserArticle?>
 
+    /** Articles about the player with [playerId], newest first. */
+    fun observeArticlesAboutPlayer(playerId: Int): Flow<List<UserArticle>>
+
     fun observeBookmarked(): Flow<List<UserArticle>>
 
     fun observeArticleCount(): Flow<Int>

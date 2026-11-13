@@ -32,11 +32,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -66,11 +68,13 @@ import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.Player
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.UserTransfer
+import pl.nowinkitransferowe.core.ui.ArticleListItem
 import pl.nowinkitransferowe.core.ui.CountryFlag
 import pl.nowinkitransferowe.core.ui.FeeLabel
 import pl.nowinkitransferowe.core.ui.RumourListItem
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferRoute
+import pl.nowinkitransferowe.core.ui.millionsLabel
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -81,6 +85,7 @@ internal fun PlayerRoute(
     onTransferClick: (Int) -> Unit,
     onClubClick: (Int) -> Unit,
     onRumourClick: (Int) -> Unit,
+    onArticleClick: (Int) -> Unit,
     viewModel: PlayerViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -92,6 +97,8 @@ internal fun PlayerRoute(
         onTransferClick = onTransferClick,
         onClubClick = onClubClick,
         onRumourClick = onRumourClick,
+        onArticleClick = onArticleClick,
+        onArticleSavedChanged = viewModel::updateArticleSaved,
         modifier = modifier,
     )
 }
@@ -109,6 +116,8 @@ internal fun PlayerScreen(
     onClubClick: (Int) -> Unit,
     onRumourClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    onArticleClick: (Int) -> Unit = {},
+    onArticleSavedChanged: (Int, Boolean) -> Unit = { _, _ -> },
     today: LocalDate = Clock.System.todayIn(Season.TIME_ZONE),
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
@@ -140,9 +149,11 @@ internal fun PlayerScreen(
                 item(key = "top") { TopRow(showBackButton, onBackClick, uiState.player) }
                 item(key = "header") { Header(uiState) }
                 item(key = "facts") { Facts(uiState, today, onClubClick) }
-                // Like on the website, every transfer is a point; without any fee there is nothing to show
-                if (uiState.transfers.any { it.fee.countedMillions > 0 }) {
-                    item(key = "fees") { FeeCard(uiState.transfers) }
+                if (uiState.transfers.isNotEmpty()) {
+                    item(key = "summary") { Summary(uiState) }
+                }
+                if (uiState.showChart) {
+                    item(key = "fees") { FeeCard(uiState.chartTransfers) }
                 }
                 if (uiState.transfers.isNotEmpty()) {
                     item(key = "history") {
@@ -158,6 +169,19 @@ internal fun PlayerScreen(
                     }
                     items(uiState.rumours, key = { "rumour:${it.id}" }) { rumour ->
                         RumourListItem(rumour, onClick = { onRumourClick(rumour.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+                    }
+                }
+                if (uiState.articles.isNotEmpty()) {
+                    item(key = "articles") {
+                        NtSectionHeader(stringResource(R.string.feature_player_impl_articles), Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
+                    }
+                    items(uiState.articles, key = { "article:${it.id}" }) { article ->
+                        ArticleListItem(
+                            article = article,
+                            onClick = { onArticleClick(article.id) },
+                            onToggleBookmark = { onArticleSavedChanged(article.id, !article.isSaved) },
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                        )
                     }
                 }
             }
@@ -222,9 +246,10 @@ private fun Facts(state: PlayerUiState.Success, today: LocalDate, onClubClick: (
         }
         player.heightCm?.let { FactItem(NtIcons.Height, stringResource(R.string.feature_player_impl_height, it)) }
         (state.currentClub as? ClubRef.Club)?.let { club ->
+            val since = state.transfers.first().date.toJavaLocalDate().format(SHORT_MONTH_YEAR)
             FactItem(
                 icon = NtIcons.Shield,
-                text = club.name,
+                text = stringResource(R.string.feature_player_impl_current_club_since, club.name, since),
                 label = stringResource(R.string.feature_player_impl_current_club),
                 onClick = { onClubClick(club.id) },
                 modifier = Modifier.testTag("player:current-club"),
@@ -259,6 +284,28 @@ private fun FactItem(
     }
 }
 
+/** How many transfers, their fees together and the highest one, like on the website. */
+@Composable
+private fun Summary(state: PlayerUiState.Success) {
+    Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        SummaryTile(stringResource(R.string.feature_player_impl_transfers), state.transfers.size.toString(), Modifier.weight(1f))
+        SummaryTile(stringResource(R.string.feature_player_impl_total), millionsLabel(state.totalMillions), Modifier.weight(1f))
+        if (state.highestMillions > 0) {
+            SummaryTile(stringResource(R.string.feature_player_impl_highest), millionsLabel(state.highestMillions), Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun SummaryTile(label: String, value: String, modifier: Modifier = Modifier) {
+    Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surfaceContainerLow, modifier = modifier) {
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
+            Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 1)
+        }
+    }
+}
+
 /** The fees of the player's transfers over time, in a card like on the website. */
 @Composable
 private fun FeeCard(transfers: List<UserTransfer>) {
@@ -273,6 +320,11 @@ private fun FeeCard(transfers: List<UserTransfer>) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(stringResource(R.string.feature_player_impl_fees), style = MaterialTheme.typography.titleMedium)
             FeeChart(transfers)
+            Text(
+                stringResource(R.string.feature_player_impl_fees_note),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -323,3 +375,4 @@ private fun share(context: Context, name: String, url: String) {
 private val POLISH = Locale.forLanguageTag("pl")
 private val BIRTH_DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy", POLISH)
 private val MONTH_YEAR = DateTimeFormatter.ofPattern("LLLL yyyy", POLISH)
+private val SHORT_MONTH_YEAR = DateTimeFormatter.ofPattern("LLL yyyy", POLISH)

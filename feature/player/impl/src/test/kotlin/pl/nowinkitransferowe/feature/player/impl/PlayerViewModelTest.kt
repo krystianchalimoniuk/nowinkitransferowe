@@ -23,12 +23,18 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
+import pl.nowinkitransferowe.core.model.FeeKind
 import pl.nowinkitransferowe.core.model.RumourStatus
+import pl.nowinkitransferowe.core.testing.data.articlesTestData
 import pl.nowinkitransferowe.core.testing.data.lewandowskiTestData
+import pl.nowinkitransferowe.core.testing.data.lewandowskiTransfersTestData
 import pl.nowinkitransferowe.core.testing.data.polandTestData
 import pl.nowinkitransferowe.core.testing.data.rumoursTestData
 import pl.nowinkitransferowe.core.testing.data.transfersTestData
+import pl.nowinkitransferowe.core.testing.data.userTransfersTestData
+import pl.nowinkitransferowe.core.testing.repository.TestArticleRepository
 import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
 import pl.nowinkitransferowe.core.testing.repository.TestPlayerRepository
 import pl.nowinkitransferowe.core.testing.repository.TestRumourRepository
@@ -37,7 +43,9 @@ import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 class PlayerViewModelTest {
     @get:Rule
@@ -48,10 +56,13 @@ class PlayerViewModelTest {
     private val rumourRepository = TestRumourRepository()
     private val dictionaryRepository = TestDictionaryRepository()
     private val userDataRepository = TestUserDataRepository()
+    private val articleRepository = TestArticleRepository()
 
     private fun viewModel(playerId: Int) = PlayerViewModel(
         playerRepository = playerRepository,
         userTransferRepository = CompositeUserTransferRepository(transferRepository, userDataRepository),
+        userArticleRepository = CompositeUserArticleRepository(articleRepository, dictionaryRepository, userDataRepository),
+        userDataRepository = userDataRepository,
         rumourRepository = rumourRepository,
         dictionaryRepository = dictionaryRepository,
         playerId = playerId,
@@ -67,6 +78,7 @@ class PlayerViewModelTest {
         rumourRepository.sendRumours(listOf(rumour, rumour.copy(id = 99, status = RumourStatus.FAILED)))
         dictionaryRepository.sendCountries(listOf(polandTestData))
         userDataRepository.setUserData(emptyUserData)
+        articleRepository.sendArticles(articlesTestData.take(2).map { it.copy(playerIds = listOf(playerId)) } + articlesTestData.drop(2))
     }
 
     @Test
@@ -87,5 +99,22 @@ class PlayerViewModelTest {
         assertEquals(expected.first().to, state.currentClub)
         assertEquals(listOf(polandTestData), state.countries)
         assertEquals(listOf(rumoursTestData[0].id), state.rumours.map { it.id })
+        assertEquals(articlesTestData.take(2).map { it.id }, state.articles.map { it.id })
+    }
+
+    @Test
+    fun summaryAndChart_followTheWebsite() {
+        val state = PlayerUiState.Success(lewandowskiTestData, emptyList(), lewandowskiTransfersTestData, emptyList())
+        assertEquals(5, state.transfers.size)
+        assertEquals(50.13, state.totalMillions, 1e-9)
+        assertEquals(45.0, state.highestMillions)
+        assertEquals(listOf(0, 1, 2, 3, 4), state.chartTransfers.map { it.id })
+        assertTrue(state.showChart)
+
+        // One point is not a line, and loans stay off the chart
+        val loan = userTransfersTestData.first { it.fee.kind == FeeKind.LOAN }
+        val single = state.copy(transfers = listOf(lewandowskiTransfersTestData[0], loan))
+        assertEquals(listOf(lewandowskiTransfersTestData[0].id), single.chartTransfers.map { it.id })
+        assertFalse(single.showChart)
     }
 }

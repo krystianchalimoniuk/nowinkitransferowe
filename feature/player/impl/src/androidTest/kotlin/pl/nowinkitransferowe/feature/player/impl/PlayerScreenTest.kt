@@ -60,6 +60,7 @@ class PlayerScreenTest {
     fun facts_showBirthWithAgeAndTheCurrentClub() {
         setContent()
         composeTestRule.onNodeWithText("Urodzony 21.08.1988, Warszawa (38 lat)").assertExists()
+        composeTestRule.onNodeWithText("Chicago Fire · od lip 2026").assertExists()
         composeTestRule.onNodeWithTag("player:current-club").performClick()
         assertEquals(900, club)
     }

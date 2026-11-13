@@ -38,6 +38,7 @@ import pl.nowinkitransferowe.core.testing.data.fixedRumoursTestData
 import pl.nowinkitransferowe.core.testing.data.lewandowskiTestData
 import pl.nowinkitransferowe.core.testing.data.lewandowskiTransfersTestData
 import pl.nowinkitransferowe.core.testing.data.polandTestData
+import pl.nowinkitransferowe.core.testing.data.userArticlesTestData
 import java.util.TimeZone
 
 @RunWith(RobolectricTestRunner::class)
@@ -74,6 +75,7 @@ class PlayerScreenshotTests {
                         countries = listOf(polandTestData),
                         transfers = lewandowskiTransfersTestData,
                         rumours = fixedRumoursTestData.take(1),
+                        articles = userArticlesTestData.take(2),
                     ),
                     showBackButton = true,
                     onBackClick = {},

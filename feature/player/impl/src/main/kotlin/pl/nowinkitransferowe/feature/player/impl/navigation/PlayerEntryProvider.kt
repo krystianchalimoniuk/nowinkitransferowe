@@ -22,6 +22,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
+import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
 import pl.nowinkitransferowe.feature.club.api.navigation.navigateToClub
 import pl.nowinkitransferowe.feature.player.api.navigation.PlayerNavKey
 import pl.nowinkitransferowe.feature.player.impl.PlayerRoute
@@ -40,6 +41,7 @@ fun EntryProviderScope<NavKey>.playerEntry(navigator: Navigator) {
             onTransferClick = navigator::navigateToTransfer,
             onClubClick = navigator::navigateToClub,
             onRumourClick = navigator::navigateToRumour,
+            onArticleClick = navigator::navigateToArticle,
             viewModel = hiltViewModel<PlayerViewModel, PlayerViewModel.Factory>(key = key.playerId.toString()) { factory ->
                 factory.create(key.playerId)
             },

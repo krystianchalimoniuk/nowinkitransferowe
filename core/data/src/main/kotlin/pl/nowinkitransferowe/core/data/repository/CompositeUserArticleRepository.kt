@@ -45,6 +45,8 @@ class CompositeUserArticleRepository @Inject constructor(
         .withUserData()
         .map { it.firstOrNull() }
 
+    override fun observeArticlesAboutPlayer(playerId: Int): Flow<List<UserArticle>> = articleRepository.observeArticlesAboutPlayer(playerId).withUserData()
+
     override fun observeBookmarked(): Flow<List<UserArticle>> = userDataRepository.userData
         .map { userData -> userData.bookmarkedArticles }
         .distinctUntilChanged()
