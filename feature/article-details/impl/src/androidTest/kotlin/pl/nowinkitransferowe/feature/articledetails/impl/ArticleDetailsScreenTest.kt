@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,86 +17,89 @@
 package pl.nowinkitransferowe.feature.articledetails.impl
 
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
+import pl.nowinkitransferowe.core.model.Rumour
+import pl.nowinkitransferowe.core.testing.data.clubsTestData
+import pl.nowinkitransferowe.core.testing.data.playersTestData
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
 import pl.nowinkitransferowe.core.testing.data.userArticlesTestData
-import pl.nowinkitransferowe.core.ui.dateFormatted
+import kotlin.test.assertEquals
 
 class ArticleDetailsScreenTest {
-    @get:Rule(order = 1)
+    @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
+    private val article = userArticlesTestData.first()
+
     @Test
-    fun circularProgressIndicator_whenScreenIsLoading_exists() {
-        composeTestRule.setContent {
-            ArticleDetailsScreen(
-                detailsUiState = ArticleDetailsUiState.Loading,
-                showBackButton = true,
-                onBackClick = {},
-                onTopicClick = {},
-                onBookmarkChanged = { _, _ -> },
-                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-            )
-        }
+    fun loadingWheelIsShownWhileTheArticleLoads() {
+        composeTestRule.setContent { Screen(ArticleDetailsUiState.Loading) }
 
         composeTestRule
-            .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_article_details_impl_loading),
-            )
+            .onNodeWithContentDescription(composeTestRule.activity.getString(R.string.feature_article_details_impl_loading))
             .assertExists()
     }
 
     @Test
-    fun feed_whenLoaded_showsDetailsScreen() {
+    fun headerRumourAndChipsAreShown() {
         composeTestRule.setContent {
-            ArticleDetailsScreen(
-                detailsUiState = ArticleDetailsUiState.Success(userArticlesTestData.first()),
-                showBackButton = true,
-                onBackClick = {},
-                onTopicClick = {},
-                onBookmarkChanged = { _, _ -> },
-                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-            )
+            Screen(ArticleDetailsUiState.Success(article, clubs = clubsTestData, players = playersTestData, rumour = rumoursTestData.first()))
         }
 
-        composeTestRule
-            .onNodeWithText(
-                userArticlesTestData[0].title,
-                substring = true,
-            )
-            .assertExists()
+        composeTestRule.onNodeWithText(article.title.uppercase()).assertExists()
+        composeTestRule.onNodeWithText(article.lead).assertExists()
+        composeTestRule.onNodeWithText(rumoursTestData.first().player.name).assertExists()
+        composeTestRule.onNodeWithText(clubsTestData.first().name).assertExists()
+        composeTestRule.onNodeWithText(playersTestData.first().name).assertExists()
     }
 
     @Test
-    fun testMetaDataDisplay_withCategory() {
-        val newsWithKnownResourceType = userArticlesTestData[0]
-        lateinit var dateFormatted: String
-
+    fun rumourBoxClickReportsTheRumour() {
+        var clicked: Rumour? = null
         composeTestRule.setContent {
-            ArticleDetailsScreen(
-                detailsUiState = ArticleDetailsUiState.Success(userArticlesTestData.first()),
-                showBackButton = true,
-                onBackClick = {},
-                onTopicClick = {},
-                onBookmarkChanged = { _, _ -> },
-                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-            )
+            Screen(ArticleDetailsUiState.Success(article, rumour = rumoursTestData.first()), onRumourClick = { clicked = it })
+        }
 
-            dateFormatted = dateFormatted(newsWithKnownResourceType.publishedAt)
+        composeTestRule.onNodeWithText(rumoursTestData.first().player.name).performClick()
+
+        assertEquals(rumoursTestData.first(), clicked)
+    }
+
+    @Test
+    fun bookmarkClickReportsTheArticle() {
+        var bookmarked: Pair<Int, Boolean>? = null
+        composeTestRule.setContent {
+            Screen(ArticleDetailsUiState.Success(article), onBookmarkChanged = { id, saved -> bookmarked = id to saved })
         }
 
         composeTestRule
-            .onNodeWithText(
-                composeTestRule.activity.getString(
-                    pl.nowinkitransferowe.core.ui.R.string.core_ui_card_meta_data_text,
-                    dateFormatted,
-                    newsWithKnownResourceType.topics.first().name,
-                ),
-            )
-            .assertExists()
+            .onNodeWithContentDescription(composeTestRule.activity.getString(pl.nowinkitransferowe.core.ui.R.string.core_ui_bookmark))
+            .performClick()
+
+        assertEquals(article.id to true, bookmarked)
+    }
+
+    @Composable
+    private fun Screen(
+        state: ArticleDetailsUiState,
+        onRumourClick: (Rumour) -> Unit = {},
+        onBookmarkChanged: (Int, Boolean) -> Unit = { _, _ -> },
+    ) {
+        ArticleDetailsScreen(
+            detailsUiState = state,
+            showBackButton = true,
+            onBackClick = {},
+            onTopicClick = {},
+            onBookmarkChanged = onBookmarkChanged,
+            darkThemeConfig = DarkThemeConfig.LIGHT,
+            onRumourClick = onRumourClick,
+        )
     }
 }

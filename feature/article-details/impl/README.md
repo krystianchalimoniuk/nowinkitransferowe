@@ -18,6 +18,10 @@ graph TB
       :feature:article-details:api[api]:::android-library
       :feature:article-details:impl[impl]:::android-feature
     end
+    subgraph :feature:rumours
+      direction TB
+      :feature:rumours:api[api]:::android-library
+    end
     subgraph :feature:search
       direction TB
       :feature:search:api[api]:::android-library
@@ -61,7 +65,9 @@ graph TB
   :feature:article-details:impl -.-> :core:designsystem
   :feature:article-details:impl -.-> :core:ui
   :feature:article-details:impl -.-> :feature:article-details:api
+  :feature:article-details:impl -.-> :feature:rumours:api
   :feature:article-details:impl -.-> :feature:search:api
+  :feature:rumours:api --> :core:navigation
   :feature:search:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;

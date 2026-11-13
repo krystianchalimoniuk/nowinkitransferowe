@@ -33,6 +33,9 @@ interface RumourRepository : Syncable {
      */
     fun observeRumours(status: RumourStatus, updatedSince: Instant = Instant.DISTANT_PAST): Flow<List<Rumour>>
 
+    /** Rumours the article with [articleId] moved to a stage. */
+    fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>>
+
     fun observeRumoursOfClub(clubId: Int): Flow<List<Rumour>>
 
     fun observeRumoursOfPlayer(playerId: Int): Flow<List<Rumour>>

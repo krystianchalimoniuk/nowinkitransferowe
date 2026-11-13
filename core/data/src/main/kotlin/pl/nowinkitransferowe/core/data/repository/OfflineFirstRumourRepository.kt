@@ -52,6 +52,8 @@ internal class OfflineFirstRumourRepository @Inject constructor(
 
     override fun observeRumours(status: RumourStatus, updatedSince: Instant): Flow<List<Rumour>> = rumourDao.observeRumours(status.name, updatedSince).map { it.map(PopulatedRumour::asExternalModel) }
 
+    override fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>> = rumourDao.observeRumoursOfArticle(articleId).map { it.map(PopulatedRumour::asExternalModel) }
+
     override fun observeRumoursOfClub(clubId: Int): Flow<List<Rumour>> = rumourDao.observeRumoursOfClub(clubId).map { it.map(PopulatedRumour::asExternalModel) }
 
     override fun observeRumoursOfPlayer(playerId: Int): Flow<List<Rumour>> = rumourDao.observeRumoursOfPlayer(playerId).map { it.map(PopulatedRumour::asExternalModel) }

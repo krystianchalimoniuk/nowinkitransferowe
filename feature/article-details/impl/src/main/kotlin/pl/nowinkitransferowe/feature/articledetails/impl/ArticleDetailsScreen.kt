@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.feature.articledetails.impl
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.webkit.CookieManager
@@ -24,90 +25,96 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.VisibleForTesting
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.delay
-import pl.nowinkitransferowe.core.designsystem.component.NtBackground
+import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
-import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
+import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
+import pl.nowinkitransferowe.core.model.Club
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
+import pl.nowinkitransferowe.core.model.Player
+import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.UserArticle
-import pl.nowinkitransferowe.core.ui.ArticleAuthor
-import pl.nowinkitransferowe.core.ui.ArticleHeaderImage
-import pl.nowinkitransferowe.core.ui.ArticleMetaData
-import pl.nowinkitransferowe.core.ui.ArticleSource
+import pl.nowinkitransferowe.core.ui.ArticleImage
+import pl.nowinkitransferowe.core.ui.ArticleKindBadge
 import pl.nowinkitransferowe.core.ui.ArticleTags
 import pl.nowinkitransferowe.core.ui.BookmarkButton
-import pl.nowinkitransferowe.core.ui.DevicePreviews
+import pl.nowinkitransferowe.core.ui.ClubCrest
+import pl.nowinkitransferowe.core.ui.RumourStageIndicator
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
-import pl.nowinkitransferowe.core.ui.TransfersResourceImage
-import pl.nowinkitransferowe.core.ui.UserArticlePreviewParameterProvider
-import java.lang.StringBuilder
+import pl.nowinkitransferowe.core.ui.articleOverline
 
 @Composable
 internal fun ArticleDetailsRoute(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
+    onArticleLinkClick: (Int) -> Unit,
+    onRumourClick: (Rumour) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ArticleDetailsViewModel,
 ) {
     val detailsUiState by viewModel.detailsUiState.collectAsStateWithLifecycle()
     val darkThemeConfig by viewModel.darkThemeConfig.collectAsStateWithLifecycle()
-    TrackScreenViewEvent(screenName = "News: ${viewModel.articleId}")
+    TrackScreenViewEvent(screenName = "Article: ${viewModel.articleId}")
     ArticleDetailsScreen(
         detailsUiState = detailsUiState,
         showBackButton = showBackButton,
         onBackClick = onBackClick,
         onTopicClick = onTopicClick,
         onBookmarkChanged = viewModel::bookmarkArticle,
+        onArticleLinkClick = onArticleLinkClick,
+        onRumourClick = onRumourClick,
         darkThemeConfig = darkThemeConfig,
         modifier = modifier.testTag("news:${viewModel.articleId}"),
     )
 }
 
+/**
+ * An article as on the website: the image, kind, topics and date, the title, lead and author,
+ * the rumour it moved, the clubs and players it is about, the content in a WebView with the
+ * website stylesheet, and its tags.
+ */
 @VisibleForTesting
 @Composable
 internal fun ArticleDetailsScreen(
@@ -118,332 +125,243 @@ internal fun ArticleDetailsScreen(
     onBookmarkChanged: (Int, Boolean) -> Unit,
     darkThemeConfig: DarkThemeConfig,
     modifier: Modifier = Modifier,
+    onArticleLinkClick: (Int) -> Unit = {},
+    onRumourClick: (Rumour) -> Unit = {},
 ) {
-    val state = rememberScrollState()
-    TrackScrollJank(scrollableState = state, stateName = "details:screen")
+    val scrollState = rememberScrollState()
+    TrackScrollJank(scrollableState = scrollState, stateName = "details:screen")
+    val context = LocalContext.current
+    val openInBrowser: (String) -> Unit = { url -> context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) }
 
-    Box(
-        modifier = modifier
-            .verticalScroll(state = state)
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)),
-    ) {
-        Column(
+    when (detailsUiState) {
+        ArticleDetailsUiState.Loading -> Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            NtLoadingWheel(contentDesc = stringResource(R.string.feature_article_details_impl_loading))
+        }
+
+        is ArticleDetailsUiState.Success -> Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth(),
         ) {
-            when (detailsUiState) {
-                ArticleDetailsUiState.Loading ->
-                    NtLoadingWheel(
-                        modifier = modifier,
-                        contentDesc = stringResource(id = R.string.feature_article_details_impl_loading),
-                    )
-
-                ArticleDetailsUiState.Error -> {
-                    LaunchedEffect(Unit) {
-                        onBackClick()
-                    }
+            val article = detailsUiState.userArticle
+            Column(
+                Modifier
+                    .widthIn(max = 720.dp)
+                    .fillMaxWidth(),
+            ) {
+                ArticleToolbar(
+                    article = article,
+                    showBackButton = showBackButton,
+                    onBackClick = onBackClick,
+                    onShare = { shareArticle(context, article) },
+                    onToggleBookmark = { onBookmarkChanged(article.id, !article.isSaved) },
+                )
+                ArticleHeader(article)
+                detailsUiState.rumour?.let { rumour ->
+                    RumourBox(rumour, onClick = { onRumourClick(rumour) }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                 }
-
-                is ArticleDetailsUiState.Success -> {
-                    ArticleDetailsToolbar(
-                        showBackButton = showBackButton,
-                        onBackClick = onBackClick,
-                        userArticle = detailsUiState.userArticle,
-                    )
-
-                    ArticleDetailsBody(
-                        userArticle = detailsUiState.userArticle,
-                        onToggleBookmark = {
-                            onBookmarkChanged(
-                                detailsUiState.userArticle.id,
-                                !detailsUiState.userArticle.isSaved,
-                            )
-                        },
-                        onTopicClick = onTopicClick,
-                        darkThemeConfig = darkThemeConfig,
-                    )
-                }
+                AboutChips(detailsUiState.clubs, detailsUiState.players, onOpen = openInBrowser)
+                ArticleContent(
+                    contentHtml = article.contentHtml,
+                    darkTheme = when (darkThemeConfig) {
+                        DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+                        DarkThemeConfig.LIGHT -> false
+                        DarkThemeConfig.DARK -> true
+                    },
+                    onArticleLinkClick = onArticleLinkClick,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                ArticleTags(
+                    topics = article.tags,
+                    onTopicClick = onTopicClick,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
             }
-
-            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
         }
     }
 }
 
 @Composable
-private fun ArticleDetailsToolbar(
-    modifier: Modifier = Modifier,
-    showBackButton: Boolean = true,
-    onBackClick: () -> Unit = {},
-    userArticle: UserArticle,
+private fun ArticleToolbar(
+    article: UserArticle,
+    showBackButton: Boolean,
+    onBackClick: () -> Unit,
+    onShare: () -> Unit,
+    onToggleBookmark: () -> Unit,
 ) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    Row(Modifier.fillMaxWidth().padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
+        if (showBackButton) {
+            IconButton(onClick = onBackClick) {
+                Icon(NtIcons.ArrowBack, contentDescription = stringResource(pl.nowinkitransferowe.core.ui.R.string.core_ui_back))
+            }
+        }
+        Spacer(Modifier.weight(1f))
+        IconButton(onClick = onShare) {
+            Icon(NtIcons.Share, contentDescription = stringResource(R.string.feature_article_details_impl_share))
+        }
+        BookmarkButton(article.isSaved, onToggleBookmark)
+    }
+}
+
+@Composable
+private fun ArticleHeader(article: UserArticle) {
+    Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        val image = article.imageUrl ?: article.thumbnailUrl
+        if (image != null) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+            ) {
+                ArticleImage(image, Modifier.fillMaxSize())
+            }
+            article.imageSource?.let {
+                Text(
+                    stringResource(R.string.feature_article_details_impl_photo, it),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            ArticleKindBadge(article.kind)
+            Text(articleOverline(article), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Text(article.title.uppercase(), style = MaterialTheme.typography.headlineLarge)
+        if (article.lead.isNotBlank()) {
+            Text(article.lead, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            article.author?.let { author ->
+                NtCrest(imageUrl = author.avatarUrl, name = author.name, size = 28.dp)
+                Text(author.name, style = MaterialTheme.typography.labelLarge)
+            }
+            article.newsSource?.let {
+                Text(
+                    stringResource(R.string.feature_article_details_impl_source, it),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+/** The rumour this article moved, as the amber box on the website. */
+@Composable
+private fun RumourBox(rumour: Rumour, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val colors = LocalNtColors.current
+    Card(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = colors.rumourContainer, contentColor = colors.onRumourContainer),
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.feature_article_details_impl_rumour).uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = colors.rumour,
+            )
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(rumour.player.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f, fill = false))
+                rumour.from?.let { ClubCrest(it, size = 20.dp) }
+                Icon(NtIcons.ArrowForward, contentDescription = null, modifier = Modifier.size(14.dp))
+                ClubCrest(rumour.to, size = 20.dp)
+                Text(rumour.to.name, style = MaterialTheme.typography.labelMedium)
+            }
+            RumourStageIndicator(rumour.stage, rumour.trend)
+        }
+    }
+}
+
+/** Clubs and players the article is about; until their screens exist they open on the website. */
+@Composable
+private fun AboutChips(clubs: List<Club>, players: List<Player>, onOpen: (String) -> Unit) {
+    if (clubs.isEmpty() && players.isEmpty()) return
+    Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+        Text(
+            stringResource(R.string.feature_article_details_impl_in_article),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            clubs.forEach { club ->
+                AssistChip(
+                    onClick = { club.url?.let(onOpen) },
+                    label = { Text(club.name) },
+                    leadingIcon = { NtCrest(imageUrl = club.crestUrl, name = club.name, size = 18.dp) },
+                )
+            }
+            players.forEach { player ->
+                AssistChip(
+                    onClick = { player.url?.let(onOpen) },
+                    label = { Text(player.name) },
+                    leadingIcon = { NtCrest(imageUrl = player.photoUrl, name = player.name, size = 18.dp) },
+                )
+            }
+        }
+    }
+}
+
+/**
+ * The article content in a WebView with the website stylesheet. Links to other articles open
+ * them in the app; other links open in the browser. Third-party cookies stay off.
+ */
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+private fun ArticleContent(
+    contentHtml: String,
+    darkTheme: Boolean,
+    onArticleLinkClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (LocalInspectionMode.current) return
+    AndroidView(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 32.dp),
-    ) {
-        if (showBackButton) {
-            IconButton(onClick = { onBackClick() }) {
-                Icon(
-                    imageVector = NtIcons.ArrowBack,
-                    contentDescription = stringResource(
-                        id = pl.nowinkitransferowe.core.ui.R.string.core_ui_back,
-                    ),
-                )
-            }
-        } else {
-            // Keeps the share button aligned to the end of the Row.
-            Spacer(modifier = Modifier.width(1.dp))
-        }
-        val context = LocalContext.current
-        val shareIntent = getShareIntent(url = userArticle.url)
-        IconButton(
-            onClick = {
-                startActivity(
-                    context,
-                    shareIntent,
-                    null,
-                )
-            },
-        ) {
-            Icon(
-                imageVector = NtIcons.Share,
-                contentDescription = stringResource(id = pl.nowinkitransferowe.core.ui.R.string.core_ui_share),
-            )
-        }
-    }
-}
-
-@Composable
-private fun getShareIntent(url: String): Intent {
-    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-        putExtra(Intent.EXTRA_TEXT, url)
-        type = "text/plain"
-    }
-    return Intent.createChooser(sendIntent, null)
-}
-
-@Composable
-private fun ArticleDetailsBody(
-    userArticle: UserArticle,
-    onToggleBookmark: () -> Unit,
-    onTopicClick: (String) -> Unit,
-    darkThemeConfig: DarkThemeConfig,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = Modifier.testTag("content")) {
-        Row {
-            ArticleHeaderImage(userArticle.imageUrl, 280.dp)
-        }
-        Box(
-            modifier = Modifier.padding(16.dp),
-        ) {
-            Column {
-                Spacer(modifier = Modifier.height(12.dp))
-                Row {
-                    ArticleDetailsTitle(
-                        userArticle.title,
-                        modifier = Modifier.fillMaxWidth((.8f)),
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    BookmarkButton(userArticle.isSaved, onToggleBookmark)
+            .testTag("article:content"),
+        factory = { context ->
+            WebView(context).apply {
+                val webView = this
+                CookieManager.getInstance().apply {
+                    setAcceptCookie(false)
+                    setAcceptThirdPartyCookies(webView, false)
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    ArticleMetaData(
-                        userArticle.publishedAt,
-                        userArticle.topics.firstOrNull()?.name.orEmpty(),
-                        textStyle = MaterialTheme.typography.labelMedium,
-                    )
-                }
-                Spacer(modifier = Modifier.height(14.dp))
-                ArticleContent(
-                    userArticle.contentHtml,
-                    shouldUserDarkTheme = shouldUseDarkTheme(
-                        darkThemeConfig = darkThemeConfig,
-                    ),
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                ArticleTags(
-                    topics = userArticle.tags,
-                    onTopicClick = onTopicClick,
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        TransfersResourceImage(
-                            imageUrl = userArticle.author?.avatarUrl,
-                            placeHolderRes = pl.nowinkitransferowe.core.designsystem.R.drawable.core_designsystem_ic_author_picture_placeholder,
-                            size = 60.dp,
-                            cornerShape = 32.dp,
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ArticleAuthor(
-                            author = userArticle.author?.name.orEmpty(),
-                            modifier = Modifier.width(80.dp),
-                        )
-                    }
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(end = 12.dp),
-                    ) {
-                        Text(
-                            "Źródło:",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = modifier,
-                        )
-                        ArticleSource(source = userArticle.newsSource.orEmpty())
+                setBackgroundColor(Color.TRANSPARENT)
+                settings.javaScriptEnabled = true
+                webViewClient = object : WebViewClient() {
+                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                        val articleId = articleIdOf(request.url)
+                        if (articleId != null) {
+                            onArticleLinkClick(articleId)
+                        } else {
+                            view.context.startActivity(Intent(Intent.ACTION_VIEW, request.url))
+                        }
+                        return true
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
-        }
-    }
-}
-
-@Composable
-fun ArticleDetailsTitle(
-    title: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        title,
-        style = MaterialTheme.typography.headlineLarge,
-        modifier = modifier,
+        },
+        update = { webView ->
+            val html = articleHtml(contentHtml, darkTheme)
+            if (webView.tag != html) {
+                webView.tag = html
+                webView.loadDataWithBaseURL(WEBSITE_URL, html, "text/html", "UTF-8", null)
+            }
+        },
     )
 }
 
-@Composable
-private fun shouldUseDarkTheme(
-    darkThemeConfig: DarkThemeConfig,
-): Boolean = when (darkThemeConfig) {
-    DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
-    DarkThemeConfig.LIGHT -> false
-    DarkThemeConfig.DARK -> true
-}
-
-@SuppressLint("SetJavaScriptEnabled")
-@Composable
-fun ColumnScope.ArticleContent(description: String, shouldUserDarkTheme: Boolean) {
-    val width = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
-    val socialMediaJsScript = "<style>iframe {" +
-        "        display: block;" +
-        "        max-width:100%;" +
-        "        }  </style>" + "<style>img{display: inline; height: auto; max-width: 100%;}</style>" +
-        "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');" +
-        "</script>" +
-        "<script>" + " <script async defer src=\"//platform.instagram.com/en_US/embeds.js\"></script>"
-    val fontSize = "<body style=\"font-size:110%"
-    val fontColor = ";color:white"
-    val htmlStyle = StringBuilder().append(width).append(socialMediaJsScript).append(fontSize)
-    if (shouldUserDarkTheme) {
-        htmlStyle.append(fontColor)
+private fun shareArticle(context: Context, article: UserArticle) {
+    val send = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, article.url)
+        type = "text/plain"
     }
-    htmlStyle.append("\">")
-    var isLoading by remember { mutableStateOf(true) }
-    AnimatedVisibility(
-        visible = isLoading,
-        enter = fadeIn(),
-        exit = fadeOut(),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(500.dp),
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            NtLoadingWheel(contentDesc = stringResource(id = R.string.feature_article_details_impl_loading))
-        }
-    }
-    AnimatedVisibility(
-        visible = !isLoading,
-        enter = slideInVertically() + fadeIn(),
-        exit = fadeOut(),
-    ) {
-        AndroidView(
-            factory = { context ->
-                WebView(context).apply {
-                    val cookieManager = CookieManager.getInstance()
-                    cookieManager.setAcceptCookie(false)
-                    cookieManager.setAcceptThirdPartyCookies(this, false)
-                    setBackgroundColor(Color.TRANSPARENT)
-                    settings.javaScriptEnabled = true
-                    settings.loadWithOverviewMode = true
-                    webViewClient = object : WebViewClient() {
-                        override fun shouldOverrideUrlLoading(
-                            view: WebView,
-                            request: WebResourceRequest,
-                        ): Boolean {
-                            val intent = Intent(Intent.ACTION_VIEW, request.url)
-                            view.context.startActivity(intent)
-                            return true
-                        }
-                    }
-                    settings.setSupportZoom(true)
-                }
-            },
-            update = { webView ->
-                webView.loadDataWithBaseURL(
-                    "https://twitter.com",
-                    htmlStyle.toString() + description,
-                    "text/html; charset=utf-8",
-                    "UTF-8",
-                    "",
-                )
-            },
-
-        )
-    }
-
-    LaunchedEffect(Unit) {
-        delay(200)
-        isLoading = false
-    }
-}
-
-@DevicePreviews
-@Composable
-fun ArticleDetailsScreenPopulated(
-    @PreviewParameter(UserArticlePreviewParameterProvider::class)
-    userArticles: List<UserArticle>,
-) {
-    NtTheme {
-        NtBackground {
-            ArticleDetailsScreen(
-                detailsUiState = ArticleDetailsUiState.Success(userArticles[0]),
-                showBackButton = true,
-                onBackClick = {},
-                onTopicClick = {},
-                onBookmarkChanged = { _, _ -> },
-                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-            )
-        }
-    }
-}
-
-@DevicePreviews
-@Composable
-fun ArticleDetailsScreenLoading() {
-    NtTheme {
-        NtBackground {
-            ArticleDetailsScreen(
-                detailsUiState = ArticleDetailsUiState.Loading,
-                showBackButton = true,
-                onBackClick = {},
-                onTopicClick = {},
-                onBookmarkChanged = { _, _ -> },
-                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-            )
-        }
-    }
+    context.startActivity(Intent.createChooser(send, null))
 }

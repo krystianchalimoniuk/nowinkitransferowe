@@ -29,13 +29,20 @@ import org.robolectric.RobolectricTestRunner
 import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
 import pl.nowinkitransferowe.core.model.mapToUserArticles
 import pl.nowinkitransferowe.core.testing.data.articlesTestData
+import pl.nowinkitransferowe.core.testing.data.clubsTestData
+import pl.nowinkitransferowe.core.testing.data.playersTestData
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
 import pl.nowinkitransferowe.core.testing.data.topicsTestData
 import pl.nowinkitransferowe.core.testing.repository.TestArticleRepository
+import pl.nowinkitransferowe.core.testing.repository.TestClubRepository
 import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
+import pl.nowinkitransferowe.core.testing.repository.TestPlayerRepository
+import pl.nowinkitransferowe.core.testing.repository.TestRumourRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 @RunWith(RobolectricTestRunner::class)
 class ArticleDetailsViewModelTest {
@@ -51,6 +58,10 @@ class ArticleDetailsViewModelTest {
         userDataRepository = userDataRepository,
     )
 
+    private val clubRepository = TestClubRepository()
+    private val playerRepository = TestPlayerRepository()
+    private val rumourRepository = TestRumourRepository()
+
     private lateinit var viewModel: ArticleDetailsViewModel
 
     @Before
@@ -59,8 +70,12 @@ class ArticleDetailsViewModelTest {
         viewModel = ArticleDetailsViewModel(
             userDataRepository = userDataRepository,
             userArticleRepository = userArticleRepository,
+            clubRepository = clubRepository,
+            playerRepository = playerRepository,
+            rumourRepository = rumourRepository,
             articleId = articlesTestData.first().id,
         )
+        rumourRepository.sendRumours(emptyList())
     }
 
     @Test
@@ -100,5 +115,21 @@ class ArticleDetailsViewModelTest {
         viewModel.bookmarkArticle(123, false)
 
         assertEquals(emptySet(), userDataRepository.userData.first().bookmarkedArticles)
+    }
+
+    @Test
+    fun clubsPlayersAndTheRumourOfTheArticleAreShown() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.detailsUiState.collect() }
+        val article = articlesTestData.first().copy(clubIds = listOf(86, 83, 999), playerIds = listOf(10281))
+        articleRepository.sendArticles(listOf(article))
+        clubRepository.sendClubs(clubsTestData)
+        playerRepository.sendPlayers(playersTestData)
+        rumourRepository.sendRumours(rumoursTestData.map { if (it.id == 4) it.copy(latestArticleId = article.id) else it })
+
+        val state = assertIs<ArticleDetailsUiState.Success>(viewModel.detailsUiState.value)
+        // In the article's order; the unknown club 999 is left out.
+        assertEquals(listOf(86, 83), state.clubs.map { it.id })
+        assertEquals(listOf(10281), state.players.map { it.id })
+        assertEquals(4, state.rumour?.id)
     }
 }

@@ -38,6 +38,10 @@ class TestRumourRepository : RumourRepository {
         rumours.filter { it.status == status && it.updatedAt >= updatedSince }.sortedByDescending(Rumour::updatedAt)
     }
 
+    override fun observeRumoursOfArticle(articleId: Int): Flow<List<Rumour>> = rumoursFlow.map { rumours ->
+        rumours.filter { rumour -> rumour.latestArticleId == articleId || rumour.history.any { it.articleId == articleId } }
+    }
+
     override fun observeRumoursOfClub(clubId: Int): Flow<List<Rumour>> = rumoursFlow.map { rumours ->
         rumours.filter { rumour -> listOfNotNull(rumour.from, rumour.to).any { it is ClubRef.Club && it.id == clubId } }
     }
