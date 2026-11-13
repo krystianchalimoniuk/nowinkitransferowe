@@ -22,6 +22,10 @@ graph TB
       direction TB
       :feature:article-details:api[api]:::android-library
     end
+    subgraph :feature:club
+      direction TB
+      :feature:club:api[api]:::android-library
+    end
   end
   subgraph :core
     direction TB
@@ -57,11 +61,13 @@ graph TB
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
   :feature:article-details:api --> :core:navigation
+  :feature:club:api --> :core:navigation
   :feature:transfer-details:api --> :core:navigation
   :feature:transfer-details:impl -.-> :core:data
   :feature:transfer-details:impl -.-> :core:designsystem
   :feature:transfer-details:impl -.-> :core:ui
   :feature:transfer-details:impl -.-> :feature:article-details:api
+  :feature:transfer-details:impl -.-> :feature:club:api
   :feature:transfer-details:impl -.-> :feature:transfer-details:api
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
