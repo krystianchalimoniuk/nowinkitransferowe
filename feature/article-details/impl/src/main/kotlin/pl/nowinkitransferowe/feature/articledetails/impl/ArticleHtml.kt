@@ -24,13 +24,17 @@ internal const val WEBSITE_URL = "https://nowinkitransferowe.pl/"
 /**
  * The article content as a page with the website stylesheet (/static/css/article.css), in the
  * app's light or dark theme. Compose draws the background and the margins, so the page has
- * neither. Embedded posts from X load their script.
+ * neither. Embedded posts from X load their script and follow the same theme.
  */
 internal fun articleHtml(contentHtml: String, darkTheme: Boolean): String = buildString {
     append("<!doctype html><html data-theme=\"")
     append(if (darkTheme) "dark" else "light")
     append("\"><head><meta charset=\"utf-8\">")
     append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
+    // Read by platform.twitter.com/widgets.js for every embedded post on the page.
+    append("<meta name=\"twitter:widgets:theme\" content=\"")
+    append(if (darkTheme) "dark" else "light")
+    append("\">")
     append("<link rel=\"stylesheet\" href=\"/static/css/article.css\">")
     append("<style>body{background:transparent;padding:0}</style>")
     append("</head><body>")

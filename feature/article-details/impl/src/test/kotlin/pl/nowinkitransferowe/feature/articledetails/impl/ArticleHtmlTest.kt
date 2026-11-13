@@ -38,6 +38,12 @@ class ArticleHtmlTest {
     }
 
     @Test
+    fun embeddedPostsFromXFollowTheTheme() {
+        assertTrue("<meta name=\"twitter:widgets:theme\" content=\"dark\">" in articleHtml("", darkTheme = true))
+        assertTrue("<meta name=\"twitter:widgets:theme\" content=\"light\">" in articleHtml("", darkTheme = false))
+    }
+
+    @Test
     fun linksToWebsiteArticlesGiveTheirId() {
         assertEquals(11284, articleIdOf("https://nowinkitransferowe.pl/11284/transfery/psg-zarzucilo-siec".toUri()))
         assertEquals(11284, articleIdOf("https://www.nowinkitransferowe.pl/11284/x".toUri()))
