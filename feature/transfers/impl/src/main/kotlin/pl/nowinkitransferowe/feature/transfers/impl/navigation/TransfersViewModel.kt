@@ -20,11 +20,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -64,12 +67,19 @@ class TransfersViewModel @Inject constructor(
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 
-    /** From the current season back to 17/18, the first season with transfers on the website. */
-    private val seasons: List<Season> = generateSequence(Season.of(Clock.System.todayIn(Season.TIME_ZONE))) { it.previous() }
-        .takeWhile { it.startYear >= FIRST_SEASON }
-        .toList()
+    private val currentSeason = Season.of(Clock.System.todayIn(Season.TIME_ZONE))
 
-    private val seasonStart = savedStateHandle.getStateFlow(SEASON_KEY, seasons.first().startYear)
+    /**
+     * From the newest season with a transfer (a later one when a transfer is already agreed for
+     * the next window) back to 17/18, the first season with transfers on the website.
+     */
+    private val seasons: Flow<List<Season>> = userTransferRepository.observeTransfers(limit = 1)
+        .map { newest -> maxOf(currentSeason, newest.firstOrNull()?.season ?: currentSeason) }
+        .distinctUntilChanged()
+        .map { newest -> generateSequence(newest) { it.previous() }.takeWhile { it.startYear >= FIRST_SEASON }.toList() }
+
+    // The current season until another one is picked, even when a later one has transfers
+    private val seasonStart = savedStateHandle.getStateFlow(SEASON_KEY, currentSeason.startYear)
     private val topic = savedStateHandle.getStateFlow<String?>(TOPIC_KEY, null)
     private val page = MutableStateFlow(1)
 
@@ -85,7 +95,8 @@ class TransfersViewModel @Inject constructor(
                 userTransferRepository.observeTransfers(season = season, topic = topic, limit = limit),
                 dictionaryRepository.observeTopics(),
                 userTransferRepository.observeHasUnread(),
-            ) { transfers, topics, hasUnread ->
+                seasons,
+            ) { transfers, topics, hasUnread, seasons ->
                 TransfersUiState.Success(
                     season = season,
                     seasons = seasons,

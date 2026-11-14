@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.feature.transferdetails.impl
 
+import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -45,6 +46,7 @@ class TransferDetailsViewModelTest {
     private val playerRepository = TestPlayerRepository()
 
     private fun viewModel(transferId: Int) = TransferDetailsViewModel(
+        savedStateHandle = SavedStateHandle(),
         userDataRepository = userDataRepository,
         userTransferRepository = CompositeUserTransferRepository(transferRepository, userDataRepository),
         playerRepository = playerRepository,
@@ -88,6 +90,19 @@ class TransferDetailsViewModelTest {
 
         val state = assertIs<TransferDetailsUiState.Success>(viewModel.uiState.value)
         assertEquals("Raphael Varane", state.player?.name)
+    }
+
+    @Test
+    fun anotherTransferOfThePlayerIsShownInPlace() = runTest {
+        val viewModel = viewModel(19580)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        transferRepository.sendTransfers(transfersTestData)
+
+        viewModel.showTransfer(15000)
+
+        val state = assertIs<TransferDetailsUiState.Success>(viewModel.uiState.value)
+        assertEquals(15000, state.transfer.id)
+        assertEquals(listOf(19580, 15000), state.history.map { it.id })
     }
 
     @Test

@@ -26,7 +26,6 @@ import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArt
 import pl.nowinkitransferowe.feature.club.api.navigation.navigateToClub
 import pl.nowinkitransferowe.feature.player.api.navigation.navigateToPlayer
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.TransferDetailsNavKey
-import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
 import pl.nowinkitransferowe.feature.transferdetails.impl.TransferDetailsRoute
 import pl.nowinkitransferowe.feature.transferdetails.impl.TransferDetailsViewModel
 
@@ -39,7 +38,6 @@ fun EntryProviderScope<NavKey>.transferDetailsEntry(navigator: Navigator) {
             showBackButton = true,
             onBackClick = { navigator.goBack() },
             onArticleClick = navigator::navigateToArticle,
-            onTransferClick = navigator::navigateToTransfer,
             onClubClick = navigator::navigateToClub,
             onPlayerClick = navigator::navigateToPlayer,
             viewModel = hiltViewModel<TransferDetailsViewModel, TransferDetailsViewModel.Factory>(
