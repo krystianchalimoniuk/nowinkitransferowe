@@ -64,6 +64,10 @@ internal class OfflineFirstArticleRepository @Inject constructor(
 
     override fun observeArticleCount(): Flow<Int> = articleDao.observeArticleCount()
 
+    override fun observeArticleIdsAfter(id: Int): Flow<List<Int>> = articleDao.observeIdsAfter(id)
+
+    override suspend fun getNewestArticleId(): Int? = articleDao.getNewestId()
+
     override fun observeArticlesAboutClub(clubId: Int): Flow<List<Article>> = articleDao.observeArticlesAboutClub(clubId).map { it.map(PopulatedArticle::asExternalModel) }
 
     override fun observeArticlesAboutPlayer(playerId: Int): Flow<List<Article>> = articleDao.observeArticlesAboutPlayer(playerId).map { it.map(PopulatedArticle::asExternalModel) }
@@ -95,6 +99,8 @@ internal class OfflineFirstArticleRepository @Inject constructor(
                 )
             },
         )
+        // After the first sync everything there is counts as read; later articles are new
+        if (synced) ntPreferencesDataSource.setReadUpToIfUnset(articleId = articleDao.getNewestId(), transferId = null)
         if (synced && addedIds.isNotEmpty() && ntPreferencesDataSource.userData.first().isNewsNotificationsAllowed) {
             notifier.postArticleNotifications(observeArticles(addedIds).first())
         }

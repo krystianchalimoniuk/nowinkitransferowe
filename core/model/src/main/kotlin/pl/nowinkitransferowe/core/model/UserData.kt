@@ -33,4 +33,14 @@ data class UserData(
     val isFollowedNotificationsAllowed: Boolean = false,
     val isFollowedLeaguesNotificationsAllowed: Boolean = false,
     val bookmarkedRumours: Set<Int> = emptySet(),
-)
+    /** Articles up to this id count as read; 0 before the first sync, when all of them do. */
+    val articlesReadUpToId: Int = 0,
+    /** Transfers up to this id count as read; 0 before the first sync, when all of them do. */
+    val transfersReadUpToId: Int = 0,
+) {
+    /** New since the last visit and not opened yet. */
+    fun isArticleRead(id: Int): Boolean = id in viewedArticles || articlesReadUpToId == 0 || id <= articlesReadUpToId
+
+    /** New since the last visit and not opened yet. */
+    fun isTransferRead(id: Int): Boolean = id in viewedTransfers || transfersReadUpToId == 0 || id <= transfersReadUpToId
+}

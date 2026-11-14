@@ -66,13 +66,20 @@ class TransfersScreenTest {
     }
 
     @Test
-    fun markAsReadReportsTheUnreadTransfers() {
-        var marked: List<Int>? = null
-        composeTestRule.setContent { Screen(state, onMarkAsRead = { marked = it }) }
+    fun markAsRead_isShownWithUnreadTransfersAndReportsTheClick() {
+        var marked = false
+        composeTestRule.setContent { Screen(state.copy(hasUnread = true), onMarkAsRead = { marked = true }) }
 
         composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.feature_transfers_impl_mark_as_read)).performClick()
 
-        assertEquals(userTransfersTestData.map { it.id }, marked)
+        assertEquals(true, marked)
+    }
+
+    @Test
+    fun markAsRead_isHiddenWhenEverythingIsRead() {
+        composeTestRule.setContent { Screen(state.copy(hasUnread = false)) }
+
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.feature_transfers_impl_mark_as_read)).assertDoesNotExist()
     }
 
     @Composable
@@ -80,7 +87,7 @@ class TransfersScreenTest {
         uiState: TransfersUiState,
         onSeasonSelected: (Season) -> Unit = {},
         onTransferClick: (Int) -> Unit = {},
-        onMarkAsRead: (List<Int>) -> Unit = {},
+        onMarkAsRead: () -> Unit = {},
     ) {
         TransfersScreen(
             uiState = uiState,

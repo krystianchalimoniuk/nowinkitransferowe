@@ -47,6 +47,10 @@ class TestTransferRepository : TransferRepository {
 
     override fun observeTransferCount(): Flow<Int> = transfersFlow.map { it.size }
 
+    override fun observeTransferIdsAfter(id: Int): Flow<List<Int>> = transfersFlow.map { transfers -> transfers.map { it.id }.filter { it > id } }
+
+    override suspend fun getNewestTransferId(): Int? = transfersFlow.replayCache.firstOrNull()?.maxOfOrNull { it.id }
+
     override fun observeTransfersOfClub(clubId: Int): Flow<List<Transfer>> = transfersFlow.map { transfers ->
         transfers.filter { transfer -> listOf(transfer.from, transfer.to).any { it is ClubRef.Club && it.id == clubId } }
     }

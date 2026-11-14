@@ -65,7 +65,7 @@ data class UserArticle internal constructor(
         featuredUntil = article.featuredUntil,
         publishedAt = article.publishedAt,
         isSaved = article.id in userData.bookmarkedArticles,
-        hasBeenViewed = article.id in userData.viewedArticles,
+        hasBeenViewed = userData.isArticleRead(article.id),
     )
 }
 

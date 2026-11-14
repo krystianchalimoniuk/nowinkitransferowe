@@ -18,6 +18,7 @@ package pl.nowinkitransferowe.data.test.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -105,6 +106,10 @@ class FakeArticleRepository @Inject constructor(
 
     override fun observeArticleCount(): Flow<Int> = articles.map { it.size }
 
+    override fun observeArticleIdsAfter(id: Int): Flow<List<Int>> = articles.map { list -> list.map { it.id }.filter { it > id } }
+
+    override suspend fun getNewestArticleId(): Int? = articles.first().maxOfOrNull { it.id }
+
     override fun observeArticlesAboutClub(clubId: Int): Flow<List<Article>> = articles.map { list -> list.filter { clubId in it.clubIds } }
 
     override fun observeArticlesAboutPlayer(playerId: Int): Flow<List<Article>> = articles.map { list -> list.filter { playerId in it.playerIds } }
@@ -155,6 +160,10 @@ class FakeTransferRepository @Inject constructor(
     override fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>> = transfers.map { list -> list.filter { it.id in ids } }
 
     override fun observeTransferCount(): Flow<Int> = transfers.map { it.size }
+
+    override fun observeTransferIdsAfter(id: Int): Flow<List<Int>> = transfers.map { list -> list.map { it.id }.filter { it > id } }
+
+    override suspend fun getNewestTransferId(): Int? = transfers.first().maxOfOrNull { it.id }
 
     override fun observeTransfersOfClub(clubId: Int): Flow<List<Transfer>> = transfers.map { list ->
         list.filter { transfer -> listOf(transfer.from, transfer.to).any { it is ClubRef.Club && it.id == clubId } }

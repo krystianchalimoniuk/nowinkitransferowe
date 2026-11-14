@@ -38,4 +38,10 @@ interface UserTransferRepository {
     fun observeBookmarked(): Flow<List<UserTransfer>>
 
     fun observeTransferCount(): Flow<Int>
+
+    /** Whether any transfer added since the last visit is not opened yet. */
+    fun observeHasUnread(): Flow<Boolean>
+
+    /** Marks every transfer as read, in all seasons and leagues. */
+    suspend fun markAllRead()
 }

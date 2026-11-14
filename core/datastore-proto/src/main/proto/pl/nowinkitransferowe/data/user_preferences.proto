@@ -65,5 +65,11 @@ message UserPreferences {
     // Saved rumours, by API v3 id.
     map<int32, bool> bookmarked_rumour_ids = 37;
 
-    // NEXT AVAILABLE ID: 38
+    // Articles and transfers up to these ids count as read ("new since the last visit"); later
+    // ones are new until opened. 0 means not set yet: everything counts as read until the first
+    // sync sets them to the newest record.
+    int32 articles_read_up_to_id = 38;
+    int32 transfers_read_up_to_id = 39;
+
+    // NEXT AVAILABLE ID: 40
 }

@@ -50,6 +50,8 @@ sealed interface TransfersUiState {
         val leagues: List<Topic>,
         val transfers: List<UserTransfer>,
         val hasMore: Boolean,
+        /** Any transfer added since the last visit is unread, in any season or league. */
+        val hasUnread: Boolean = false,
     ) : TransfersUiState
 }
 
@@ -57,7 +59,7 @@ sealed interface TransfersUiState {
 class TransfersViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     syncManager: SyncManager,
-    userTransferRepository: UserTransferRepository,
+    private val userTransferRepository: UserTransferRepository,
     dictionaryRepository: DictionaryRepository,
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
@@ -82,7 +84,8 @@ class TransfersViewModel @Inject constructor(
             combine(
                 userTransferRepository.observeTransfers(season = season, topic = topic, limit = limit),
                 dictionaryRepository.observeTopics(),
-            ) { transfers, topics ->
+                userTransferRepository.observeHasUnread(),
+            ) { transfers, topics, hasUnread ->
                 TransfersUiState.Success(
                     season = season,
                     seasons = seasons,
@@ -90,6 +93,7 @@ class TransfersViewModel @Inject constructor(
                     leagues = topics.filter { it.kind == TopicKind.LEAGUE },
                     transfers = transfers,
                     hasMore = transfers.size == limit,
+                    hasUnread = hasUnread,
                 )
             }
         }
@@ -116,6 +120,11 @@ class TransfersViewModel @Inject constructor(
 
     fun updateTransferSaved(transferId: Int, isChecked: Boolean) {
         viewModelScope.launch { userDataRepository.setTransferBookmarked(transferId, isChecked) }
+    }
+
+    /** Marks every transfer as read, not only the ones loaded in this season and league. */
+    fun markAllRead() {
+        viewModelScope.launch { userTransferRepository.markAllRead() }
     }
 
     fun setTransfersViewed(transferIds: List<Int>, viewed: Boolean) {

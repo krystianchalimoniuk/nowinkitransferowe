@@ -43,6 +43,10 @@ class TestArticleRepository : ArticleRepository {
 
     override fun observeArticleCount(): Flow<Int> = articlesFlow.map { it.size }
 
+    override fun observeArticleIdsAfter(id: Int): Flow<List<Int>> = articlesFlow.map { articles -> articles.map { it.id }.filter { it > id } }
+
+    override suspend fun getNewestArticleId(): Int? = articlesFlow.replayCache.firstOrNull()?.maxOfOrNull { it.id }
+
     override fun observeArticlesAboutClub(clubId: Int): Flow<List<Article>> = articlesFlow.map { articles -> articles.filter { clubId in it.clubIds } }
 
     override fun observeArticlesAboutPlayer(playerId: Int): Flow<List<Article>> = articlesFlow.map { articles -> articles.filter { playerId in it.playerIds } }

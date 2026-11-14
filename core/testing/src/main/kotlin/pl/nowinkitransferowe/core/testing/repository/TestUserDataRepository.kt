@@ -34,7 +34,9 @@ val emptyUserData = UserData(
     isNewsNotificationsAllowed = true,
     isTransfersNotificationsAllowed = true,
     isGeneralNotificationAllowed = true,
-
+    // Everything after the first record counts as new, so test data shows as unread
+    articlesReadUpToId = 1,
+    transfersReadUpToId = 1,
 )
 
 class TestUserDataRepository : UserDataRepository {
@@ -77,6 +79,18 @@ class TestUserDataRepository : UserDataRepository {
         currentUserData.let { current ->
             val bookmarkedRumours = if (bookmarked) current.bookmarkedRumours + rumourId else current.bookmarkedRumours - rumourId
             _userData.tryEmit(current.copy(bookmarkedRumours = bookmarkedRumours))
+        }
+    }
+
+    override suspend fun setTransfersReadUpTo(id: Int) {
+        currentUserData.let { current ->
+            _userData.tryEmit(current.copy(transfersReadUpToId = id, viewedTransfers = current.viewedTransfers.filter { it > id }.toSet()))
+        }
+    }
+
+    override suspend fun setArticlesReadUpTo(id: Int) {
+        currentUserData.let { current ->
+            _userData.tryEmit(current.copy(articlesReadUpToId = id, viewedArticles = current.viewedArticles.filter { it > id }.toSet()))
         }
     }
 

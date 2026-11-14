@@ -96,14 +96,14 @@ class NtAppState(
      */
     val topLevelNavKeysWithUnreadResources: StateFlow<Set<NavKey>> =
         combine(
-            userArticleRepository.observeArticles(limit = UNREAD_CHECK_LIMIT),
+            userArticleRepository.observeHasUnread(),
             userArticleRepository.observeBookmarked(),
-            userTransferRepository.observeTransfers(limit = UNREAD_CHECK_LIMIT),
+            userTransferRepository.observeHasUnread(),
             userTransferRepository.observeBookmarked(),
-        ) { articles, bookmarkedArticles, transfers, bookmarkedTransfersResources ->
+        ) { articlesUnread, bookmarkedArticles, transfersUnread, bookmarkedTransfersResources ->
             setOfNotNull(
-                ArticlesNavKey.takeIf { articles.any { !it.hasBeenViewed } },
-                TransfersNavKey.takeIf { transfers.any { !it.hasBeenViewed } },
+                ArticlesNavKey.takeIf { articlesUnread },
+                TransfersNavKey.takeIf { transfersUnread },
                 BookmarksNavKey.takeIf {
                     bookmarkedArticles.any { !it.hasBeenViewed } ||
                         bookmarkedTransfersResources.any { !it.hasBeenViewed }
@@ -136,4 +136,3 @@ private fun NavigationTrackingSideEffect(navigationState: NavigationState) {
 }
 
 /** How many of the newest articles and transfers are checked for the unread dot. */
-private const val UNREAD_CHECK_LIMIT = 50

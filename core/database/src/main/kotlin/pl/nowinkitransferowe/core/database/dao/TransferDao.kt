@@ -38,6 +38,13 @@ interface TransferDao {
     @Query("SELECT COUNT(*) FROM transfers")
     fun observeTransferCount(): Flow<Int>
 
+    /** Ids of the transfers added after the one with [id] (ids grow with every new transfer). */
+    @Query("SELECT id FROM transfers WHERE id > :id")
+    fun observeIdsAfter(id: Int): Flow<List<Int>>
+
+    @Query("SELECT MAX(id) FROM transfers")
+    suspend fun getNewestId(): Int?
+
     @Query("SELECT id FROM transfers WHERE id IN (:ids)")
     suspend fun getExistingIds(ids: Set<Int>): List<Int>
 

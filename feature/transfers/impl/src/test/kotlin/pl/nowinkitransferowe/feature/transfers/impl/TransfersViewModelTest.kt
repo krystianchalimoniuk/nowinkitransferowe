@@ -123,4 +123,18 @@ class TransfersViewModelTest {
 
         assertEquals(setOf(19580, 15000), userDataRepository.userData.first().viewedTransfers)
     }
+
+    @Test
+    fun markAllRead_readsEveryTransferNotOnlyTheLoadedOnes() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        transferRepository.sendTransfers(transfersTestData)
+        userDataRepository.setUserData(emptyUserData)
+        assertTrue(assertIs<TransfersUiState.Success>(viewModel.uiState.value).hasUnread)
+
+        viewModel.markAllRead()
+
+        val state = assertIs<TransfersUiState.Success>(viewModel.uiState.value)
+        assertFalse(state.hasUnread)
+        assertTrue(state.transfers.all { it.hasBeenViewed })
+    }
 }

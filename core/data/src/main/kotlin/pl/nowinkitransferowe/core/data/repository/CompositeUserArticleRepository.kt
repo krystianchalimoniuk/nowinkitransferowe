@@ -54,6 +54,21 @@ class CompositeUserArticleRepository @Inject constructor(
 
     override fun observeArticleCount(): Flow<Int> = articleRepository.observeArticleCount()
 
+    override fun observeHasUnread(): Flow<Boolean> = userDataRepository.userData
+        .flatMapLatest { userData ->
+            if (userData.articlesReadUpToId == 0) {
+                flowOf(false)
+            } else {
+                articleRepository.observeArticleIdsAfter(userData.articlesReadUpToId)
+                    .map { ids -> ids.any { !userData.isArticleRead(it) } }
+            }
+        }
+        .distinctUntilChanged()
+
+    override suspend fun markAllRead() {
+        articleRepository.getNewestArticleId()?.let { userDataRepository.setArticlesReadUpTo(it) }
+    }
+
     private fun Flow<List<Article>>.withUserData(): Flow<List<UserArticle>> = combine(
         this,
         dictionaryRepository.observeTopics(),
