@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.feature.transferdetails.impl
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
@@ -38,15 +39,20 @@ import pl.nowinkitransferowe.core.model.UserTransfer
 
 @HiltViewModel(assistedFactory = TransferDetailsViewModel.Factory::class)
 class TransferDetailsViewModel @AssistedInject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val userDataRepository: UserDataRepository,
     userTransferRepository: UserTransferRepository,
     playerRepository: PlayerRepository,
     @Assisted val transferId: Int,
 ) : ViewModel() {
 
+    /** The transfer shown: the opened one until another one of the player is picked. */
+    private val shownTransferId = savedStateHandle.getStateFlow(SHOWN_TRANSFER_ID_KEY, transferId)
+
     // Waits while the transfer is not in the database yet, for example a link opened before the
     // first sync.
-    val uiState: StateFlow<TransferDetailsUiState> = userTransferRepository.observeTransfer(transferId)
+    val uiState: StateFlow<TransferDetailsUiState> = shownTransferId
+        .flatMapLatest(userTransferRepository::observeTransfer)
         .filterNotNull()
         .onEach { if (!it.hasBeenViewed) setViewed(it.id) }
         .flatMapLatest { transfer ->
@@ -63,6 +69,14 @@ class TransferDetailsViewModel @AssistedInject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TransferDetailsUiState.Loading)
 
+    /**
+     * Shows another transfer of the same player in place, so going back returns to where the card
+     * was opened from instead of through every transfer picked.
+     */
+    fun showTransfer(transferId: Int) {
+        savedStateHandle[SHOWN_TRANSFER_ID_KEY] = transferId
+    }
+
     fun bookmarkTransfer(transferId: Int, bookmarked: Boolean) {
         viewModelScope.launch { userDataRepository.setTransferBookmarked(transferId, bookmarked) }
     }
@@ -74,6 +88,10 @@ class TransferDetailsViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(transferId: Int): TransferDetailsViewModel
+    }
+
+    private companion object {
+        const val SHOWN_TRANSFER_ID_KEY = "shownTransferId"
     }
 }
 

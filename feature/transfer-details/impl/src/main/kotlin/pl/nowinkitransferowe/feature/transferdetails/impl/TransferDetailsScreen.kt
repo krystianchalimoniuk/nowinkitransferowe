@@ -40,6 +40,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,7 +74,6 @@ internal fun TransferDetailsRoute(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onArticleClick: (Int) -> Unit,
-    onTransferClick: (Int) -> Unit,
     onClubClick: (Int) -> Unit = {},
     onPlayerClick: (Int) -> Unit = {},
     viewModel: TransferDetailsViewModel,
@@ -87,7 +87,7 @@ internal fun TransferDetailsRoute(
         onBackClick = onBackClick,
         onBookmarkChanged = viewModel::bookmarkTransfer,
         onArticleClick = onArticleClick,
-        onTransferClick = onTransferClick,
+        onTransferClick = viewModel::showTransfer,
         onClubClick = onClubClick,
         onPlayerClick = onPlayerClick,
         modifier = modifier,
@@ -117,10 +117,13 @@ internal fun TransferDetailsScreen(
 
         is TransferDetailsUiState.Success -> {
             val transfer = uiState.transfer
+            val scrollState = rememberScrollState()
+            // Another transfer picked from the history starts from the top
+            LaunchedEffect(transfer.id) { scrollState.animateScrollTo(0) }
             Column(
                 modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollState)
                     .testTag("transfer:${transfer.id}"),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {

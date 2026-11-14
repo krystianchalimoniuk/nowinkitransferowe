@@ -137,4 +137,17 @@ class TransfersViewModelTest {
         assertFalse(state.hasUnread)
         assertTrue(state.transfers.all { it.hasBeenViewed })
     }
+
+    @Test
+    fun seasonOfTheNextWindow_isAChipButNotPicked() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        val current = Season.of(Clock.System.todayIn(Season.TIME_ZONE))
+        val next = transfersTestData[0].copy(id = 1, date = kotlinx.datetime.LocalDate(current.startYear + 1, 7, 1))
+        transferRepository.sendTransfers(listOf(next) + transfersTestData)
+        userDataRepository.setUserData(emptyUserData)
+
+        val state = assertIs<TransfersUiState.Success>(viewModel.uiState.value)
+        assertEquals(Season(current.startYear + 1), state.seasons.first())
+        assertEquals(current, state.season)
+    }
 }
