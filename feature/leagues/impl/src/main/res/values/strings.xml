@@ -16,5 +16,29 @@
 -->
 <resources>
     <string name="feature_leagues_impl_title">Ligi</string>
-    <string name="feature_leagues_impl_coming">Porównanie lig, wydatki i wpływy klubów pojawią się tutaj wkrótce.</string>
+    <string name="feature_leagues_impl_loading">Wczytuję ligi…</string>
+    <string name="feature_leagues_impl_unavailable">Nie udało się pobrać lig. Sprawdź połączenie i spróbuj ponownie.</string>
+    <string name="feature_leagues_impl_chart">Wydatki i wpływy lig %1$s</string>
+    <string name="feature_leagues_impl_note">Według transferów w naszej bazie i obecnej ligi klubów. Sumy transferów z podaną kwotą – wypożyczenia i kwoty nieujawnione nie są liczone; transfer między klubami jednej ligi to wydatek jednego i wpływ drugiego.</string>
+    <string name="feature_leagues_impl_numbers">Ligi w liczbach</string>
+    <plurals name="feature_leagues_impl_transfers">
+        <item quantity="one">%1$d transfer</item>
+        <item quantity="few">%1$d transfery</item>
+        <item quantity="many">%1$d transferów</item>
+        <item quantity="other">%1$d transferów</item>
+    </plurals>
+    <string name="feature_leagues_impl_spent_earned">wydatki %1$s · wpływy %2$s</string>
+    <string name="feature_leagues_impl_back">Wróć</string>
+    <string name="feature_leagues_impl_season">Transfery %1$s</string>
+    <string name="feature_leagues_impl_spent">Wydatki</string>
+    <string name="feature_leagues_impl_earned">Wpływy</string>
+    <string name="feature_leagues_impl_balance">Bilans</string>
+    <string name="feature_leagues_impl_transfers_label">Transfery</string>
+    <string name="feature_leagues_impl_clubs">Kluby</string>
+    <string name="feature_leagues_impl_unknown_club">Klub</string>
+    <string name="feature_leagues_impl_moves">%1$d przyszło · %2$d odeszło</string>
+    <string name="feature_leagues_impl_top_arrivals">Najdroższe zakupy</string>
+    <string name="feature_leagues_impl_top_departures">Najdroższe sprzedaże</string>
+    <string name="feature_leagues_impl_compare">Na tle innych lig</string>
+    <string name="feature_leagues_impl_select_a_league">Wybierz ligę</string>
 </resources>

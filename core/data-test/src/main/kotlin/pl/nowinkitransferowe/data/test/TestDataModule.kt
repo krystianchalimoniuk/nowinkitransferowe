@@ -27,6 +27,7 @@ import pl.nowinkitransferowe.core.data.repository.ClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
+import pl.nowinkitransferowe.core.data.repository.LeaguesRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
@@ -43,6 +44,7 @@ import pl.nowinkitransferowe.data.test.repository.FakeArticleRepository
 import pl.nowinkitransferowe.data.test.repository.FakeClubRepository
 import pl.nowinkitransferowe.data.test.repository.FakeClubSeasonsRepository
 import pl.nowinkitransferowe.data.test.repository.FakeDictionaryRepository
+import pl.nowinkitransferowe.data.test.repository.FakeLeaguesRepository
 import pl.nowinkitransferowe.data.test.repository.FakePlayerRepository
 import pl.nowinkitransferowe.data.test.repository.FakeRecentSearchRepository
 import pl.nowinkitransferowe.data.test.repository.FakeRumourRepository
@@ -95,6 +97,9 @@ internal interface TestDataModule {
 
     @Binds
     fun bindsClubRepository(repository: FakeClubRepository): ClubRepository
+
+    @Binds
+    fun bindsLeaguesRepository(repository: FakeLeaguesRepository): LeaguesRepository
 
     @Binds
     fun bindsClubSeasonsRepository(repository: FakeClubSeasonsRepository): ClubSeasonsRepository

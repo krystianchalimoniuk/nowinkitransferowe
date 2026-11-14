@@ -28,10 +28,12 @@ import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepositor
 import pl.nowinkitransferowe.core.data.repository.DefaultRecentSearchRepository
 import pl.nowinkitransferowe.core.data.repository.DefaultSearchContentsRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
+import pl.nowinkitransferowe.core.data.repository.LeaguesRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstArticleRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstClubRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstDictionaryRepository
+import pl.nowinkitransferowe.core.data.repository.OfflineFirstLeaguesRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstPlayerRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstRumourRepository
 import pl.nowinkitransferowe.core.data.repository.OfflineFirstRumourStatsRepository
@@ -76,6 +78,11 @@ abstract class DataModule {
     internal abstract fun bindsRumourStatsRepository(
         rumourStatsRepository: OfflineFirstRumourStatsRepository,
     ): RumourStatsRepository
+
+    @Binds
+    internal abstract fun bindsLeaguesRepository(
+        leaguesRepository: OfflineFirstLeaguesRepository,
+    ): LeaguesRepository
 
     @Binds
     internal abstract fun bindsClubSeasonsRepository(

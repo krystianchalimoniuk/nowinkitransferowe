@@ -34,6 +34,7 @@ import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.ClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
+import pl.nowinkitransferowe.core.data.repository.LeaguesRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.data.repository.RumourStatsRepository
@@ -49,12 +50,15 @@ import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.ClubSeason
 import pl.nowinkitransferowe.core.model.Country
 import pl.nowinkitransferowe.core.model.HotClub
+import pl.nowinkitransferowe.core.model.League
+import pl.nowinkitransferowe.core.model.LeagueClub
 import pl.nowinkitransferowe.core.model.Player
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStats
 import pl.nowinkitransferowe.core.model.RumourStatus
 import pl.nowinkitransferowe.core.model.Season
+import pl.nowinkitransferowe.core.model.SeasonOption
 import pl.nowinkitransferowe.core.model.StageAccuracy
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.Transfer
@@ -339,4 +343,37 @@ class FakeClubSeasonsRepository @Inject constructor(
     }
 
     override suspend fun refresh(clubId: Int) = true
+}
+
+/** The demo leagues of the season, as the server would count them. */
+class FakeLeaguesRepository @Inject constructor(
+    private val datasource: DemoNtNetworkDataSource,
+) : LeaguesRepository {
+    override fun observeSeasons(): Flow<List<SeasonOption>> = flow {
+        emit(datasource.getLeagues(null).seasons.mapNotNull { option -> Season.parse(option.label)?.let { SeasonOption(it, option.current) } })
+    }
+
+    override fun observeLeagues(season: Season): Flow<List<League>> = flow {
+        val response = datasource.getLeagues(season.slug)
+        emit(
+            if (Season.parse(response.season) != season) {
+                emptyList()
+            } else {
+                response.leagues.map { league ->
+                    League(
+                        topic = league.topic,
+                        spent = league.spent,
+                        earned = league.earned,
+                        balance = league.balance,
+                        transfers = league.transfers,
+                        clubs = league.clubs.map { LeagueClub(it.clubId, it.spent, it.earned, it.balance, it.arrivals, it.departures) },
+                        topArrivals = league.topArrivals,
+                        topDepartures = league.topDepartures,
+                    )
+                }
+            },
+        )
+    }
+
+    override suspend fun refresh(season: Season?) = true
 }

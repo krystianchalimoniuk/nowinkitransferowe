@@ -46,6 +46,8 @@ class CompositeUserTransferRepository @Inject constructor(
 
     override fun observeTransfersOfClub(clubId: Int): Flow<List<UserTransfer>> = transferRepository.observeTransfersOfClub(clubId).withUserData()
 
+    override fun observeTransfers(ids: Set<Int>): Flow<List<UserTransfer>> = if (ids.isEmpty()) flowOf(emptyList()) else transferRepository.observeTransfers(ids).withUserData()
+
     override fun observeTransfersOfPlayer(playerId: Int): Flow<List<UserTransfer>> = transferRepository.observeTransfersOfPlayer(playerId).withUserData()
 
     override fun observeHasUnread(): Flow<Boolean> = userDataRepository.userData
