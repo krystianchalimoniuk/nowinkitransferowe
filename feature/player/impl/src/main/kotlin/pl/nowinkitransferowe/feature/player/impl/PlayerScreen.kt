@@ -37,8 +37,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -338,23 +336,21 @@ private fun SummaryTile(label: String, value: String, modifier: Modifier = Modif
 /** The fees of the player's transfers over time, in a card like on the website. */
 @Composable
 private fun FeeCard(transfers: List<UserTransfer>) {
-    Card(
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.cardContainer),
-        modifier = Modifier
+    // No card, like the club's chart, so it lines up with the rest of the screen
+    Column(
+        Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
             .testTag("player:fees"),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.feature_player_impl_fees), style = MaterialTheme.typography.titleMedium)
-            FeeChart(transfers)
-            Text(
-                stringResource(R.string.feature_player_impl_fees_note),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
+        NtSectionHeader(stringResource(R.string.feature_player_impl_fees))
+        FeeChart(transfers)
+        Text(
+            stringResource(R.string.feature_player_impl_fees_note),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 

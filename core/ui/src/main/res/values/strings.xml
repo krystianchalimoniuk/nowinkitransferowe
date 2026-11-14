@@ -43,4 +43,5 @@
     <string name="core_ui_money_in">Wpływy</string>
     <string name="core_ui_money_out">Wydatki</string>
     <string name="core_ui_millions">%1$s mln €</string>
+    <string name="core_ui_billions">%1$s mld €</string>
 </resources>

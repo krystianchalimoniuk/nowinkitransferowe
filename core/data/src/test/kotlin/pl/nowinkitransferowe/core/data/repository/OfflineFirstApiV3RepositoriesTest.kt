@@ -321,4 +321,17 @@ class OfflineFirstApiV3RepositoriesTest {
         assertEquals(100, userData.transfersReadUpToId)
         assertEquals(setOf(500), userData.viewedTransfers)
     }
+
+    @Test
+    fun leagues_are_saved_by_season_and_fetched_once_an_hour() = runTest {
+        val leagues = OfflineFirstLeaguesRepository(db.statsDao(), network)
+
+        assertTrue(leagues.refresh())
+
+        val seasons = leagues.observeSeasons().first()
+        val current = seasons.single { it.current }.season
+        val saved = leagues.observeLeagues(current).first()
+        assertEquals(network.getLeagues(null).leagues.map { it.topic }, saved.map { it.topic })
+        assertEquals(network.getLeagues(null).leagues.first().clubs.size, saved.first().clubs.size)
+    }
 }

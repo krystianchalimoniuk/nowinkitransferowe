@@ -43,9 +43,16 @@ fun FeeLabel(fee: Fee, modifier: Modifier = Modifier) {
     NtPill(text = fee.label, containerColor = container, contentColor = content, modifier = modifier)
 }
 
-/** "45,5 mln €", "-12 mln €": millions of euro as on the website, with a decimal comma. */
+/**
+ * "45,5 mln €", "-12 mln €", "4,2 mld €": millions of euro as on the website, with a decimal comma;
+ * from a thousand millions in billions.
+ */
 @Composable
-fun millionsLabel(millions: Double): String = stringResource(R.string.core_ui_millions, formatMillions(millions))
+fun millionsLabel(millions: Double): String = if (kotlin.math.abs(millions) >= 1000) {
+    stringResource(R.string.core_ui_billions, formatMillions(millions / 1000))
+} else {
+    stringResource(R.string.core_ui_millions, formatMillions(millions))
+}
 
 internal fun formatMillions(millions: Double): String {
     val rounded = Math.round(millions * 10) / 10.0
