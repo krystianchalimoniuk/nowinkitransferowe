@@ -180,9 +180,12 @@ graph TB
   :feature:club:impl -.-> :feature:rumours:api
   :feature:club:impl -.-> :feature:transfer-details:api
   :feature:leagues:api --> :core:navigation
+  :feature:leagues:impl -.-> :core:data
   :feature:leagues:impl -.-> :core:designsystem
   :feature:leagues:impl -.-> :core:ui
+  :feature:leagues:impl -.-> :feature:club:api
   :feature:leagues:impl -.-> :feature:leagues:api
+  :feature:leagues:impl -.-> :feature:transfer-details:api
   :feature:player:api --> :core:navigation
   :feature:player:impl -.-> :core:data
   :feature:player:impl -.-> :core:designsystem
