@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import pl.nowinkitransferowe.core.designsystem.component.NtDivergingBarRow
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
@@ -44,7 +45,7 @@ data class SpendingRow(val label: String, val moneyIn: Double, val moneyOut: Dou
  * balance at the end, all rows on one scale.
  */
 @Composable
-fun SpendingBars(rows: List<SpendingRow>, modifier: Modifier = Modifier) {
+fun SpendingBars(rows: List<SpendingRow>, modifier: Modifier = Modifier, labelWidth: Dp = 44.dp) {
     val colors = LocalNtColors.current
     val max = rows.maxOfOrNull { maxOf(it.moneyIn, it.moneyOut) } ?: 0.0
     Column(modifier) {
@@ -62,6 +63,7 @@ fun SpendingBars(rows: List<SpendingRow>, modifier: Modifier = Modifier) {
                 rightColor = colors.moneyOut,
                 trailing = (if (row.balance > 0) "+" else "") + millionsLabel(row.balance),
                 trailingColor = if (row.balance >= 0) colors.success else MaterialTheme.colorScheme.primary,
+                labelWidth = labelWidth,
             )
         }
     }

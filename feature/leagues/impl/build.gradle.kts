@@ -16,12 +16,27 @@
 plugins {
     alias(libs.plugins.nowinkitransferowe.android.feature.impl)
     alias(libs.plugins.nowinkitransferowe.android.library.compose)
+    alias(libs.plugins.nowinkitransferowe.android.library.jacoco)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
     namespace = "pl.nowinkitransferowe.feature.leagues.impl"
+    testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
     implementation(projects.feature.leagues.api)
+    implementation(projects.feature.club.api)
+    implementation(projects.feature.transferDetails.api)
+    implementation(libs.androidx.compose.material3.adaptive.navigation3)
+    implementation(projects.core.data)
+
+    testImplementation(projects.core.testing)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(projects.core.screenshotTesting)
+
+    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
+    androidTestImplementation(projects.core.testing)
 }

@@ -33,6 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
@@ -51,6 +53,7 @@ fun NtDivergingBarRow(
     trailing: String,
     modifier: Modifier = Modifier,
     trailingColor: Color = MaterialTheme.colorScheme.onSurface,
+    labelWidth: Dp = 44.dp,
 ) {
     Row(
         modifier = modifier
@@ -59,7 +62,14 @@ fun NtDivergingBarRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(label, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold, modifier = Modifier.width(44.dp))
+        Text(
+            label,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.width(labelWidth),
+        )
         Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
             Bar(fraction = fraction(left, max), color = leftColor, towardsStart = true, modifier = Modifier.weight(1f))
             Box(

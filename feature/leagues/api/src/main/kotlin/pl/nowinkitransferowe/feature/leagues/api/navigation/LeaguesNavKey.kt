@@ -18,6 +18,16 @@ package pl.nowinkitransferowe.feature.leagues.api.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+import pl.nowinkitransferowe.core.navigation.Navigator
 
+/** The leagues compared by spending and income. */
 @Serializable
 object LeaguesNavKey : NavKey
+
+/** One league in a season: its clubs, the most expensive transfers and the other leagues. */
+@Serializable
+data class LeagueNavKey(val topic: String, val seasonStartYear: Int) : NavKey
+
+fun Navigator.navigateToLeague(topic: String, seasonStartYear: Int) {
+    navigate(LeagueNavKey(topic, seasonStartYear))
+}
