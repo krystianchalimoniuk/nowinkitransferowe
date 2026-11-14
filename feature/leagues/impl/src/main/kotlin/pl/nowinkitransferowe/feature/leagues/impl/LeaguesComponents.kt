@@ -23,8 +23,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
 import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
@@ -46,25 +45,25 @@ import pl.nowinkitransferowe.core.ui.SpendingBars
 import pl.nowinkitransferowe.core.ui.SpendingRow
 import pl.nowinkitransferowe.core.ui.millionsLabel
 
-/** Money in and out of the leagues on one scale, in a card with the website's note below. */
+/**
+ * Money in and out of the leagues on one scale under a section header, with the website's note
+ * below. No card, like the club's chart, so it lines up with the rest of the screen.
+ */
 @Composable
 internal fun LeaguesChart(leagues: List<League>, names: Map<String, String>, title: String, modifier: Modifier = Modifier) {
-    Card(
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.cardContainer),
-        modifier = modifier
+    Column(
+        modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
-            SpendingBars(leagues.map { SpendingRow(names[it.topic] ?: it.topic, moneyIn = it.earned, moneyOut = it.spent) }, labelWidth = 76.dp)
-            Text(
-                stringResource(R.string.feature_leagues_impl_note),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
+        NtSectionHeader(title)
+        SpendingBars(leagues.map { SpendingRow(names[it.topic] ?: it.topic, moneyIn = it.earned, moneyOut = it.spent) }, labelWidth = 76.dp)
+        Text(
+            stringResource(R.string.feature_leagues_impl_note),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
