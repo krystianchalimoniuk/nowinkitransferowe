@@ -40,6 +40,12 @@ interface ArticleRepository : Syncable {
 
     fun observeArticleCount(): Flow<Int>
 
+    /** Ids of the articles added after the one with [id]. */
+    fun observeArticleIdsAfter(id: Int): Flow<List<Int>>
+
+    /** The id of the newest article, or null when there are none. */
+    suspend fun getNewestArticleId(): Int?
+
     fun observeArticlesAboutClub(clubId: Int): Flow<List<Article>>
 
     fun observeArticlesAboutPlayer(playerId: Int): Flow<List<Article>>

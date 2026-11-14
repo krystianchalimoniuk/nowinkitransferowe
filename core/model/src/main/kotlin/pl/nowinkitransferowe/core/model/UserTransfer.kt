@@ -41,7 +41,7 @@ data class UserTransfer internal constructor(
         date = transfer.date,
         articleId = transfer.articleId,
         isSaved = transfer.id in userData.bookmarkedTransfers,
-        hasBeenViewed = transfer.id in userData.viewedTransfers,
+        hasBeenViewed = userData.isTransferRead(transfer.id),
     )
 
     val season: Season get() = Season.of(date)

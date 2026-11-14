@@ -37,6 +37,12 @@ interface TransferRepository : Syncable {
 
     fun observeTransferCount(): Flow<Int>
 
+    /** Ids of the transfers added after the one with [id]. */
+    fun observeTransferIdsAfter(id: Int): Flow<List<Int>>
+
+    /** The id of the newest transfer, or null when there are none. */
+    suspend fun getNewestTransferId(): Int?
+
     fun observeTransfersOfClub(clubId: Int): Flow<List<Transfer>>
 
     fun observeTransfersOfPlayer(playerId: Int): Flow<List<Transfer>>

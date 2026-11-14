@@ -57,6 +57,10 @@ internal class OfflineFirstTransferRepository @Inject constructor(
 
     override fun observeTransferCount(): Flow<Int> = transferDao.observeTransferCount()
 
+    override fun observeTransferIdsAfter(id: Int): Flow<List<Int>> = transferDao.observeIdsAfter(id)
+
+    override suspend fun getNewestTransferId(): Int? = transferDao.getNewestId()
+
     override fun observeTransfersOfClub(clubId: Int): Flow<List<Transfer>> = transferDao.observeTransfersOfClub(clubId).map { it.map(PopulatedTransfer::asExternalModel) }
 
     override fun observeTransfersOfPlayer(playerId: Int): Flow<List<Transfer>> = transferDao.observeTransfersOfPlayer(playerId).map { it.map(PopulatedTransfer::asExternalModel) }
@@ -89,6 +93,8 @@ internal class OfflineFirstTransferRepository @Inject constructor(
                 transferDao.upsertTransfers(transfers.map { it.asEntity(articleIds) })
             },
         )
+        // After the first sync everything there is counts as read; later transfers are new
+        if (synced) ntPreferencesDataSource.setReadUpToIfUnset(articleId = null, transferId = transferDao.getNewestId())
         if (synced && addedIds.isNotEmpty() && ntPreferencesDataSource.userData.first().isTransfersNotificationsAllowed) {
             notifier.postTransferNotifications(observeTransfers(addedIds).first())
         }

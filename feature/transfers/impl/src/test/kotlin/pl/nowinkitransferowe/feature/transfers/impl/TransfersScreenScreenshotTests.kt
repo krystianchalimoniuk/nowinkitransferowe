@@ -61,6 +61,7 @@ class TransfersScreenScreenshotTests {
         leagues = topicsTestData,
         transfers = userTransfersTestData,
         hasMore = false,
+        hasUnread = true,
     )
 
     @Test

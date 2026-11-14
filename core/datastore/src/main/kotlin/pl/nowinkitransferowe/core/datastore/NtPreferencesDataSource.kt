@@ -40,6 +40,8 @@ class NtPreferencesDataSource @Inject constructor(
                 bookmarkedTransfers = it.bookmarkedTransferIdsMap.keys,
                 viewedTransfers = it.viewedTransferIdsMap.keys,
                 bookmarkedRumours = it.bookmarkedRumourIdsMap.keys,
+                articlesReadUpToId = it.articlesReadUpToId,
+                transfersReadUpToId = it.transfersReadUpToId,
                 darkThemeConfig = when (it.darkThemeConfig) {
                     null,
                     DarkThemeConfigProto.DARK_THEME_CONFIG_UNSPECIFIED,
@@ -189,6 +191,27 @@ class NtPreferencesDataSource @Inject constructor(
 
     suspend fun setRumourBookmarked(rumourId: Int, bookmarked: Boolean) = update {
         if (bookmarked) bookmarkedRumourIds.put(rumourId, true) else bookmarkedRumourIds.remove(rumourId)
+    }
+
+    /**
+     * Marks every transfer up to [id] as read and forgets the ones opened one by one below it, so
+     * the list of opened ids does not keep growing.
+     */
+    suspend fun setTransfersReadUpTo(id: Int) = update {
+        transfersReadUpToId = id
+        viewedTransferIds.keys.filter { it <= id }.forEach { viewedTransferIds.remove(it) }
+    }
+
+    /** Like [setTransfersReadUpTo], for articles. */
+    suspend fun setArticlesReadUpTo(id: Int) = update {
+        articlesReadUpToId = id
+        viewedArticleIds.keys.filter { it <= id }.forEach { viewedArticleIds.remove(it) }
+    }
+
+    /** Sets the markers after the first sync, unless they are set already. */
+    suspend fun setReadUpToIfUnset(articleId: Int?, transferId: Int?) = update {
+        if (articlesReadUpToId == 0 && articleId != null) articlesReadUpToId = articleId
+        if (transfersReadUpToId == 0 && transferId != null) transfersReadUpToId = transferId
     }
 
     private suspend fun update(block: UserPreferencesKt.Dsl.() -> Unit) {

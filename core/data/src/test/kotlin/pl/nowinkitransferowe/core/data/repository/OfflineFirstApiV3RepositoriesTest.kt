@@ -292,4 +292,33 @@ class OfflineFirstApiV3RepositoriesTest {
         assertEquals(64.5, saved.single().spent)
         assertEquals(listOf(20540), saved.single().arrivals)
     }
+
+    @Test
+    fun first_sync_marks_everything_as_read_and_later_records_stay_new() = runTest {
+        assertEquals(0, preferences.userData.first().transfersReadUpToId)
+
+        syncAll()
+
+        val newestTransfer = transfers.observeTransfers().first().maxOf { it.id }
+        val newestArticle = articles.observeArticles().first().maxOf { it.id }
+        val userData = preferences.userData.first()
+        assertEquals(newestTransfer, userData.transfersReadUpToId)
+        assertEquals(newestArticle, userData.articlesReadUpToId)
+
+        // A later sync keeps the markers, so what it brings counts as new
+        network.editRecord(NetworkRecordType.TRANSFERS, 19580)
+        syncAll()
+        assertEquals(newestTransfer, preferences.userData.first().transfersReadUpToId)
+    }
+
+    @Test
+    fun marking_all_read_moves_the_marker_and_forgets_the_opened_ids_below_it() = runTest {
+        preferences.setTransfersViewed(listOf(5, 50, 500), viewed = true)
+
+        preferences.setTransfersReadUpTo(100)
+
+        val userData = preferences.userData.first()
+        assertEquals(100, userData.transfersReadUpToId)
+        assertEquals(setOf(500), userData.viewedTransfers)
+    }
 }

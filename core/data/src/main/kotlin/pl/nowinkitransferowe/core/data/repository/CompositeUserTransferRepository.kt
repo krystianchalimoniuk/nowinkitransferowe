@@ -48,6 +48,21 @@ class CompositeUserTransferRepository @Inject constructor(
 
     override fun observeTransfersOfPlayer(playerId: Int): Flow<List<UserTransfer>> = transferRepository.observeTransfersOfPlayer(playerId).withUserData()
 
+    override fun observeHasUnread(): Flow<Boolean> = userDataRepository.userData
+        .flatMapLatest { userData ->
+            if (userData.transfersReadUpToId == 0) {
+                flowOf(false)
+            } else {
+                transferRepository.observeTransferIdsAfter(userData.transfersReadUpToId)
+                    .map { ids -> ids.any { !userData.isTransferRead(it) } }
+            }
+        }
+        .distinctUntilChanged()
+
+    override suspend fun markAllRead() {
+        transferRepository.getNewestTransferId()?.let { userDataRepository.setTransfersReadUpTo(it) }
+    }
+
     override fun observeBookmarked(): Flow<List<UserTransfer>> = userDataRepository.userData
         .map { userData -> userData.bookmarkedTransfers }
         .distinctUntilChanged()

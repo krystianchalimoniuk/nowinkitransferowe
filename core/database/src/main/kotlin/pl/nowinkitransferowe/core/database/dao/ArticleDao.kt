@@ -117,6 +117,13 @@ interface ArticleDao {
     @Query("SELECT COUNT(*) FROM articles")
     fun observeArticleCount(): Flow<Int>
 
+    /** Ids of the articles added after the one with [id] (ids grow with every new article). */
+    @Query("SELECT id FROM articles WHERE id > :id")
+    fun observeIdsAfter(id: Int): Flow<List<Int>>
+
+    @Query("SELECT MAX(id) FROM articles")
+    suspend fun getNewestId(): Int?
+
     @Query("SELECT * FROM articles WHERE id IN (:ids) ORDER BY published_at DESC")
     fun observeArticlesByIds(ids: Set<Int>): Flow<List<PopulatedArticle>>
 

@@ -76,7 +76,7 @@ fun TransfersRoute(
             viewModel.setTransfersViewed(listOf(id), true)
             onTransferClick(id)
         },
-        onMarkAsRead = { viewModel.setTransfersViewed(it, true) },
+        onMarkAsRead = viewModel::markAllRead,
         loadNextPage = viewModel::loadNextPage,
         modifier = modifier,
     )
@@ -92,7 +92,7 @@ internal fun TransfersScreen(
     onSeasonSelected: (Season) -> Unit,
     onTopicSelected: (String?) -> Unit,
     onTransferClick: (Int) -> Unit,
-    onMarkAsRead: (List<Int>) -> Unit,
+    onMarkAsRead: () -> Unit,
     loadNextPage: () -> Unit,
     modifier: Modifier = Modifier,
     selectedTransferId: Int? = null,
@@ -120,11 +120,10 @@ internal fun TransfersScreen(
             ) {
                 item(key = "leagues") { LeagueChips(uiState.leagues, uiState.topic, onTopicSelected) }
                 item(key = "seasons") { SeasonChips(uiState.seasons, uiState.season, onSeasonSelected) }
-                val unread = uiState.transfers.filterNot { it.hasBeenViewed }.map { it.id }
-                if (unread.isNotEmpty()) {
+                if (uiState.hasUnread) {
                     item(key = "markAsRead") {
                         Box(Modifier.padding(horizontal = 8.dp)) {
-                            NtTextButton(onClick = { onMarkAsRead(unread) }) {
+                            NtTextButton(onClick = onMarkAsRead) {
                                 Icon(NtIcons.MarkAsRead, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
                                 Text(stringResource(R.string.feature_transfers_impl_mark_as_read))
                             }

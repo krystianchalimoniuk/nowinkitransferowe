@@ -39,4 +39,10 @@ interface UserArticleRepository {
     fun observeBookmarked(): Flow<List<UserArticle>>
 
     fun observeArticleCount(): Flow<Int>
+
+    /** Whether any article added since the last visit is not opened yet. */
+    fun observeHasUnread(): Flow<Boolean>
+
+    /** Marks every article as read. */
+    suspend fun markAllRead()
 }
