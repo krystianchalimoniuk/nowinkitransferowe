@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.google.oss.licenses)
     implementation(projects.core.data)
     implementation(projects.feature.settings.api)
+    implementation(projects.feature.followed.api)
 
     testImplementation(libs.hilt.android.testing)
     testImplementation(libs.robolectric)

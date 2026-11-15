@@ -25,6 +25,19 @@ internal fun AnalyticsHelper.logTransferBookmarkToggled(transferId: Int, isBookm
 
 internal fun AnalyticsHelper.logRumourBookmarkToggled(rumourId: Int, isBookmarked: Boolean) = logBookmarkToggled("rumour", rumourId, isBookmarked)
 
+/** "club_followed" with "followed_club_id", "player_unfollowed" with "unfollowed_player_id". */
+internal fun AnalyticsHelper.logFollowToggled(record: String, id: Int, isFollowed: Boolean) {
+    val action = if (isFollowed) "followed" else "unfollowed"
+    logEvent(
+        AnalyticsEvent(
+            type = "${record}_$action",
+            extras = listOf(
+                AnalyticsEvent.Param(key = "${action}_${record}_id", value = id.toString()),
+            ),
+        ),
+    )
+}
+
 /** "article_saved" with "saved_article_id", "transfer_unsaved" with "unsaved_transfer_id" and so on. */
 private fun AnalyticsHelper.logBookmarkToggled(record: String, id: Int, isBookmarked: Boolean) {
     val action = if (isBookmarked) "saved" else "unsaved"

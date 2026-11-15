@@ -35,6 +35,10 @@ interface UserDataRepository {
 
     suspend fun setRumourBookmarked(rumourId: Int, bookmarked: Boolean)
 
+    suspend fun setClubFollowed(clubId: Int, followed: Boolean)
+
+    suspend fun setPlayerFollowed(playerId: Int, followed: Boolean)
+
     /** Marks every transfer up to [id] as read. */
     suspend fun setTransfersReadUpTo(id: Int)
 

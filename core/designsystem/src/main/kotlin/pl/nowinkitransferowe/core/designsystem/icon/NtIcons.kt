@@ -65,6 +65,8 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Stadium
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material.icons.rounded.SwapHoriz
 import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material.icons.rounded.Upcoming
@@ -104,6 +106,8 @@ object NtIcons {
     val Search = Icons.Rounded.Search
     val Settings = Icons.Rounded.Settings
     val Share = Icons.Rounded.Share
+    val Star = Icons.Rounded.Star
+    val StarBorder = Icons.Rounded.StarBorder
     val ShortText = Icons.AutoMirrored.Rounded.ShortText
     val Upcoming = Icons.Rounded.Upcoming
     val UpcomingBorder = Icons.Outlined.Upcoming

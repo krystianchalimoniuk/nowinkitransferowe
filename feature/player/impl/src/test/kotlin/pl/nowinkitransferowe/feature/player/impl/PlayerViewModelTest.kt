@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.feature.player.impl
 
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -116,5 +117,19 @@ class PlayerViewModelTest {
         val single = state.copy(transfers = listOf(lewandowskiTransfersTestData[0], loan))
         assertEquals(listOf(lewandowskiTransfersTestData[0].id), single.chartTransfers.map { it.id })
         assertFalse(single.showChart)
+    }
+
+    @Test
+    fun setFollowed_followsAndUnfollowsThePlayer() = runTest {
+        val viewModel = viewModel(playerId)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isFollowed.collect() }
+        assertFalse(viewModel.isFollowed.value)
+
+        viewModel.setFollowed(true)
+        assertTrue(viewModel.isFollowed.value)
+        assertEquals(setOf(playerId), userDataRepository.userData.first().followedPlayers)
+
+        viewModel.setFollowed(false)
+        assertFalse(viewModel.isFollowed.value)
     }
 }

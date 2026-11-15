@@ -75,6 +75,7 @@ import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.ui.ArticleListItem
 import pl.nowinkitransferowe.core.ui.CountryFlag
 import pl.nowinkitransferowe.core.ui.FeeLabel
+import pl.nowinkitransferowe.core.ui.FollowButton
 import pl.nowinkitransferowe.core.ui.RumourListItem
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferRoute
@@ -94,8 +95,11 @@ internal fun PlayerRoute(
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isFollowed by viewModel.isFollowed.collectAsStateWithLifecycle()
     PlayerScreen(
         uiState = uiState,
+        isFollowed = isFollowed,
+        onFollowedChange = viewModel::setFollowed,
         showBackButton = showBackButton,
         onBackClick = onBackClick,
         onTransferClick = onTransferClick,
@@ -123,6 +127,8 @@ internal fun PlayerScreen(
     onArticleClick: (Int) -> Unit = {},
     onArticleSavedChanged: (Int, Boolean) -> Unit = { _, _ -> },
     today: LocalDate = Clock.System.todayIn(Season.TIME_ZONE),
+    isFollowed: Boolean = false,
+    onFollowedChange: (Boolean) -> Unit = {},
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         when (uiState) {
@@ -132,7 +138,7 @@ internal fun PlayerScreen(
             )
 
             PlayerUiState.NotFound -> Column(Modifier.fillMaxWidth()) {
-                TopRow(showBackButton, onBackClick, player = null)
+                TopRow(showBackButton, onBackClick, player = null, isFollowed = false, onFollowedChange = {})
                 Text(
                     stringResource(R.string.feature_player_impl_not_found),
                     textAlign = TextAlign.Center,
@@ -150,7 +156,7 @@ internal fun PlayerScreen(
                     .fillMaxSize()
                     .testTag("player:${uiState.player.id}"),
             ) {
-                item(key = "top") { TopRow(showBackButton, onBackClick, uiState.player) }
+                item(key = "top") { TopRow(showBackButton, onBackClick, uiState.player, isFollowed, onFollowedChange) }
                 item(key = "header") { Header(uiState) }
                 item(key = "facts") { Facts(uiState, today, onClubClick) }
                 if (uiState.transfers.isNotEmpty()) {
@@ -195,7 +201,7 @@ internal fun PlayerScreen(
 }
 
 @Composable
-private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, player: Player?) {
+private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, player: Player?, isFollowed: Boolean, onFollowedChange: (Boolean) -> Unit) {
     val context = LocalContext.current
     Row(Modifier.fillMaxWidth().padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
         if (showBackButton) {
@@ -204,6 +210,9 @@ private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, player: Pla
             }
         }
         Box(Modifier.weight(1f))
+        if (player != null) {
+            FollowButton(isFollowed, onFollowedChange, player.name, Modifier.testTag("player:follow"))
+        }
         player?.url?.let { url ->
             IconButton(onClick = { share(context, player.name, url) }) {
                 Icon(NtIcons.Share, contentDescription = stringResource(R.string.feature_player_impl_share))

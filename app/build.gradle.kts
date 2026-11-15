@@ -81,6 +81,8 @@ dependencies {
     implementation(projects.feature.rumours.impl)
     implementation(projects.feature.leagues.api)
     implementation(projects.feature.leagues.impl)
+    implementation(projects.feature.followed.api)
+    implementation(projects.feature.followed.impl)
     implementation(projects.feature.bookmarks.api)
     implementation(projects.feature.bookmarks.impl)
     implementation(projects.feature.articleDetails.api)

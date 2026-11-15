@@ -44,6 +44,10 @@ class FakeUserDataRepository @Inject constructor(
 
     override suspend fun setRumourBookmarked(rumourId: Int, bookmarked: Boolean) = ntPreferencesDataSource.setRumourBookmarked(rumourId, bookmarked)
 
+    override suspend fun setClubFollowed(clubId: Int, followed: Boolean) = ntPreferencesDataSource.setClubFollowed(clubId, followed)
+
+    override suspend fun setPlayerFollowed(playerId: Int, followed: Boolean) = ntPreferencesDataSource.setPlayerFollowed(playerId, followed)
+
     override suspend fun setTransfersReadUpTo(id: Int) = ntPreferencesDataSource.setTransfersReadUpTo(id)
 
     override suspend fun setArticlesReadUpTo(id: Int) = ntPreferencesDataSource.setArticlesReadUpTo(id)

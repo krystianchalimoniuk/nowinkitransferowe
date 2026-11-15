@@ -18,6 +18,7 @@ package pl.nowinkitransferowe.feature.club.impl
 
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -44,6 +45,7 @@ import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
@@ -65,6 +67,7 @@ class ClubViewModelTest {
         userTransferRepository = CompositeUserTransferRepository(transferRepository, userDataRepository),
         rumourRepository = rumourRepository,
         dictionaryRepository = dictionaryRepository,
+        userDataRepository = userDataRepository,
         clubId = clubId,
     )
 
@@ -151,5 +154,19 @@ class ClubViewModelTest {
         viewModel.selectTab(ClubTab.ARRIVALS)
 
         assertEquals(ClubTab.ARRIVALS, assertIs<ClubUiState.Success>(viewModel.uiState.value).tab)
+    }
+
+    @Test
+    fun setFollowed_followsAndUnfollowsTheClub() = runTest {
+        val viewModel = viewModel(clubId = 83)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isFollowed.collect() }
+        assertFalse(viewModel.isFollowed.value)
+
+        viewModel.setFollowed(true)
+        assertTrue(viewModel.isFollowed.value)
+        assertEquals(setOf(83), userDataRepository.userData.first().followedClubs)
+
+        viewModel.setFollowed(false)
+        assertFalse(viewModel.isFollowed.value)
     }
 }

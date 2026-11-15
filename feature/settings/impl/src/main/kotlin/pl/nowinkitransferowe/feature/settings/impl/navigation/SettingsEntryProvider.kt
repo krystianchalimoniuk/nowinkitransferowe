@@ -19,11 +19,12 @@ package pl.nowinkitransferowe.feature.settings.impl.navigation
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
+import pl.nowinkitransferowe.feature.followed.api.navigation.navigateToFollowed
 import pl.nowinkitransferowe.feature.settings.api.navigation.SettingsNavKey
 import pl.nowinkitransferowe.feature.settings.impl.SettingsRoute
 
 fun EntryProviderScope<NavKey>.settingsEntry(navigator: Navigator) {
     entry<SettingsNavKey> {
-        SettingsRoute(onBackClick = { navigator.goBack() })
+        SettingsRoute(onBackClick = { navigator.goBack() }, onFollowedClick = navigator::navigateToFollowed)
     }
 }
