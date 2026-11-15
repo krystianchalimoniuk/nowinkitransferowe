@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe
 
 import android.app.Notification
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -48,6 +49,8 @@ import pl.nowinkitransferowe.MainActivityUiState.Loading
 import pl.nowinkitransferowe.MainActivityUiState.Success
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.analytics.LocalAnalyticsHelper
+import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
@@ -71,6 +74,8 @@ import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
 import pl.nowinkitransferowe.feature.settings.api.navigation.SettingsNavKey
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.TransferDetailsNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
+import pl.nowinkitransferowe.navigation.WebsiteLink
+import pl.nowinkitransferowe.navigation.navKeys
 import pl.nowinkitransferowe.ui.NtApp
 import pl.nowinkitransferowe.ui.rememberNtAppState
 import javax.inject.Inject
@@ -142,7 +147,26 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var userTransferRepository: UserTransferRepository
 
+    @Inject
+    lateinit var clubRepository: ClubRepository
+
+    @Inject
+    lateinit var playerRepository: PlayerRepository
+
     private val viewModel: MainActivityViewModel by viewModels()
+
+    /**
+     * The screens to open for the intent that started the app: the settings from the system
+     * notification settings, a notification's in-app link, or a page of the website.
+     */
+    private suspend fun deepLinkKeys(intent: Intent): List<NavKey> {
+        // "Additional settings in the app" in the system notification settings
+        if (intent.hasCategory(Notification.INTENT_CATEGORY_NOTIFICATION_PREFERENCES)) return listOf(SettingsNavKey)
+        val uri = intent.data?.toString() ?: return emptyList()
+        return deepLinkKeys(uri).ifEmpty {
+            WebsiteLink.parse(uri)?.navKeys(clubRepository, playerRepository).orEmpty()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -162,27 +186,24 @@ class MainActivity : ComponentActivity() {
         // Keep the splash screen on-screen until the UI state is loaded. This condition is
         // evaluated each time the app needs to be redrawn so it should be fast to avoid blocking
         // the UI.
+        // A link is resolved first (a club or player by its slug), so the app opens on its screen
+        var deepLinkKeys: List<NavKey>? by mutableStateOf(if (savedInstanceState == null) null else emptyList())
+        if (savedInstanceState == null) {
+            lifecycleScope.launch { deepLinkKeys = deepLinkKeys(intent) }
+        }
+
         splashScreen.setKeepOnScreenCondition {
-            when (uiState) {
-                Loading -> true
-                is Success -> false
-            }
+            deepLinkKeys == null ||
+                when (uiState) {
+                    Loading -> true
+                    is Success -> false
+                }
         }
 
         // Turn off the decor fitting system windows, which allows us to handle insets,
         // including IME animations, and go edge-to-edge
         // This also sets up the initial system bar style based on the platform theme
         enableEdgeToEdge()
-
-        val deepLinkKeys = if (savedInstanceState == null) {
-            when {
-                // "Additional settings in the app" in the system notification settings
-                intent.hasCategory(Notification.INTENT_CATEGORY_NOTIFICATION_PREFERENCES) -> listOf(SettingsNavKey)
-                else -> intent.data?.let { uri -> deepLinkKeys(uri.toString()) }.orEmpty()
-            }
-        } else {
-            emptyList()
-        }
 
         setContent {
             val darkTheme = shouldUseDarkTheme(uiState)
@@ -222,7 +243,7 @@ class MainActivity : ComponentActivity() {
                     darkTheme = darkTheme,
                     disableDynamicTheming = shouldDisableDynamicTheming(uiState),
                 ) {
-                    NtApp(appState, deepLinkKeys = deepLinkKeys)
+                    NtApp(appState, deepLinkKeys = deepLinkKeys.orEmpty())
                 }
             }
         }
