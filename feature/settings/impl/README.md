@@ -18,6 +18,10 @@ graph TB
       :feature:settings:api[api]:::android-library
       :feature:settings:impl[impl]:::android-feature
     end
+    subgraph :feature:followed
+      direction TB
+      :feature:followed:api[api]:::android-library
+    end
   end
   subgraph :core
     direction TB
@@ -52,10 +56,12 @@ graph TB
   :core:ui --> :core:analytics
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
+  :feature:followed:api --> :core:navigation
   :feature:settings:api --> :core:navigation
   :feature:settings:impl -.-> :core:data
   :feature:settings:impl -.-> :core:designsystem
   :feature:settings:impl -.-> :core:ui
+  :feature:settings:impl -.-> :feature:followed:api
   :feature:settings:impl -.-> :feature:settings:api
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;

@@ -38,6 +38,11 @@ graph TB
       :feature:transfers:api[api]:::android-library
       :feature:transfers:impl[impl]:::android-feature
     end
+    subgraph :feature:followed
+      direction TB
+      :feature:followed:api[api]:::android-library
+      :feature:followed:impl[impl]:::android-feature
+    end
     subgraph :feature:search
       direction TB
       :feature:search:api[api]:::android-library
@@ -48,11 +53,6 @@ graph TB
       :feature:player:api[api]:::android-library
       :feature:player:impl[impl]:::android-feature
     end
-    subgraph :feature:club
-      direction TB
-      :feature:club:api[api]:::android-library
-      :feature:club:impl[impl]:::android-feature
-    end
     subgraph :feature:rumours
       direction TB
       :feature:rumours:api[api]:::android-library
@@ -62,6 +62,11 @@ graph TB
       direction TB
       :feature:article-details:api[api]:::android-library
       :feature:article-details:impl[impl]:::android-feature
+    end
+    subgraph :feature:club
+      direction TB
+      :feature:club:api[api]:::android-library
+      :feature:club:impl[impl]:::android-feature
     end
     subgraph :feature:transfer-details
       direction TB
@@ -109,6 +114,8 @@ graph TB
   :app -.-> :feature:bookmarks:impl
   :app -.-> :feature:club:api
   :app -.-> :feature:club:impl
+  :app -.-> :feature:followed:api
+  :app -.-> :feature:followed:impl
   :app -.-> :feature:leagues:api
   :app -.-> :feature:leagues:impl
   :app -.-> :feature:player:api
@@ -179,6 +186,13 @@ graph TB
   :feature:club:impl -.-> :feature:club:api
   :feature:club:impl -.-> :feature:rumours:api
   :feature:club:impl -.-> :feature:transfer-details:api
+  :feature:followed:api --> :core:navigation
+  :feature:followed:impl -.-> :core:data
+  :feature:followed:impl -.-> :core:designsystem
+  :feature:followed:impl -.-> :core:ui
+  :feature:followed:impl -.-> :feature:club:api
+  :feature:followed:impl -.-> :feature:followed:api
+  :feature:followed:impl -.-> :feature:player:api
   :feature:leagues:api --> :core:navigation
   :feature:leagues:impl -.-> :core:data
   :feature:leagues:impl -.-> :core:designsystem
@@ -219,6 +233,7 @@ graph TB
   :feature:settings:impl -.-> :core:data
   :feature:settings:impl -.-> :core:designsystem
   :feature:settings:impl -.-> :core:ui
+  :feature:settings:impl -.-> :feature:followed:api
   :feature:settings:impl -.-> :feature:settings:api
   :feature:transfer-details:api --> :core:navigation
   :feature:transfer-details:impl -.-> :core:data
