@@ -13,6 +13,10 @@ config:
 graph TB
   subgraph :feature
     direction TB
+    subgraph :feature:onboarding
+      direction TB
+      :feature:onboarding:impl[impl]:::android-feature
+    end
     subgraph :feature:articles
       direction TB
       :feature:articles:api[api]:::android-library
@@ -118,6 +122,7 @@ graph TB
   :app -.-> :feature:followed:impl
   :app -.-> :feature:leagues:api
   :app -.-> :feature:leagues:impl
+  :app -.-> :feature:onboarding:impl
   :app -.-> :feature:player:api
   :app -.-> :feature:player:impl
   :app -.-> :feature:rumours:api
@@ -200,6 +205,9 @@ graph TB
   :feature:leagues:impl -.-> :feature:club:api
   :feature:leagues:impl -.-> :feature:leagues:api
   :feature:leagues:impl -.-> :feature:transfer-details:api
+  :feature:onboarding:impl -.-> :core:data
+  :feature:onboarding:impl -.-> :core:designsystem
+  :feature:onboarding:impl -.-> :core:ui
   :feature:player:api --> :core:navigation
   :feature:player:impl -.-> :core:data
   :feature:player:impl -.-> :core:designsystem

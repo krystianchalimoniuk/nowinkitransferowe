@@ -115,6 +115,10 @@ class TestUserDataRepository : UserDataRepository {
         copy(mutedNewsSubjects = mutedNewsSubjects + (subjectKey to until.toEpochMilliseconds()))
     }
 
+    override suspend fun finishClubsOnboarding(clubIds: Set<Int>) = update {
+        copy(followedClubs = followedClubs + clubIds, isClubsOnboardingShown = true)
+    }
+
     override suspend fun setQuietHours(isEnabled: Boolean) = update { copy(isQuietHoursEnabled = isEnabled) }
 
     private fun update(change: UserData.() -> UserData) {

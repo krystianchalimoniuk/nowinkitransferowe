@@ -72,6 +72,8 @@ class OfflineFirstUserDataRepositoryTest {
                 isNewsNotificationsAllowed = false,
                 isTransfersNotificationsAllowed = false,
                 isGeneralNotificationAllowed = false,
+                // A new install shows "Wybierz swoje kluby"
+                isClubsOnboardingShown = false,
             ),
             subject.userData.first(),
         )

@@ -50,6 +50,10 @@ interface ClubDao {
     @Query("SELECT * FROM clubs WHERE id IN (:ids) AND slug IS NOT NULL ORDER BY name")
     fun observeClubs(ids: Set<Int>): Flow<List<ClubEntity>>
 
+    /** Synced clubs of the leagues with the topics [topics], by name. */
+    @Query("SELECT * FROM clubs WHERE topic IN (:topics) AND slug IS NOT NULL ORDER BY name")
+    fun observeClubsInLeagues(topics: Set<String>): Flow<List<ClubEntity>>
+
     @Query("SELECT id FROM clubs WHERE id IN (:ids) AND slug IS NOT NULL")
     suspend fun getSyncedIds(ids: Set<Int>): List<Int>
 }

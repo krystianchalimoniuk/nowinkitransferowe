@@ -57,6 +57,12 @@ interface UserDataRepository {
 
     suspend fun setQuietHours(isEnabled: Boolean)
 
+    /**
+     * Follows [clubIds] picked on the "Wybierz swoje kluby" screen and marks the screen as shown,
+     * so that it does not come again; an empty list is a skip.
+     */
+    suspend fun finishClubsOnboarding(clubIds: Set<Int>)
+
     /** Mutes the notifications about the news subject [subjectKey] until [until]. */
     suspend fun muteNewsSubject(subjectKey: String, until: Instant)
 

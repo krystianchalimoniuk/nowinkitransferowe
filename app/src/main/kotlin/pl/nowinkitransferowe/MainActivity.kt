@@ -55,6 +55,7 @@ import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
+import pl.nowinkitransferowe.core.designsystem.component.NtBackground
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_CLUB_URI_PATTERN
@@ -68,6 +69,7 @@ import pl.nowinkitransferowe.feature.articledetails.api.navigation.ArticleNavKey
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
 import pl.nowinkitransferowe.feature.club.api.navigation.ClubNavKey
 import pl.nowinkitransferowe.feature.leagues.api.navigation.LeaguesNavKey
+import pl.nowinkitransferowe.feature.onboarding.impl.OnboardingRoute
 import pl.nowinkitransferowe.feature.player.api.navigation.PlayerNavKey
 import pl.nowinkitransferowe.feature.rumours.api.navigation.RumourNavKey
 import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
@@ -243,7 +245,13 @@ class MainActivity : ComponentActivity() {
                     darkTheme = darkTheme,
                     disableDynamicTheming = shouldDisableDynamicTheming(uiState),
                 ) {
-                    NtApp(appState, deepLinkKeys = deepLinkKeys.orEmpty())
+                    val onboarding = (uiState as? Success)?.userData?.isClubsOnboardingShown == false
+                    if (onboarding) {
+                        // "Wybierz swoje kluby" once, on a new install and after the update to 4.0
+                        NtBackground { OnboardingRoute() }
+                    } else {
+                        NtApp(appState, deepLinkKeys = deepLinkKeys.orEmpty())
+                    }
                 }
             }
         }
