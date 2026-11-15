@@ -18,6 +18,10 @@ graph TB
       :feature:article-details:api[api]:::android-library
       :feature:article-details:impl[impl]:::android-feature
     end
+    subgraph :feature:topic
+      direction TB
+      :feature:topic:api[api]:::android-library
+    end
     subgraph :feature:rumours
       direction TB
       :feature:rumours:api[api]:::android-library
@@ -77,10 +81,12 @@ graph TB
   :feature:article-details:impl -.-> :feature:player:api
   :feature:article-details:impl -.-> :feature:rumours:api
   :feature:article-details:impl -.-> :feature:search:api
+  :feature:article-details:impl -.-> :feature:topic:api
   :feature:club:api --> :core:navigation
   :feature:player:api --> :core:navigation
   :feature:rumours:api --> :core:navigation
   :feature:search:api --> :core:navigation
+  :feature:topic:api --> :core:navigation
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
