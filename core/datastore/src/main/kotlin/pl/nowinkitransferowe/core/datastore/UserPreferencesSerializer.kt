@@ -35,6 +35,9 @@ class UserPreferencesSerializer @Inject constructor() : Serializer<UserPreferenc
             .setNotifyGeneral(true)
             .setNotifyFollowed(true)
             .setNotifyFollowedLeagues(true)
+            .setNotifyFollowedTransfers(true)
+            .setNotifyFollowedRumours(true)
+            .setQuietHours(true)
             .setSchemaVersion(UserPreferencesMigration.CURRENT_SCHEMA_VERSION)
             .build()
 

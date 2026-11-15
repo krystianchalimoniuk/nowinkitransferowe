@@ -17,16 +17,23 @@
 package pl.nowinkitransferowe.core.notifications
 
 import android.graphics.Bitmap
-import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.GeneralNotificationResource
-import pl.nowinkitransferowe.core.model.Transfer
+import pl.nowinkitransferowe.core.model.NewsGroup
 
 /**
  * Interface for creating notifications in the app
  */
 interface Notifier {
-    fun postArticleNotifications(articles: List<Article>)
-    fun postTransferNotifications(transfers: List<Transfer>)
+    /**
+     * Posts the news about followed clubs, players and leagues: one rich notification for a
+     * single item, one grouped notification for several items about the same subject. [images]
+     * are the crests and photos by url.
+     */
+    fun postNews(groups: List<NewsGroup>, images: Map<String, Bitmap> = emptyMap())
+
+    /** Posts the news held during the quiet hours as one summary. */
+    fun postHeldNews(groups: List<NewsGroup>)
+
     fun postGeneralNotification(
         generalNotificationResource: GeneralNotificationResource,
         bitmap: Bitmap? = null,

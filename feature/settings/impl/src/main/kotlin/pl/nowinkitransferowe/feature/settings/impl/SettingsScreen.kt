@@ -104,8 +104,6 @@ internal fun SettingsRoute(
         onFollowedClick = onFollowedClick,
         onChangeDynamicColorPreference = viewModel::updateDynamicColorPreference,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
-        onChangeNewsNotificationsPreference = viewModel::updateNewsNotificationsPreference,
-        onChangeTransfersNotificationsPreference = viewModel::updateTransfersNotificationsPreference,
         onChangeGeneralNotificationsPreference = viewModel::updateGeneralNotificationsPreference,
         onOpenSystemNotificationSettings = { context.startActivity(systemNotificationSettingsIntent(context)) },
         onOpenLicenses = { context.startActivity(Intent(context, OssLicensesMenuActivity::class.java)) },
@@ -125,8 +123,6 @@ internal fun SettingsScreen(
     onBackClick: () -> Unit,
     onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
-    onChangeNewsNotificationsPreference: (isAllowed: Boolean) -> Unit,
-    onChangeTransfersNotificationsPreference: (isAllowed: Boolean) -> Unit,
     onChangeGeneralNotificationsPreference: (isAllowed: Boolean) -> Unit,
     onOpenSystemNotificationSettings: () -> Unit,
     onOpenLicenses: () -> Unit,
@@ -163,8 +159,6 @@ internal fun SettingsScreen(
                     NotificationsGroup(
                         settings = settings,
                         notificationsEnabled = notificationsEnabled,
-                        onChangeNewsNotificationsPreference = onChangeNewsNotificationsPreference,
-                        onChangeTransfersNotificationsPreference = onChangeTransfersNotificationsPreference,
                         onChangeGeneralNotificationsPreference = onChangeGeneralNotificationsPreference,
                         onOpenSystemNotificationSettings = onOpenSystemNotificationSettings,
                         onFollowedClick = onFollowedClick,
@@ -215,8 +209,6 @@ private fun AppearanceGroup(
 private fun NotificationsGroup(
     settings: UserEditableSettings,
     notificationsEnabled: Boolean,
-    onChangeNewsNotificationsPreference: (Boolean) -> Unit,
-    onChangeTransfersNotificationsPreference: (Boolean) -> Unit,
     onChangeGeneralNotificationsPreference: (Boolean) -> Unit,
     onOpenSystemNotificationSettings: () -> Unit,
     onFollowedClick: () -> Unit,
@@ -238,20 +230,6 @@ private fun NotificationsGroup(
                 summary = stringResource(string.feature_settings_impl_notification_channel_general_summary),
                 checked = settings.isGeneralNotificationsAllowed,
                 onCheckedChange = onChangeGeneralNotificationsPreference,
-            )
-            SwitchItem(
-                icon = NtIcons.Article,
-                title = stringResource(string.feature_settings_impl_notification_channel_news),
-                summary = stringResource(string.feature_settings_impl_notification_channel_news_summary),
-                checked = settings.isNewsNotificationsAllowed,
-                onCheckedChange = onChangeNewsNotificationsPreference,
-            )
-            SwitchItem(
-                icon = NtIcons.Transfers,
-                title = stringResource(string.feature_settings_impl_notification_channel_transfers),
-                summary = stringResource(string.feature_settings_impl_notification_channel_transfers_summary),
-                checked = settings.isTransfersNotificationsAllowed,
-                onCheckedChange = onChangeTransfersNotificationsPreference,
             )
         }
         SettingsItem(
@@ -437,8 +415,6 @@ private fun SettingsScreenPreview() {
                 UserEditableSettings(
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                     useDynamicColor = false,
-                    isNewsNotificationsAllowed = true,
-                    isTransfersNotificationsAllowed = false,
                     isGeneralNotificationsAllowed = true,
                 ),
             ),
@@ -446,8 +422,6 @@ private fun SettingsScreenPreview() {
             onBackClick = {},
             onChangeDynamicColorPreference = {},
             onChangeDarkThemeConfig = {},
-            onChangeNewsNotificationsPreference = {},
-            onChangeTransfersNotificationsPreference = {},
             onChangeGeneralNotificationsPreference = {},
             onOpenSystemNotificationSettings = {},
             onOpenLicenses = {},

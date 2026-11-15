@@ -24,6 +24,7 @@ import pl.nowinkitransferowe.core.data.model.asEntity
 import pl.nowinkitransferowe.core.data.model.clubStub
 import pl.nowinkitransferowe.core.data.model.playerStub
 import pl.nowinkitransferowe.core.data.model.stageEntities
+import pl.nowinkitransferowe.core.data.news.SyncNewsRecorder
 import pl.nowinkitransferowe.core.data.syncChanges
 import pl.nowinkitransferowe.core.database.dao.ArticleDao
 import pl.nowinkitransferowe.core.database.dao.ClubDao
@@ -47,6 +48,7 @@ internal class OfflineFirstRumourRepository @Inject constructor(
     private val clubDao: ClubDao,
     private val playerDao: PlayerDao,
     private val network: NtNetworkDataSource,
+    private val newsRecorder: SyncNewsRecorder,
 ) : RumourRepository {
 
     override fun observeRumour(id: Int): Flow<Rumour?> = rumourDao.observeRumour(id).map { it?.asExternalModel() }
@@ -66,13 +68,28 @@ internal class OfflineFirstRumourRepository @Inject constructor(
 
     override fun observeRumoursOfPlayer(playerId: Int): Flow<List<Rumour>> = rumourDao.observeRumoursOfPlayer(playerId).map { it.map(PopulatedRumour::asExternalModel) }
 
-    override suspend fun syncWith(synchronizer: Synchronizer): Boolean = synchronizer.syncChanges(
+    override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
+        // Nothing is announced on the first sync, which downloads every rumour.
+        val isFirstSync = synchronizer.getChangeListVersions().rumourVersion == 0
+        return syncRumours(synchronizer, isFirstSync)
+    }
+
+    private suspend fun syncRumours(synchronizer: Synchronizer, isFirstSync: Boolean): Boolean = synchronizer.syncChanges(
         versionReader = ChangeListVersions::rumourVersion,
         changesFetcher = { after -> network.getChanges(NetworkRecordType.RUMOURS, after) },
         versionUpdater = { copy(rumourVersion = it) },
         modelDeleter = rumourDao::deleteRumours,
         modelUpdater = { ids ->
             val rumours = network.getRumours(ids)
+            if (!isFirstSync) {
+                // New rumours and ones that moved up a stage; going down or closing is not news
+                val before = rumourDao.getStages(ids.toSet()).associate { it.id to it.stage }
+                newsRecorder.recordRumourStages(
+                    rumours
+                        .filter { RumourStatus.fromApi(it.status) == RumourStatus.ACTIVE && it.stage > (before[it.id] ?: 0) }
+                        .associate { it.id to RumourStage.fromLevel(it.stage) },
+                )
+            }
             playerDao.insertOrIgnorePlayers(rumours.map { playerStub(it.playerId, it.playerName) })
             clubDao.insertOrIgnoreClubs(
                 rumours.flatMap { rumour ->

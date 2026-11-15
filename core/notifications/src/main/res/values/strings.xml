@@ -15,9 +15,39 @@
      limitations under the License.
 -->
 <resources>
-    <string name="core_notifications_news_notification_channel_name">Najnowsze nowinki i transfery</string>
-    <string name="core_notifications_news_notification_channel_description">Najnowsze nowinki i transfery w Nowinki transferowe</string>
-    <string name="core_notifications_news_notification_group_summary">Nowe nowinki</string>
-    <string name="core_notifications_transfer_notification_group_summary">Nowe transfery</string>
-    <string name="core_notifications_general_notification_group_summary">Nowe informacje</string>
+    <string name="core_notifications_general_notification_group_summary">Od redakcji</string>
+    <string name="core_notifications_channel_editors">Od redakcji</string>
+    <string name="core_notifications_channel_editors_description">Ważne transfery i porozumienia w plotkach</string>
+    <string name="core_notifications_channel_followed">Obserwowane</string>
+    <string name="core_notifications_channel_followed_description">Transfery, plotki i artykuły o obserwowanych klubach i zawodnikach</string>
+    <string name="core_notifications_channel_leagues">Ligi</string>
+    <string name="core_notifications_channel_leagues_description">Najważniejsze wiadomości z obserwowanych lig</string>
+    <string name="core_notifications_news_summary">Nowości</string>
+    <string name="core_notifications_transfer_title">Oficjalnie: %1$s</string>
+    <string name="core_notifications_transfer_text">%1$s → %2$s · %3$s</string>
+    <string name="core_notifications_rumour_title">%1$s – %2$s</string>
+    <string name="core_notifications_rumour_stage_up">Etap wzrósł: %1$s → %2$s</string>
+    <string name="core_notifications_rumour_new">Nowa plotka · %1$s</string>
+    <string name="core_notifications_rumour_stage_of">%1$s (etap %2$d z %3$d)</string>
+    <string name="core_notifications_line_transfer">Transfer · %1$s, %2$s</string>
+    <string name="core_notifications_line_rumour">Plotka · %1$s, %2$s</string>
+    <string name="core_notifications_line_article">Artykuł · %1$s</string>
+    <string name="core_notifications_action_save">Zapisz</string>
+    <string name="core_notifications_stage_speculation">Spekulacja</string>
+    <string name="core_notifications_stage_interest">Zainteresowanie</string>
+    <string name="core_notifications_stage_talks">Rozmowy</string>
+    <string name="core_notifications_stage_close">Blisko</string>
+    <string name="core_notifications_stage_agreement">Porozumienie</string>
+    <plurals name="core_notifications_news_count">
+        <item quantity="one">%1$d nowość</item>
+        <item quantity="few">%1$d nowości</item>
+        <item quantity="many">%1$d nowości</item>
+        <item quantity="other">%1$d nowości</item>
+    </plurals>
+    <plurals name="core_notifications_held_news_title">
+        <item quantity="one">Przez noc: %1$d nowość</item>
+        <item quantity="few">Przez noc: %1$d nowości</item>
+        <item quantity="many">Przez noc: %1$d nowości</item>
+        <item quantity="other">Przez noc: %1$d nowości</item>
+    </plurals>
 </resources>

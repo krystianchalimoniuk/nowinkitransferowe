@@ -23,4 +23,17 @@
     <string name="feature_followed_impl_empty">Nikogo jeszcze nie obserwujesz</string>
     <string name="feature_followed_impl_empty_summary">Gwiazdka na ekranie klubu lub zawodnika dodaje go tutaj.</string>
     <string name="feature_followed_impl_select">Wybierz klub lub zawodnika</string>
+    <string name="feature_followed_impl_notify_about">Powiadamiaj o</string>
+    <string name="feature_followed_impl_notify_transfers">Transferach</string>
+    <string name="feature_followed_impl_notify_transfers_summary">Przyszedł lub odszedł</string>
+    <string name="feature_followed_impl_notify_rumours">Plotkach</string>
+    <string name="feature_followed_impl_notify_rumours_summary">Nowa plotka albo wyższy etap</string>
+    <string name="feature_followed_impl_notify_articles">Artykułach</string>
+    <string name="feature_followed_impl_notify_articles_summary">Każdy nowy artykuł</string>
+    <string name="feature_followed_impl_leagues">Ligi</string>
+    <string name="feature_followed_impl_notify_leagues">Ważne z lig</string>
+    <string name="feature_followed_impl_notify_leagues_summary">Wyróżnione artykuły, transfery od 20 mln €, porozumienia</string>
+    <string name="feature_followed_impl_quiet_hours_group">Cisza nocna</string>
+    <string name="feature_followed_impl_quiet_hours">Od 23:00 do 7:00</string>
+    <string name="feature_followed_impl_quiet_hours_summary">Nocne nowości przyjdą rano w jednym powiadomieniu</string>
 </resources>

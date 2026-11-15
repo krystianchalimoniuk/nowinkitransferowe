@@ -96,6 +96,26 @@ class TestUserDataRepository : UserDataRepository {
         }
     }
 
+    override suspend fun setTopicFollowed(topicSlug: String, followed: Boolean) = update {
+        copy(followedTopics = if (followed) followedTopics + topicSlug else followedTopics - topicSlug)
+    }
+
+    override suspend fun setFollowedNotificationsAllowed(isAllowed: Boolean) = update { copy(isFollowedNotificationsAllowed = isAllowed) }
+
+    override suspend fun setFollowedLeaguesNotificationsAllowed(isAllowed: Boolean) = update { copy(isFollowedLeaguesNotificationsAllowed = isAllowed) }
+
+    override suspend fun setFollowedTransfersNotified(isNotified: Boolean) = update { copy(notifyFollowedTransfers = isNotified) }
+
+    override suspend fun setFollowedRumoursNotified(isNotified: Boolean) = update { copy(notifyFollowedRumours = isNotified) }
+
+    override suspend fun setFollowedArticlesNotified(isNotified: Boolean) = update { copy(notifyFollowedArticles = isNotified) }
+
+    override suspend fun setQuietHours(isEnabled: Boolean) = update { copy(isQuietHoursEnabled = isEnabled) }
+
+    private fun update(change: UserData.() -> UserData) {
+        _userData.tryEmit(currentUserData.change())
+    }
+
     override suspend fun setTransfersReadUpTo(id: Int) {
         currentUserData.let { current ->
             _userData.tryEmit(current.copy(transfersReadUpToId = id, viewedTransfers = current.viewedTransfers.filter { it > id }.toSet()))

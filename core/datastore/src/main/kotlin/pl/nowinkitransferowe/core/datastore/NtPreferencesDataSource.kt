@@ -64,6 +64,10 @@ class NtPreferencesDataSource @Inject constructor(
                 followedPlayers = it.followedPlayerIdsMap.keys,
                 isFollowedNotificationsAllowed = it.notifyFollowed,
                 isFollowedLeaguesNotificationsAllowed = it.notifyFollowedLeagues,
+                notifyFollowedTransfers = it.notifyFollowedTransfers,
+                notifyFollowedRumours = it.notifyFollowedRumours,
+                notifyFollowedArticles = it.notifyFollowedArticles,
+                isQuietHoursEnabled = it.quietHours,
             )
         }
 
@@ -101,6 +105,41 @@ class NtPreferencesDataSource @Inject constructor(
         userPreferences.updateData {
             it.copy { this.notifyFollowedLeagues = isAllowed }
         }
+    }
+
+    suspend fun setFollowedTransfersNotified(isNotified: Boolean) {
+        userPreferences.updateData { it.copy { notifyFollowedTransfers = isNotified } }
+    }
+
+    suspend fun setFollowedRumoursNotified(isNotified: Boolean) {
+        userPreferences.updateData { it.copy { notifyFollowedRumours = isNotified } }
+    }
+
+    suspend fun setFollowedArticlesNotified(isNotified: Boolean) {
+        userPreferences.updateData { it.copy { notifyFollowedArticles = isNotified } }
+    }
+
+    suspend fun setQuietHours(isEnabled: Boolean) {
+        userPreferences.updateData { it.copy { quietHours = isEnabled } }
+    }
+
+    /** Keys of the records held back by the quiet hours, oldest first. */
+    suspend fun getPendingNotificationKeys(): List<String> = userPreferences.data.map { it.pendingNotificationKeysList.toList() }.firstOrNull().orEmpty()
+
+    /** Holds [keys] back for the morning summary, keeping the newest [MAX_NOTIFIED_KEYS]. */
+    suspend fun addPendingNotificationKeys(keys: Collection<String>) {
+        if (keys.isEmpty()) return
+        userPreferences.updateData {
+            it.copy {
+                val newest = (pendingNotificationKeys - keys.toSet() + keys.distinct()).takeLast(MAX_NOTIFIED_KEYS)
+                pendingNotificationKeys.clear()
+                pendingNotificationKeys.addAll(newest)
+            }
+        }
+    }
+
+    suspend fun clearPendingNotificationKeys() {
+        userPreferences.updateData { it.copy { pendingNotificationKeys.clear() } }
     }
 
     suspend fun setTopicFollowed(topicSlug: String, followed: Boolean) {

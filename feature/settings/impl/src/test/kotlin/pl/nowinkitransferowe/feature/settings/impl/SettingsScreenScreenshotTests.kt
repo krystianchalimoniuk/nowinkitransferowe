@@ -64,8 +64,6 @@ class SettingsScreenScreenshotTests {
                         UserEditableSettings(
                             darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                             useDynamicColor = false,
-                            isNewsNotificationsAllowed = true,
-                            isTransfersNotificationsAllowed = false,
                             isGeneralNotificationsAllowed = true,
                         ),
                     ),
@@ -73,8 +71,6 @@ class SettingsScreenScreenshotTests {
                     onBackClick = {},
                     onChangeDynamicColorPreference = {},
                     onChangeDarkThemeConfig = {},
-                    onChangeNewsNotificationsPreference = {},
-                    onChangeTransfersNotificationsPreference = {},
                     onChangeGeneralNotificationsPreference = {},
                     onOpenSystemNotificationSettings = {},
                     onOpenLicenses = {},

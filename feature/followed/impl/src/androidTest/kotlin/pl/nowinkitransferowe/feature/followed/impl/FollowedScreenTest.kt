@@ -17,15 +17,20 @@
 package pl.nowinkitransferowe.feature.followed.impl
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.assertIsOff
+import androidx.compose.ui.test.assertIsOn
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.testing.data.clubsTestData
 import pl.nowinkitransferowe.core.testing.data.playersTestData
+import pl.nowinkitransferowe.core.testing.data.topicsTestData
 import kotlin.test.assertEquals
 
 /**
@@ -74,5 +79,36 @@ class FollowedScreenTest {
         }
 
         composeTestRule.onNodeWithText("Nikogo jeszcze nie obserwujesz").assertExists()
+    }
+
+    @Test
+    fun switchesAndLeagueChips_reportChanges() {
+        var articles: Boolean? = null
+        var league: Pair<String, Boolean>? = null
+        var quietHours: Boolean? = null
+        composeTestRule.setContent {
+            FollowedScreen(
+                uiState = FollowedUiState.Success(emptyList(), emptyList(), FollowedNotifications(), topicsTestData),
+                onBackClick = {},
+                onClubClick = {},
+                onPlayerClick = {},
+                onClubFollowedChange = { _, _ -> },
+                onPlayerFollowedChange = { _, _ -> },
+                settingsActions = FollowedSettingsActions(
+                    onArticlesChange = { articles = it },
+                    onLeagueFollowedChange = { topic, followed -> league = topic to followed },
+                    onQuietHoursChange = { quietHours = it },
+                ),
+            )
+        }
+
+        composeTestRule.onNodeWithTag("Artykułach").assertIsOff().performClick()
+        assertEquals(true, articles)
+        composeTestRule.onNodeWithTag("followed").performScrollToNode(hasTestTag("followed:league:serie-a"))
+        composeTestRule.onNodeWithTag("followed:league:serie-a").performClick()
+        assertEquals("serie-a" to true, league)
+        composeTestRule.onNodeWithTag("followed").performScrollToNode(hasTestTag("Od 23:00 do 7:00"))
+        composeTestRule.onNodeWithTag("Od 23:00 do 7:00").assertIsOn().performClick()
+        assertEquals(false, quietHours)
     }
 }

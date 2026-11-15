@@ -54,11 +54,20 @@ import pl.nowinkitransferowe.core.data.util.NetworkMonitor
 import pl.nowinkitransferowe.core.data.util.TimeZoneMonitor
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_CLUB_URI_PATTERN
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_LEAGUES_URI
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_NEWS_URI_PATTERN
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_PLAYER_URI_PATTERN
+import pl.nowinkitransferowe.core.notifications.DEEP_LINK_RUMOUR_URI_PATTERN
 import pl.nowinkitransferowe.core.notifications.DEEP_LINK_TRANSFER_URI_PATTERN
 import pl.nowinkitransferowe.core.ui.LocalTimeZone
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.ArticleNavKey
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
+import pl.nowinkitransferowe.feature.club.api.navigation.ClubNavKey
+import pl.nowinkitransferowe.feature.leagues.api.navigation.LeaguesNavKey
+import pl.nowinkitransferowe.feature.player.api.navigation.PlayerNavKey
+import pl.nowinkitransferowe.feature.rumours.api.navigation.RumourNavKey
+import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
 import pl.nowinkitransferowe.feature.settings.api.navigation.SettingsNavKey
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.TransferDetailsNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
@@ -78,6 +87,21 @@ private val transferDeepLinkMatcher = UriDeepLinkMatcher(
     serializer = TransferDetailsNavKey.serializer(),
 )
 
+private val rumourDeepLinkMatcher = UriDeepLinkMatcher(
+    uriPattern = DeepLinkUri(DEEP_LINK_RUMOUR_URI_PATTERN),
+    serializer = RumourNavKey.serializer(),
+)
+
+private val clubDeepLinkMatcher = UriDeepLinkMatcher(
+    uriPattern = DeepLinkUri(DEEP_LINK_CLUB_URI_PATTERN),
+    serializer = ClubNavKey.serializer(),
+)
+
+private val playerDeepLinkMatcher = UriDeepLinkMatcher(
+    uriPattern = DeepLinkUri(DEEP_LINK_PLAYER_URI_PATTERN),
+    serializer = PlayerNavKey.serializer(),
+)
+
 /**
  * Returns the keys to navigate to for a deep link: the top level destination first, so going back
  * from the details shows the list.
@@ -87,6 +111,10 @@ private fun deepLinkKeys(uri: String): List<NavKey> {
     // The ids are numbers; a link with anything else fails to decode and opens the app as usual.
     runCatching { newsDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(ArticlesNavKey, it.key) }
     runCatching { transferDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(TransfersNavKey, it.key) }
+    runCatching { rumourDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(RumoursNavKey, it.key) }
+    runCatching { clubDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(ArticlesNavKey, it.key) }
+    runCatching { playerDeepLinkMatcher.match(request) }.getOrNull()?.let { return listOf(ArticlesNavKey, it.key) }
+    if (uri == DEEP_LINK_LEAGUES_URI) return listOf(LeaguesNavKey)
     return emptyList()
 }
 

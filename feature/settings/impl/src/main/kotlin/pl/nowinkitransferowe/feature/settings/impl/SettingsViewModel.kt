@@ -40,8 +40,6 @@ class SettingsViewModel @Inject constructor(
                     settings = UserEditableSettings(
                         useDynamicColor = userData.useDynamicColor,
                         darkThemeConfig = userData.darkThemeConfig,
-                        isNewsNotificationsAllowed = userData.isNewsNotificationsAllowed,
-                        isTransfersNotificationsAllowed = userData.isTransfersNotificationsAllowed,
                         isGeneralNotificationsAllowed = userData.isGeneralNotificationAllowed,
                         followedClubs = userData.followedClubs.size,
                         followedPlayers = userData.followedPlayers.size,
@@ -66,16 +64,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun updateNewsNotificationsPreference(isAllowed: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setNewsNotificationsAllowed(isAllowed)
-        }
-    }
-    fun updateTransfersNotificationsPreference(isAllowed: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setTransfersNotificationsAllowed(isAllowed)
-        }
-    }
     fun updateGeneralNotificationsPreference(isAllowed: Boolean) {
         viewModelScope.launch {
             userDataRepository.setGeneralNotificationsAllowed(isAllowed)
@@ -89,8 +77,6 @@ class SettingsViewModel @Inject constructor(
 data class UserEditableSettings(
     val useDynamicColor: Boolean,
     val darkThemeConfig: DarkThemeConfig,
-    val isNewsNotificationsAllowed: Boolean,
-    val isTransfersNotificationsAllowed: Boolean,
     val isGeneralNotificationsAllowed: Boolean,
     val followedClubs: Int = 0,
     val followedPlayers: Int = 0,

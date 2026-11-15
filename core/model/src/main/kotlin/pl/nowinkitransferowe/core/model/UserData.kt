@@ -37,6 +37,14 @@ data class UserData(
     val articlesReadUpToId: Int = 0,
     /** Transfers up to this id count as read; 0 before the first sync, when all of them do. */
     val transfersReadUpToId: Int = 0,
+    /** New transfers of followed clubs and players notify. */
+    val notifyFollowedTransfers: Boolean = false,
+    /** Rumours about followed clubs and players notify when their stage goes up. */
+    val notifyFollowedRumours: Boolean = false,
+    /** New articles about followed clubs and players notify. */
+    val notifyFollowedArticles: Boolean = false,
+    /** The app's own notifications wait from 23:00 to 7:00 for one morning summary. */
+    val isQuietHoursEnabled: Boolean = false,
 ) {
     /** New since the last visit and not opened yet. */
     fun isArticleRead(id: Int): Boolean = id in viewedArticles || articlesReadUpToId == 0 || id <= articlesReadUpToId

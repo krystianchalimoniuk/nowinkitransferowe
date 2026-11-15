@@ -17,31 +17,30 @@
 package pl.nowinkitransferowe.core.testing.notifications
 
 import android.graphics.Bitmap
-import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.GeneralNotificationResource
-import pl.nowinkitransferowe.core.model.Transfer
+import pl.nowinkitransferowe.core.model.NewsGroup
 import pl.nowinkitransferowe.core.notifications.Notifier
 
 /**
- * Aggregates articles and transfers that have been notified for addition
+ * Keeps the news and general notifications that were posted.
  */
 class TestNotifier : Notifier {
 
-    private val mutableAddedArticles = mutableListOf<List<Article>>()
-    private val mutableAddedTransfers = mutableListOf<List<Transfer>>()
+    private val mutableNews = mutableListOf<List<NewsGroup>>()
+    private val mutableHeldNews = mutableListOf<List<NewsGroup>>()
     private val mutableAddedGeneralNotificationResource =
         mutableListOf<GeneralNotificationResource>()
-    val addedArticles: List<List<Article>> = mutableAddedArticles
-    val addedTransfers: List<List<Transfer>> = mutableAddedTransfers
+    val news: List<List<NewsGroup>> = mutableNews
+    val heldNews: List<List<NewsGroup>> = mutableHeldNews
     val addedGeneralNotificationResources: List<GeneralNotificationResource> =
         mutableAddedGeneralNotificationResource
 
-    override fun postArticleNotifications(articles: List<Article>) {
-        mutableAddedArticles.add(articles)
+    override fun postNews(groups: List<NewsGroup>, images: Map<String, Bitmap>) {
+        mutableNews.add(groups)
     }
 
-    override fun postTransferNotifications(transfers: List<Transfer>) {
-        mutableAddedTransfers.add(transfers)
+    override fun postHeldNews(groups: List<NewsGroup>) {
+        mutableHeldNews.add(groups)
     }
 
     override fun postGeneralNotification(

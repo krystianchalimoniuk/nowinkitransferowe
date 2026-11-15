@@ -31,10 +31,6 @@
     <string name="feature_settings_impl_dynamic_color_summary">Domyślnie kolory strony</string>
     <string name="feature_settings_impl_notification_channel_general">Od redakcji</string>
     <string name="feature_settings_impl_notification_channel_general_summary">Ważne transfery i porozumienia</string>
-    <string name="feature_settings_impl_notification_channel_news">Nowe artykuły</string>
-    <string name="feature_settings_impl_notification_channel_news_summary">Gdy na stronie pojawi się nowy artykuł</string>
-    <string name="feature_settings_impl_notification_channel_transfers">Nowe transfery</string>
-    <string name="feature_settings_impl_notification_channel_transfers_summary">Gdy dojdzie nowy oficjalny transfer</string>
     <string name="feature_settings_impl_notifications_off">Powiadomienia są wyłączone</string>
     <string name="feature_settings_impl_notifications_off_summary">Włącz je w ustawieniach systemu</string>
     <string name="feature_settings_impl_followed">Obserwowane</string>

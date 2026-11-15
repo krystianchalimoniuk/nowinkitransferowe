@@ -27,6 +27,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import pl.nowinkitransferowe.core.data.Synchronizer
+import pl.nowinkitransferowe.core.data.news.SyncNewsRecorder
 import pl.nowinkitransferowe.core.data.testdoubles.TestNtNetworkDataSource
 import pl.nowinkitransferowe.core.database.NtDatabase
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
@@ -39,7 +40,6 @@ import pl.nowinkitransferowe.core.model.RumourStatus
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.network.MAX_IDS_PER_REQUEST
 import pl.nowinkitransferowe.core.network.NetworkRecordType
-import pl.nowinkitransferowe.core.testing.notifications.TestNotifier
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -57,7 +57,7 @@ class OfflineFirstApiV3RepositoriesTest {
     private lateinit var network: TestNtNetworkDataSource
     private lateinit var preferences: NtPreferencesDataSource
     private lateinit var synchronizer: Synchronizer
-    private lateinit var notifier: TestNotifier
+    private lateinit var newsRecorder: SyncNewsRecorder
 
     private lateinit var articles: OfflineFirstArticleRepository
     private lateinit var transfers: OfflineFirstTransferRepository
@@ -74,10 +74,10 @@ class OfflineFirstApiV3RepositoriesTest {
         preferences = NtPreferencesDataSource(InMemoryDataStore(UserPreferences.getDefaultInstance()))
         synchronizer = TestSynchronizer(preferences)
 
-        notifier = TestNotifier()
-        articles = OfflineFirstArticleRepository(db.articleDao(), db.clubDao(), db.playerDao(), network, preferences, notifier)
-        transfers = OfflineFirstTransferRepository(db.transferDao(), db.articleDao(), db.clubDao(), db.playerDao(), network, preferences, notifier)
-        rumours = OfflineFirstRumourRepository(db.rumourDao(), db.transferDao(), db.articleDao(), db.clubDao(), db.playerDao(), network)
+        newsRecorder = SyncNewsRecorder()
+        articles = OfflineFirstArticleRepository(db.articleDao(), db.clubDao(), db.playerDao(), network, preferences, newsRecorder)
+        transfers = OfflineFirstTransferRepository(db.transferDao(), db.articleDao(), db.clubDao(), db.playerDao(), network, preferences, newsRecorder)
+        rumours = OfflineFirstRumourRepository(db.rumourDao(), db.transferDao(), db.articleDao(), db.clubDao(), db.playerDao(), network, newsRecorder)
         clubs = OfflineFirstClubRepository(db.clubDao(), network)
         players = OfflineFirstPlayerRepository(db.playerDao(), network)
     }
@@ -222,43 +222,45 @@ class OfflineFirstApiV3RepositoriesTest {
     }
 
     @Test
-    fun first_sync_posts_no_notifications() = runTest {
-        preferences.setNewsNotificationsAllowed(true)
-        preferences.setTransfersNotificationsAllowed(true)
-
+    fun first_sync_records_no_news() = runTest {
         syncAll()
 
-        assertEquals(emptyList(), notifier.addedArticles)
-        assertEquals(emptyList(), notifier.addedTransfers)
+        assertTrue(newsRecorder.take().isEmpty())
     }
 
     @Test
-    fun new_records_are_notified_but_edited_ones_are_not() = runTest {
-        preferences.setNewsNotificationsAllowed(true)
-        preferences.setTransfersNotificationsAllowed(true)
+    fun new_records_are_news_but_edited_ones_are_not() = runTest {
         syncAll()
+        newsRecorder.take()
+        val activeRumour = rumours.observeRumours(RumourStatus.ACTIVE).first().first()
 
         // Removed locally, so the next sync gets them as new records.
         db.articleDao().deleteArticles(listOf(11276))
         db.transferDao().deleteTransfers(listOf(19580))
+        db.rumourDao().deleteRumours(listOf(activeRumour.id))
         network.editRecord(NetworkRecordType.ARTICLES, 11276)
         network.editRecord(NetworkRecordType.TRANSFERS, 19580)
         network.editRecord(NetworkRecordType.TRANSFERS, 20741)
+        network.editRecord(NetworkRecordType.RUMOURS, activeRumour.id)
         syncAll()
 
-        assertEquals(listOf(listOf(11276)), notifier.addedArticles.map { articles -> articles.map { it.id } })
-        assertEquals(listOf(listOf(19580)), notifier.addedTransfers.map { transfers -> transfers.map { it.id } })
+        val news = newsRecorder.take()
+        assertEquals(setOf(11276), news.articleIds)
+        assertEquals(setOf(19580), news.transferIds)
+        assertEquals(mapOf(activeRumour.id to activeRumour.stage), news.rumourStages)
+        assertTrue(newsRecorder.take().isEmpty())
     }
 
     @Test
-    fun new_records_are_not_notified_when_notifications_are_off() = runTest {
+    fun rumours_on_the_same_stage_are_not_news() = runTest {
         syncAll()
-        db.articleDao().deleteArticles(listOf(11276))
-        network.editRecord(NetworkRecordType.ARTICLES, 11276)
+        newsRecorder.take()
+        val activeRumour = rumours.observeRumours(RumourStatus.ACTIVE).first().first()
 
+        network.editRecord(NetworkRecordType.RUMOURS, activeRumour.id)
         syncAll()
 
-        assertEquals(emptyList(), notifier.addedArticles)
+        assertTrue(newsRecorder.take().rumourStages.isEmpty())
     }
 
     @Test

@@ -40,6 +40,9 @@ class UserPreferencesMigrationTest {
             old.toBuilder()
                 .setNotifyFollowed(true)
                 .setNotifyFollowedLeagues(true)
+                .setNotifyFollowedTransfers(true)
+                .setNotifyFollowedRumours(true)
+                .setQuietHours(true)
                 .setSchemaVersion(UserPreferencesMigration.CURRENT_SCHEMA_VERSION)
                 .build(),
             migration.migrate(old),
@@ -54,5 +57,21 @@ class UserPreferencesMigrationTest {
 
         assertFalse(migration.shouldMigrate(migrated))
         assertFalse(migration.shouldMigrate(UserPreferencesSerializer().defaultValue))
+    }
+
+    @Test
+    fun preferencesFromVersion1GetTheFollowedSwitchesAndQuietHours() = runTest {
+        val v1 = userPreferences {
+            schemaVersion = 1
+            notifyFollowed = false
+        }
+
+        val migrated = migration.migrate(v1)
+
+        assertFalse(migrated.notifyFollowed)
+        assertTrue(migrated.notifyFollowedTransfers)
+        assertTrue(migrated.notifyFollowedRumours)
+        assertFalse(migrated.notifyFollowedArticles)
+        assertTrue(migrated.quietHours)
     }
 }

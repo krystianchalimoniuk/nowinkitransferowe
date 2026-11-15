@@ -17,12 +17,12 @@
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.model.asEntity
 import pl.nowinkitransferowe.core.data.model.clubStub
 import pl.nowinkitransferowe.core.data.model.playerStub
+import pl.nowinkitransferowe.core.data.news.SyncNewsRecorder
 import pl.nowinkitransferowe.core.data.syncChanges
 import pl.nowinkitransferowe.core.database.dao.ArticleDao
 import pl.nowinkitransferowe.core.database.dao.ClubDao
@@ -36,7 +36,6 @@ import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Transfer
 import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
-import pl.nowinkitransferowe.core.notifications.Notifier
 import javax.inject.Inject
 
 internal class OfflineFirstTransferRepository @Inject constructor(
@@ -46,7 +45,7 @@ internal class OfflineFirstTransferRepository @Inject constructor(
     private val playerDao: PlayerDao,
     private val network: NtNetworkDataSource,
     private val ntPreferencesDataSource: NtPreferencesDataSource,
-    private val notifier: Notifier,
+    private val newsRecorder: SyncNewsRecorder,
 ) : TransferRepository {
 
     override fun observeTransfer(id: Int): Flow<Transfer?> = transferDao.observeTransfer(id).map { it?.asExternalModel() }
@@ -95,9 +94,7 @@ internal class OfflineFirstTransferRepository @Inject constructor(
         )
         // After the first sync everything there is counts as read; later transfers are new
         if (synced) ntPreferencesDataSource.setReadUpToIfUnset(articleId = null, transferId = transferDao.getNewestId())
-        if (synced && addedIds.isNotEmpty() && ntPreferencesDataSource.userData.first().isTransfersNotificationsAllowed) {
-            notifier.postTransferNotifications(observeTransfers(addedIds).first())
-        }
+        newsRecorder.recordTransfers(addedIds)
         return synced
     }
 }
