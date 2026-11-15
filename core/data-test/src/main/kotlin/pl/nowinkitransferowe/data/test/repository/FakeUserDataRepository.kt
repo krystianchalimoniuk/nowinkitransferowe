@@ -17,6 +17,8 @@
 package pl.nowinkitransferowe.data.test.repository
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
@@ -59,6 +61,8 @@ class FakeUserDataRepository @Inject constructor(
     override suspend fun setFollowedRumoursNotified(isNotified: Boolean) = ntPreferencesDataSource.setFollowedRumoursNotified(isNotified)
 
     override suspend fun setFollowedArticlesNotified(isNotified: Boolean) = ntPreferencesDataSource.setFollowedArticlesNotified(isNotified)
+
+    override suspend fun muteNewsSubject(subjectKey: String, until: Instant) = ntPreferencesDataSource.muteNewsSubject(subjectKey, until.toEpochMilliseconds(), Clock.System.now().toEpochMilliseconds())
 
     override suspend fun setQuietHours(isEnabled: Boolean) = ntPreferencesDataSource.setQuietHours(isEnabled)
 

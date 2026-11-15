@@ -17,9 +17,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <!-- Saves the record of a notification from its "Zapisz" action -->
+        <!-- The "Zapisz" and "Wycisz na dziś" actions of the news notifications -->
         <receiver
-            android:name="pl.nowinkitransferowe.sync.work.notifications.SaveNewsReceiver"
+            android:name="pl.nowinkitransferowe.sync.work.notifications.NewsActionReceiver"
             android:exported="false" />
     </application>
 
