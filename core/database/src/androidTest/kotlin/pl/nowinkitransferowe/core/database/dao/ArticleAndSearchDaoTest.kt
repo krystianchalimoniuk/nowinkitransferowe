@@ -111,6 +111,17 @@ internal class ArticleAndSearchDaoTest : DatabaseTest() {
     }
 
     @Test
+    fun search_finds_active_rumours_by_player_or_club() = runTest {
+        playerDao.insertOrIgnorePlayers(listOf(playerStub(12148, "Gabriel Martinelli")))
+        clubDao.insertOrIgnoreClubs(listOf(clubStub(37, "Arsenal FC"), clubStub(5120, "Al-Hilal SFC")))
+        rumourDao.upsertRumours(listOf(rumour(1), rumour(2, status = "FAILED")), emptyList())
+
+        assertEquals(listOf(1), searchDao.searchRumourIds("martinelli*").first())
+        assertEquals(listOf(1), searchDao.searchRumourIds("hilal*").first())
+        assertEquals(emptyList(), searchDao.searchRumourIds("chelsea*").first())
+    }
+
+    @Test
     fun search_finds_articles_by_title_and_lead() = runTest {
         articleDao.upsertArticles(listOf(article(11276)), emptyList(), emptyList(), emptyList(), emptyList())
 

@@ -210,6 +210,9 @@ graph TB
   :feature:search:impl -.-> :core:domain
   :feature:search:impl -.-> :core:ui
   :feature:search:impl -.-> :feature:article-details:api
+  :feature:search:impl -.-> :feature:club:api
+  :feature:search:impl -.-> :feature:player:api
+  :feature:search:impl -.-> :feature:rumours:api
   :feature:search:impl -.-> :feature:search:api
   :feature:search:impl -.-> :feature:transfer-details:api
   :feature:settings:api --> :core:navigation

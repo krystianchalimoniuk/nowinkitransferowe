@@ -29,6 +29,9 @@ internal class DefaultSearchContentsRepository @Inject constructor(
     private val searchDao: SearchDao,
     private val articleRepository: ArticleRepository,
     private val transferRepository: TransferRepository,
+    private val clubRepository: ClubRepository,
+    private val playerRepository: PlayerRepository,
+    private val rumourRepository: RumourRepository,
 ) : SearchContentsRepository {
 
     override fun searchContents(searchQuery: String): Flow<SearchResult> {
@@ -41,8 +44,20 @@ internal class DefaultSearchContentsRepository @Inject constructor(
             .map { it.toSet() }
             .distinctUntilChanged()
             .flatMapLatest(transferRepository::observeTransfers)
-        return combine(articles, transfers) { articleList, transferList ->
-            SearchResult(articles = articleList, transfers = transferList)
+        val clubs = searchDao.searchClubIds(query)
+            .map { it.toSet() }
+            .distinctUntilChanged()
+            .flatMapLatest(clubRepository::observeClubs)
+        val players = searchDao.searchPlayerIds(query)
+            .map { it.toSet() }
+            .distinctUntilChanged()
+            .flatMapLatest(playerRepository::observePlayers)
+        val rumours = searchDao.searchRumourIds(query)
+            .map { it.toSet() }
+            .distinctUntilChanged()
+            .flatMapLatest(rumourRepository::observeRumours)
+        return combine(articles, transfers, clubs, players, rumours) { articleList, transferList, clubList, playerList, rumourList ->
+            SearchResult(articles = articleList, transfers = transferList, clubs = clubList, players = playerList, rumours = rumourList)
         }
     }
 

@@ -18,8 +18,9 @@ package pl.nowinkitransferowe.feature.search.impl
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,14 +32,12 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +46,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -70,17 +72,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import pl.nowinkitransferowe.core.designsystem.component.NtCrest
+import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
+import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
+import pl.nowinkitransferowe.core.designsystem.component.NtTextButton
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.NtTheme
-import pl.nowinkitransferowe.core.model.UserArticle
-import pl.nowinkitransferowe.core.model.UserTransfer
-import pl.nowinkitransferowe.core.ui.ArticleFeedUiState
+import pl.nowinkitransferowe.core.ui.ArticleListItem
 import pl.nowinkitransferowe.core.ui.DevicePreviews
 import pl.nowinkitransferowe.core.ui.R.string
+import pl.nowinkitransferowe.core.ui.RumourListItem
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
-import pl.nowinkitransferowe.core.ui.TransferFeedUiState
-import pl.nowinkitransferowe.core.ui.articleFeed
-import pl.nowinkitransferowe.core.ui.transferFeed
+import pl.nowinkitransferowe.core.ui.TransferListItem
 import pl.nowinkitransferowe.feature.search.impl.R as searchR
 
 @Composable
@@ -88,6 +91,9 @@ internal fun SearchRoute(
     onBackClick: () -> Unit,
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
+    onClubClick: (Int) -> Unit,
+    onPlayerClick: (Int) -> Unit,
+    onRumourClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel,
 ) {
@@ -115,6 +121,9 @@ internal fun SearchRoute(
         onTopicClick = searchViewModel::onSearchQueryChanged,
         onArticleClick = onArticleClick,
         onTransferClick = onTransferClick,
+        onClubClick = onClubClick,
+        onPlayerClick = onPlayerClick,
+        onRumourClick = onRumourClick,
     )
 }
 
@@ -135,6 +144,9 @@ internal fun SearchScreen(
     onTopicClick: (String) -> Unit = {},
     onArticleClick: (Int) -> Unit = {},
     onTransferClick: (Int) -> Unit = {},
+    onClubClick: (Int) -> Unit = {},
+    onPlayerClick: (Int) -> Unit = {},
+    onRumourClick: (Int) -> Unit = {},
 ) {
     TrackScreenViewEvent(screenName = "Search")
     Column(modifier = modifier) {
@@ -182,17 +194,13 @@ internal fun SearchScreen(
                     }
                 } else {
                     SearchResultBody(
-                        searchQuery = searchQuery,
-                        transfers = searchResultUiState.transfers,
-                        articles = searchResultUiState.articles,
-                        onSearchTriggered = onSearchTriggered,
-                        onTopicClick = onTopicClick,
+                        result = searchResultUiState,
                         onArticleClick = onArticleClick,
                         onTransferClick = onTransferClick,
+                        onClubClick = onClubClick,
+                        onPlayerClick = onPlayerClick,
+                        onRumourClick = onRumourClick,
                         onArticleSavedChanged = onArticleSavedChanged,
-                        onArticleViewed = onArticleViewed,
-                        onTransferSavedChanged = onTransferSavedChanged,
-                        onTransferViewed = onTransferViewed,
                     )
                 }
             }
@@ -245,97 +253,89 @@ private fun SearchNotReadyBody() {
     }
 }
 
+/**
+ * Results in sections as on the website: clubs and players as chips that open their screens,
+ * then active rumours, transfers and articles. Long sections show their first few until expanded.
+ */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SearchResultBody(
-    searchQuery: String,
-    transfers: List<UserTransfer>,
-    articles: List<UserArticle>,
-    onSearchTriggered: (String) -> Unit,
-    onTopicClick: (String) -> Unit,
+    result: SearchResultUiState.Success,
     onArticleClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
+    onClubClick: (Int) -> Unit,
+    onPlayerClick: (Int) -> Unit,
+    onRumourClick: (Int) -> Unit,
     onArticleSavedChanged: (Int, Boolean) -> Unit,
-    onArticleViewed: (Int) -> Unit,
-    onTransferSavedChanged: (Int, Boolean) -> Unit,
-    onTransferViewed: (List<Int>) -> Unit,
 ) {
-    val state = rememberLazyStaggeredGridState()
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
+    var expanded by rememberSaveable(result) { mutableStateOf(emptySet<String>()) }
+    fun <T> LazyListScope.section(
+        key: String,
+        title: Int,
+        items: List<T>,
+        collapsedCount: Int,
+        itemKey: (T) -> Any,
+        content: @Composable (T) -> Unit,
     ) {
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(300.dp),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalItemSpacing = 24.dp,
-            modifier = Modifier
-                .fillMaxSize()
-                .testTag("search:articles"),
-            state = state,
-        ) {
-            if (transfers.isNotEmpty()) {
-                item(
-                    span = StaggeredGridItemSpan.FullLine,
-                ) {
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(stringResource(id = searchR.string.feature_search_impl_transfers))
-                            }
-                        },
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    )
+        if (items.isEmpty()) return
+        item(key = "$key:header") {
+            NtSectionHeader("${stringResource(title)} (${items.size})", Modifier.padding(horizontal = 16.dp).padding(top = 12.dp))
+        }
+        val shown = if (key in expanded) items else items.take(collapsedCount)
+        items(shown, key = { "$key:${itemKey(it)}" }) { content(it) }
+        if (items.size > shown.size) {
+            item(key = "$key:more") {
+                NtTextButton(onClick = { expanded = expanded + key }, modifier = Modifier.padding(horizontal = 8.dp).testTag("search:$key:more")) {
+                    Text(stringResource(searchR.string.feature_search_impl_show_all, items.size))
                 }
-
-                transferFeed(
-                    feedState = TransferFeedUiState.Success(feed = transfers),
-                    onTransferSavedChanged = onTransferSavedChanged,
-                    onTransferViewed = onTransferViewed,
-                    onTransferClick = onTransferClick,
-                )
-            }
-
-            if (articles.isNotEmpty()) {
-                item(
-                    span = StaggeredGridItemSpan.FullLine,
-                ) {
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(stringResource(id = searchR.string.feature_search_impl_news))
-                            }
-                        },
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    )
-                }
-
-                articleFeed(
-                    feedState = ArticleFeedUiState.Success(feed = articles),
-                    onArticleSavedChanged = onArticleSavedChanged,
-                    onArticleViewed = onArticleViewed,
-                    onTopicClick = onTopicClick,
-                    onArticleSelected = {},
-                    onArticleClick = onArticleClick,
-                )
             }
         }
-//        val itemsAvailable = transfers.size + articles.size + 2
-//        val scrollbarState = state.scrollbarState(
-//            itemsAvailable = itemsAvailable,
-//        )
-//        state.DraggableScrollbar(
-//            modifier = Modifier
-//                .fillMaxHeight()
-//                .windowInsetsPadding(WindowInsets.systemBars)
-//                .padding(horizontal = 2.dp)
-//                .align(Alignment.CenterEnd),
-//            state = scrollbarState,
-//            orientation = Orientation.Vertical,
-//            onThumbMoved = state.rememberDraggableScroller(
-//                itemsAvailable = itemsAvailable,
-//            ),
-//        )
+    }
+    LazyColumn(
+        contentPadding = PaddingValues(bottom = 16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("search:results"),
+    ) {
+        if (result.clubs.isNotEmpty() || result.players.isNotEmpty()) {
+            item(key = "entities") {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    result.clubs.forEach { club ->
+                        AssistChip(
+                            onClick = { onClubClick(club.id) },
+                            label = { Text(club.name) },
+                            leadingIcon = { NtCrest(imageUrl = club.crestUrl, name = club.name, size = 20.dp) },
+                            modifier = Modifier.testTag("search:club:${club.id}"),
+                        )
+                    }
+                    result.players.forEach { player ->
+                        AssistChip(
+                            onClick = { onPlayerClick(player.id) },
+                            label = { Text(player.name) },
+                            leadingIcon = { NtPlayerPhoto(photoUrl = player.photoUrl, name = player.name, size = 20.dp) },
+                            modifier = Modifier.testTag("search:player:${player.id}"),
+                        )
+                    }
+                }
+            }
+        }
+        section("rumours", searchR.string.feature_search_impl_rumours, result.rumours, collapsedCount = 3, itemKey = { it.id }) { rumour ->
+            RumourListItem(rumour, onClick = { onRumourClick(rumour.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+        }
+        section("transfers", searchR.string.feature_search_impl_transfers, result.transfers, collapsedCount = 5, itemKey = { it.id }) { transfer ->
+            TransferListItem(transfer, onClick = { onTransferClick(transfer.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+        }
+        section("articles", searchR.string.feature_search_impl_articles, result.articles, collapsedCount = 10, itemKey = { it.id }) { article ->
+            ArticleListItem(
+                article = article,
+                onClick = { onArticleClick(article.id) },
+                onToggleBookmark = { onArticleSavedChanged(article.id, !article.isSaved) },
+                modifier = Modifier.padding(horizontal = 12.dp),
+            )
+        }
     }
 }
 

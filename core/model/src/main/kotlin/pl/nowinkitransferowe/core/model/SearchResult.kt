@@ -16,8 +16,14 @@
 
 package pl.nowinkitransferowe.core.model
 
-/** Articles and transfers matching a search query, newest first. */
+/**
+ * Records matching a search query: clubs and players by name, active rumours about them, and
+ * articles and transfers, newest first.
+ */
 data class SearchResult(
     val articles: List<Article> = emptyList(),
     val transfers: List<Transfer> = emptyList(),
+    val clubs: List<Club> = emptyList(),
+    val players: List<Player> = emptyList(),
+    val rumours: List<Rumour> = emptyList(),
 )

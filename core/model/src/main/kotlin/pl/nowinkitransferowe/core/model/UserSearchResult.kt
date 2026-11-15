@@ -20,4 +20,7 @@ package pl.nowinkitransferowe.core.model
 data class UserSearchResult(
     val articles: List<UserArticle> = emptyList(),
     val transfers: List<UserTransfer> = emptyList(),
+    val clubs: List<Club> = emptyList(),
+    val players: List<Player> = emptyList(),
+    val rumours: List<Rumour> = emptyList(),
 )

@@ -264,7 +264,8 @@ class FakeRumourRepository @Inject constructor(
 class FakeClubRepository @Inject constructor(
     private val datasource: DemoNtNetworkDataSource,
 ) : ClubRepository {
-    private val clubs: Flow<List<Club>> = flow {
+    /** Every demo club, for the demo search. */
+    internal val clubs: Flow<List<Club>> = flow {
         emit(datasource.getClubs(allIds(datasource, NetworkRecordType.CLUBS)).map { it.asEntity().asExternalModel() })
     }
 
@@ -283,7 +284,8 @@ class FakeClubRepository @Inject constructor(
 class FakePlayerRepository @Inject constructor(
     private val datasource: DemoNtNetworkDataSource,
 ) : PlayerRepository {
-    private val players: Flow<List<Player>> = flow {
+    /** Every demo player, for the demo search. */
+    internal val players: Flow<List<Player>> = flow {
         emit(datasource.getPlayers(allIds(datasource, NetworkRecordType.PLAYERS)).map { it.asEntity().asExternalModel() })
     }
 

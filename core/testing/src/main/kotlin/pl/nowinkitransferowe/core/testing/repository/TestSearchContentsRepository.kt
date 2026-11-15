@@ -23,6 +23,9 @@ import kotlinx.coroutines.flow.update
 import org.jetbrains.annotations.TestOnly
 import pl.nowinkitransferowe.core.data.repository.SearchContentsRepository
 import pl.nowinkitransferowe.core.model.Article
+import pl.nowinkitransferowe.core.model.Club
+import pl.nowinkitransferowe.core.model.Player
+import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.SearchResult
 import pl.nowinkitransferowe.core.model.Transfer
 
@@ -30,11 +33,23 @@ class TestSearchContentsRepository : SearchContentsRepository {
 
     private val cachedArticles = MutableStateFlow(emptyList<Article>())
     private val cachedTransfers = MutableStateFlow(emptyList<Transfer>())
+    private val cachedClubs = MutableStateFlow(emptyList<Club>())
+    private val cachedPlayers = MutableStateFlow(emptyList<Player>())
+    private val cachedRumours = MutableStateFlow(emptyList<Rumour>())
 
-    override fun searchContents(searchQuery: String): Flow<SearchResult> = combine(cachedArticles, cachedTransfers) { articles, transfers ->
+    override fun searchContents(searchQuery: String): Flow<SearchResult> = combine(
+        cachedArticles,
+        cachedTransfers,
+        cachedClubs,
+        cachedPlayers,
+        cachedRumours,
+    ) { articles, transfers, clubs, players, rumours ->
         SearchResult(
             articles = articles.filter { searchQuery in it.title || it.tags.any { tag -> searchQuery in tag } },
             transfers = transfers.filter { searchQuery in it.player.name },
+            clubs = clubs.filter { searchQuery in it.name },
+            players = players.filter { searchQuery in it.name },
+            rumours = rumours.filter { searchQuery in it.player.name || searchQuery in it.to.name },
         )
     }
 
@@ -45,4 +60,13 @@ class TestSearchContentsRepository : SearchContentsRepository {
 
     @TestOnly
     fun addTransfers(transfers: List<Transfer>) = cachedTransfers.update { it + transfers }
+
+    @TestOnly
+    fun addClubs(clubs: List<Club>) = cachedClubs.update { it + clubs }
+
+    @TestOnly
+    fun addPlayers(players: List<Player>) = cachedPlayers.update { it + players }
+
+    @TestOnly
+    fun addRumours(rumours: List<Rumour>) = cachedRumours.update { it + rumours }
 }

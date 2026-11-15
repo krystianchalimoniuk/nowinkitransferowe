@@ -73,6 +73,9 @@ class SearchViewModel @AssistedInject constructor(
                                     SearchResultUiState.Success(
                                         transfers = data.transfers,
                                         articles = data.articles,
+                                        clubs = data.clubs,
+                                        players = data.players,
+                                        rumours = data.rumours,
                                     )
                                 }
                                 .catch { emit(SearchResultUiState.LoadFailed) }
