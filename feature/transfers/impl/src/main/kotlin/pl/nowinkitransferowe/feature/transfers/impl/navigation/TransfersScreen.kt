@@ -19,8 +19,10 @@ package pl.nowinkitransferowe.feature.transfers.impl.navigation
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,6 +51,7 @@ import pl.nowinkitransferowe.core.designsystem.component.NtTextButton
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Topic
+import pl.nowinkitransferowe.core.ui.FollowedChip
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferListItem
@@ -118,7 +121,7 @@ internal fun TransfersScreen(
                     .align(Alignment.TopCenter)
                     .testTag("transfers:feed"),
             ) {
-                item(key = "leagues") { LeagueChips(uiState.leagues, uiState.topic, onTopicSelected) }
+                item(key = "leagues") { LeagueChips(uiState.leagues, uiState.topic, onTopicSelected, uiState.hasFollowed, uiState.onlyFollowed) }
                 item(key = "seasons") { SeasonChips(uiState.seasons, uiState.season, onSeasonSelected) }
                 if (uiState.hasUnread) {
                     item(key = "markAsRead") {
@@ -132,13 +135,21 @@ internal fun TransfersScreen(
                 }
                 if (uiState.transfers.isEmpty()) {
                     item(key = "empty") {
-                        Text(
-                            stringResource(R.string.feature_transfers_impl_empty),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(32.dp),
-                        )
+                        Column(Modifier.fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                if (uiState.onlyFollowed) {
+                                    stringResource(R.string.feature_transfers_impl_empty_followed, uiState.season.label)
+                                } else {
+                                    stringResource(R.string.feature_transfers_impl_empty)
+                                },
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center,
+                            )
+                            if (uiState.onlyFollowed) {
+                                NtTextButton(onClick = { onTopicSelected(null) }) { Text(stringResource(R.string.feature_transfers_impl_show_all)) }
+                            }
+                        }
                     }
                 }
                 items(uiState.transfers, key = { it.id }, contentType = { "transfer" }) { transfer ->
@@ -164,14 +175,23 @@ internal fun TransfersScreen(
 }
 
 @Composable
-private fun LeagueChips(leagues: List<Topic>, selected: String?, onSelected: (String?) -> Unit) {
+private fun LeagueChips(
+    leagues: List<Topic>,
+    selected: String?,
+    onSelected: (String?) -> Unit,
+    hasFollowed: Boolean = false,
+    onlyFollowed: Boolean = false,
+) {
     LazyRow(
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        if (hasFollowed) {
+            item(key = "followed") { FollowedChip(onlyFollowed) { onSelected(if (onlyFollowed) null else TransfersViewModel.FOLLOWED_TOPIC) } }
+        }
         item(key = "all") {
             FilterChip(
-                selected = selected == null,
+                selected = selected == null && !onlyFollowed,
                 onClick = { onSelected(null) },
                 label = { Text(stringResource(R.string.feature_transfers_impl_all_leagues)) },
             )

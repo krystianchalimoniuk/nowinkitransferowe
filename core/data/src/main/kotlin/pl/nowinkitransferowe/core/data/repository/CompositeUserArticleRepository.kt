@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.ArticleKind
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.model.mapToUserArticles
 import javax.inject.Inject
@@ -38,7 +39,7 @@ class CompositeUserArticleRepository @Inject constructor(
     private val userDataRepository: UserDataRepository,
 ) : UserArticleRepository {
 
-    override fun observeArticles(kinds: Set<ArticleKind>?, topic: String?, limit: Int): Flow<List<UserArticle>> = articleRepository.observeArticles(kinds, topic, limit).withUserData()
+    override fun observeArticles(kinds: Set<ArticleKind>?, topic: String?, limit: Int, tag: String?, followed: FollowedFilter?): Flow<List<UserArticle>> = articleRepository.observeArticles(kinds, topic, limit, tag, followed).withUserData()
 
     override fun observeArticle(id: Int): Flow<UserArticle?> = articleRepository.observeArticle(id)
         .map(::listOfNotNull)

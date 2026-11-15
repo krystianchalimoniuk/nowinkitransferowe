@@ -74,8 +74,9 @@ class LeaguesScreenTest {
     }
 
     @Test
-    fun league_opensItsClubs() {
+    fun league_opensItsClubs_andItsNews() {
         var club: Int? = null
+        var news: String? = null
         composeTestRule.setContent {
             LeagueScreen(
                 uiState = LeagueUiState.Success(
@@ -91,10 +92,13 @@ class LeaguesScreenTest {
                 onBackClick = {},
                 onClubClick = { club = it },
                 onTransferClick = {},
+                onNewsClick = { news = it },
             )
         }
 
         composeTestRule.onNodeWithTag("league-club:83").performClick()
         assertEquals(83, club)
+        composeTestRule.onNodeWithTag("league:news").performClick()
+        assertEquals(leaguesTestData[0].topic, news)
     }
 }

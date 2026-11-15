@@ -49,6 +49,7 @@ import pl.nowinkitransferowe.MainActivityUiState.Loading
 import pl.nowinkitransferowe.MainActivityUiState.Success
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.analytics.LocalAnalyticsHelper
+import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.UserArticleRepository
@@ -155,6 +156,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var playerRepository: PlayerRepository
 
+    @Inject
+    lateinit var articleRepository: ArticleRepository
+
     private val viewModel: MainActivityViewModel by viewModels()
 
     /**
@@ -166,7 +170,7 @@ class MainActivity : ComponentActivity() {
         if (intent.hasCategory(Notification.INTENT_CATEGORY_NOTIFICATION_PREFERENCES)) return listOf(SettingsNavKey)
         val uri = intent.data?.toString() ?: return emptyList()
         return deepLinkKeys(uri).ifEmpty {
-            WebsiteLink.parse(uri)?.navKeys(clubRepository, playerRepository).orEmpty()
+            WebsiteLink.parse(uri)?.navKeys(clubRepository, playerRepository, articleRepository).orEmpty()
         }
     }
 

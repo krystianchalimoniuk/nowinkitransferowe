@@ -41,6 +41,8 @@ internal class OfflineFirstClubRepository @Inject constructor(
 
     override suspend fun getClubBySlug(slug: String): Club? = clubDao.getClubBySlug(slug)?.asExternalModel()
 
+    override suspend fun getClubByName(name: String): Club? = clubDao.getClubByName(name)?.asExternalModel()
+
     override fun observeClubsInLeagues(topics: Set<String>): Flow<List<Club>> = clubDao.observeClubsInLeagues(topics).map { it.map(ClubEntity::asExternalModel) }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = synchronizer.syncChanges(

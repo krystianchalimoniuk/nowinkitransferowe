@@ -89,6 +89,7 @@ internal fun ArticleDetailsRoute(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
+    onArticleTopicClick: (String) -> Unit = {},
     onArticleLinkClick: (Int) -> Unit,
     onRumourClick: (Rumour) -> Unit,
     onClubClick: (Int) -> Unit,
@@ -104,6 +105,7 @@ internal fun ArticleDetailsRoute(
         showBackButton = showBackButton,
         onBackClick = onBackClick,
         onTopicClick = onTopicClick,
+        onArticleTopicClick = onArticleTopicClick,
         onBookmarkChanged = viewModel::bookmarkArticle,
         onArticleLinkClick = onArticleLinkClick,
         onRumourClick = onRumourClick,
@@ -126,6 +128,7 @@ internal fun ArticleDetailsScreen(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
+    onArticleTopicClick: (String) -> Unit = {},
     onBookmarkChanged: (Int, Boolean) -> Unit,
     darkThemeConfig: DarkThemeConfig,
     modifier: Modifier = Modifier,
@@ -176,6 +179,13 @@ internal fun ArticleDetailsScreen(
                     },
                     onArticleLinkClick = onArticleLinkClick,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                // The topics first, which open their topic screen, then the tags
+                ArticleTags(
+                    topics = article.topics.map { it.name },
+                    onTopicClick = { name -> article.topics.find { it.name == name }?.let { onArticleTopicClick(it.slug) } },
+                    highlighted = true,
+                    modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp).testTag("article:topics"),
                 )
                 ArticleTags(
                     topics = article.tags,

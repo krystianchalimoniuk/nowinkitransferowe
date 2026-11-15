@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.UserTransfer
 
@@ -25,7 +26,7 @@ import pl.nowinkitransferowe.core.model.UserTransfer
  */
 interface UserTransferRepository {
     /** The newest [limit] transfers, optionally of [season] and of the league [topic]. */
-    fun observeTransfers(season: Season? = null, topic: String? = null, limit: Int = Int.MAX_VALUE): Flow<List<UserTransfer>>
+    fun observeTransfers(season: Season? = null, topic: String? = null, limit: Int = Int.MAX_VALUE, followed: FollowedFilter? = null): Flow<List<UserTransfer>>
 
     fun observeTransfer(id: Int): Flow<UserTransfer?>
 

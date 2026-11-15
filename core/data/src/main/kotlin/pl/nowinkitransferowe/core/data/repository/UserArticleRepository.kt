@@ -18,6 +18,7 @@ package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import pl.nowinkitransferowe.core.model.ArticleKind
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.UserArticle
 
 /**
@@ -29,6 +30,8 @@ interface UserArticleRepository {
         kinds: Set<ArticleKind>? = null,
         topic: String? = null,
         limit: Int = Int.MAX_VALUE,
+        tag: String? = null,
+        followed: FollowedFilter? = null,
     ): Flow<List<UserArticle>>
 
     fun observeArticle(id: Int): Flow<UserArticle?>

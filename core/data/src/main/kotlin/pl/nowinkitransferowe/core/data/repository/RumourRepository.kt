@@ -19,6 +19,7 @@ package pl.nowinkitransferowe.core.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.data.Syncable
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStatus
@@ -38,6 +39,7 @@ interface RumourRepository : Syncable {
         updatedSince: Instant = Instant.DISTANT_PAST,
         topic: String? = null,
         stage: RumourStage? = null,
+        followed: FollowedFilter? = null,
     ): Flow<List<Rumour>>
 
     /** The rumours with [ids], for example the saved ones, most recently updated first. */

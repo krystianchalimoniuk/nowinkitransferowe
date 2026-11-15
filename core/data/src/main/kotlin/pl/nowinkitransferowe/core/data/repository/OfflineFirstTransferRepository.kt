@@ -32,6 +32,7 @@ import pl.nowinkitransferowe.core.database.model.PopulatedTransfer
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.datastore.ChangeListVersions
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Transfer
 import pl.nowinkitransferowe.core.network.NetworkRecordType
@@ -50,7 +51,7 @@ internal class OfflineFirstTransferRepository @Inject constructor(
 
     override fun observeTransfer(id: Int): Flow<Transfer?> = transferDao.observeTransfer(id).map { it?.asExternalModel() }
 
-    override fun observeTransfers(season: Season?, topic: String?, limit: Int): Flow<List<Transfer>> = transferDao.observeTransfers(season?.startYear, topic, limit).map { it.map(PopulatedTransfer::asExternalModel) }
+    override fun observeTransfers(season: Season?, topic: String?, limit: Int, followed: FollowedFilter?): Flow<List<Transfer>> = transferDao.observeTransfers(season?.startYear, topic, limit, followed != null, followed?.clubs.orEmpty(), followed?.players.orEmpty()).map { it.map(PopulatedTransfer::asExternalModel) }
 
     override fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>> = transferDao.observeTransfersByIds(ids).map { it.map(PopulatedTransfer::asExternalModel) }
 

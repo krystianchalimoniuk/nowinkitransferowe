@@ -76,11 +76,19 @@ interface TransferDao {
         LEFT JOIN clubs tc ON tc.id = t.to_club_id
         WHERE (:season IS NULL OR t.season = :season)
             AND (:topic IS NULL OR fc.topic = :topic OR tc.topic = :topic)
+            AND (:onlyFollowed = 0 OR t.from_club_id IN (:clubIds) OR t.to_club_id IN (:clubIds) OR t.player_id IN (:playerIds))
         ORDER BY t.date DESC, t.id DESC
         LIMIT :limit
         """,
     )
-    fun observeTransfers(season: Int? = null, topic: String? = null, limit: Int = Int.MAX_VALUE): Flow<List<PopulatedTransfer>>
+    fun observeTransfers(
+        season: Int? = null,
+        topic: String? = null,
+        limit: Int = Int.MAX_VALUE,
+        onlyFollowed: Boolean = false,
+        clubIds: Set<Int> = emptySet(),
+        playerIds: Set<Int> = emptySet(),
+    ): Flow<List<PopulatedTransfer>>
 
     @Query(
         """

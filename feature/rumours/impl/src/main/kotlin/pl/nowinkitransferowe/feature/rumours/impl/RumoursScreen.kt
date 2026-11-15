@@ -53,12 +53,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
+import pl.nowinkitransferowe.core.designsystem.component.NtTextButton
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
 import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
 import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStats
 import pl.nowinkitransferowe.core.model.Topic
+import pl.nowinkitransferowe.core.ui.FollowedChip
 import pl.nowinkitransferowe.core.ui.RumourListItem
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
@@ -121,19 +123,21 @@ internal fun RumoursScreen(
             ) {
                 uiState.stats?.let { stats -> item(key = "stats") { StatsRow(stats) } }
                 item(key = "filters") {
-                    Filters(uiState.leagues, uiState.topic, uiState.stage, onTopicSelected, onStageSelected)
+                    Filters(uiState.leagues, uiState.topic, uiState.stage, onTopicSelected, onStageSelected, uiState.hasFollowed, uiState.onlyFollowed)
                 }
                 if (uiState.rumours.isEmpty()) {
                     item(key = "empty") {
-                        Text(
-                            stringResource(R.string.feature_rumours_impl_empty),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(32.dp),
-                        )
+                        Column(Modifier.fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                stringResource(if (uiState.onlyFollowed) R.string.feature_rumours_impl_empty_followed else R.string.feature_rumours_impl_empty),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center,
+                            )
+                            if (uiState.onlyFollowed) {
+                                NtTextButton(onClick = { onTopicSelected(null) }) { Text(stringResource(R.string.feature_rumours_impl_show_all)) }
+                            }
+                        }
                     }
                 }
                 items(uiState.rumours, key = { it.id }) { rumour ->
@@ -195,15 +199,20 @@ private fun Filters(
     stage: RumourStage?,
     onTopicSelected: (String?) -> Unit,
     onStageSelected: (RumourStage?) -> Unit,
+    hasFollowed: Boolean = false,
+    onlyFollowed: Boolean = false,
 ) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        if (hasFollowed) {
+            item(key = "followed") { FollowedChip(onlyFollowed) { onTopicSelected(if (onlyFollowed) null else RumoursViewModel.FOLLOWED_TOPIC) } }
+        }
         item(key = "stage") { StageFilter(stage, onStageSelected) }
         item(key = "all") {
             FilterChip(
-                selected = topic == null,
+                selected = topic == null && !onlyFollowed,
                 onClick = { onTopicSelected(null) },
                 label = { Text(stringResource(R.string.feature_rumours_impl_all_leagues)) },
             )

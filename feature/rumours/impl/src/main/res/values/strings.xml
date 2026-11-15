@@ -17,6 +17,8 @@
 <resources>
     <string name="feature_rumours_impl_title">Plotki</string>
     <string name="feature_rumours_impl_loading">Wczytuję plotki…</string>
+    <string name="feature_rumours_impl_empty_followed">Brak aktywnych plotek o obserwowanych.</string>
+    <string name="feature_rumours_impl_show_all">Pokaż wszystkie</string>
     <string name="feature_rumours_impl_empty">Brak aktywnych plotek z tymi filtrami</string>
     <string name="feature_rumours_impl_season">Sezon %1$s</string>
     <string name="feature_rumours_impl_active">Aktywne</string>

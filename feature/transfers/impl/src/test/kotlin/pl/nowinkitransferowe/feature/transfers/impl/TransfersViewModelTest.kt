@@ -28,6 +28,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepository
+import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.testing.data.transfersTestData
 import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
@@ -149,5 +150,25 @@ class TransfersViewModelTest {
         val state = assertIs<TransfersUiState.Success>(viewModel.uiState.value)
         assertEquals(Season(current.startYear + 1), state.seasons.first())
         assertEquals(current, state.season)
+    }
+
+    @Test
+    fun followedChip_showsOnlyWhenSomethingIsFollowed_andFiltersTheTransfers() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        viewModel.selectSeason(season2425)
+        assertEquals(false, assertIs<TransfersUiState.Success>(viewModel.uiState.value).hasFollowed)
+
+        userDataRepository.setClubFollowed(86, true)
+        viewModel.selectTopic(TransfersViewModel.FOLLOWED_TOPIC)
+        val followed = assertIs<TransfersUiState.Success>(viewModel.uiState.value)
+        assertEquals(true, followed.onlyFollowed)
+        assertTrue(14999 in followed.transfers.map { it.id })
+        assertTrue(followed.transfers.all { transfer -> listOf(transfer.from, transfer.to).any { it is ClubRef.Club && it.id == 86 } })
+
+        // Nothing followed any more: back to every transfer, without the chip
+        userDataRepository.setClubFollowed(86, false)
+        val all = assertIs<TransfersUiState.Success>(viewModel.uiState.value)
+        assertEquals(false, all.onlyFollowed)
+        assertEquals(false, all.hasFollowed)
     }
 }

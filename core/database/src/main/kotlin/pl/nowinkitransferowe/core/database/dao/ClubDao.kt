@@ -46,6 +46,10 @@ interface ClubDao {
     @Query("SELECT * FROM clubs WHERE slug = :slug")
     suspend fun getClubBySlug(slug: String): ClubEntity?
 
+    /** A synced club named exactly [name], for an article tag. */
+    @Query("SELECT * FROM clubs WHERE name = :name AND slug IS NOT NULL LIMIT 1")
+    suspend fun getClubByName(name: String): ClubEntity?
+
     /** Synced clubs with the given ids; stubs are left out. */
     @Query("SELECT * FROM clubs WHERE id IN (:ids) AND slug IS NOT NULL ORDER BY name")
     fun observeClubs(ids: Set<Int>): Flow<List<ClubEntity>>

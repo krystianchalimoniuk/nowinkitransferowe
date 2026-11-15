@@ -45,6 +45,10 @@ interface PlayerDao {
     @Query("SELECT * FROM players WHERE slug = :slug")
     suspend fun getPlayerBySlug(slug: String): PlayerEntity?
 
+    /** A synced player named exactly [name], for an article tag. */
+    @Query("SELECT * FROM players WHERE name = :name AND slug IS NOT NULL LIMIT 1")
+    suspend fun getPlayerByName(name: String): PlayerEntity?
+
     /** Synced players with the given ids; stubs are left out. */
     @Query("SELECT * FROM players WHERE id IN (:ids) AND slug IS NOT NULL ORDER BY name")
     fun observePlayers(ids: Set<Int>): Flow<List<PlayerEntity>>

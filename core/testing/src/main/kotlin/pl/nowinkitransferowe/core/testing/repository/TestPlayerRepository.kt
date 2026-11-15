@@ -33,6 +33,8 @@ class TestPlayerRepository : PlayerRepository {
 
     override suspend fun getPlayerBySlug(slug: String): Player? = players.value.find { it.slug == slug }
 
+    override suspend fun getPlayerByName(name: String): Player? = players.value.find { it.name == name && it.slug != null }
+
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 
     /** A test-only API to allow controlling the players from tests. */

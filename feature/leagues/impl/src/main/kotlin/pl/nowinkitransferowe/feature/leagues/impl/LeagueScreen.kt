@@ -63,11 +63,12 @@ internal fun LeagueRoute(
     onBackClick: () -> Unit,
     onClubClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
+    onNewsClick: (String) -> Unit,
     viewModel: LeagueViewModel,
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    LeagueScreen(uiState, showBackButton, onBackClick, onClubClick, onTransferClick, modifier)
+    LeagueScreen(uiState, showBackButton, onBackClick, onClubClick, onTransferClick, modifier, onNewsClick)
 }
 
 /**
@@ -82,6 +83,7 @@ internal fun LeagueScreen(
     onClubClick: (Int) -> Unit,
     onTransferClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    onNewsClick: (String) -> Unit = {},
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         when (uiState) {
@@ -114,6 +116,15 @@ internal fun LeagueScreen(
                     }
                 }
                 item(key = "totals") { Totals(uiState) }
+                item(key = "news") {
+                    // The league's articles on its topic screen, like "Najnowsze wiadomości z ligi" on the website
+                    ChevronRow(onClick = { onNewsClick(uiState.league.topic) }, modifier = Modifier.testTag("league:news")) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Icon(NtIcons.Article, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Text(stringResource(R.string.feature_leagues_impl_news), style = MaterialTheme.typography.titleSmall)
+                        }
+                    }
+                }
                 item(key = "clubs") {
                     NtSectionHeader(stringResource(R.string.feature_leagues_impl_clubs), Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
                 }

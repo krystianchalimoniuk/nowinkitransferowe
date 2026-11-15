@@ -23,6 +23,8 @@
     <string name="feature_transfers_impl_onboarding_guidance_subtitle">Zmiany katogorii, które obserwujesz pojawią się tu. Zacznij obserwować aby coś się pojawiło.</string>
     <string name="feature_transfers_impl_mark_as_read">Oznacz jako przeczytane</string>
     <string name="feature_transfers_impl_all_leagues">Wszystkie ligi</string>
+    <string name="feature_transfers_impl_empty_followed">Brak transferów obserwowanych w sezonie %1$s.</string>
+    <string name="feature_transfers_impl_show_all">Pokaż wszystkie</string>
     <string name="feature_transfers_impl_empty">Brak transferów w tym sezonie.</string>
 
 </resources>

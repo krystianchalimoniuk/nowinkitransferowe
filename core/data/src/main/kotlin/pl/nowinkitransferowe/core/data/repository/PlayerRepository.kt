@@ -33,4 +33,7 @@ interface PlayerRepository : Syncable {
     fun observePlayers(ids: Set<Int>): Flow<List<Player>>
 
     suspend fun getPlayerBySlug(slug: String): Player?
+
+    /** A synced player named exactly [name], e.g. for an article tag. */
+    suspend fun getPlayerByName(name: String): Player?
 }

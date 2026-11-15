@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+plugins {
+    alias(libs.plugins.nowinkitransferowe.android.feature.api)
+}
 
-package pl.nowinkitransferowe.feature.articles.api.navigation
-
-import java.util.concurrent.atomic.AtomicReference
-
-/**
- * A topic the home screen picks when it opens, for a link to /temat/{slug}. The home screen is a
- * top level destination without arguments, so the link leaves the topic here.
- */
-object PendingHomeTopic {
-    private val topic = AtomicReference<String?>(null)
-
-    fun request(slug: String) = topic.set(slug)
-
-    /** The requested topic, once. */
-    fun take(): String? = topic.getAndSet(null)
+android {
+    namespace = "pl.nowinkitransferowe.feature.topic.api"
 }

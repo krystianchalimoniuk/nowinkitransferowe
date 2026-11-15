@@ -32,6 +32,8 @@ import pl.nowinkitransferowe.core.testing.data.topicsTestData
 import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
 import pl.nowinkitransferowe.core.testing.repository.TestRumourRepository
 import pl.nowinkitransferowe.core.testing.repository.TestRumourStatsRepository
+import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
+import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -44,11 +46,12 @@ class RumoursViewModelTest {
     private val rumourRepository = TestRumourRepository()
     private val statsRepository = TestRumourStatsRepository()
     private val dictionaryRepository = TestDictionaryRepository()
+    private val userDataRepository = TestUserDataRepository().apply { setUserData(emptyUserData) }
     private lateinit var viewModel: RumoursViewModel
 
     @Before
     fun setup() {
-        viewModel = RumoursViewModel(SavedStateHandle(), rumourRepository, statsRepository, dictionaryRepository)
+        viewModel = RumoursViewModel(SavedStateHandle(), rumourRepository, statsRepository, dictionaryRepository, userDataRepository)
     }
 
     private fun success() = assertIs<RumoursUiState.Success>(viewModel.uiState.value)
@@ -101,5 +104,18 @@ class RumoursViewModelTest {
 
         assertEquals("saudi-pro-league", success().topic)
         assertEquals(listOf(5), success().rumours.map { it.id })
+    }
+
+    @Test
+    fun followedChip_filtersTheBoard() = runTest {
+        sendData()
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        assertEquals(false, success().hasFollowed)
+
+        userDataRepository.setClubFollowed(4, true)
+        viewModel.selectTopic(RumoursViewModel.FOLLOWED_TOPIC)
+
+        assertEquals(true, success().onlyFollowed)
+        assertEquals(listOf("Gavi"), success().rumours.map { it.player.name })
     }
 }
