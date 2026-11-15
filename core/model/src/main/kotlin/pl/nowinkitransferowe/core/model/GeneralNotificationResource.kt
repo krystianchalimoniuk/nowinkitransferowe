@@ -21,4 +21,6 @@ data class GeneralNotificationResource(
     val title: String,
     val description: String,
     val url: String,
+    /** The rumour card or article in the app; null opens [url] instead. */
+    val appLink: String? = null,
 )

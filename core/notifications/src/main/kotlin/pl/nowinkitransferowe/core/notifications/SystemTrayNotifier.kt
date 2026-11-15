@@ -87,6 +87,15 @@ const val DEEP_LINK_CLUB_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/club/{$DEEP_L
 const val DEEP_LINK_PLAYER_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/player/{$DEEP_LINK_PLAYER_ID_KEY}"
 const val DEEP_LINK_LEAGUES_URI = "$DEEP_LINK_SCHEME_AND_HOST/leagues"
 
+/** The in-app link to the card of the rumour [id]. */
+fun rumourAppLink(id: Int) = "$DEEP_LINK_SCHEME_AND_HOST/rumour/$id"
+
+/** The in-app link to the card of the transfer [id]. */
+fun transferAppLink(id: Int) = "$DEEP_LINK_SCHEME_AND_HOST/transfer/$id"
+
+/** The in-app link to the article [id]. */
+fun articleAppLink(id: Int) = "$DEEP_LINK_SCHEME_AND_HOST/news/$id"
+
 /** The notification actions handled by the receiver: save the record, or mute its subject today. */
 const val ACTION_SAVE_NEWS = "pl.nowinkitransferowe.action.SAVE_NEWS"
 const val ACTION_MUTE_NEWS_SUBJECT = "pl.nowinkitransferowe.action.MUTE_NEWS_SUBJECT"
@@ -481,13 +490,19 @@ private fun Context.ensureNotificationChannelsExist() {
     }
 }
 
-private fun Context.generalNotificationPendingIntent(generalNotificationResource: GeneralNotificationResource): PendingIntent? = PendingIntent.getActivity(
-    this,
-    generalNotificationResource.id,
-    Intent().apply {
-        action = Intent.ACTION_VIEW
-        data = generalNotificationResource.url.toUri()
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    },
-    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-)
+/**
+ * Opens the rumour card or article in the app when the notification has an app link, otherwise its
+ * url, in the browser for addresses the app does not handle.
+ */
+private fun Context.generalNotificationPendingIntent(generalNotificationResource: GeneralNotificationResource): PendingIntent? = generalNotificationResource.appLink
+    ?.let { openIntent(it.toUri(), generalNotificationResource.id) }
+    ?: PendingIntent.getActivity(
+        this,
+        generalNotificationResource.id,
+        Intent().apply {
+            action = Intent.ACTION_VIEW
+            data = generalNotificationResource.url.toUri()
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        },
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )

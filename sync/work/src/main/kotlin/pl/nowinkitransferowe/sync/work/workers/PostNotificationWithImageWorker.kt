@@ -35,6 +35,8 @@ import kotlinx.coroutines.withContext
 import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.common.network.Dispatcher
 import pl.nowinkitransferowe.core.common.network.NtDispatchers
+import pl.nowinkitransferowe.core.data.news.EditorsNotificationLinks
+import pl.nowinkitransferowe.core.data.news.EditorsPush
 import pl.nowinkitransferowe.core.data.util.ImageDownloader
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.core.model.GeneralNotificationResource
@@ -51,6 +53,7 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
     private val analyticsHelper: AnalyticsHelper,
     private val ntPreferencesDataSource: NtPreferencesDataSource,
     private val imageDownloader: ImageDownloader,
+    private val editorsNotificationLinks: EditorsNotificationLinks,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun getForegroundInfo(): ForegroundInfo = appContext.workForegroundInfo()
@@ -70,11 +73,15 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
                     workerParams.inputData.getString(KEY_NOTIFICATION_DESCRIPTION).orEmpty()
                 val url = workerParams.inputData.getString(KEY_NOTIFICATION_URL).orEmpty()
                 val imageUrl = workerParams.inputData.getString(KEY_NOTIFICATION_IMAGE_URL)
+                fun id(key: String) = workerParams.inputData.getInt(key, NO_ID).takeIf { it != NO_ID }
+                val push = EditorsPush(url, id(KEY_NOTIFICATION_RUMOUR_ID), id(KEY_NOTIFICATION_TRANSFER_ID), id(KEY_NOTIFICATION_ARTICLE_ID))
                 if (title.isNotEmpty() && description.isNotEmpty()) {
+                    // The rumour card or the article in the app, when they are or come on the phone
+                    val resource = GeneralNotificationResource(id, title, description, url, editorsNotificationLinks.appLink(push))
                     if (imageUrl.isNullOrEmpty()) {
-                        postNotificationWithoutImage(id, title, description, url)
+                        notifier.postGeneralNotification(resource)
                     } else {
-                        postNotificationWithImage(id, title, description, url, imageUrl)
+                        notifier.postGeneralNotification(resource, bitmap = imageDownloader.loadImage(imageUrl))
                     }
                     analyticsHelper.logPostNotificationWithImageFinished()
                     Result.success()
@@ -86,46 +93,16 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
         }
     }
 
-    private fun postNotificationWithoutImage(
-        id: Int,
-        title: String,
-        description: String,
-        url: String,
-    ) {
-        notifier.postGeneralNotification(
-            GeneralNotificationResource(
-                id,
-                title,
-                description,
-                url,
-            ),
-        )
-    }
-
-    private suspend fun postNotificationWithImage(
-        id: Int,
-        title: String,
-        description: String,
-        url: String,
-        imageUrl: String,
-    ) {
-        val bitmap = imageDownloader.loadImage(imageUrl)
-        if (bitmap == null) {
-            postNotificationWithoutImage(id, title, description, url)
-        } else {
-            notifier.postGeneralNotification(
-                GeneralNotificationResource(id, title, description, url),
-                bitmap = bitmap,
-            )
-        }
-    }
-
     companion object {
         const val KEY_NOTIFICATION_ID = "KEY_NOTIFICATION_ID"
         const val KEY_NOTIFICATION_TITLE = "KEY_NOTIFICATION_TITLE"
         const val KEY_NOTIFICATION_DESCRIPTION = "KEY_NOTIFICATION_DESCRIPTION"
         const val KEY_NOTIFICATION_URL = "KEY_NOTIFICATION_URL"
         const val KEY_NOTIFICATION_IMAGE_URL = "KEY_NOTIFICATION_IMAGE_URL"
+        const val KEY_NOTIFICATION_RUMOUR_ID = "KEY_NOTIFICATION_RUMOUR_ID"
+        const val KEY_NOTIFICATION_TRANSFER_ID = "KEY_NOTIFICATION_TRANSFER_ID"
+        const val KEY_NOTIFICATION_ARTICLE_ID = "KEY_NOTIFICATION_ARTICLE_ID"
+        private const val NO_ID = -1
 
         /**
          * Expedited one time work to data on app startup
@@ -136,6 +113,9 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
             description: String,
             url: String,
             imageUrl: String,
+            rumourId: Int? = null,
+            transferId: Int? = null,
+            articleId: Int? = null,
         ) = OneTimeWorkRequestBuilder<DelegatingWorker>()
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .setConstraints(
@@ -151,6 +131,9 @@ internal class PostNotificationWithImageWorker @AssistedInject constructor(
                         KEY_NOTIFICATION_DESCRIPTION to description,
                         KEY_NOTIFICATION_URL to url,
                         KEY_NOTIFICATION_IMAGE_URL to imageUrl,
+                        KEY_NOTIFICATION_RUMOUR_ID to (rumourId ?: NO_ID),
+                        KEY_NOTIFICATION_TRANSFER_ID to (transferId ?: NO_ID),
+                        KEY_NOTIFICATION_ARTICLE_ID to (articleId ?: NO_ID),
                     ),
                 ),
             )

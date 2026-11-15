@@ -52,6 +52,11 @@ internal class NotificationsService : FirebaseMessagingService() {
             val description = message.data["description"] ?: ""
             val imageUrl = message.data["image_url"] ?: ""
             val url = message.data["url"] ?: ""
+            // The record the push is about, opened in the app: rumour_id comes with "Porozumienie"
+            // rumours, transfer_id and article_id when the website sends them
+            val rumourId = message.data["rumour_id"]?.toIntOrNull()
+            val transferId = message.data["transfer_id"]?.toIntOrNull()
+            val articleId = message.data["article_id"]?.toIntOrNull()
             if (title.isNotEmpty() && description.isNotEmpty()) {
                 PostNotificationWithImageInitializer.initialize(
                     context,
@@ -60,6 +65,9 @@ internal class NotificationsService : FirebaseMessagingService() {
                     description,
                     url,
                     imageUrl,
+                    rumourId,
+                    transferId,
+                    articleId,
                 )
             }
         }
