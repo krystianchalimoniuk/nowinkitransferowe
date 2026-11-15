@@ -19,10 +19,13 @@ package pl.nowinkitransferowe.feature.search.impl
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotFocused
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +34,11 @@ import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserData
 import pl.nowinkitransferowe.core.model.mapToUserArticles
 import pl.nowinkitransferowe.core.testing.data.articlesTestData
+import pl.nowinkitransferowe.core.testing.data.clubsTestData
+import pl.nowinkitransferowe.core.testing.data.playersTestData
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
 import pl.nowinkitransferowe.core.testing.data.topicsTestData
+import kotlin.test.assertEquals
 
 /**
  * UI test for checking the correct behaviour of the Search screen.
@@ -66,7 +73,7 @@ class SearchScreenTest {
             clearSearchContentDesc = getString(R.string.feature_search_impl_clear_search_text_content_desc)
             clearRecentSearchesContentDesc = getString(R.string.feature_search_impl_clear_recent_searches_content_desc)
             transfersString = getString(R.string.feature_search_impl_transfers)
-            newsString = getString(R.string.feature_search_impl_news)
+            newsString = getString(R.string.feature_search_impl_articles)
             tryAnotherSearchString = getString(R.string.feature_search_impl_result_not_found, "")
             searchNotReadyString = getString(R.string.feature_search_impl_not_ready)
         }
@@ -130,7 +137,7 @@ class SearchScreenTest {
         }
 
         composeTestRule
-            .onNodeWithText(newsString)
+            .onNodeWithText("$newsString (${articlesTestData.size})")
             .assertIsDisplayed()
         composeTestRule
             .onNodeWithText(articlesTestData[0].title)
@@ -171,5 +178,45 @@ class SearchScreenTest {
         composeTestRule
             .onNodeWithText(searchNotReadyString)
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun clubsPlayersAndRumours_openTheirScreens() {
+        var club: Int? = null
+        var player: Int? = null
+        var rumour: Int? = null
+        composeTestRule.setContent {
+            SearchScreen(
+                searchResultUiState = SearchResultUiState.Success(
+                    clubs = clubsTestData,
+                    players = playersTestData,
+                    rumours = rumoursTestData,
+                ),
+                onClubClick = { club = it },
+                onPlayerClick = { player = it },
+                onRumourClick = { rumour = it },
+            )
+        }
+
+        composeTestRule.onNodeWithTag("search:club:${clubsTestData[0].id}").performClick()
+        composeTestRule.onNodeWithTag("search:player:${playersTestData[0].id}").performClick()
+        composeTestRule.onNodeWithTag("rumour-item:${rumoursTestData[0].id}").performClick()
+        assertEquals(clubsTestData[0].id, club)
+        assertEquals(playersTestData[0].id, player)
+        assertEquals(rumoursTestData[0].id, rumour)
+    }
+
+    @Test
+    fun longSection_showsAllAfterTappingMore() {
+        val articles = articlesTestData.mapToUserArticles(topicsTestData, userData)
+        composeTestRule.setContent {
+            SearchScreen(searchResultUiState = SearchResultUiState.Success(articles = articles))
+        }
+
+        // The list is lazy: the button exists only once the list is scrolled to it
+        composeTestRule.onNodeWithTag("search:results").performScrollToNode(hasTestTag("search:articles:more"))
+        composeTestRule.onNodeWithTag("search:articles:more").performClick()
+        composeTestRule.onNodeWithTag("search:results").performScrollToNode(hasTestTag("article:${articles.last().id}"))
+        composeTestRule.onNodeWithTag("search:articles:more").assertDoesNotExist()
     }
 }

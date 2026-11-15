@@ -16,6 +16,9 @@
 
 package pl.nowinkitransferowe.feature.search.impl
 
+import pl.nowinkitransferowe.core.model.Club
+import pl.nowinkitransferowe.core.model.Player
+import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.model.UserTransfer
 
@@ -31,11 +34,15 @@ sealed interface SearchResultUiState {
 
     data object LoadFailed : SearchResultUiState
 
+    /** Matching clubs and players, active rumours about them, transfers and articles. */
     data class Success(
         val transfers: List<UserTransfer> = emptyList(),
         val articles: List<UserArticle> = emptyList(),
+        val clubs: List<Club> = emptyList(),
+        val players: List<Player> = emptyList(),
+        val rumours: List<Rumour> = emptyList(),
     ) : SearchResultUiState {
-        fun isEmpty(): Boolean = transfers.isEmpty() && articles.isEmpty()
+        fun isEmpty(): Boolean = transfers.isEmpty() && articles.isEmpty() && clubs.isEmpty() && players.isEmpty() && rumours.isEmpty()
     }
 
     /**

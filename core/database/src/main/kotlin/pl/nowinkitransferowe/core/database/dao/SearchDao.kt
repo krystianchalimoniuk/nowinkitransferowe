@@ -49,4 +49,16 @@ interface SearchDao {
         """,
     )
     fun searchPlayerIds(query: String): Flow<List<Int>>
+
+    /** Active rumours about a matching player or to or from a matching club, stubs included. */
+    @Query(
+        """
+        SELECT id FROM rumours WHERE status = 'ACTIVE' AND (
+            player_id IN (SELECT rowid FROM players_fts WHERE players_fts MATCH :query)
+            OR from_club_id IN (SELECT rowid FROM clubs_fts WHERE clubs_fts MATCH :query)
+            OR to_club_id IN (SELECT rowid FROM clubs_fts WHERE clubs_fts MATCH :query)
+        )
+        """,
+    )
+    fun searchRumourIds(query: String): Flow<List<Int>>
 }

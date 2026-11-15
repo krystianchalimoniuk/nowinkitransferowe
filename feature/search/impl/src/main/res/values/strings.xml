@@ -27,4 +27,7 @@
     <string name="feature_search_impl_transfers">Transfery</string>
     <string name="feature_search_impl_recent_searches">Ostatnie wyszukiwania</string>
     <string name="feature_search_impl_clear_recent_searches_content_desc">Wyczyść wyszukiwanie</string>
+    <string name="feature_search_impl_articles">Artykuły</string>
+    <string name="feature_search_impl_rumours">Plotki</string>
+    <string name="feature_search_impl_show_all">Pokaż wszystkie (%1$d)</string>
 </resources>

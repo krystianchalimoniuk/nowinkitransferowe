@@ -29,6 +29,9 @@ import pl.nowinkitransferowe.core.analytics.NoOpAnalyticsHelper
 import pl.nowinkitransferowe.core.domain.GetRecentSearchQueriesUseCase
 import pl.nowinkitransferowe.core.domain.GetSearchContentUseCase
 import pl.nowinkitransferowe.core.testing.data.articlesTestData
+import pl.nowinkitransferowe.core.testing.data.clubsTestData
+import pl.nowinkitransferowe.core.testing.data.playersTestData
+import pl.nowinkitransferowe.core.testing.data.rumoursTestData
 import pl.nowinkitransferowe.core.testing.data.transfersTestData
 import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
 import pl.nowinkitransferowe.core.testing.repository.TestRecentSearchRepository
@@ -171,5 +174,26 @@ class SearchViewModelTest {
             expected = emptySet(),
             actual = userDataRepository.userData.first().bookmarkedArticles,
         )
+    }
+
+    @Test
+    fun clubsPlayersAndRumours_areInTheResult() = runTest {
+        searchContentsRepository.addArticles(articlesTestData)
+        searchContentsRepository.addTransfers(transfersTestData)
+        searchContentsRepository.addClubs(clubsTestData)
+        searchContentsRepository.addPlayers(playersTestData)
+        searchContentsRepository.addRumours(rumoursTestData)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchResultUiState.collect() }
+
+        viewModel.onSearchQueryChanged("Como")
+
+        val result = assertIs<SearchResultUiState.Success>(viewModel.searchResultUiState.value)
+        assertEquals(listOf("Como 1907"), result.clubs.map { it.name })
+        assertTrue(result.players.isEmpty())
+
+        viewModel.onSearchQueryChanged("Martinelli")
+
+        val rumours = assertIs<SearchResultUiState.Success>(viewModel.searchResultUiState.value).rumours
+        assertEquals(listOf("Gabriel Martinelli"), rumours.map { it.player.name })
     }
 }

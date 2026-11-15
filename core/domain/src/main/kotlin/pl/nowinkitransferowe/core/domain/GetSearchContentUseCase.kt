@@ -45,6 +45,9 @@ class GetSearchContentUseCase @Inject constructor(
         UserSearchResult(
             articles = searchResult.articles.mapToUserArticles(topics, userData),
             transfers = searchResult.transfers.mapToUserTransfers(userData),
+            clubs = searchResult.clubs,
+            players = searchResult.players,
+            rumours = searchResult.rumours,
         )
     }
 }

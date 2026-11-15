@@ -21,6 +21,9 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import pl.nowinkitransferowe.core.navigation.Navigator
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.navigateToArticle
+import pl.nowinkitransferowe.feature.club.api.navigation.navigateToClub
+import pl.nowinkitransferowe.feature.player.api.navigation.navigateToPlayer
+import pl.nowinkitransferowe.feature.rumours.api.navigation.navigateToRumour
 import pl.nowinkitransferowe.feature.search.api.navigation.SearchNavKey
 import pl.nowinkitransferowe.feature.search.impl.SearchRoute
 import pl.nowinkitransferowe.feature.search.impl.SearchViewModel
@@ -32,6 +35,9 @@ fun EntryProviderScope<NavKey>.searchEntry(navigator: Navigator) {
             onBackClick = { navigator.goBack() },
             onArticleClick = navigator::navigateToArticle,
             onTransferClick = navigator::navigateToTransfer,
+            onClubClick = navigator::navigateToClub,
+            onPlayerClick = navigator::navigateToPlayer,
+            onRumourClick = navigator::navigateToRumour,
             searchViewModel = hiltViewModel<SearchViewModel, SearchViewModel.Factory> { factory ->
                 factory.create(key)
             },
