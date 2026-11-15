@@ -57,6 +57,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,12 +79,14 @@ import pl.nowinkitransferowe.core.designsystem.theme.supportsDynamicTheming
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.network.BuildConfig
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
+import pl.nowinkitransferowe.feature.settings.impl.R.plurals
 import pl.nowinkitransferowe.feature.settings.impl.R.string
 import pl.nowinkitransferowe.core.designsystem.R as DesignSystemR
 
 @Composable
 internal fun SettingsRoute(
     onBackClick: () -> Unit,
+    onFollowedClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -98,6 +101,7 @@ internal fun SettingsRoute(
         settingsUiState = settingsUiState,
         notificationsEnabled = notificationsEnabled,
         onBackClick = onBackClick,
+        onFollowedClick = onFollowedClick,
         onChangeDynamicColorPreference = viewModel::updateDynamicColorPreference,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
         onChangeNewsNotificationsPreference = viewModel::updateNewsNotificationsPreference,
@@ -129,6 +133,7 @@ internal fun SettingsScreen(
     appVersion: String,
     modifier: Modifier = Modifier,
     supportDynamicColor: Boolean = supportsDynamicTheming(),
+    onFollowedClick: () -> Unit = {},
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
@@ -162,6 +167,7 @@ internal fun SettingsScreen(
                         onChangeTransfersNotificationsPreference = onChangeTransfersNotificationsPreference,
                         onChangeGeneralNotificationsPreference = onChangeGeneralNotificationsPreference,
                         onOpenSystemNotificationSettings = onOpenSystemNotificationSettings,
+                        onFollowedClick = onFollowedClick,
                     )
                 }
             }
@@ -213,6 +219,7 @@ private fun NotificationsGroup(
     onChangeTransfersNotificationsPreference: (Boolean) -> Unit,
     onChangeGeneralNotificationsPreference: (Boolean) -> Unit,
     onOpenSystemNotificationSettings: () -> Unit,
+    onFollowedClick: () -> Unit,
 ) {
     SettingsGroup(stringResource(string.feature_settings_impl_notification_preference)) {
         if (!notificationsEnabled) {
@@ -247,7 +254,24 @@ private fun NotificationsGroup(
                 onCheckedChange = onChangeTransfersNotificationsPreference,
             )
         }
+        SettingsItem(
+            icon = NtIcons.Star,
+            title = stringResource(string.feature_settings_impl_followed),
+            summary = followedSummary(settings.followedClubs, settings.followedPlayers),
+            onClick = onFollowedClick,
+            modifier = Modifier.testTag("settings:followed"),
+        ) { Icon(NtIcons.ChevronRight, contentDescription = null) }
     }
+}
+
+/** "3 kluby, 2 zawodników", or how to follow when nothing is followed yet. */
+@Composable
+private fun followedSummary(clubs: Int, players: Int): String {
+    val parts = listOfNotNull(
+        pluralStringResource(plurals.feature_settings_impl_followed_clubs, clubs, clubs).takeIf { clubs > 0 },
+        pluralStringResource(plurals.feature_settings_impl_followed_players, players, players).takeIf { players > 0 },
+    )
+    return parts.joinToString(", ").ifEmpty { stringResource(string.feature_settings_impl_followed_none) }
 }
 
 @Composable

@@ -26,8 +26,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -36,6 +38,7 @@ import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.ClubSeasonsRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
+import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.model.Club
 import pl.nowinkitransferowe.core.model.ClubRef
@@ -100,6 +103,7 @@ class ClubViewModel @AssistedInject constructor(
     userTransferRepository: UserTransferRepository,
     rumourRepository: RumourRepository,
     dictionaryRepository: DictionaryRepository,
+    private val userDataRepository: UserDataRepository,
     @Assisted val clubId: Int,
 ) : ViewModel() {
 
@@ -150,6 +154,16 @@ class ClubViewModel @AssistedInject constructor(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ClubUiState.Loading)
+
+    /** Whether the user follows the club. */
+    val isFollowed: StateFlow<Boolean> = userDataRepository.userData
+        .map { clubId in it.followedClubs }
+        .distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    fun setFollowed(followed: Boolean) {
+        viewModelScope.launch { userDataRepository.setClubFollowed(clubId, followed) }
+    }
 
     init {
         // The seasons have no change list, so they are fetched when the screen opens

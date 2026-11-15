@@ -80,6 +80,8 @@ import pl.nowinkitransferowe.feature.articles.impl.navigation.articlesEntry
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.LocalSnackbarHostState
 import pl.nowinkitransferowe.feature.bookmarks.impl.navigation.bookmarksEntry
 import pl.nowinkitransferowe.feature.club.impl.navigation.clubEntry
+import pl.nowinkitransferowe.feature.followed.impl.FollowedPlaceholder
+import pl.nowinkitransferowe.feature.followed.impl.navigation.followedEntry
 import pl.nowinkitransferowe.feature.leagues.impl.LeaguePlaceholder
 import pl.nowinkitransferowe.feature.leagues.impl.navigation.leagueEntry
 import pl.nowinkitransferowe.feature.leagues.impl.navigation.leaguesEntry
@@ -284,6 +286,7 @@ internal fun NtAppContent(
                         transferDetailsEntry(navigator)
                         searchEntry(navigator)
                         settingsEntry(navigator)
+                        followedEntry(navigator, detailPlaceholder = { FollowedPlaceholder() })
                     }
 
                     NavDisplay(

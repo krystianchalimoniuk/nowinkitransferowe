@@ -43,6 +43,8 @@ class SettingsViewModel @Inject constructor(
                         isNewsNotificationsAllowed = userData.isNewsNotificationsAllowed,
                         isTransfersNotificationsAllowed = userData.isTransfersNotificationsAllowed,
                         isGeneralNotificationsAllowed = userData.isGeneralNotificationAllowed,
+                        followedClubs = userData.followedClubs.size,
+                        followedPlayers = userData.followedPlayers.size,
                     ),
                 )
             }
@@ -90,6 +92,8 @@ data class UserEditableSettings(
     val isNewsNotificationsAllowed: Boolean,
     val isTransfersNotificationsAllowed: Boolean,
     val isGeneralNotificationsAllowed: Boolean,
+    val followedClubs: Int = 0,
+    val followedPlayers: Int = 0,
 )
 
 sealed interface SettingsUiState {

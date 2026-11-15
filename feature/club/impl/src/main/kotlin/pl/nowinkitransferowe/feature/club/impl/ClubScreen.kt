@@ -68,6 +68,7 @@ import pl.nowinkitransferowe.core.model.Club
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.ui.CountryFlag
+import pl.nowinkitransferowe.core.ui.FollowButton
 import pl.nowinkitransferowe.core.ui.RumourListItem
 import pl.nowinkitransferowe.core.ui.SpendingBars
 import pl.nowinkitransferowe.core.ui.SpendingRow
@@ -85,8 +86,11 @@ internal fun ClubRoute(
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isFollowed by viewModel.isFollowed.collectAsStateWithLifecycle()
     ClubScreen(
         uiState = uiState,
+        isFollowed = isFollowed,
+        onFollowedChange = viewModel::setFollowed,
         showBackButton = showBackButton,
         onBackClick = onBackClick,
         onTabSelected = viewModel::selectTab,
@@ -111,6 +115,8 @@ internal fun ClubScreen(
     onRumourClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     onSeasonSelected: (Season?) -> Unit = {},
+    isFollowed: Boolean = false,
+    onFollowedChange: (Boolean) -> Unit = {},
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         when (uiState) {
@@ -120,7 +126,7 @@ internal fun ClubScreen(
             )
 
             ClubUiState.NotFound -> Column(Modifier.fillMaxWidth()) {
-                TopRow(showBackButton, onBackClick, club = null)
+                TopRow(showBackButton, onBackClick, club = null, isFollowed = false, onFollowedChange = {})
                 Text(
                     stringResource(R.string.feature_club_impl_not_found),
                     textAlign = TextAlign.Center,
@@ -137,7 +143,7 @@ internal fun ClubScreen(
                     .fillMaxSize()
                     .testTag("club:${uiState.club.id}"),
             ) {
-                item(key = "top") { TopRow(showBackButton, onBackClick, uiState.club) }
+                item(key = "top") { TopRow(showBackButton, onBackClick, uiState.club, isFollowed, onFollowedChange) }
                 item(key = "header") { Header(uiState) }
                 item(key = "tabs") { Tabs(uiState, onTabSelected) }
                 if (uiState.tab != ClubTab.RUMOURS && uiState.availableSeasons.isNotEmpty()) {
@@ -161,7 +167,7 @@ internal fun ClubScreen(
 }
 
 @Composable
-private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, club: Club?) {
+private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, club: Club?, isFollowed: Boolean, onFollowedChange: (Boolean) -> Unit) {
     val context = LocalContext.current
     Row(Modifier.fillMaxWidth().padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
         if (showBackButton) {
@@ -170,6 +176,9 @@ private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, club: Club?
             }
         }
         Box(Modifier.weight(1f))
+        if (club != null) {
+            FollowButton(isFollowed, onFollowedChange, club.name, Modifier.testTag("club:follow"))
+        }
         club?.url?.let { url ->
             IconButton(onClick = { share(context, club.name, url) }) {
                 Icon(NtIcons.Share, contentDescription = stringResource(R.string.feature_club_impl_share))

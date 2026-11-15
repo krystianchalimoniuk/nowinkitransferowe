@@ -76,9 +76,13 @@ class ClubScreenTest {
                     season = it
                     seasonPicked = true
                 },
+                isFollowed = false,
+                onFollowedChange = { followed = it },
             )
         }
     }
+
+    private var followed: Boolean? = null
 
     private var season: Season? = null
     private var seasonPicked = false
@@ -116,5 +120,12 @@ class ClubScreenTest {
             hasText(string(R.string.feature_club_impl_tab_rumours)) and SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Tab),
         ).performClick()
         assertEquals(ClubTab.RUMOURS, tab)
+    }
+
+    @Test
+    fun star_followsTheClub() {
+        setContent(ClubTab.FINANCES, emptyList())
+        composeTestRule.onNodeWithTag("club:follow").performClick()
+        assertEquals(true, followed)
     }
 }

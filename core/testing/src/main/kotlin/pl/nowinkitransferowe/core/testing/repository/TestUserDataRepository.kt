@@ -82,6 +82,20 @@ class TestUserDataRepository : UserDataRepository {
         }
     }
 
+    override suspend fun setClubFollowed(clubId: Int, followed: Boolean) {
+        currentUserData.let { current ->
+            val clubs = if (followed) current.followedClubs + clubId else current.followedClubs - clubId
+            _userData.tryEmit(current.copy(followedClubs = clubs))
+        }
+    }
+
+    override suspend fun setPlayerFollowed(playerId: Int, followed: Boolean) {
+        currentUserData.let { current ->
+            val players = if (followed) current.followedPlayers + playerId else current.followedPlayers - playerId
+            _userData.tryEmit(current.copy(followedPlayers = players))
+        }
+    }
+
     override suspend fun setTransfersReadUpTo(id: Int) {
         currentUserData.let { current ->
             _userData.tryEmit(current.copy(transfersReadUpToId = id, viewedTransfers = current.viewedTransfers.filter { it > id }.toSet()))

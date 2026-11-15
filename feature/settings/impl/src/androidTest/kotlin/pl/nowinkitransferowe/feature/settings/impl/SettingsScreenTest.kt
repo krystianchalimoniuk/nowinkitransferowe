@@ -51,6 +51,7 @@ class SettingsScreenTest {
     private var darkThemeConfig: DarkThemeConfig? = null
     private var transfersAllowed: Boolean? = null
     private var backClicked = false
+    private var followedOpened = false
     private var systemSettingsOpened = false
 
     private fun setContent(
@@ -71,6 +72,7 @@ class SettingsScreenTest {
                 onOpenLicenses = {},
                 appVersion = "4.0.0",
                 supportDynamicColor = true,
+                onFollowedClick = { followedOpened = true },
             )
         }
     }
@@ -116,5 +118,16 @@ class SettingsScreenTest {
         // The list is scrolled down by now; on a short screen the back button is off screen
         composeTestRule.onNodeWithContentDescription(getString(R.string.feature_settings_impl_navigate_up)).performScrollTo().performClick()
         assertEquals(true, backClicked)
+    }
+
+    @Test
+    fun followed_showsTheCountsAndOpens() {
+        setContent(uiState = SettingsUiState.Success(settings.copy(followedClubs = 3, followedPlayers = 2)))
+        val resources = composeTestRule.activity.resources
+        val clubs = resources.getQuantityString(R.plurals.feature_settings_impl_followed_clubs, 3, 3)
+        val players = resources.getQuantityString(R.plurals.feature_settings_impl_followed_players, 2, 2)
+        composeTestRule.onNodeWithText("$clubs, $players").assertExists()
+        composeTestRule.onNodeWithTag("settings:followed").performScrollTo().performClick()
+        assertEquals(true, followedOpened)
     }
 }

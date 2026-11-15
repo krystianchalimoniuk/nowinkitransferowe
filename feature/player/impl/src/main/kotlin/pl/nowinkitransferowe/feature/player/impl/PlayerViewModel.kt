@@ -25,8 +25,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -114,6 +116,16 @@ class PlayerViewModel @AssistedInject constructor(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PlayerUiState.Loading)
+
+    /** Whether the user follows the player. */
+    val isFollowed: StateFlow<Boolean> = userDataRepository.userData
+        .map { playerId in it.followedPlayers }
+        .distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    fun setFollowed(followed: Boolean) {
+        viewModelScope.launch { userDataRepository.setPlayerFollowed(playerId, followed) }
+    }
 
     fun updateArticleSaved(articleId: Int, saved: Boolean) {
         viewModelScope.launch { userDataRepository.setArticleBookmarked(articleId, saved) }

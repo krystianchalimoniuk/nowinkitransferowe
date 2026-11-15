@@ -48,6 +48,16 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
         analyticsHelper.logRumourBookmarkToggled(rumourId = rumourId, isBookmarked = bookmarked)
     }
 
+    override suspend fun setClubFollowed(clubId: Int, followed: Boolean) {
+        ntPreferencesDataSource.setClubFollowed(clubId, followed)
+        analyticsHelper.logFollowToggled("club", clubId, followed)
+    }
+
+    override suspend fun setPlayerFollowed(playerId: Int, followed: Boolean) {
+        ntPreferencesDataSource.setPlayerFollowed(playerId, followed)
+        analyticsHelper.logFollowToggled("player", playerId, followed)
+    }
+
     override suspend fun setTransfersReadUpTo(id: Int) = ntPreferencesDataSource.setTransfersReadUpTo(id)
 
     override suspend fun setArticlesReadUpTo(id: Int) = ntPreferencesDataSource.setArticlesReadUpTo(id)
