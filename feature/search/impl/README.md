@@ -18,6 +18,18 @@ graph TB
       :feature:search:api[api]:::android-library
       :feature:search:impl[impl]:::android-feature
     end
+    subgraph :feature:club
+      direction TB
+      :feature:club:api[api]:::android-library
+    end
+    subgraph :feature:player
+      direction TB
+      :feature:player:api[api]:::android-library
+    end
+    subgraph :feature:rumours
+      direction TB
+      :feature:rumours:api[api]:::android-library
+    end
     subgraph :feature:article-details
       direction TB
       :feature:article-details:api[api]:::android-library
@@ -64,12 +76,18 @@ graph TB
   :core:ui --> :core:designsystem
   :core:ui --> :core:model
   :feature:article-details:api --> :core:navigation
+  :feature:club:api --> :core:navigation
+  :feature:player:api --> :core:navigation
+  :feature:rumours:api --> :core:navigation
   :feature:search:api --> :core:navigation
   :feature:search:impl -.-> :core:data
   :feature:search:impl -.-> :core:designsystem
   :feature:search:impl -.-> :core:domain
   :feature:search:impl -.-> :core:ui
   :feature:search:impl -.-> :feature:article-details:api
+  :feature:search:impl -.-> :feature:club:api
+  :feature:search:impl -.-> :feature:player:api
+  :feature:search:impl -.-> :feature:rumours:api
   :feature:search:impl -.-> :feature:search:api
   :feature:search:impl -.-> :feature:transfer-details:api
   :feature:transfer-details:api --> :core:navigation
