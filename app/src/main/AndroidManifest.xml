@@ -70,6 +70,33 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+            <!-- App Links: the pages of the website the app has, verified with
+                 https://nowinkitransferowe.pl/.well-known/assetlinks.json -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <!-- Not www: it redirects, and a redirected assetlinks.json fails the verification,
+                     which before Android 12 would turn off the links of every host -->
+                <data android:host="nowinkitransferowe.pl" />
+                <!-- Articles: /{id}/{kategoria}/{slug} -->
+                <data android:pathPattern="/1.*" />
+                <data android:pathPattern="/2.*" />
+                <data android:pathPattern="/3.*" />
+                <data android:pathPattern="/4.*" />
+                <data android:pathPattern="/5.*" />
+                <data android:pathPattern="/6.*" />
+                <data android:pathPattern="/7.*" />
+                <data android:pathPattern="/8.*" />
+                <data android:pathPattern="/9.*" />
+                <data android:pathPrefix="/transfery" />
+                <data android:pathPrefix="/klub/" />
+                <data android:pathPrefix="/plotki" />
+                <data android:pathPrefix="/ligi" />
+                <data android:pathPrefix="/temat/" />
+                <data android:pathPrefix="/szukaj" />
+            </intent-filter>
         </activity>
         <!-- Disable Firebase analytics by default. This setting is overwritten for the `prod`
         flavor -->

@@ -223,7 +223,16 @@ private fun HomeTabs(selected: HomeTab, onSelected: (HomeTab) -> Unit) {
 
 @Composable
 private fun TopicChips(topics: List<Topic>, selected: String?, onSelected: (String?) -> Unit) {
+    val listState = rememberLazyListState()
+    // A topic picked elsewhere, e.g. by a link to /temat/{slug}, scrolls into view
+    LaunchedEffect(selected, topics) {
+        val index = topics.indexOfFirst { it.slug == selected }
+        if (index >= 0 && listState.layoutInfo.visibleItemsInfo.none { it.key == selected }) {
+            listState.animateScrollToItem(index + 1)
+        }
+    }
     LazyRow(
+        state = listState,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {

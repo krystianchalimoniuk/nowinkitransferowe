@@ -42,6 +42,7 @@ import pl.nowinkitransferowe.core.model.RumourStatus
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.model.UserTransfer
+import pl.nowinkitransferowe.feature.articles.api.navigation.PendingHomeTopic
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
@@ -101,6 +102,11 @@ class ArticlesViewModel @Inject constructor(
         rumourRepository.observeRumours(RumourStatus.ACTIVE, updatedSince = clock.now() - RUMOUR_FRESH_FOR)
             .map { it.take(CAROUSEL_SIZE) },
     ) { transfers, rumours -> transfers to rumours }
+
+    init {
+        // A link to /temat/{slug} opens the home screen with that topic
+        PendingHomeTopic.take()?.let(::selectTopic)
+    }
 
     val uiState: StateFlow<HomeUiState> = combine(tab, topic, page, ::Triple)
         .flatMapLatest { (tab, topic, page) ->
