@@ -33,4 +33,7 @@ interface ClubRepository : Syncable {
     fun observeClubs(ids: Set<Int>): Flow<List<Club>>
 
     suspend fun getClubBySlug(slug: String): Club?
+
+    /** Synced clubs of the leagues with the topics [topics], by name. */
+    fun observeClubsInLeagues(topics: Set<String>): Flow<List<Club>>
 }

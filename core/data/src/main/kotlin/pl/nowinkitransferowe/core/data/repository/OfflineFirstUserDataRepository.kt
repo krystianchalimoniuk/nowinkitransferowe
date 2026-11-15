@@ -74,6 +74,11 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
 
     override suspend fun muteNewsSubject(subjectKey: String, until: Instant) = ntPreferencesDataSource.muteNewsSubject(subjectKey, until.toEpochMilliseconds(), Clock.System.now().toEpochMilliseconds())
 
+    override suspend fun finishClubsOnboarding(clubIds: Set<Int>) {
+        clubIds.forEach { ntPreferencesDataSource.setClubFollowed(it, true) }
+        ntPreferencesDataSource.setClubsOnboardingShown()
+    }
+
     override suspend fun setQuietHours(isEnabled: Boolean) = ntPreferencesDataSource.setQuietHours(isEnabled)
 
     override suspend fun setTransfersReadUpTo(id: Int) = ntPreferencesDataSource.setTransfersReadUpTo(id)

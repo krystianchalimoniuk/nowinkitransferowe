@@ -87,5 +87,9 @@ message UserPreferences {
     // epoch milliseconds.
     map<string, int64> muted_news_subjects = 45;
 
-    // NEXT AVAILABLE ID: 46
+    // Whether the "Wybierz swoje kluby" screen was shown, picked or skipped. False on a new install
+    // and after the update to 4.0, so it shows once.
+    bool clubs_onboarding_shown = 46;
+
+    // NEXT AVAILABLE ID: 47
 }

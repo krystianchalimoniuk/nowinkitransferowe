@@ -69,6 +69,7 @@ class NtPreferencesDataSource @Inject constructor(
                 notifyFollowedArticles = it.notifyFollowedArticles,
                 isQuietHoursEnabled = it.quietHours,
                 mutedNewsSubjects = it.mutedNewsSubjectsMap,
+                isClubsOnboardingShown = it.clubsOnboardingShown,
             )
         }
 
@@ -153,6 +154,10 @@ class NtPreferencesDataSource @Inject constructor(
     /** Forgets which records were notified, so they can come again; for the debug trigger. */
     suspend fun clearNotifiedKeys() {
         userPreferences.updateData { it.copy { notifiedKeys.clear() } }
+    }
+
+    suspend fun setClubsOnboardingShown() {
+        userPreferences.updateData { it.copy { clubsOnboardingShown = true } }
     }
 
     suspend fun clearPendingNotificationKeys() {

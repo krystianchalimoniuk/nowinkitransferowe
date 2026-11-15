@@ -47,6 +47,8 @@ data class UserData(
     val isQuietHoursEnabled: Boolean = false,
     /** News subjects muted from the notification, by [NewsSubject.key], until epoch milliseconds. */
     val mutedNewsSubjects: Map<String, Long> = emptyMap(),
+    /** Whether the "Wybierz swoje kluby" screen was already shown; true for test data. */
+    val isClubsOnboardingShown: Boolean = true,
 ) {
     /** New since the last visit and not opened yet. */
     fun isArticleRead(id: Int): Boolean = id in viewedArticles || articlesReadUpToId == 0 || id <= articlesReadUpToId

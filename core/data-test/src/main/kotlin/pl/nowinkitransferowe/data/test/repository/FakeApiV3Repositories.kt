@@ -273,6 +273,8 @@ class FakeClubRepository @Inject constructor(
 
     override fun observeClubs(ids: Set<Int>): Flow<List<Club>> = clubs.map { list -> list.filter { it.id in ids }.sortedBy(Club::name) }
 
+    override fun observeClubsInLeagues(topics: Set<String>): Flow<List<Club>> = clubs.map { list -> list.filter { it.topic in topics }.sortedBy(Club::name) }
+
     override suspend fun getClubBySlug(slug: String): Club? = datasource.getClubs(allIds(datasource, NetworkRecordType.CLUBS))
         .find { it.slug == slug }
         ?.asEntity()
