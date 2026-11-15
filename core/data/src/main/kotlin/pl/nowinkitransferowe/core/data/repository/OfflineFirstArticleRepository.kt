@@ -37,6 +37,8 @@ import pl.nowinkitransferowe.core.datastore.ChangeListVersions
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.ArticleKind
+import pl.nowinkitransferowe.core.model.FollowedFilter
+import pl.nowinkitransferowe.core.model.slugOf
 import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
 import javax.inject.Inject
@@ -52,14 +54,21 @@ internal class OfflineFirstArticleRepository @Inject constructor(
 
     override fun observeArticle(id: Int): Flow<Article?> = articleDao.observeArticle(id).map { it?.asExternalModel() }
 
-    override fun observeArticles(kinds: Set<ArticleKind>?, topic: String?, limit: Int): Flow<List<Article>> = articleDao.observeArticles(
+    override fun observeArticles(kinds: Set<ArticleKind>?, topic: String?, limit: Int, tag: String?, followed: FollowedFilter?): Flow<List<Article>> = articleDao.observeArticles(
         filterKinds = kinds != null,
         kinds = kinds.orEmpty().mapTo(mutableSetOf(), ArticleKind::name),
         topic = topic,
         limit = limit,
+        tag = tag,
+        onlyFollowed = followed != null,
+        clubIds = followed?.clubs.orEmpty(),
+        playerIds = followed?.players.orEmpty(),
+        followedTopics = followed?.topics.orEmpty(),
     ).map { it.map(PopulatedArticle::asExternalModel) }
 
     override fun observeArticles(ids: Set<Int>): Flow<List<Article>> = articleDao.observeArticlesByIds(ids).map { it.map(PopulatedArticle::asExternalModel) }
+
+    override suspend fun findTag(slug: String): String? = articleDao.getTags().find { slugOf(it) == slug }
 
     override fun observeArticleCount(): Flow<Int> = articleDao.observeArticleCount()
 

@@ -41,6 +41,8 @@ internal class OfflineFirstPlayerRepository @Inject constructor(
 
     override suspend fun getPlayerBySlug(slug: String): Player? = playerDao.getPlayerBySlug(slug)?.asExternalModel()
 
+    override suspend fun getPlayerByName(name: String): Player? = playerDao.getPlayerByName(name)?.asExternalModel()
+
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = synchronizer.syncChanges(
         versionReader = ChangeListVersions::playerVersion,
         changesFetcher = { after -> network.getChanges(NetworkRecordType.PLAYERS, after) },

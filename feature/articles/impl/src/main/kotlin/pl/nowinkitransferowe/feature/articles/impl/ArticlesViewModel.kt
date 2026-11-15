@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -37,12 +38,13 @@ import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
 import pl.nowinkitransferowe.core.model.ArticleKind
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.RumourStatus
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.UserArticle
 import pl.nowinkitransferowe.core.model.UserTransfer
-import pl.nowinkitransferowe.feature.articles.api.navigation.PendingHomeTopic
+import pl.nowinkitransferowe.core.model.followedFilter
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
@@ -70,9 +72,13 @@ sealed interface HomeUiState {
         val transfers: List<UserTransfer>,
         val rumours: List<Rumour>,
         val hasMore: Boolean,
+        /** Whether the user follows something, which shows the "Obserwowane" chip. */
+        val hasFollowed: Boolean = false,
+        /** Only articles about what the user follows. */
+        val onlyFollowed: Boolean = false,
     ) : HomeUiState {
-        val showTransfers: Boolean get() = topic == null && tab != HomeTab.RUMOURS && transfers.isNotEmpty()
-        val showRumours: Boolean get() = topic == null && tab != HomeTab.OFFICIAL && rumours.isNotEmpty()
+        val showTransfers: Boolean get() = topic == null && !onlyFollowed && tab != HomeTab.RUMOURS && transfers.isNotEmpty()
+        val showRumours: Boolean get() = topic == null && !onlyFollowed && tab != HomeTab.OFFICIAL && rumours.isNotEmpty()
     }
 }
 
@@ -103,16 +109,16 @@ class ArticlesViewModel @Inject constructor(
             .map { it.take(CAROUSEL_SIZE) },
     ) { transfers, rumours -> transfers to rumours }
 
-    init {
-        // A link to /temat/{slug} opens the home screen with that topic
-        PendingHomeTopic.take()?.let(::selectTopic)
-    }
+    private val followed = userDataRepository.userData.map { it.followedFilter }.distinctUntilChanged()
 
-    val uiState: StateFlow<HomeUiState> = combine(tab, topic, page, ::Triple)
-        .flatMapLatest { (tab, topic, page) ->
+    val uiState: StateFlow<HomeUiState> = combine(tab, topic, page, followed) { tab, topic, page, followed -> HomeQuery(tab, topic, page, followed) }
+        .flatMapLatest { (tab, picked, page, followed) ->
             val limit = PAGE_SIZE * page + 1
+            // "Obserwowane" goes back to all articles when nothing is followed any more
+            val onlyFollowed = picked == FOLLOWED_TOPIC && !followed.isEmpty()
+            val topic = picked.takeIf { it != FOLLOWED_TOPIC }
             combine(
-                userArticleRepository.observeArticles(kinds = tab.kinds, topic = topic, limit = limit),
+                userArticleRepository.observeArticles(kinds = tab.kinds, topic = topic, limit = limit, followed = followed.takeIf { onlyFollowed }),
                 dictionaryRepository.observeTopics(),
                 carousels,
             ) { articles, topics, (transfers, rumours) ->
@@ -127,6 +133,8 @@ class ArticlesViewModel @Inject constructor(
                     transfers = transfers,
                     rumours = rumours,
                     hasMore = articles.size == limit,
+                    hasFollowed = !followed.isEmpty(),
+                    onlyFollowed = onlyFollowed,
                 )
             }
         }
@@ -168,5 +176,10 @@ class ArticlesViewModel @Inject constructor(
         private const val SELECTED_ARTICLE_ID_KEY = "selectedArticleId"
         private const val TAB_KEY = "tab"
         private const val TOPIC_KEY = "topic"
+
+        /** The picked "topic" of the "Obserwowane" chip; not a slug of the website. */
+        const val FOLLOWED_TOPIC = "@followed"
     }
 }
+
+private data class HomeQuery(val tab: HomeTab, val topic: String?, val page: Int, val followed: FollowedFilter)

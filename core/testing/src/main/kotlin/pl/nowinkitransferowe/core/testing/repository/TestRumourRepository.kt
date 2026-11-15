@@ -24,6 +24,7 @@ import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.model.ClubRef
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStatus
@@ -43,8 +44,10 @@ class TestRumourRepository : RumourRepository {
         updatedSince: Instant,
         topic: String?,
         stage: RumourStage?,
+        followed: FollowedFilter?,
     ): Flow<List<Rumour>> = rumoursFlow.map { rumours ->
         rumours
+            .filter { followed == null || followed.matches(it) }
             .filter { it.status == status && it.updatedAt >= updatedSince }
             .filter { stage == null || it.stage == stage }
             .filter { rumour -> topic == null || listOfNotNull(rumour.from, rumour.to).any { it is ClubRef.Club && clubTopics[it.id] == topic } }

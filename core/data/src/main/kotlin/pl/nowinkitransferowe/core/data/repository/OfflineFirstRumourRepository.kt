@@ -34,6 +34,7 @@ import pl.nowinkitransferowe.core.database.dao.TransferDao
 import pl.nowinkitransferowe.core.database.model.PopulatedRumour
 import pl.nowinkitransferowe.core.database.model.asExternalModel
 import pl.nowinkitransferowe.core.datastore.ChangeListVersions
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStatus
@@ -58,7 +59,8 @@ internal class OfflineFirstRumourRepository @Inject constructor(
         updatedSince: Instant,
         topic: String?,
         stage: RumourStage?,
-    ): Flow<List<Rumour>> = rumourDao.observeRumours(status.name, updatedSince, topic, stage?.level).map { it.map(PopulatedRumour::asExternalModel) }
+        followed: FollowedFilter?,
+    ): Flow<List<Rumour>> = rumourDao.observeRumours(status.name, updatedSince, topic, stage?.level, followed != null, followed?.clubs.orEmpty(), followed?.players.orEmpty()).map { it.map(PopulatedRumour::asExternalModel) }
 
     override fun observeRumours(ids: Set<Int>): Flow<List<Rumour>> = rumourDao.observeRumours(ids).map { it.map(PopulatedRumour::asExternalModel) }
 

@@ -93,6 +93,7 @@ import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
 import pl.nowinkitransferowe.feature.search.impl.navigation.searchEntry
 import pl.nowinkitransferowe.feature.settings.api.navigation.navigateToSettings
 import pl.nowinkitransferowe.feature.settings.impl.navigation.settingsEntry
+import pl.nowinkitransferowe.feature.topic.impl.navigation.topicEntry
 import pl.nowinkitransferowe.feature.transferdetails.impl.TransferDetailsPlaceholder
 import pl.nowinkitransferowe.feature.transferdetails.impl.navigation.transferDetailsEntry
 import pl.nowinkitransferowe.feature.transfers.impl.navigation.transfersEntry
@@ -287,6 +288,7 @@ internal fun NtAppContent(
                         searchEntry(navigator)
                         settingsEntry(navigator)
                         followedEntry(navigator, detailPlaceholder = { FollowedPlaceholder() })
+                        topicEntry(navigator)
                     }
 
                     NavDisplay(

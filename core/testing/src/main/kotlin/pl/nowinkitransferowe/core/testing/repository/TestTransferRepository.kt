@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.model.ClubRef
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Transfer
 
@@ -36,8 +37,9 @@ class TestTransferRepository : TransferRepository {
     /** League of each club for the [topic] filter; clubs not in it are in no league. */
     var clubTopics: Map<Int, String> = emptyMap()
 
-    override fun observeTransfers(season: Season?, topic: String?, limit: Int): Flow<List<Transfer>> = transfersFlow.map { transfers ->
+    override fun observeTransfers(season: Season?, topic: String?, limit: Int, followed: FollowedFilter?): Flow<List<Transfer>> = transfersFlow.map { transfers ->
         transfers
+            .filter { followed == null || followed.matches(it) }
             .filter { season == null || it.season == season }
             .filter { transfer -> topic == null || listOf(transfer.from, transfer.to).any { it is ClubRef.Club && clubTopics[it.id] == topic } }
             .take(limit)

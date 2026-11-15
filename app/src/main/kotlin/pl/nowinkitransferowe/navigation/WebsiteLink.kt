@@ -18,18 +18,19 @@ package pl.nowinkitransferowe.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.datetime.Clock
+import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.ArticleNavKey
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
-import pl.nowinkitransferowe.feature.articles.api.navigation.PendingHomeTopic
 import pl.nowinkitransferowe.feature.club.api.navigation.ClubNavKey
 import pl.nowinkitransferowe.feature.leagues.api.navigation.LeagueNavKey
 import pl.nowinkitransferowe.feature.leagues.api.navigation.LeaguesNavKey
 import pl.nowinkitransferowe.feature.player.api.navigation.PlayerNavKey
 import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
 import pl.nowinkitransferowe.feature.search.api.navigation.SearchNavKey
+import pl.nowinkitransferowe.feature.topic.api.navigation.TopicNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import java.net.URI
 import java.net.URLDecoder
@@ -52,8 +53,11 @@ sealed interface WebsiteLink {
 
     data class League(val slug: String) : WebsiteLink
 
-    /** /temat/{slug}: the home screen with the topic picked. */
+    /** /temat/{slug}: the topic screen. */
     data class Topic(val slug: String) : WebsiteLink
+
+    /** /tag/{slug}: the articles of a tag, found by its slug. */
+    data class Tag(val slug: String) : WebsiteLink
 
     data class Search(val query: String?) : WebsiteLink
 
@@ -74,6 +78,7 @@ sealed interface WebsiteLink {
                 first == "plotki" -> Rumours
                 first == "ligi" -> if (second != null) League(second) else Leagues
                 first == "temat" && second != null -> Topic(second)
+                first == "tag" && second != null -> Tag(second)
                 first == "szukaj" -> Search(query(uri.rawQuery, "q"))
                 else -> null
             }
@@ -95,6 +100,7 @@ sealed interface WebsiteLink {
 internal suspend fun WebsiteLink.navKeys(
     clubRepository: ClubRepository,
     playerRepository: PlayerRepository,
+    articleRepository: ArticleRepository,
     clock: Clock = Clock.System,
 ): List<NavKey> = when (this) {
     is WebsiteLink.Article -> listOf(ArticlesNavKey, ArticleNavKey(id))
@@ -104,9 +110,7 @@ internal suspend fun WebsiteLink.navKeys(
     WebsiteLink.Rumours -> listOf(RumoursNavKey)
     WebsiteLink.Leagues -> listOf(LeaguesNavKey)
     is WebsiteLink.League -> listOf(LeaguesNavKey, LeagueNavKey(slug, Season.of(clock.now()).startYear))
-    is WebsiteLink.Topic -> {
-        PendingHomeTopic.request(slug)
-        listOf(ArticlesNavKey)
-    }
+    is WebsiteLink.Topic -> listOf(ArticlesNavKey, TopicNavKey(topic = slug))
+    is WebsiteLink.Tag -> listOfNotNull(ArticlesNavKey, articleRepository.findTag(slug)?.let { TopicNavKey(tag = it) })
     is WebsiteLink.Search -> listOf(SearchNavKey(query))
 }

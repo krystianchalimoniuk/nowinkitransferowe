@@ -19,11 +19,14 @@ package pl.nowinkitransferowe.core.testing.repository
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.ArticleKind
+import pl.nowinkitransferowe.core.model.FollowedFilter
+import pl.nowinkitransferowe.core.model.slugOf
 
 class TestArticleRepository : ArticleRepository {
 
@@ -32,12 +35,16 @@ class TestArticleRepository : ArticleRepository {
 
     override fun observeArticle(id: Int): Flow<Article?> = articlesFlow.map { articles -> articles.find { it.id == id } }
 
-    override fun observeArticles(kinds: Set<ArticleKind>?, topic: String?, limit: Int): Flow<List<Article>> = articlesFlow.map { articles ->
+    override fun observeArticles(kinds: Set<ArticleKind>?, topic: String?, limit: Int, tag: String?, followed: FollowedFilter?): Flow<List<Article>> = articlesFlow.map { articles ->
         articles
             .filter { kinds == null || it.kind in kinds }
             .filter { topic == null || topic in it.topics }
+            .filter { tag == null || tag in it.tags }
+            .filter { followed == null || followed.matches(it) }
             .take(limit)
     }
+
+    override suspend fun findTag(slug: String): String? = articlesFlow.first().flatMap { it.tags }.find { slugOf(it) == slug }
 
     override fun observeArticles(ids: Set<Int>): Flow<List<Article>> = articlesFlow.map { articles -> articles.filter { it.id in ids } }
 

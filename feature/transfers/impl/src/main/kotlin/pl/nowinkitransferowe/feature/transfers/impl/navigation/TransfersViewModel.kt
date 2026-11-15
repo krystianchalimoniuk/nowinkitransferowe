@@ -36,10 +36,12 @@ import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.data.repository.UserTransferRepository
 import pl.nowinkitransferowe.core.data.util.SyncManager
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.TopicKind
 import pl.nowinkitransferowe.core.model.UserTransfer
+import pl.nowinkitransferowe.core.model.followedFilter
 import javax.inject.Inject
 
 sealed interface TransfersUiState {
@@ -55,6 +57,10 @@ sealed interface TransfersUiState {
         val hasMore: Boolean,
         /** Any transfer added since the last visit is unread, in any season or league. */
         val hasUnread: Boolean = false,
+        /** Whether the user follows something, which shows the "Obserwowane" chip. */
+        val hasFollowed: Boolean = false,
+        /** Only transfers of followed clubs and players. */
+        val onlyFollowed: Boolean = false,
     ) : TransfersUiState
 }
 
@@ -87,12 +93,17 @@ class TransfersViewModel @Inject constructor(
 
     val isSyncing = syncManager.isSyncing.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
-    val uiState: StateFlow<TransfersUiState> = combine(seasonStart, topic, page, ::Triple)
-        .flatMapLatest { (start, topic, page) ->
+    private val followed = userDataRepository.userData.map { it.followedFilter }.distinctUntilChanged()
+
+    val uiState: StateFlow<TransfersUiState> = combine(seasonStart, topic, page, followed) { start, topic, page, followed -> TransfersQuery(start, topic, page, followed) }
+        .flatMapLatest { (start, picked, page, followed) ->
             val season = Season(start)
             val limit = PAGE_SIZE * page
+            // "Obserwowane" goes back to all leagues when nothing is followed any more
+            val onlyFollowed = picked == FOLLOWED_TOPIC && !followed.isEmpty()
+            val topic = picked.takeIf { it != FOLLOWED_TOPIC }
             combine(
-                userTransferRepository.observeTransfers(season = season, topic = topic, limit = limit),
+                userTransferRepository.observeTransfers(season = season, topic = topic, limit = limit, followed = followed.takeIf { onlyFollowed }),
                 dictionaryRepository.observeTopics(),
                 userTransferRepository.observeHasUnread(),
                 seasons,
@@ -105,6 +116,8 @@ class TransfersViewModel @Inject constructor(
                     transfers = transfers,
                     hasMore = transfers.size == limit,
                     hasUnread = hasUnread,
+                    hasFollowed = !followed.isEmpty(),
+                    onlyFollowed = onlyFollowed,
                 )
             }
         }
@@ -148,5 +161,10 @@ class TransfersViewModel @Inject constructor(
         private const val SELECTED_TRANSFER_ID_KEY = "selectedTransferId"
         private const val SEASON_KEY = "season"
         private const val TOPIC_KEY = "topic"
+
+        /** The picked "league" of the "Obserwowane" chip; not a slug of the website. */
+        const val FOLLOWED_TOPIC = "@followed"
     }
 }
+
+private data class TransfersQuery(val seasonStart: Int, val topic: String?, val page: Int, val followed: FollowedFilter)

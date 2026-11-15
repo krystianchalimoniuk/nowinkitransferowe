@@ -31,6 +31,7 @@ import pl.nowinkitransferowe.core.data.repository.CompositeUserTransferRepositor
 import pl.nowinkitransferowe.core.model.ArticleKind
 import pl.nowinkitransferowe.core.testing.data.articlesTestData
 import pl.nowinkitransferowe.core.testing.data.rumoursTestData
+import pl.nowinkitransferowe.core.testing.data.topicsTestData
 import pl.nowinkitransferowe.core.testing.data.transfersTestData
 import pl.nowinkitransferowe.core.testing.repository.TestArticleRepository
 import pl.nowinkitransferowe.core.testing.repository.TestDictionaryRepository
@@ -152,5 +153,20 @@ class ArticlesViewModelTest {
         viewModel.updateArticleSaved(11283, true)
 
         assertEquals(setOf(11283), userDataRepository.userData.first().bookmarkedArticles)
+    }
+
+    @Test
+    fun followedChip_showsArticlesAboutWhatIsFollowed_withoutCarousels() = runTest {
+        articleRepository.sendArticles(articlesTestData.mapIndexed { i, article -> if (i == 1) article.copy(clubIds = listOf(83)) else article.copy(clubIds = emptyList(), playerIds = emptyList()) })
+        dictionaryRepository.sendTopics(topicsTestData)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        userDataRepository.setClubFollowed(83, true)
+
+        viewModel.selectTopic(ArticlesViewModel.FOLLOWED_TOPIC)
+
+        val state = assertIs<HomeUiState.Success>(viewModel.uiState.value)
+        assertEquals(true, state.onlyFollowed)
+        assertEquals(listOf(articlesTestData[1].id), listOfNotNull(state.featured).map { it.id } + state.latest.map { it.id })
+        assertEquals(false, state.showTransfers)
     }
 }

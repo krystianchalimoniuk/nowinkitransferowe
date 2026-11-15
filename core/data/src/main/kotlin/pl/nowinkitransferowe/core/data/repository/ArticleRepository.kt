@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import pl.nowinkitransferowe.core.data.Syncable
 import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.ArticleKind
+import pl.nowinkitransferowe.core.model.FollowedFilter
 
 /**
  * API v3 articles, saved offline.
@@ -28,15 +29,21 @@ interface ArticleRepository : Syncable {
     fun observeArticle(id: Int): Flow<Article?>
 
     /**
-     * Newest articles first, optionally only of the given [kinds] and filed under [topic].
+     * Newest articles first, optionally only of the given [kinds], filed under [topic], with [tag]
+     * or about what [followed] has.
      */
     fun observeArticles(
         kinds: Set<ArticleKind>? = null,
         topic: String? = null,
         limit: Int = Int.MAX_VALUE,
+        tag: String? = null,
+        followed: FollowedFilter? = null,
     ): Flow<List<Article>>
 
     fun observeArticles(ids: Set<Int>): Flow<List<Article>>
+
+    /** The tag whose website slug is [slug], like "Bayern Monachium" for bayern-monachium. */
+    suspend fun findTag(slug: String): String?
 
     fun observeArticleCount(): Flow<Int>
 

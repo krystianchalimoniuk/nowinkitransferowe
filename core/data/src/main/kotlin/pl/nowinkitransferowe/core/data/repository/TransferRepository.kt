@@ -18,6 +18,7 @@ package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import pl.nowinkitransferowe.core.data.Syncable
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Transfer
 
@@ -31,7 +32,7 @@ interface TransferRepository : Syncable {
      * Newest transfers first, optionally only from [season] and to or from a club of the league
      * [topic].
      */
-    fun observeTransfers(season: Season? = null, topic: String? = null, limit: Int = Int.MAX_VALUE): Flow<List<Transfer>>
+    fun observeTransfers(season: Season? = null, topic: String? = null, limit: Int = Int.MAX_VALUE, followed: FollowedFilter? = null): Flow<List<Transfer>>
 
     fun observeTransfers(ids: Set<Int>): Flow<List<Transfer>>
 

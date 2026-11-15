@@ -76,6 +76,7 @@ interface RumourDao {
         WHERE r.status = :status AND r.updated_at >= :updatedSince
             AND (:topic IS NULL OR fc.topic = :topic OR tc.topic = :topic)
             AND (:stage IS NULL OR r.stage = :stage)
+            AND (:onlyFollowed = 0 OR r.from_club_id IN (:clubIds) OR r.to_club_id IN (:clubIds) OR r.player_id IN (:playerIds))
         ORDER BY r.updated_at DESC
         """,
     )
@@ -84,6 +85,9 @@ interface RumourDao {
         updatedSince: Instant,
         topic: String? = null,
         stage: Int? = null,
+        onlyFollowed: Boolean = false,
+        clubIds: Set<Int> = emptySet(),
+        playerIds: Set<Int> = emptySet(),
     ): Flow<List<PopulatedRumour>>
 
     /** Rumours that the article with [articleId] moved to a stage, most recently updated first. */

@@ -49,6 +49,7 @@ import pl.nowinkitransferowe.core.model.Club
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.ClubSeason
 import pl.nowinkitransferowe.core.model.Country
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.HotClub
 import pl.nowinkitransferowe.core.model.League
 import pl.nowinkitransferowe.core.model.LeagueClub
@@ -62,6 +63,7 @@ import pl.nowinkitransferowe.core.model.SeasonOption
 import pl.nowinkitransferowe.core.model.StageAccuracy
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.Transfer
+import pl.nowinkitransferowe.core.model.slugOf
 import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.demo.DemoNtNetworkDataSource
 import pl.nowinkitransferowe.core.network.model.NetworkClub
@@ -101,11 +103,17 @@ class FakeArticleRepository @Inject constructor(
 
     override fun observeArticle(id: Int): Flow<Article?> = articles.map { list -> list.find { it.id == id } }
 
-    override fun observeArticles(kinds: Set<ArticleKind>?, topic: String?, limit: Int): Flow<List<Article>> = articles.map { list ->
-        list.filter { kinds == null || it.kind in kinds }.filter { topic == null || topic in it.topics }.take(limit)
+    override fun observeArticles(kinds: Set<ArticleKind>?, topic: String?, limit: Int, tag: String?, followed: FollowedFilter?): Flow<List<Article>> = articles.map { list ->
+        list.filter { kinds == null || it.kind in kinds }
+            .filter { topic == null || topic in it.topics }
+            .filter { tag == null || tag in it.tags }
+            .filter { followed == null || followed.matches(it) }
+            .take(limit)
     }
 
     override fun observeArticles(ids: Set<Int>): Flow<List<Article>> = articles.map { list -> list.filter { it.id in ids } }
+
+    override suspend fun findTag(slug: String): String? = articles.first().flatMap { it.tags }.find { slugOf(it) == slug }
 
     override fun observeArticleCount(): Flow<Int> = articles.map { it.size }
 
@@ -153,8 +161,9 @@ class FakeTransferRepository @Inject constructor(
         emit(datasource.getClubs(allIds(datasource, NetworkRecordType.CLUBS)).associate { it.id to it.topic })
     }
 
-    override fun observeTransfers(season: Season?, topic: String?, limit: Int): Flow<List<Transfer>> = combine(transfers, clubTopics) { list, topics ->
+    override fun observeTransfers(season: Season?, topic: String?, limit: Int, followed: FollowedFilter?): Flow<List<Transfer>> = combine(transfers, clubTopics) { list, topics ->
         list
+            .filter { followed == null || followed.matches(it) }
             .filter { season == null || it.season == season }
             .filter { transfer -> topic == null || listOf(transfer.from, transfer.to).any { it is ClubRef.Club && topics[it.id] == topic } }
             .take(limit)
@@ -239,8 +248,10 @@ class FakeRumourRepository @Inject constructor(
         updatedSince: Instant,
         topic: String?,
         stage: RumourStage?,
+        followed: FollowedFilter?,
     ): Flow<List<Rumour>> = combine(rumours, clubs) { list, clubs ->
         list
+            .filter { followed == null || followed.matches(it) }
             .filter { it.status == status && it.updatedAt >= updatedSince }
             .filter { stage == null || it.stage == stage }
             .filter { rumour -> topic == null || listOfNotNull(rumour.from, rumour.to).any { it is ClubRef.Club && clubs[it.id]?.topic == topic } }
@@ -275,6 +286,8 @@ class FakeClubRepository @Inject constructor(
 
     override fun observeClubsInLeagues(topics: Set<String>): Flow<List<Club>> = clubs.map { list -> list.filter { it.topic in topics }.sortedBy(Club::name) }
 
+    override suspend fun getClubByName(name: String): Club? = clubs.first().find { it.name == name }
+
     override suspend fun getClubBySlug(slug: String): Club? = datasource.getClubs(allIds(datasource, NetworkRecordType.CLUBS))
         .find { it.slug == slug }
         ?.asEntity()
@@ -294,6 +307,8 @@ class FakePlayerRepository @Inject constructor(
     override fun observePlayer(id: Int): Flow<Player?> = players.map { list -> list.find { it.id == id } }
 
     override fun observePlayers(ids: Set<Int>): Flow<List<Player>> = players.map { list -> list.filter { it.id in ids }.sortedBy(Player::name) }
+
+    override suspend fun getPlayerByName(name: String): Player? = players.first().find { it.name == name }
 
     override suspend fun getPlayerBySlug(slug: String): Player? = datasource.getPlayers(allIds(datasource, NetworkRecordType.PLAYERS))
         .find { it.slug == slug }

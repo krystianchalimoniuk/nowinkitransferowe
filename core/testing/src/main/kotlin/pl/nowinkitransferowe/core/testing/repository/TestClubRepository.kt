@@ -33,6 +33,8 @@ class TestClubRepository : ClubRepository {
 
     override suspend fun getClubBySlug(slug: String): Club? = clubs.value.find { it.slug == slug }
 
+    override suspend fun getClubByName(name: String): Club? = clubs.value.find { it.name == name && !it.isStub }
+
     override fun observeClubsInLeagues(topics: Set<String>): Flow<List<Club>> = clubs.map { list -> list.filter { it.topic in topics && !it.isStub }.sortedBy { it.name } }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true

@@ -35,9 +35,11 @@ import pl.nowinkitransferowe.core.datastoreproto.UserPreferences
 import pl.nowinkitransferowe.core.datastoretest.InMemoryDataStore
 import pl.nowinkitransferowe.core.model.ArticleKind
 import pl.nowinkitransferowe.core.model.ClubRef
+import pl.nowinkitransferowe.core.model.FollowedFilter
 import pl.nowinkitransferowe.core.model.NoClubStatus
 import pl.nowinkitransferowe.core.model.RumourStatus
 import pl.nowinkitransferowe.core.model.Season
+import pl.nowinkitransferowe.core.model.slugOf
 import pl.nowinkitransferowe.core.network.MAX_IDS_PER_REQUEST
 import pl.nowinkitransferowe.core.network.NetworkRecordType
 import kotlin.test.assertEquals
@@ -335,5 +337,29 @@ class OfflineFirstApiV3RepositoriesTest {
         val saved = leagues.observeLeagues(current).first()
         assertEquals(network.getLeagues(null).leagues.map { it.topic }, saved.map { it.topic })
         assertEquals(network.getLeagues(null).leagues.first().clubs.size, saved.first().clubs.size)
+    }
+
+    @Test
+    fun followedFilter_andTags_areQueriedInTheDatabase() = runTest {
+        syncAll()
+        val anyTransfer = transfers.observeTransfers().first().first { it.to is ClubRef.Club }
+        val club = (anyTransfer.to as ClubRef.Club).id
+        val filter = FollowedFilter(clubs = setOf(club), players = emptySet())
+
+        val followedTransfers = transfers.observeTransfers(followed = filter).first()
+        assertTrue(followedTransfers.isNotEmpty())
+        assertTrue(followedTransfers.all { filter.matches(it) })
+        assertTrue(transfers.observeTransfers(followed = FollowedFilter(emptySet(), emptySet())).first().isEmpty())
+
+        val article = articles.observeArticles().first().first { it.tags.isNotEmpty() }
+        val tag = article.tags.first()
+        val tagged = articles.observeArticles(tag = tag).first()
+        assertTrue(article.id in tagged.map { it.id })
+        assertTrue(tagged.all { tag in it.tags })
+        assertEquals(tag, articles.findTag(slugOf(tag)))
+
+        val topic = article.topics.first()
+        val aboutTopic = articles.observeArticles(followed = FollowedFilter(emptySet(), emptySet(), setOf(topic))).first()
+        assertTrue(aboutTopic.isNotEmpty() && aboutTopic.all { topic in it.topics })
     }
 }

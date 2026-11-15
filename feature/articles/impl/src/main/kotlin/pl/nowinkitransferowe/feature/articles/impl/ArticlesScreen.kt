@@ -57,6 +57,7 @@ import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.UserTransfer
 import pl.nowinkitransferowe.core.ui.ArticleHeroCard
 import pl.nowinkitransferowe.core.ui.ArticleListItem
+import pl.nowinkitransferowe.core.ui.FollowedChip
 import pl.nowinkitransferowe.core.ui.RumourCarouselCard
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
@@ -143,7 +144,7 @@ internal fun ArticlesScreen(
                     .testTag("news:feed"),
             ) {
                 item(key = "tabs") { HomeTabs(uiState.tab, onTabSelected) }
-                item(key = "topics") { TopicChips(uiState.topics, uiState.topic, onTopicSelected) }
+                item(key = "topics") { TopicChips(uiState.topics, uiState.topic, onTopicSelected, uiState.hasFollowed, uiState.onlyFollowed) }
                 uiState.featured?.let { featured ->
                     item(key = "featured:${featured.id}") {
                         ArticleHeroCard(
@@ -222,13 +223,19 @@ private fun HomeTabs(selected: HomeTab, onSelected: (HomeTab) -> Unit) {
 }
 
 @Composable
-private fun TopicChips(topics: List<Topic>, selected: String?, onSelected: (String?) -> Unit) {
+private fun TopicChips(
+    topics: List<Topic>,
+    selected: String?,
+    onSelected: (String?) -> Unit,
+    hasFollowed: Boolean = false,
+    onlyFollowed: Boolean = false,
+) {
     val listState = rememberLazyListState()
     // A topic picked elsewhere, e.g. by a link to /temat/{slug}, scrolls into view
     LaunchedEffect(selected, topics) {
         val index = topics.indexOfFirst { it.slug == selected }
         if (index >= 0 && listState.layoutInfo.visibleItemsInfo.none { it.key == selected }) {
-            listState.animateScrollToItem(index + 1)
+            listState.animateScrollToItem(index + if (hasFollowed) 2 else 1)
         }
     }
     LazyRow(
@@ -236,9 +243,12 @@ private fun TopicChips(topics: List<Topic>, selected: String?, onSelected: (Stri
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        if (hasFollowed) {
+            item(key = "followed") { FollowedChip(onlyFollowed) { onSelected(if (onlyFollowed) null else ArticlesViewModel.FOLLOWED_TOPIC) } }
+        }
         item(key = "all") {
             FilterChip(
-                selected = selected == null,
+                selected = selected == null && !onlyFollowed,
                 onClick = { onSelected(null) },
                 label = { Text(stringResource(R.string.feature_articles_impl_all_topics)) },
             )

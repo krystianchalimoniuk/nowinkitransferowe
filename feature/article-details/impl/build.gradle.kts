@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.feature.topic.api)
     implementation(projects.feature.articleDetails.api)
     implementation(projects.feature.rumours.api)
     implementation(projects.feature.club.api)

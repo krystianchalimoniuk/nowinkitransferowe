@@ -94,7 +94,8 @@ interface ArticleDao {
     fun observeArticle(id: Int): Flow<PopulatedArticle?>
 
     /**
-     * Newest articles, optionally only of [kinds] and filed under [topic].
+     * Newest articles, optionally only of [kinds], filed under [topic], with [tag], or about the
+     * followed [clubIds], [playerIds] or [followedTopics] when [onlyFollowed].
      */
     @Transaction
     @Query(
@@ -102,6 +103,11 @@ interface ArticleDao {
         SELECT * FROM articles
         WHERE (:filterKinds = 0 OR kind IN (:kinds))
           AND (:topic IS NULL OR id IN (SELECT article_id FROM article_topics WHERE topic = :topic))
+          AND (:tag IS NULL OR id IN (SELECT article_id FROM article_tags WHERE tag = :tag))
+          AND (:onlyFollowed = 0
+            OR id IN (SELECT article_id FROM article_clubs WHERE club_id IN (:clubIds))
+            OR id IN (SELECT article_id FROM article_players WHERE player_id IN (:playerIds))
+            OR id IN (SELECT article_id FROM article_topics WHERE topic IN (:followedTopics)))
         ORDER BY published_at DESC
         LIMIT :limit
         """,
@@ -111,6 +117,11 @@ interface ArticleDao {
         kinds: Set<String> = emptySet(),
         topic: String? = null,
         limit: Int = Int.MAX_VALUE,
+        tag: String? = null,
+        onlyFollowed: Boolean = false,
+        clubIds: Set<Int> = emptySet(),
+        playerIds: Set<Int> = emptySet(),
+        followedTopics: Set<String> = emptySet(),
     ): Flow<List<PopulatedArticle>>
 
     @Transaction
@@ -120,6 +131,10 @@ interface ArticleDao {
     /** Ids of the articles added after the one with [id] (ids grow with every new article). */
     @Query("SELECT id FROM articles WHERE id > :id")
     fun observeIdsAfter(id: Int): Flow<List<Int>>
+
+    /** Every article tag, for a link to /tag/{slug}. */
+    @Query("SELECT DISTINCT tag FROM article_tags")
+    suspend fun getTags(): List<String>
 
     @Query("SELECT MAX(id) FROM articles")
     suspend fun getNewestId(): Int?

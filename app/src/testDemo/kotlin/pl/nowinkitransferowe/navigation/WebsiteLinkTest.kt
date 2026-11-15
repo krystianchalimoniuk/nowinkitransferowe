@@ -20,19 +20,21 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.junit.Test
+import pl.nowinkitransferowe.core.testing.data.articlesTestData
 import pl.nowinkitransferowe.core.testing.data.clubsTestData
 import pl.nowinkitransferowe.core.testing.data.playersTestData
+import pl.nowinkitransferowe.core.testing.repository.TestArticleRepository
 import pl.nowinkitransferowe.core.testing.repository.TestClubRepository
 import pl.nowinkitransferowe.core.testing.repository.TestPlayerRepository
 import pl.nowinkitransferowe.feature.articledetails.api.navigation.ArticleNavKey
 import pl.nowinkitransferowe.feature.articles.api.navigation.ArticlesNavKey
-import pl.nowinkitransferowe.feature.articles.api.navigation.PendingHomeTopic
 import pl.nowinkitransferowe.feature.club.api.navigation.ClubNavKey
 import pl.nowinkitransferowe.feature.leagues.api.navigation.LeagueNavKey
 import pl.nowinkitransferowe.feature.leagues.api.navigation.LeaguesNavKey
 import pl.nowinkitransferowe.feature.player.api.navigation.PlayerNavKey
 import pl.nowinkitransferowe.feature.rumours.api.navigation.RumoursNavKey
 import pl.nowinkitransferowe.feature.search.api.navigation.SearchNavKey
+import pl.nowinkitransferowe.feature.topic.api.navigation.TopicNavKey
 import pl.nowinkitransferowe.feature.transfers.api.navigation.TransfersNavKey
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -51,6 +53,7 @@ class WebsiteLinkTest {
         assertEquals(WebsiteLink.Leagues, WebsiteLink.parse("$site/ligi/"))
         assertEquals(WebsiteLink.League("premier-league"), WebsiteLink.parse("$site/ligi/premier-league"))
         assertEquals(WebsiteLink.Topic("ekstraklasa"), WebsiteLink.parse("$site/temat/ekstraklasa"))
+        assertEquals(WebsiteLink.Tag("bayern-monachium"), WebsiteLink.parse("$site/tag/bayern-monachium"))
         assertEquals(WebsiteLink.Search("Fermín López"), WebsiteLink.parse("$site/szukaj?q=Ferm%C3%ADn+L%C3%B3pez"))
         assertEquals(WebsiteLink.Search(null), WebsiteLink.parse("$site/szukaj"))
     }
@@ -68,10 +71,11 @@ class WebsiteLinkTest {
     fun links_openTheirScreens_afterTheirSection() = runTest {
         val clubs = TestClubRepository().apply { sendClubs(clubsTestData) }
         val players = TestPlayerRepository().apply { sendPlayers(playersTestData) }
+        val articles = TestArticleRepository().apply { sendArticles(articlesTestData.take(1).map { it.copy(tags = listOf("Gabriel Martinelli")) }) }
         val clock = object : Clock {
             override fun now() = Instant.parse("2026-11-15T12:00:00Z")
         }
-        suspend fun keys(link: WebsiteLink) = link.navKeys(clubs, players, clock)
+        suspend fun keys(link: WebsiteLink) = link.navKeys(clubs, players, articles, clock)
 
         assertEquals(listOf(ArticlesNavKey, ArticleNavKey(11285)), keys(WebsiteLink.Article(11285)))
         assertEquals(listOf(ArticlesNavKey, ClubNavKey(83)), keys(WebsiteLink.Club("west-ham-united")))
@@ -82,8 +86,8 @@ class WebsiteLinkTest {
         assertEquals(listOf(LeaguesNavKey, LeagueNavKey("la-liga", 2026)), keys(WebsiteLink.League("la-liga")))
         assertEquals(listOf(SearchNavKey("chelsea")), keys(WebsiteLink.Search("chelsea")))
 
-        assertEquals(listOf(ArticlesNavKey), keys(WebsiteLink.Topic("ekstraklasa")))
-        assertEquals("ekstraklasa", PendingHomeTopic.take())
-        assertNull(PendingHomeTopic.take())
+        assertEquals(listOf(ArticlesNavKey, TopicNavKey(topic = "ekstraklasa")), keys(WebsiteLink.Topic("ekstraklasa")))
+        assertEquals(listOf(ArticlesNavKey, TopicNavKey(tag = "Gabriel Martinelli")), keys(WebsiteLink.Tag("gabriel-martinelli")))
+        assertEquals(listOf(ArticlesNavKey), keys(WebsiteLink.Tag("not-a-tag")))
     }
 }

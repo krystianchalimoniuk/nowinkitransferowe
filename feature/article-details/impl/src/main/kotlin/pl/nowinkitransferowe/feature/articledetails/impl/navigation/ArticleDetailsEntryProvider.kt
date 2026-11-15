@@ -29,7 +29,7 @@ import pl.nowinkitransferowe.feature.articledetails.impl.ArticleDetailsViewModel
 import pl.nowinkitransferowe.feature.club.api.navigation.navigateToClub
 import pl.nowinkitransferowe.feature.player.api.navigation.navigateToPlayer
 import pl.nowinkitransferowe.feature.rumours.api.navigation.navigateToRumour
-import pl.nowinkitransferowe.feature.search.api.navigation.navigateToSearch
+import pl.nowinkitransferowe.feature.topic.api.navigation.navigateToTag
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.articleDetailsEntry(navigator: Navigator) {
@@ -39,7 +39,7 @@ fun EntryProviderScope<NavKey>.articleDetailsEntry(navigator: Navigator) {
         ArticleDetailsRoute(
             showBackButton = true,
             onBackClick = { navigator.goBack() },
-            onTopicClick = navigator::navigateToSearch,
+            onTopicClick = navigator::navigateToTag,
             onArticleLinkClick = navigator::navigateToArticle,
             onRumourClick = { rumour -> navigator.navigateToRumour(rumour.id) },
             onClubClick = navigator::navigateToClub,

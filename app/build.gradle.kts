@@ -84,6 +84,8 @@ dependencies {
     implementation(projects.feature.followed.api)
     implementation(projects.feature.followed.impl)
     implementation(projects.feature.onboarding.impl)
+    implementation(projects.feature.topic.api)
+    implementation(projects.feature.topic.impl)
     implementation(projects.feature.bookmarks.api)
     implementation(projects.feature.bookmarks.impl)
     implementation(projects.feature.articleDetails.api)

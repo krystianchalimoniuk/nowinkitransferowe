@@ -95,6 +95,7 @@
                 <data android:pathPrefix="/plotki" />
                 <data android:pathPrefix="/ligi" />
                 <data android:pathPrefix="/temat/" />
+                <data android:pathPrefix="/tag/" />
                 <data android:pathPrefix="/szukaj" />
             </intent-filter>
         </activity>
