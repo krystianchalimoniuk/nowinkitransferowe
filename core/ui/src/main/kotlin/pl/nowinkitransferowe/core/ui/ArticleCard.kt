@@ -192,6 +192,7 @@ fun ArticleTags(
     topics: List<String>,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    highlighted: Boolean = false,
 ) {
     Row(
         // causes narrow chips
@@ -200,7 +201,7 @@ fun ArticleTags(
     ) {
         for (followableTopic in topics) {
             NtTopicTag(
-                followed = false,
+                followed = highlighted,
                 onClick = { onTopicClick(followableTopic) },
                 text = {
 //                    val contentDescription = if () {

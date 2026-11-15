@@ -30,6 +30,7 @@ import pl.nowinkitransferowe.feature.leagues.api.navigation.navigateToLeague
 import pl.nowinkitransferowe.feature.leagues.impl.LeagueRoute
 import pl.nowinkitransferowe.feature.leagues.impl.LeagueViewModel
 import pl.nowinkitransferowe.feature.leagues.impl.LeaguesRoute
+import pl.nowinkitransferowe.feature.topic.api.navigation.navigateToTopic
 import pl.nowinkitransferowe.feature.transferdetails.api.navigation.navigateToTransfer
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -54,6 +55,7 @@ fun EntryProviderScope<NavKey>.leagueEntry(navigator: Navigator) {
             onBackClick = { navigator.goBack() },
             onClubClick = navigator::navigateToClub,
             onTransferClick = navigator::navigateToTransfer,
+            onNewsClick = navigator::navigateToTopic,
             viewModel = hiltViewModel<LeagueViewModel, LeagueViewModel.Factory>(key = "${key.topic}/${key.seasonStartYear}") { factory ->
                 factory.create(key.topic, key.seasonStartYear)
             },

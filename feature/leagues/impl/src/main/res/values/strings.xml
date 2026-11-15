@@ -41,4 +41,5 @@
     <string name="feature_leagues_impl_top_departures">Najdroższe sprzedaże</string>
     <string name="feature_leagues_impl_compare">Na tle innych lig</string>
     <string name="feature_leagues_impl_select_a_league">Wybierz ligę</string>
+    <string name="feature_leagues_impl_news">Wiadomości z ligi</string>
 </resources>
