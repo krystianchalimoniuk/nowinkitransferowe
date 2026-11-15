@@ -36,5 +36,8 @@ internal object TestDataStoreModule {
     @Singleton
     fun providesUserPreferencesDataStore(
         serializer: UserPreferencesSerializer,
-    ): DataStore<UserPreferences> = InMemoryDataStore(serializer.defaultValue)
+    ): DataStore<UserPreferences> = InMemoryDataStore(
+        // The app opens on its screens, not on "Wybierz swoje kluby", which has its own tests
+        serializer.defaultValue.toBuilder().setClubsOnboardingShown(true).build(),
+    )
 }
