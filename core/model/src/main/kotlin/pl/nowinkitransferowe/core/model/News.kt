@@ -44,6 +44,14 @@ sealed interface NewsItem {
 sealed interface NewsSubject {
     val name: String
 
+    /** "club:83", "player:500" or "league:la-liga": one notification and one mute per subject. */
+    val key: String
+        get() = when (this) {
+            is Club -> "club:$id"
+            is Player -> "player:$id"
+            is League -> "league:$topic"
+        }
+
     data class Club(val id: Int, override val name: String, val crestUrl: String?) : NewsSubject
 
     data class Player(val id: Int, override val name: String, val photoUrl: String?) : NewsSubject

@@ -23,17 +23,30 @@ import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
+import kotlinx.datetime.todayIn
 import pl.nowinkitransferowe.core.common.network.di.ApplicationScope
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.model.NewsItem
+import pl.nowinkitransferowe.core.notifications.ACTION_MUTE_NEWS_SUBJECT
+import pl.nowinkitransferowe.core.notifications.ACTION_SAVE_NEWS
 import pl.nowinkitransferowe.core.notifications.EXTRA_NOTIFICATION_ID
 import pl.nowinkitransferowe.core.notifications.EXTRA_SAVE_ID
 import pl.nowinkitransferowe.core.notifications.EXTRA_SAVE_KIND
+import pl.nowinkitransferowe.core.notifications.EXTRA_SUBJECT_KEY
 import javax.inject.Inject
 
-/** Saves the transfer, rumour or article of a notification to "Zapisane" and closes it. */
+/**
+ * The actions of the news notifications: "Zapisz" saves the transfer, rumour or article to
+ * "Zapisane", "Wycisz na dziś" mutes the club, player or league until midnight. Both close the
+ * notification.
+ */
 @AndroidEntryPoint
-class SaveNewsReceiver : BroadcastReceiver() {
+class NewsActionReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var userDataRepository: UserDataRepository
@@ -43,20 +56,30 @@ class SaveNewsReceiver : BroadcastReceiver() {
     lateinit var scope: CoroutineScope
 
     override fun onReceive(context: Context, intent: Intent) {
-        val id = intent.getIntExtra(EXTRA_SAVE_ID, 0).takeIf { it != 0 } ?: return
-        val kind = intent.getStringExtra(EXTRA_SAVE_KIND)
         NotificationManagerCompat.from(context).cancel(intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0))
         val pending = goAsync()
         scope.launch {
             try {
-                when (kind) {
-                    NewsItem.TRANSFER_KEY -> userDataRepository.setTransferBookmarked(id, true)
-                    NewsItem.RUMOUR_KEY -> userDataRepository.setRumourBookmarked(id, true)
-                    NewsItem.ARTICLE_KEY -> userDataRepository.setArticleBookmarked(id, true)
+                when (intent.action) {
+                    ACTION_SAVE_NEWS -> save(intent.getStringExtra(EXTRA_SAVE_KIND), intent.getIntExtra(EXTRA_SAVE_ID, 0))
+                    ACTION_MUTE_NEWS_SUBJECT -> intent.getStringExtra(EXTRA_SUBJECT_KEY)?.let { key ->
+                        val timeZone = TimeZone.currentSystemDefault()
+                        val tomorrow = Clock.System.todayIn(timeZone).plus(1, DateTimeUnit.DAY)
+                        userDataRepository.muteNewsSubject(key, tomorrow.atStartOfDayIn(timeZone))
+                    }
                 }
             } finally {
                 pending.finish()
             }
+        }
+    }
+
+    private suspend fun save(kind: String?, id: Int) {
+        if (id == 0) return
+        when (kind) {
+            NewsItem.TRANSFER_KEY -> userDataRepository.setTransferBookmarked(id, true)
+            NewsItem.RUMOUR_KEY -> userDataRepository.setRumourBookmarked(id, true)
+            NewsItem.ARTICLE_KEY -> userDataRepository.setArticleBookmarked(id, true)
         }
     }
 }

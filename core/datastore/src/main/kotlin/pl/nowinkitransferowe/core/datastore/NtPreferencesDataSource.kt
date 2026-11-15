@@ -68,6 +68,7 @@ class NtPreferencesDataSource @Inject constructor(
                 notifyFollowedRumours = it.notifyFollowedRumours,
                 notifyFollowedArticles = it.notifyFollowedArticles,
                 isQuietHoursEnabled = it.quietHours,
+                mutedNewsSubjects = it.mutedNewsSubjectsMap,
             )
         }
 
@@ -136,6 +137,22 @@ class NtPreferencesDataSource @Inject constructor(
                 pendingNotificationKeys.addAll(newest)
             }
         }
+    }
+
+    /** Mutes the news about [subjectKey] until [untilEpochMillis]; expired mutes are dropped. */
+    suspend fun muteNewsSubject(subjectKey: String, untilEpochMillis: Long, nowEpochMillis: Long) {
+        userPreferences.updateData {
+            it.copy {
+                val active = mutedNewsSubjects.filterValues { until -> until > nowEpochMillis }
+                mutedNewsSubjects.clear()
+                mutedNewsSubjects.putAll(active + (subjectKey to untilEpochMillis))
+            }
+        }
+    }
+
+    /** Forgets which records were notified, so they can come again; for the debug trigger. */
+    suspend fun clearNotifiedKeys() {
+        userPreferences.updateData { it.copy { notifiedKeys.clear() } }
     }
 
     suspend fun clearPendingNotificationKeys() {

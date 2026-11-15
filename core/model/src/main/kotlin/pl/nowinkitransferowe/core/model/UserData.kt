@@ -45,6 +45,8 @@ data class UserData(
     val notifyFollowedArticles: Boolean = false,
     /** The app's own notifications wait from 23:00 to 7:00 for one morning summary. */
     val isQuietHoursEnabled: Boolean = false,
+    /** News subjects muted from the notification, by [NewsSubject.key], until epoch milliseconds. */
+    val mutedNewsSubjects: Map<String, Long> = emptyMap(),
 ) {
     /** New since the last visit and not opened yet. */
     fun isArticleRead(id: Int): Boolean = id in viewedArticles || articlesReadUpToId == 0 || id <= articlesReadUpToId

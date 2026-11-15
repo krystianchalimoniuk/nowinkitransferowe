@@ -143,7 +143,7 @@ class NewsNotifications @Inject constructor(
             listOf(subject) + group.items.flatMap { item ->
                 when (item) {
                     is NewsItem.TransferNews -> listOf(item.transfer.player.photoUrl, item.transfer.from.crestUrl, item.transfer.to.crestUrl)
-                    is NewsItem.RumourNews -> listOf(item.rumour.player.photoUrl)
+                    is NewsItem.RumourNews -> listOf(item.rumour.player.photoUrl, item.rumour.from?.crestUrl, item.rumour.to.crestUrl)
                     is NewsItem.ArticleNews -> listOf(item.article.thumbnailUrl ?: item.article.imageUrl)
                 }
             }

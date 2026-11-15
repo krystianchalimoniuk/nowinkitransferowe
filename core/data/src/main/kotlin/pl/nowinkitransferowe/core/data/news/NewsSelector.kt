@@ -50,7 +50,7 @@ internal data class NewsDirectory(
  * turns all of them off. The rest counts for a followed league
  * only when it is important: articles the editors feature, official transfers from
  * [LEAGUE_TRANSFER_MILLIONS] and rumours that reached an agreement. Items in [notifiedKeys] were
- * already notified and are left out.
+ * already notified and are left out, and so are subjects muted for the day.
  */
 internal fun selectNews(
     transfers: List<Transfer>,
@@ -121,6 +121,7 @@ internal fun selectNews(
     }
 
     return picked
+        .filter { (subject, _, _) -> (userData.mutedNewsSubjects[subject.key] ?: 0L) <= now.toEpochMilliseconds() }
         .groupBy { it.first to it.second }
         .map { (subjectAndChannel, items) ->
             NewsGroup(

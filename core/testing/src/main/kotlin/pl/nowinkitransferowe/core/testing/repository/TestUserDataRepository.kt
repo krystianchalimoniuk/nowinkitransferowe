@@ -20,6 +20,7 @@ import kotlinx.coroutines.channels.BufferOverflow.DROP_OLDEST
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserData
@@ -109,6 +110,10 @@ class TestUserDataRepository : UserDataRepository {
     override suspend fun setFollowedRumoursNotified(isNotified: Boolean) = update { copy(notifyFollowedRumours = isNotified) }
 
     override suspend fun setFollowedArticlesNotified(isNotified: Boolean) = update { copy(notifyFollowedArticles = isNotified) }
+
+    override suspend fun muteNewsSubject(subjectKey: String, until: Instant) = update {
+        copy(mutedNewsSubjects = mutedNewsSubjects + (subjectKey to until.toEpochMilliseconds()))
+    }
 
     override suspend fun setQuietHours(isEnabled: Boolean) = update { copy(isQuietHoursEnabled = isEnabled) }
 
