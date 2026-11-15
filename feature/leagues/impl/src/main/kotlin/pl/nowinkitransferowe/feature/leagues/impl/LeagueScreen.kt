@@ -52,6 +52,7 @@ import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.model.LeagueClub
 import pl.nowinkitransferowe.core.model.UserTransfer
+import pl.nowinkitransferowe.core.ui.StatTile
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferListItem
 import pl.nowinkitransferowe.core.ui.millionsLabel
