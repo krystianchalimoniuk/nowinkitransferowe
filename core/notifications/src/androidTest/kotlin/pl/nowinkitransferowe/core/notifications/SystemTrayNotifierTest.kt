@@ -20,6 +20,8 @@ import android.Manifest
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.os.SystemClock
+import android.service.notification.StatusBarNotification
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
@@ -53,6 +55,19 @@ class SystemTrayNotifierTest {
                 .grantRuntimePermission(context.packageName, Manifest.permission.POST_NOTIFICATIONS)
         }
         manager.cancelAll()
+        // The system cancels and posts on its own thread, so the tests wait for what they expect
+        awaitNotifications { it.isEmpty() }
+    }
+
+    /** The active notifications once [condition] holds, failing after a few seconds. */
+    private fun awaitNotifications(condition: (List<StatusBarNotification>) -> Boolean): List<StatusBarNotification> {
+        val deadline = SystemClock.uptimeMillis() + TIMEOUT_MILLIS
+        while (true) {
+            val active = manager.activeNotifications.filter { it.packageName == context.packageName }
+            if (condition(active)) return active
+            check(SystemClock.uptimeMillis() < deadline) { "Notifications not as expected: ${active.map { it.id }}" }
+            SystemClock.sleep(POLL_MILLIS)
+        }
     }
 
     @Test
@@ -73,7 +88,8 @@ class SystemTrayNotifierTest {
             ),
         )
 
-        val shown = manager.activeNotifications.associateBy { it.id }
+        val ids = listOf(NewsItem.TransferNews(transfer).key.hashCode(), "club:83".hashCode(), NewsItem.ArticleNews(articlesTestData[1]).key.hashCode())
+        val shown = awaitNotifications { active -> active.map { it.id }.containsAll(ids) }.associateBy { it.id }
         val single = shown.getValue(NewsItem.TransferNews(transfer).key.hashCode()).notification
         assertEquals("followed_channel", single.channelId)
         assertEquals("Oficjalnie: ${transfer.player.name}", single.extras.getString("android.title"))
@@ -93,7 +109,12 @@ class SystemTrayNotifierTest {
             listOf(NewsGroup(NewsSubject.Club(83, "West Ham United", null), NewsChannel.FOLLOWED, listOf(NewsItem.TransferNews(transfersTestData[0])))),
         )
 
-        val summary = manager.activeNotifications.single().notification
+        val summary = awaitNotifications { it.isNotEmpty() }.single().notification
         assertEquals("Przez noc: 1 nowość", summary.extras.getString("android.title"))
+    }
+
+    private companion object {
+        const val TIMEOUT_MILLIS = 5_000L
+        const val POLL_MILLIS = 50L
     }
 }

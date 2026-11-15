@@ -35,12 +35,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,7 +54,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -67,7 +63,6 @@ import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
-import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.Player
 import pl.nowinkitransferowe.core.model.Season
@@ -77,6 +72,7 @@ import pl.nowinkitransferowe.core.ui.CountryFlag
 import pl.nowinkitransferowe.core.ui.FeeLabel
 import pl.nowinkitransferowe.core.ui.FollowButton
 import pl.nowinkitransferowe.core.ui.RumourListItem
+import pl.nowinkitransferowe.core.ui.StatTile
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferRoute
 import pl.nowinkitransferowe.core.ui.millionsLabel
@@ -311,33 +307,10 @@ private fun Summary(state: PlayerUiState.Success) {
             .testTag("player:summary"),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        SummaryTile(stringResource(R.string.feature_player_impl_transfers), state.transfers.size.toString(), Modifier.weight(1f))
-        SummaryTile(stringResource(R.string.feature_player_impl_total), millionsLabel(state.totalMillions), Modifier.weight(1f))
+        StatTile(stringResource(R.string.feature_player_impl_transfers), state.transfers.size.toString(), Modifier.weight(1f).fillMaxHeight())
+        StatTile(stringResource(R.string.feature_player_impl_total), millionsLabel(state.totalMillions), Modifier.weight(1f).fillMaxHeight())
         if (paid > 1) {
-            SummaryTile(stringResource(R.string.feature_player_impl_highest), millionsLabel(state.highestMillions), Modifier.weight(1f))
-        }
-    }
-}
-
-@Composable
-private fun SummaryTile(label: String, value: String, modifier: Modifier = Modifier) {
-    Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.cardContainer, modifier = modifier.fillMaxHeight()) {
-        Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(
-                label,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                value,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                softWrap = false,
-                autoSize = TextAutoSize.StepBased(minFontSize = 12.sp, maxFontSize = MaterialTheme.typography.titleMedium.fontSize),
-            )
+            StatTile(stringResource(R.string.feature_player_impl_highest), millionsLabel(state.highestMillions), Modifier.weight(1f).fillMaxHeight())
         }
     }
 }

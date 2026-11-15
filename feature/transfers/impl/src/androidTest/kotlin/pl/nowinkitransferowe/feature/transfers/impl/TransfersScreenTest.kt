@@ -19,6 +19,7 @@ package pl.nowinkitransferowe.feature.transfers.impl
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import org.junit.Rule
@@ -47,7 +48,7 @@ class TransfersScreenTest {
     fun transfersAndFiltersAreShown() {
         composeTestRule.setContent { Screen(state) }
 
-        composeTestRule.onNodeWithText(userTransfersTestData.first().player.name).assertExists()
+        composeTestRule.onNodeWithTag("transfer-item:${userTransfersTestData.first().id}").assertExists()
         composeTestRule.onNodeWithText("26/27").assertExists()
         composeTestRule.onNodeWithText("Premier League").assertExists()
     }
@@ -59,7 +60,7 @@ class TransfersScreenTest {
         composeTestRule.setContent { Screen(state, onSeasonSelected = { season = it }, onTransferClick = { transfer = it }) }
 
         composeTestRule.onNodeWithText("24/25").performClick()
-        composeTestRule.onNodeWithText(userTransfersTestData.first().player.name).performClick()
+        composeTestRule.onNodeWithTag("transfer-item:${userTransfersTestData.first().id}").performClick()
 
         assertEquals(Season(2024), season)
         assertEquals(userTransfersTestData.first().id, transfer)

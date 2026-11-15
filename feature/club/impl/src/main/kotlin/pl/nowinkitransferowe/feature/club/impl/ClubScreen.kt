@@ -23,10 +23,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -47,14 +50,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -72,6 +73,7 @@ import pl.nowinkitransferowe.core.ui.FollowButton
 import pl.nowinkitransferowe.core.ui.RumourListItem
 import pl.nowinkitransferowe.core.ui.SpendingBars
 import pl.nowinkitransferowe.core.ui.SpendingRow
+import pl.nowinkitransferowe.core.ui.StatTile
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferListItem
 import pl.nowinkitransferowe.core.ui.millionsLabel
@@ -288,17 +290,19 @@ private fun LazyListScope.finances(state: ClubUiState.Success) {
         return
     }
     item(key = "tiles") {
-        Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(Modifier.padding(16.dp).height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val colors = LocalNtColors.current
             val spentLabel = state.season?.let { stringResource(R.string.feature_club_impl_spent, it.label) }
                 ?: stringResource(R.string.feature_club_impl_spent_total)
-            Tile(spentLabel, millionsLabel(latest.spent), Modifier.weight(1f))
-            Tile(stringResource(R.string.feature_club_impl_earned), millionsLabel(latest.earned), Modifier.weight(1f))
-            Tile(
+            val style = MaterialTheme.typography.titleLarge
+            StatTile(spentLabel, millionsLabel(latest.spent), Modifier.weight(1f).fillMaxHeight(), valueStyle = style)
+            StatTile(stringResource(R.string.feature_club_impl_earned), millionsLabel(latest.earned), Modifier.weight(1f).fillMaxHeight(), valueStyle = style)
+            StatTile(
                 stringResource(R.string.feature_club_impl_balance),
                 (if (latest.balance > 0) "+" else "") + millionsLabel(latest.balance),
-                Modifier.weight(1f),
+                Modifier.weight(1f).fillMaxHeight(),
                 valueColor = if (latest.balance >= 0) colors.success else MaterialTheme.colorScheme.primary,
+                valueStyle = style,
             )
         }
     }
@@ -306,16 +310,6 @@ private fun LazyListScope.finances(state: ClubUiState.Success) {
         Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             NtSectionHeader(stringResource(R.string.feature_club_impl_spending_by_season))
             SpendingBars(seasons.map { SpendingRow(it.season.label, moneyIn = it.earned, moneyOut = it.spent) })
-        }
-    }
-}
-
-@Composable
-private fun Tile(label: String, value: String, modifier: Modifier = Modifier, valueColor: Color = Color.Unspecified) {
-    Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.cardContainer, modifier = modifier) {
-        Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
-            Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
-            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = valueColor, maxLines = 1)
         }
     }
 }
