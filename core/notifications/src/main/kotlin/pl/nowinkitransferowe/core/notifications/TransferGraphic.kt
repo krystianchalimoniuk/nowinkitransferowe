@@ -36,7 +36,8 @@ private const val WIDTH = 1024
 private const val HEIGHT = 440
 private const val CREST = 168f
 private const val CREST_INSET = 22f
-private const val BACKGROUND = 0xFF93000F.toInt()
+private const val MIN_FEE_SIZE = 36f
+private const val BACKGROUND = 0xFF3A0A0F.toInt()
 private const val CREST_BACKGROUND = 0xFFFFFFFF.toInt()
 private const val INITIALS = 0xFF5A3F3C.toInt()
 private const val LABEL = 0xFFFFDAD6.toInt()
@@ -65,9 +66,12 @@ internal fun transferGraphic(transfer: Transfer, images: Map<String, Bitmap>, fe
 
     val middle = WIDTH / 2f
     val crestMiddle = crestTop + CREST / 2
-    val feePaint = textPaint(0xFFFFFFFF.toInt(), if (transfer.fee.kind == FeeKind.AMOUNT) 64f else 44f, Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
-    drawCentered(canvas, feeLabel, feePaint, middle, crestMiddle - 18f, WIDTH * 0.34f)
-    drawArrow(canvas, middle, crestMiddle + 40f)
+    // The fee between the crests, as big as it fits
+    val feeWidth = rightCenter - leftCenter - CREST - 40f
+    val feePaint = textPaint(0xFFFFFFFF.toInt(), if (transfer.fee.kind == FeeKind.AMOUNT) 80f else 52f, Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
+    while (feePaint.measureText(feeLabel) > feeWidth && feePaint.textSize > MIN_FEE_SIZE) feePaint.textSize -= 2f
+    drawCentered(canvas, feeLabel, feePaint, middle, crestMiddle + 4f, feeWidth)
+    drawArrow(canvas, middle, crestMiddle + 58f)
     return bitmap
 }
 

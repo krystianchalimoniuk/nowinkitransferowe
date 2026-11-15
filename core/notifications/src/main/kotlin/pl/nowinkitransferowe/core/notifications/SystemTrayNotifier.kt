@@ -27,10 +27,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.StyleSpan
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.BigPictureStyle
@@ -54,7 +58,7 @@ import javax.inject.Singleton
 import pl.nowinkitransferowe.core.common.R as CommonR
 
 private const val TARGET_ACTIVITY_NAME = "pl.nowinkitransferowe.MainActivity"
-private const val SAVE_RECEIVER_NAME = "pl.nowinkitransferowe.sync.work.notifications.SaveNewsReceiver"
+private const val ACTION_RECEIVER_NAME = "pl.nowinkitransferowe.sync.work.notifications.NewsActionReceiver"
 private const val GENERAL_NOTIFICATION_SUMMARY_ID = 5
 private const val NEWS_NOTIFICATION_SUMMARY_ID = 7
 private const val HELD_NEWS_NOTIFICATION_ID = 8
@@ -83,6 +87,11 @@ const val DEEP_LINK_CLUB_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/club/{$DEEP_L
 const val DEEP_LINK_PLAYER_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/player/{$DEEP_LINK_PLAYER_ID_KEY}"
 const val DEEP_LINK_LEAGUES_URI = "$DEEP_LINK_SCHEME_AND_HOST/leagues"
 
+/** The notification actions handled by the receiver: save the record, or mute its subject today. */
+const val ACTION_SAVE_NEWS = "pl.nowinkitransferowe.action.SAVE_NEWS"
+const val ACTION_MUTE_NEWS_SUBJECT = "pl.nowinkitransferowe.action.MUTE_NEWS_SUBJECT"
+const val EXTRA_SUBJECT_KEY = "pl.nowinkitransferowe.extra.SUBJECT_KEY"
+
 /** The extras of the "Zapisz" action, read by the receiver that saves the record. */
 const val EXTRA_SAVE_KIND = "pl.nowinkitransferowe.extra.SAVE_KIND"
 const val EXTRA_SAVE_ID = "pl.nowinkitransferowe.extra.SAVE_ID"
@@ -110,7 +119,7 @@ internal class SystemTrayNotifier @Inject constructor(
                 id = item.key.hashCode()
                 singleNews(item, group, images, id)
             } else {
-                id = group.subject.notificationKey().hashCode()
+                id = group.subject.key.hashCode()
                 groupedNews(group, images)
             }
             manager.notify(id, notification)
@@ -212,6 +221,7 @@ internal class SystemTrayNotifier @Inject constructor(
                 (transfer.to as? ClubRef.Club)?.let { club ->
                     builder.addAction(0, club.name, openIntent(clubDeepLink(club.id), id + 1))
                 }
+                builder.addAction(0, getString(R.string.core_notifications_action_share), shareIntent("${itemTitle(item)}\n${itemText(item)}\n$DEEP_LINK_SCHEME_AND_HOST", id + 2))
             }
 
             is NewsItem.RumourNews -> {
@@ -264,6 +274,9 @@ internal class SystemTrayNotifier @Inject constructor(
             )
             .setProgress(rumour.stage.level)
         photo?.let { style.setProgressTrackerIcon(Icon.createWithBitmap(it)) }
+        // The path of the rumour: the club the player leaves at the start, the new one at the end
+        rumour.from?.crestUrl?.let(images::get)?.let { style.setProgressStartIcon(Icon.createWithBitmap(crestIcon(it))) }
+        rumour.to.crestUrl?.let(images::get)?.let { style.setProgressEndIcon(Icon.createWithBitmap(crestIcon(it))) }
         return Notification.Builder(this, group.channel.channelId())
             .setSmallIcon(CommonR.drawable.core_common_ic_nt_notification)
             .setColor(BRAND_COLOR)
@@ -285,7 +298,7 @@ internal class SystemTrayNotifier @Inject constructor(
     private fun Context.groupedNews(group: NewsGroup, images: Map<String, Bitmap>): Notification {
         val count = group.items.size
         val text = resources.getQuantityString(R.plurals.core_notifications_news_count, count, count)
-        val style = group.items.take(MAX_LINES).fold(InboxStyle()) { inbox, item -> inbox.addLine(itemLine(item)) }
+        val style = group.items.take(MAX_LINES).fold(InboxStyle()) { inbox, item -> inbox.addLine(styledLine(item)) }
             .setBigContentTitle(group.subject.name)
             .setSummaryText(text)
         val builder = newsBuilder(group.channel)
@@ -293,7 +306,9 @@ internal class SystemTrayNotifier @Inject constructor(
             .setContentText(group.items.joinToString(" · ") { itemTitle(it) })
             .setStyle(style)
             .setNumber(count)
-            .setContentIntent(openIntent(group.subject.deepLink(), group.subject.notificationKey().hashCode()))
+            .setContentIntent(openIntent(group.subject.deepLink(), group.subject.key.hashCode()))
+            .addAction(0, getString(group.subject.openLabel()), openIntent(group.subject.deepLink(), group.subject.key.hashCode() + 1))
+            .addAction(0, getString(R.string.core_notifications_action_mute_today), muteIntent(group.subject, group.subject.key.hashCode()))
         when (val subject = group.subject) {
             is NewsSubject.Club -> subject.crestUrl?.let(images::get)?.let { builder.setLargeIcon(crestIcon(it)) }
             is NewsSubject.Player -> subject.photoUrl?.let(images::get)?.let { builder.setLargeIcon(circleCrop(it)) }
@@ -337,10 +352,26 @@ internal class SystemTrayNotifier @Inject constructor(
     }
 
     /** A line of a grouped notification: the kind, then what happened. */
-    private fun Context.itemLine(item: NewsItem): String = when (item) {
+    private fun Context.itemLine(item: NewsItem): String = "${kindName(item)} · ${lineText(item)}"
+
+    /** [itemLine] with the kind in bold. */
+    private fun Context.styledLine(item: NewsItem): CharSequence = SpannableStringBuilder()
+        .append(kindName(item), StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        .append("  ")
+        .append(lineText(item))
+
+    private fun Context.kindName(item: NewsItem): String = getString(
+        when (item) {
+            is NewsItem.TransferNews -> R.string.core_notifications_kind_transfer
+            is NewsItem.RumourNews -> R.string.core_notifications_kind_rumour
+            is NewsItem.ArticleNews -> R.string.core_notifications_kind_article
+        },
+    )
+
+    private fun Context.lineText(item: NewsItem): String = when (item) {
         is NewsItem.TransferNews -> getString(R.string.core_notifications_line_transfer, item.transfer.player.name, item.transfer.fee.label)
         is NewsItem.RumourNews -> getString(R.string.core_notifications_line_rumour, item.rumour.player.name, stageName(item.rumour.stage))
-        is NewsItem.ArticleNews -> getString(R.string.core_notifications_line_article, item.article.title)
+        is NewsItem.ArticleNews -> item.article.title
     }
 
     private fun Context.stageName(stage: RumourStage): String = getString(
@@ -359,10 +390,10 @@ private fun NewsChannel.channelId() = when (this) {
     NewsChannel.LEAGUES -> LEAGUES_CHANNEL_ID
 }
 
-private fun NewsSubject.notificationKey() = when (this) {
-    is NewsSubject.Club -> "club:$id"
-    is NewsSubject.Player -> "player:$id"
-    is NewsSubject.League -> "league:$topic"
+private fun NewsSubject.openLabel() = when (this) {
+    is NewsSubject.Club -> R.string.core_notifications_action_open_club
+    is NewsSubject.Player -> R.string.core_notifications_action_open_player
+    is NewsSubject.League -> R.string.core_notifications_action_open_leagues
 }
 
 private fun NewsSubject.deepLink(): Uri = when (this) {
@@ -391,6 +422,26 @@ private fun Context.openIntent(uri: Uri?, requestCode: Int): PendingIntent = Pen
     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
 )
 
+/** Shares [text] with the system share sheet. */
+private fun Context.shareIntent(text: String, requestCode: Int): PendingIntent = PendingIntent.getActivity(
+    this,
+    requestCode,
+    Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text), null),
+    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+)
+
+/** Mutes the news about [subject] for the rest of the day and closes its notification. */
+private fun Context.muteIntent(subject: NewsSubject, notificationId: Int): PendingIntent = PendingIntent.getBroadcast(
+    this,
+    notificationId,
+    Intent(ACTION_MUTE_NEWS_SUBJECT).apply {
+        component = ComponentName(packageName, ACTION_RECEIVER_NAME)
+        putExtra(EXTRA_SUBJECT_KEY, subject.key)
+        putExtra(EXTRA_NOTIFICATION_ID, notificationId)
+    },
+    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+)
+
 /** Saves the item to "Zapisane" and closes the notification [notificationId]. */
 private fun Context.saveIntent(item: NewsItem, notificationId: Int): PendingIntent {
     val (kind, id) = when (item) {
@@ -401,8 +452,8 @@ private fun Context.saveIntent(item: NewsItem, notificationId: Int): PendingInte
     return PendingIntent.getBroadcast(
         this,
         notificationId,
-        Intent().apply {
-            component = ComponentName(packageName, SAVE_RECEIVER_NAME)
+        Intent(ACTION_SAVE_NEWS).apply {
+            component = ComponentName(packageName, ACTION_RECEIVER_NAME)
             putExtra(EXTRA_SAVE_KIND, kind)
             putExtra(EXTRA_SAVE_ID, id)
             putExtra(EXTRA_NOTIFICATION_ID, notificationId)

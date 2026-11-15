@@ -164,4 +164,13 @@ class NewsSelectorTest {
         assertEquals(7.5 * 3_600_000, NewsNotifications.untilQuietHoursEnd(Instant.parse("2026-11-15T22:30:00Z"), warsaw).toDouble())
         assertEquals(4.0 * 3_600_000, NewsNotifications.untilQuietHoursEnd(Instant.parse("2026-11-16T02:00:00Z"), warsaw).toDouble())
     }
+
+    @Test
+    fun mutedSubject_isLeftOutUntilTheMuteEnds() {
+        val muted = followingLiverpool.copy(mutedNewsSubjects = mapOf("club:4" to Instant.parse("2026-11-16T00:00:00Z").toEpochMilliseconds()))
+
+        assertTrue(select(transfers = listOf(transfer(1, 4, 5.0)), userData = muted).isEmpty())
+        val tomorrow = selectNews(listOf(transfer(1, 4, 5.0)), emptyList(), emptyList(), muted, emptySet(), directory, Instant.parse("2026-11-16T08:00:00Z"))
+        assertEquals(1, tomorrow.size)
+    }
 }

@@ -83,5 +83,9 @@ message UserPreferences {
     // Keys of the records held back by the quiet hours, oldest first, posted together at 7:00.
     repeated string pending_notification_keys = 44;
 
-    // NEXT AVAILABLE ID: 45
+    // News subjects ("club:83", "player:500", "league:la-liga") muted with "Wycisz na dziś", until
+    // epoch milliseconds.
+    map<string, int64> muted_news_subjects = 45;
+
+    // NEXT AVAILABLE ID: 46
 }

@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 import pl.nowinkitransferowe.core.model.DarkThemeConfig
 import pl.nowinkitransferowe.core.model.UserData
 
@@ -55,6 +56,9 @@ interface UserDataRepository {
     suspend fun setFollowedArticlesNotified(isNotified: Boolean)
 
     suspend fun setQuietHours(isEnabled: Boolean)
+
+    /** Mutes the notifications about the news subject [subjectKey] until [until]. */
+    suspend fun muteNewsSubject(subjectKey: String, until: Instant)
 
     /** Marks every transfer up to [id] as read. */
     suspend fun setTransfersReadUpTo(id: Int)
