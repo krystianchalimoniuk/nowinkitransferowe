@@ -38,7 +38,9 @@ import pl.nowinkitransferowe.core.data.repository.TransferRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
 import pl.nowinkitransferowe.core.datastore.NtPreferencesDataSource
 import pl.nowinkitransferowe.core.model.RumourStatus
+import pl.nowinkitransferowe.sync.work.initializers.PostNotificationWithImageInitializer
 import javax.inject.Inject
+import kotlin.random.Random
 
 /**
  * Debug builds only: shows the news notifications with the records already on the phone, as if a
@@ -47,6 +49,13 @@ import javax.inject.Inject
  *
  * adb shell am broadcast -n pl.nowinkitransferowe.debug/pl.nowinkitransferowe.debug.DebugNewsReceiver \
  *   --es transfers 4 --es rumours 18 --es articles 83 --es all 31
+ *
+ * An editors' push goes through the same worker as one from FCM:
+ *
+ * adb shell am broadcast -n pl.nowinkitransferowe.debug/pl.nowinkitransferowe.debug.DebugNewsReceiver \
+ *   --es push_title "Porozumienie" --es push_url https://nowinkitransferowe.pl/4321/x --es push_rumour 5
+ *
+ * with push_transfer and push_article for the other ids.
  *
  * "all" takes one of each, and articles turn on the article notifications. The notified keys are
  * cleared first, so the same news can come again.
@@ -71,6 +80,20 @@ class DebugNewsReceiver : BroadcastReceiver() {
     lateinit var scope: CoroutineScope
 
     override fun onReceive(context: Context, intent: Intent) {
+        intent.getStringExtra("push_title")?.let { title ->
+            PostNotificationWithImageInitializer.initialize(
+                context = context,
+                id = Random.nextInt(),
+                title = title,
+                description = intent.getStringExtra("push_description") ?: title,
+                url = intent.getStringExtra("push_url").orEmpty(),
+                imageUrl = intent.getStringExtra("push_image").orEmpty(),
+                rumourId = intent.getStringExtra("push_rumour")?.toIntOrNull(),
+                transferId = intent.getStringExtra("push_transfer")?.toIntOrNull(),
+                articleId = intent.getStringExtra("push_article")?.toIntOrNull(),
+            )
+            return
+        }
         fun clubs(extra: String) = intent.getStringExtra(extra).orEmpty().split(',').mapNotNull { it.trim().toIntOrNull() }
         val all = clubs("all")
         val transferClubs = clubs("transfers") + all

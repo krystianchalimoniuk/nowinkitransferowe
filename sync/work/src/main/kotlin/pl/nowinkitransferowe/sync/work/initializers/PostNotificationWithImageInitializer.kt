@@ -29,12 +29,15 @@ object PostNotificationWithImageInitializer {
         description: String,
         url: String,
         imageUrl: String,
+        rumourId: Int? = null,
+        transferId: Int? = null,
+        articleId: Int? = null,
     ) {
         WorkManager.getInstance(context).apply {
             enqueueUniqueWork(
                 DOWNLOAD_IMAGE_WORK_NAME,
-                ExistingWorkPolicy.KEEP,
-                PostNotificationWithImageWorker.startUpPostNotificationWithImageWorker(id, title, description, url, imageUrl),
+                ExistingWorkPolicy.APPEND_OR_REPLACE,
+                PostNotificationWithImageWorker.startUpPostNotificationWithImageWorker(id, title, description, url, imageUrl, rumourId, transferId, articleId),
             )
         }
     }
