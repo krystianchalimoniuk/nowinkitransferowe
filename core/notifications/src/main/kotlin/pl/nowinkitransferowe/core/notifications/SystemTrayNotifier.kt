@@ -17,6 +17,7 @@
 package pl.nowinkitransferowe.core.notifications
 
 import android.Manifest.permission
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -26,317 +27,412 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
+import android.graphics.drawable.Icon
+import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.core.app.ActivityCompat.checkSelfPermission
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.BigPictureStyle
+import androidx.core.app.NotificationCompat.BigTextStyle
 import androidx.core.app.NotificationCompat.InboxStyle
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.net.toUri
 import androidx.core.text.HtmlCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
-import pl.nowinkitransferowe.core.model.Article
+import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.GeneralNotificationResource
-import pl.nowinkitransferowe.core.model.Transfer
+import pl.nowinkitransferowe.core.model.NewsChannel
+import pl.nowinkitransferowe.core.model.NewsGroup
+import pl.nowinkitransferowe.core.model.NewsItem
+import pl.nowinkitransferowe.core.model.NewsSubject
+import pl.nowinkitransferowe.core.model.RumourStage
+import pl.nowinkitransferowe.core.model.crestUrl
 import javax.inject.Inject
 import javax.inject.Singleton
+import pl.nowinkitransferowe.core.common.R as CommonR
 
-private const val MAX_NUM_NOTIFICATIONS = 5
 private const val TARGET_ACTIVITY_NAME = "pl.nowinkitransferowe.MainActivity"
-private const val NEWS_NOTIFICATION_REQUEST_CODE = 0
-private const val TRANSFER_NOTIFICATION_REQUEST_CODE = 2
-private const val NEWS_NOTIFICATION_SUMMARY_ID = 1
-private const val TRANSFER_NOTIFICATION_SUMMARY_ID = 3
+private const val SAVE_RECEIVER_NAME = "pl.nowinkitransferowe.sync.work.notifications.SaveNewsReceiver"
 private const val GENERAL_NOTIFICATION_SUMMARY_ID = 5
+private const val NEWS_NOTIFICATION_SUMMARY_ID = 7
+private const val HELD_NEWS_NOTIFICATION_ID = 8
+private const val MAX_LINES = 6
+private const val BRAND_COLOR = 0xFFB3121B.toInt()
+private const val STAGE_DONE_COLOR = 0xFFB3121B.toInt()
+private const val STAGE_TODO_COLOR = 0xFFF0C9C5.toInt()
 
-private const val GENERAL_NOTIFICATIONS_REQUEST_CODE = 4
-private const val NOTIFICATION_CHANNEL_ID = "update_channel"
-private const val NEWS_NOTIFICATION_GROUP = "NEWS_NOTIFICATIONS"
-private const val TRANSFER_NOTIFICATION_GROUP = "TRANSFER_NOTIFICATIONS"
+/** The channel of the editors' push notifications; the id of the 3.x channel, so its setting stays. */
+private const val EDITORS_CHANNEL_ID = "update_channel"
+private const val FOLLOWED_CHANNEL_ID = "followed_channel"
+private const val LEAGUES_CHANNEL_ID = "leagues_channel"
 private const val GENERAL_NOTIFICATION_GROUP = "GENERAL_NOTIFICATIONS"
+private const val NEWS_NOTIFICATION_GROUP = "NEWS_NOTIFICATIONS"
+
 private const val DEEP_LINK_SCHEME_AND_HOST = "https://nowinkitransferowe.pl"
-private const val DEEP_LINK_NEWS_PATH = "news"
-private const val DEEP_LINK_TRANSFER_PATH = "transfer"
-private const val DEEP_LINK_NEWS_BASE_PATH = "$DEEP_LINK_SCHEME_AND_HOST/$DEEP_LINK_NEWS_PATH"
-private const val DEEP_LINK_TRANSFER_BASE_PATH = "$DEEP_LINK_SCHEME_AND_HOST/$DEEP_LINK_TRANSFER_PATH"
 const val DEEP_LINK_NEWS_RESOURCE_ID_KEY = "newsId"
 const val DEEP_LINK_TRANSFER_RESOURCE_ID_KEY = "transferId"
-const val DEEP_LINK_NEWS_URI_PATTERN = "$DEEP_LINK_NEWS_BASE_PATH/{$DEEP_LINK_NEWS_RESOURCE_ID_KEY}"
-const val DEEP_LINK_TRANSFER_URI_PATTERN = "$DEEP_LINK_TRANSFER_BASE_PATH/{$DEEP_LINK_TRANSFER_RESOURCE_ID_KEY}"
+const val DEEP_LINK_RUMOUR_ID_KEY = "rumourId"
+const val DEEP_LINK_CLUB_ID_KEY = "clubId"
+const val DEEP_LINK_PLAYER_ID_KEY = "playerId"
+const val DEEP_LINK_NEWS_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/news/{$DEEP_LINK_NEWS_RESOURCE_ID_KEY}"
+const val DEEP_LINK_TRANSFER_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/transfer/{$DEEP_LINK_TRANSFER_RESOURCE_ID_KEY}"
+const val DEEP_LINK_RUMOUR_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/rumour/{$DEEP_LINK_RUMOUR_ID_KEY}"
+const val DEEP_LINK_CLUB_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/club/{$DEEP_LINK_CLUB_ID_KEY}"
+const val DEEP_LINK_PLAYER_URI_PATTERN = "$DEEP_LINK_SCHEME_AND_HOST/player/{$DEEP_LINK_PLAYER_ID_KEY}"
+const val DEEP_LINK_LEAGUES_URI = "$DEEP_LINK_SCHEME_AND_HOST/leagues"
+
+/** The extras of the "Zapisz" action, read by the receiver that saves the record. */
+const val EXTRA_SAVE_KIND = "pl.nowinkitransferowe.extra.SAVE_KIND"
+const val EXTRA_SAVE_ID = "pl.nowinkitransferowe.extra.SAVE_ID"
+const val EXTRA_NOTIFICATION_ID = "pl.nowinkitransferowe.extra.NOTIFICATION_ID"
 
 /**
  * Implementation of [Notifier] that displays notifications in the system tray.
+ *
+ * Each kind has its own channel, so it can also be turned off in the system settings: the
+ * editors' notifications, followed clubs and players, and followed leagues.
  */
 @Singleton
 internal class SystemTrayNotifier @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : Notifier {
 
-    override fun postArticleNotifications(
-        articles: List<Article>,
-    ) = with(context) {
-        if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
-            return
-        }
-
-        val truncatedArticles = articles.take(MAX_NUM_NOTIFICATIONS)
-
-        val newsNotifications = truncatedArticles.map { article ->
-            createNotification {
-                setSmallIcon(
-                    pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
-                )
-                    .setContentTitle(article.title)
-                    .setContentText(
-                        HtmlCompat.fromHtml(
-                            article.lead,
-                            HtmlCompat.FROM_HTML_MODE_COMPACT,
-                        )
-                            .toString(),
-                    )
-                    .setContentIntent(newsPendingIntent(article))
-                    .setGroup(NEWS_NOTIFICATION_GROUP)
-                    .setAutoCancel(true)
+    override fun postNews(groups: List<NewsGroup>, images: Map<String, Bitmap>) = with(context) {
+        if (!canPost()) return
+        ensureNotificationChannelsExist()
+        val manager = NotificationManagerCompat.from(this)
+        val posted = groups.map { group ->
+            val id: Int
+            val notification = if (group.items.size == 1) {
+                val item = group.items.single()
+                id = item.key.hashCode()
+                singleNews(item, group, images, id)
+            } else {
+                id = group.subject.notificationKey().hashCode()
+                groupedNews(group, images)
             }
+            manager.notify(id, notification)
+            group
         }
-        val summaryNotification = createNotification {
-            val title = getString(R.string.core_notifications_news_notification_group_summary)
-            setContentTitle(title)
-                .setContentText(title)
-                .setSmallIcon(
-                    pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
-                )
-                // Build summary info into InboxStyle template.
-                .setStyle(newsNotificationStyle(truncatedArticles, title))
-                .setGroup(NEWS_NOTIFICATION_GROUP)
-                .setGroupSummary(true)
-                .setAutoCancel(true)
-                .build()
-        }
-
-        // Send the notifications
-        val notificationManager = NotificationManagerCompat.from(this)
-        newsNotifications.forEachIndexed { index, notification ->
-            notificationManager.notify(
-                truncatedArticles[index].id.hashCode(),
-                notification,
+        if (posted.size > 1) {
+            val title = getString(R.string.core_notifications_news_summary)
+            manager.notify(
+                NEWS_NOTIFICATION_SUMMARY_ID,
+                NotificationCompat.Builder(this, FOLLOWED_CHANNEL_ID)
+                    .setSmallIcon(CommonR.drawable.core_common_ic_nt_notification)
+                    .setColor(BRAND_COLOR)
+                    .setContentTitle(title)
+                    .setStyle(posted.fold(InboxStyle()) { style, group -> style.addLine(group.subject.name) }.setSummaryText(title))
+                    .setGroup(NEWS_NOTIFICATION_GROUP)
+                    .setGroupSummary(true)
+                    .setAutoCancel(true)
+                    .build(),
             )
         }
-        notificationManager.notify(NEWS_NOTIFICATION_SUMMARY_ID, summaryNotification)
     }
 
-    override fun postTransferNotifications(transfers: List<Transfer>) = with(context) {
-        if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
-            return
-        }
-
-        val truncatedTransfers = transfers.take(MAX_NUM_NOTIFICATIONS)
-
-        val newsNotifications = truncatedTransfers.map { transfer ->
-            createNotification {
-                setSmallIcon(
-                    pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
-                )
-                    .setContentTitle("\uD83D\uDC64 ${transfer.player.name}")
-                    .setContentText("\uD83D\uDD01 ${transfer.from.name} - ${transfer.to.name}\n\uD83D\uDCB6 ${transfer.fee.label}")
-                    .setContentIntent(transferPendingIntent(transfer))
-                    .setGroup(TRANSFER_NOTIFICATION_GROUP)
-                    .setAutoCancel(true)
-            }
-        }
-        val summaryNotification = createNotification {
-            val title = getString(
-                R.string.core_notifications_transfer_notification_group_summary,
-            )
-            setContentTitle(title)
-                .setContentText(title)
-                .setSmallIcon(
-                    pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
-                )
-                // Build summary info into InboxStyle template.
-                .setStyle(transferNotificationStyle(truncatedTransfers, title))
-                .setGroup(TRANSFER_NOTIFICATION_GROUP)
-                .setGroupSummary(true)
-                .setAutoCancel(true)
-                .build()
-        }
-
-        // Send the notifications
-        val notificationManager = NotificationManagerCompat.from(this)
-        newsNotifications.forEachIndexed { index, notification ->
-            notificationManager.notify(
-                truncatedTransfers[index].id.hashCode(),
-                notification,
-            )
-        }
-        notificationManager.notify(TRANSFER_NOTIFICATION_SUMMARY_ID, summaryNotification)
+    override fun postHeldNews(groups: List<NewsGroup>) = with(context) {
+        if (!canPost() || groups.isEmpty()) return
+        ensureNotificationChannelsExist()
+        val count = groups.sumOf { it.items.size }
+        val title = resources.getQuantityString(R.plurals.core_notifications_held_news_title, count, count)
+        val lines = groups.flatMap { group -> group.items.map { item -> "${group.subject.name} · ${itemLine(item)}" } }
+        val notification = NotificationCompat.Builder(this, FOLLOWED_CHANNEL_ID)
+            .setSmallIcon(CommonR.drawable.core_common_ic_nt_notification)
+            .setColor(BRAND_COLOR)
+            .setContentTitle(title)
+            .setContentText(groups.joinToString { it.subject.name })
+            .setStyle(lines.take(MAX_LINES).fold(InboxStyle()) { style, line -> style.addLine(line) }.setBigContentTitle(title))
+            .setContentIntent(openIntent(null, HELD_NEWS_NOTIFICATION_ID))
+            .setAutoCancel(true)
+            .build()
+        NotificationManagerCompat.from(this).notify(HELD_NEWS_NOTIFICATION_ID, notification)
     }
 
     override fun postGeneralNotification(
         generalNotificationResource: GeneralNotificationResource,
         bitmap: Bitmap?,
     ) = with(context) {
-        if (checkSelfPermission(
-                this,
-                permission.POST_NOTIFICATIONS,
-            ) != PERMISSION_GRANTED
-        ) {
-            return
-        }
-        val summaryNotification = createNotification {
-            val title = getString(
-                R.string.core_notifications_general_notification_group_summary,
+        if (!canPost()) return
+        ensureNotificationChannelsExist()
+        val summaryNotification = NotificationCompat.Builder(this, EDITORS_CHANNEL_ID)
+            .setSmallIcon(CommonR.drawable.core_common_ic_nt_notification)
+            .setColor(BRAND_COLOR)
+            .setContentTitle(getString(R.string.core_notifications_general_notification_group_summary))
+            .setStyle(
+                InboxStyle().addLine(generalNotificationResource.title)
+                    .setSummaryText(getString(R.string.core_notifications_general_notification_group_summary)),
             )
-            setContentTitle(title)
-                .setContentText(title)
-                .setSmallIcon(
-                    pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
-                )
-                // Build summary info into InboxStyle template.
-                .setStyle(
-                    generalNotificationSummaryStyle(
-                        generalNotificationResource.title,
-                        title,
-                    ),
-                )
-                .setGroup(GENERAL_NOTIFICATION_GROUP)
-                .setGroupSummary(true)
-                .setAutoCancel(true)
-                .build()
-        }
-        val style = generalNotificationStyle(bitmap)
-        val notification = createNotification {
-            setSmallIcon(
-                pl.nowinkitransferowe.core.common.R.drawable.core_common_ic_nt_notification,
+            .setGroup(GENERAL_NOTIFICATION_GROUP)
+            .setGroupSummary(true)
+            .setAutoCancel(true)
+            .build()
+        val notification = NotificationCompat.Builder(this, EDITORS_CHANNEL_ID)
+            .setSmallIcon(CommonR.drawable.core_common_ic_nt_notification)
+            .setColor(BRAND_COLOR)
+            .setContentTitle(generalNotificationResource.title)
+            .setContentText(generalNotificationResource.description)
+            .setStyle(
+                if (bitmap != null) {
+                    BigPictureStyle().bigPicture(bitmap)
+                } else {
+                    BigTextStyle().bigText(generalNotificationResource.description)
+                },
             )
-                .setContentTitle(generalNotificationResource.title)
-                .setContentText(generalNotificationResource.description)
-                .setStyle(style)
-                .setContentIntent(
-                    generalNotificationPendingIntent(
-                        generalNotificationResource,
-                    ),
-                )
-                .setGroup(GENERAL_NOTIFICATION_GROUP)
-                .setAutoCancel(true)
-        }
-        // Send the notifications
+            .setContentIntent(generalNotificationPendingIntent(generalNotificationResource))
+            .setGroup(GENERAL_NOTIFICATION_GROUP)
+            .setAutoCancel(true)
+            .build()
         val notificationManager = NotificationManagerCompat.from(this)
-        notificationManager.notify(
-            generalNotificationResource.id,
-            notification,
-        )
+        notificationManager.notify(generalNotificationResource.id, notification)
         notificationManager.notify(GENERAL_NOTIFICATION_SUMMARY_ID, summaryNotification)
     }
 
-    /**
-     * Creates an inbox style summary notification for news updates
-     */
-    private fun newsNotificationStyle(
-        articles: List<Article>,
-        title: String,
-    ): InboxStyle = articles
-        .fold(InboxStyle()) { inboxStyle, article -> inboxStyle.addLine(article.title) }
-        .setBigContentTitle(title)
-        .setSummaryText(title)
+    private fun Context.canPost() = checkSelfPermission(this, permission.POST_NOTIFICATIONS) == PERMISSION_GRANTED
 
-    /**
-     * Creates an inbox style summary notification for transfers updates
-     */
-    private fun transferNotificationStyle(
-        transfers: List<Transfer>,
-        title: String,
-    ): InboxStyle = transfers
-        .fold(InboxStyle()) { inboxStyle, transfer -> inboxStyle.addLine("\uD83D\uDC64 ${transfer.player.name}") }
-        .setBigContentTitle(title)
-        .setSummaryText(title)
+    /** One item as a rich notification: a transfer with its picture, a rumour with its stages. */
+    private fun Context.singleNews(item: NewsItem, group: NewsGroup, images: Map<String, Bitmap>, id: Int): Notification {
+        if (item is NewsItem.RumourNews && VERSION.SDK_INT >= 36) {
+            return rumourWithStages(item, group, images, id)
+        }
+        val builder = newsBuilder(group.channel)
+            .setSubText(group.subject.name)
+            .setContentTitle(itemTitle(item))
+            .setContentText(itemText(item))
+            .setContentIntent(openIntent(item.deepLink(), id))
+            .addAction(0, getString(R.string.core_notifications_action_save), saveIntent(item, id))
+        when (item) {
+            is NewsItem.TransferNews -> {
+                val transfer = item.transfer
+                transfer.player.photoUrl?.let(images::get)?.let { builder.setLargeIcon(circleCrop(it)) }
+                val picture = transferGraphic(transfer, images, transfer.fee.label)
+                builder.setStyle(BigPictureStyle().bigPicture(picture).bigLargeIcon(null as Bitmap?))
+                (transfer.to as? ClubRef.Club)?.let { club ->
+                    builder.addAction(0, club.name, openIntent(clubDeepLink(club.id), id + 1))
+                }
+            }
 
-    /**
-     * Creates an inbox style summary notification for transfers updates
-     */
-    private fun generalNotificationStyle(
-        bitmap: Bitmap?,
-    ): BigPictureStyle = BigPictureStyle().bigPicture(bitmap)
+            is NewsItem.RumourNews -> {
+                val rumour = item.rumour
+                rumour.player.photoUrl?.let(images::get)?.let { builder.setLargeIcon(circleCrop(it)) }
+                // Before Android 16 the stage is in the text: a plain progress bar would hide it
+                builder.setStyle(
+                    BigTextStyle().bigText(
+                        getString(R.string.core_notifications_rumour_stage_of, itemText(item), rumour.stage.level, RumourStage.entries.size),
+                    ),
+                )
+            }
 
-    /**
-     * Creates an inbox style summary notification for transfers updates
-     */
-    private fun generalNotificationSummaryStyle(
-        notificationTitle: String,
-        title: String,
-    ) = InboxStyle().addLine(notificationTitle).setBigContentTitle(title)
-        .setSummaryText(title)
-}
-
-/**
- * Creates a notification for configured for news updates
- */
-private fun Context.createNotification(
-    block: NotificationCompat.Builder.() -> Unit,
-): Notification {
-    ensureNotificationChannelExists()
-    return NotificationCompat.Builder(
-        this,
-        NOTIFICATION_CHANNEL_ID,
-    )
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        .apply(block)
-        .build()
-}
-
-/**
- * Ensures that a notification channel is present if applicable
- */
-private fun Context.ensureNotificationChannelExists() {
-    if (VERSION.SDK_INT < VERSION_CODES.O) return
-
-    val channel = NotificationChannel(
-        NOTIFICATION_CHANNEL_ID,
-        getString(R.string.core_notifications_news_notification_channel_name),
-        NotificationManager.IMPORTANCE_DEFAULT,
-    ).apply {
-        description = getString(R.string.core_notifications_news_notification_channel_description)
+            is NewsItem.ArticleNews -> {
+                val article = item.article
+                val image = (article.thumbnailUrl ?: article.imageUrl)?.let(images::get)
+                builder.setStyle(
+                    if (image != null) {
+                        BigPictureStyle().bigPicture(image).setSummaryText(itemText(item))
+                    } else {
+                        BigTextStyle().bigText(itemText(item))
+                    },
+                )
+            }
+        }
+        return builder.build()
     }
-    // Register the channel with the system
-    NotificationManagerCompat.from(this).createNotificationChannel(channel)
+
+    /**
+     * A rumour on Android 16 and later: the stages as a segmented bar with the player's photo
+     * at the stage it reached.
+     */
+    @SuppressLint("MissingPermission")
+    @RequiresApi(36)
+    private fun Context.rumourWithStages(item: NewsItem.RumourNews, group: NewsGroup, images: Map<String, Bitmap>, id: Int): Notification {
+        val rumour = item.rumour
+        val photo = rumour.player.photoUrl?.let(images::get)?.let(::circleCrop)
+        val stages = RumourStage.entries
+        val style = Notification.ProgressStyle()
+            .setStyledByProgress(false)
+            .setProgressSegments(
+                stages.map { stage ->
+                    Notification.ProgressStyle.Segment(1).setColor(if (stage.level <= rumour.stage.level) STAGE_DONE_COLOR else STAGE_TODO_COLOR)
+                },
+            )
+            .setProgressPoints(
+                (1 until stages.size).map { level ->
+                    Notification.ProgressStyle.Point(level).setColor(if (level <= rumour.stage.level) STAGE_DONE_COLOR else STAGE_TODO_COLOR)
+                },
+            )
+            .setProgress(rumour.stage.level)
+        photo?.let { style.setProgressTrackerIcon(Icon.createWithBitmap(it)) }
+        return Notification.Builder(this, group.channel.channelId())
+            .setSmallIcon(CommonR.drawable.core_common_ic_nt_notification)
+            .setColor(BRAND_COLOR)
+            .setSubText(group.subject.name)
+            .setContentTitle(itemTitle(item))
+            .setContentText(itemText(item))
+            .apply { photo?.let { setLargeIcon(it) } }
+            .setStyle(style)
+            .setContentIntent(openIntent(item.deepLink(), id))
+            .addAction(
+                Notification.Action.Builder(null as Icon?, getString(R.string.core_notifications_action_save), saveIntent(item, id)).build(),
+            )
+            .setGroup(NEWS_NOTIFICATION_GROUP)
+            .setAutoCancel(true)
+            .build()
+    }
+
+    /** Several items about one subject: one notification that opens the club, player or leagues. */
+    private fun Context.groupedNews(group: NewsGroup, images: Map<String, Bitmap>): Notification {
+        val count = group.items.size
+        val text = resources.getQuantityString(R.plurals.core_notifications_news_count, count, count)
+        val style = group.items.take(MAX_LINES).fold(InboxStyle()) { inbox, item -> inbox.addLine(itemLine(item)) }
+            .setBigContentTitle(group.subject.name)
+            .setSummaryText(text)
+        val builder = newsBuilder(group.channel)
+            .setContentTitle(group.subject.name)
+            .setContentText(group.items.joinToString(" · ") { itemTitle(it) })
+            .setStyle(style)
+            .setNumber(count)
+            .setContentIntent(openIntent(group.subject.deepLink(), group.subject.notificationKey().hashCode()))
+        when (val subject = group.subject) {
+            is NewsSubject.Club -> subject.crestUrl?.let(images::get)?.let { builder.setLargeIcon(crestIcon(it)) }
+            is NewsSubject.Player -> subject.photoUrl?.let(images::get)?.let { builder.setLargeIcon(circleCrop(it)) }
+            is NewsSubject.League -> Unit
+        }
+        return builder.build()
+    }
+
+    private fun Context.newsBuilder(channel: NewsChannel) = NotificationCompat.Builder(this, channel.channelId())
+        .setSmallIcon(CommonR.drawable.core_common_ic_nt_notification)
+        .setColor(BRAND_COLOR)
+        .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
+        .setGroup(NEWS_NOTIFICATION_GROUP)
+        .setAutoCancel(true)
+
+    private fun Context.itemTitle(item: NewsItem): String = when (item) {
+        is NewsItem.TransferNews -> getString(R.string.core_notifications_transfer_title, item.transfer.player.name)
+        is NewsItem.RumourNews -> getString(R.string.core_notifications_rumour_title, item.rumour.player.name, item.rumour.to.name)
+        is NewsItem.ArticleNews -> item.article.title
+    }
+
+    private fun Context.itemText(item: NewsItem): String = when (item) {
+        is NewsItem.TransferNews -> getString(
+            R.string.core_notifications_transfer_text,
+            item.transfer.from.name,
+            item.transfer.to.name,
+            item.transfer.fee.label,
+        )
+
+        is NewsItem.RumourNews -> {
+            val rumour = item.rumour
+            val previous = rumour.previousStage?.takeIf { it.level < rumour.stage.level }
+            if (previous != null) {
+                getString(R.string.core_notifications_rumour_stage_up, stageName(previous), stageName(rumour.stage))
+            } else {
+                getString(R.string.core_notifications_rumour_new, stageName(rumour.stage))
+            }
+        }
+
+        is NewsItem.ArticleNews -> HtmlCompat.fromHtml(item.article.lead, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+    }
+
+    /** A line of a grouped notification: the kind, then what happened. */
+    private fun Context.itemLine(item: NewsItem): String = when (item) {
+        is NewsItem.TransferNews -> getString(R.string.core_notifications_line_transfer, item.transfer.player.name, item.transfer.fee.label)
+        is NewsItem.RumourNews -> getString(R.string.core_notifications_line_rumour, item.rumour.player.name, stageName(item.rumour.stage))
+        is NewsItem.ArticleNews -> getString(R.string.core_notifications_line_article, item.article.title)
+    }
+
+    private fun Context.stageName(stage: RumourStage): String = getString(
+        when (stage) {
+            RumourStage.SPECULATION -> R.string.core_notifications_stage_speculation
+            RumourStage.INTEREST -> R.string.core_notifications_stage_interest
+            RumourStage.TALKS -> R.string.core_notifications_stage_talks
+            RumourStage.CLOSE -> R.string.core_notifications_stage_close
+            RumourStage.AGREEMENT -> R.string.core_notifications_stage_agreement
+        },
+    )
 }
 
-private fun Context.newsPendingIntent(
-    article: Article,
-): PendingIntent? = PendingIntent.getActivity(
+private fun NewsChannel.channelId() = when (this) {
+    NewsChannel.FOLLOWED -> FOLLOWED_CHANNEL_ID
+    NewsChannel.LEAGUES -> LEAGUES_CHANNEL_ID
+}
+
+private fun NewsSubject.notificationKey() = when (this) {
+    is NewsSubject.Club -> "club:$id"
+    is NewsSubject.Player -> "player:$id"
+    is NewsSubject.League -> "league:$topic"
+}
+
+private fun NewsSubject.deepLink(): Uri = when (this) {
+    is NewsSubject.Club -> clubDeepLink(id)
+    is NewsSubject.Player -> "$DEEP_LINK_SCHEME_AND_HOST/player/$id".toUri()
+    is NewsSubject.League -> DEEP_LINK_LEAGUES_URI.toUri()
+}
+
+private fun clubDeepLink(id: Int) = "$DEEP_LINK_SCHEME_AND_HOST/club/$id".toUri()
+
+private fun NewsItem.deepLink(): Uri = when (this) {
+    is NewsItem.TransferNews -> "$DEEP_LINK_SCHEME_AND_HOST/transfer/${transfer.id}".toUri()
+    is NewsItem.RumourNews -> "$DEEP_LINK_SCHEME_AND_HOST/rumour/${rumour.id}".toUri()
+    is NewsItem.ArticleNews -> "$DEEP_LINK_SCHEME_AND_HOST/news/${article.id}".toUri()
+}
+
+/** Opens [uri] in the app, or just the app when it is null. */
+private fun Context.openIntent(uri: Uri?, requestCode: Int): PendingIntent = PendingIntent.getActivity(
     this,
-    NEWS_NOTIFICATION_REQUEST_CODE,
+    requestCode,
     Intent().apply {
-        action = Intent.ACTION_VIEW
-        data = article.newsDeepLinkUri()
-        component = ComponentName(
-            packageName,
-            TARGET_ACTIVITY_NAME,
-        )
+        action = if (uri != null) Intent.ACTION_VIEW else Intent.ACTION_MAIN
+        data = uri
+        component = ComponentName(packageName, TARGET_ACTIVITY_NAME)
     },
     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
 )
 
-private fun Context.transferPendingIntent(
-    transfer: Transfer,
-): PendingIntent? = PendingIntent.getActivity(
-    this,
-    TRANSFER_NOTIFICATION_REQUEST_CODE,
-    Intent().apply {
-        action = Intent.ACTION_VIEW
-        data = transfer.transferDeepLinkUri()
-        component = ComponentName(
-            packageName,
-            TARGET_ACTIVITY_NAME,
+/** Saves the item to "Zapisane" and closes the notification [notificationId]. */
+private fun Context.saveIntent(item: NewsItem, notificationId: Int): PendingIntent {
+    val (kind, id) = when (item) {
+        is NewsItem.TransferNews -> NewsItem.TRANSFER_KEY to item.transfer.id
+        is NewsItem.RumourNews -> NewsItem.RUMOUR_KEY to item.rumour.id
+        is NewsItem.ArticleNews -> NewsItem.ARTICLE_KEY to item.article.id
+    }
+    return PendingIntent.getBroadcast(
+        this,
+        notificationId,
+        Intent().apply {
+            component = ComponentName(packageName, SAVE_RECEIVER_NAME)
+            putExtra(EXTRA_SAVE_KIND, kind)
+            putExtra(EXTRA_SAVE_ID, id)
+            putExtra(EXTRA_NOTIFICATION_ID, notificationId)
+        },
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+}
+
+/**
+ * Creates the channels: the editors' one, followed clubs and players, and followed leagues.
+ */
+private fun Context.ensureNotificationChannelsExist() {
+    if (VERSION.SDK_INT < VERSION_CODES.O) return
+    val manager = NotificationManagerCompat.from(this)
+    listOf(
+        Triple(EDITORS_CHANNEL_ID, R.string.core_notifications_channel_editors, R.string.core_notifications_channel_editors_description),
+        Triple(FOLLOWED_CHANNEL_ID, R.string.core_notifications_channel_followed, R.string.core_notifications_channel_followed_description),
+        Triple(LEAGUES_CHANNEL_ID, R.string.core_notifications_channel_leagues, R.string.core_notifications_channel_leagues_description),
+    ).forEach { (id, name, description) ->
+        manager.createNotificationChannel(
+            NotificationChannel(id, getString(name), NotificationManager.IMPORTANCE_DEFAULT).apply {
+                this.description = getString(description)
+            },
         )
-    },
-    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-)
+    }
+}
 
 private fun Context.generalNotificationPendingIntent(generalNotificationResource: GeneralNotificationResource): PendingIntent? = PendingIntent.getActivity(
     this,
-    GENERAL_NOTIFICATIONS_REQUEST_CODE,
+    generalNotificationResource.id,
     Intent().apply {
         action = Intent.ACTION_VIEW
         data = generalNotificationResource.url.toUri()
@@ -344,6 +440,3 @@ private fun Context.generalNotificationPendingIntent(generalNotificationResource
     },
     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
 )
-
-private fun Article.newsDeepLinkUri() = "$DEEP_LINK_NEWS_BASE_PATH/$id".toUri()
-private fun Transfer.transferDeepLinkUri() = "$DEEP_LINK_TRANSFER_BASE_PATH/$id".toUri()

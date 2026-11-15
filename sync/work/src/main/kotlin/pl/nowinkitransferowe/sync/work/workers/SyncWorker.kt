@@ -33,6 +33,8 @@ import pl.nowinkitransferowe.core.analytics.AnalyticsHelper
 import pl.nowinkitransferowe.core.common.network.Dispatcher
 import pl.nowinkitransferowe.core.common.network.NtDispatchers
 import pl.nowinkitransferowe.core.data.Synchronizer
+import pl.nowinkitransferowe.core.data.news.NewsNotifications
+import pl.nowinkitransferowe.core.data.news.SyncNewsRecorder
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.data.repository.ClubRepository
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
@@ -63,6 +65,8 @@ internal class SyncWorker @AssistedInject constructor(
     @Dispatcher(NtDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
     private val subscriber: Subscriber,
+    private val newsRecorder: SyncNewsRecorder,
+    private val newsNotifications: NewsNotifications,
 ) : CoroutineWorker(appContext, workerParams),
     Synchronizer {
 
@@ -75,7 +79,11 @@ internal class SyncWorker @AssistedInject constructor(
             subscriber.subscribeToSync()
             subscriber.subscribeToGeneral()
 
+            // News left over from a sync that was stopped is dropped, as it was never notified
+            newsRecorder.take()
             val syncedSuccessfully = syncApiV3()
+            // What was saved is news even when a later record type failed
+            if (newsNotifications.notify(newsRecorder.take())) HeldNewsWorker.schedule(appContext)
 
             analyticsHelper.logSyncFinished(syncedSuccessfully)
 

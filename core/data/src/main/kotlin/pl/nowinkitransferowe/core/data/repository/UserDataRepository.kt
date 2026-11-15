@@ -39,6 +39,23 @@ interface UserDataRepository {
 
     suspend fun setPlayerFollowed(playerId: Int, followed: Boolean)
 
+    /** Follows the league with the topic [topicSlug] for its important news. */
+    suspend fun setTopicFollowed(topicSlug: String, followed: Boolean)
+
+    /** Turns the notifications about followed clubs and players on or off. */
+    suspend fun setFollowedNotificationsAllowed(isAllowed: Boolean)
+
+    /** Turns the notifications about important news of followed leagues on or off. */
+    suspend fun setFollowedLeaguesNotificationsAllowed(isAllowed: Boolean)
+
+    suspend fun setFollowedTransfersNotified(isNotified: Boolean)
+
+    suspend fun setFollowedRumoursNotified(isNotified: Boolean)
+
+    suspend fun setFollowedArticlesNotified(isNotified: Boolean)
+
+    suspend fun setQuietHours(isEnabled: Boolean)
+
     /** Marks every transfer up to [id] as read. */
     suspend fun setTransfersReadUpTo(id: Int)
 

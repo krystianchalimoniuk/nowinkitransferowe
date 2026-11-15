@@ -49,6 +49,10 @@ interface RumourDao {
     @Query("DELETE FROM rumour_stages WHERE rumour_id IN (:rumourIds)")
     suspend fun deleteStages(rumourIds: List<Int>)
 
+    /** The stages of the rumours with [ids] that are on the phone. */
+    @Query("SELECT id, stage FROM rumours WHERE id IN (:ids)")
+    suspend fun getStages(ids: Set<Int>): List<RumourStageLevel>
+
     @Query("DELETE FROM rumours WHERE id IN (:ids)")
     suspend fun deleteRumours(ids: List<Int>)
 
@@ -114,3 +118,6 @@ private const val SELECT_RUMOURS = """
     LEFT JOIN clubs fc ON fc.id = r.from_club_id
     LEFT JOIN clubs tc ON tc.id = r.to_club_id
 """
+
+/** A rumour's [stage] level, as saved. */
+data class RumourStageLevel(val id: Int, val stage: Int)

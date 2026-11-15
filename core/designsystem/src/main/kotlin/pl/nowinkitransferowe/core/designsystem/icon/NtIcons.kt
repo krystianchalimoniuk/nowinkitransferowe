@@ -36,6 +36,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.Bedtime
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material.icons.rounded.Bookmarks
@@ -127,6 +128,7 @@ object NtIcons {
     val Visibility = Icons.Rounded.Visibility
     val ChevronRight = Icons.Rounded.ChevronRight
     val DarkMode = Icons.Rounded.DarkMode
+    val Bedtime = Icons.Rounded.Bedtime
     val Info = Icons.Rounded.Info
     val Language = Icons.Rounded.Language
     val NotificationsOff = Icons.Rounded.NotificationsOff

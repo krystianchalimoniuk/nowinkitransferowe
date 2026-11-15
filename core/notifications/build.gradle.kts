@@ -28,4 +28,8 @@ dependencies {
     implementation(projects.core.common)
 
     compileOnly(platform(libs.androidx.compose.bom))
+
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(projects.core.testing)
 }

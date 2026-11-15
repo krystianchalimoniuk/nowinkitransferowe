@@ -56,8 +56,6 @@ class SettingsViewModelTest {
                 UserEditableSettings(
                     darkThemeConfig = DarkThemeConfig.DARK,
                     useDynamicColor = false,
-                    isNewsNotificationsAllowed = true,
-                    isTransfersNotificationsAllowed = true,
                     isGeneralNotificationsAllowed = true,
                 ),
             ),

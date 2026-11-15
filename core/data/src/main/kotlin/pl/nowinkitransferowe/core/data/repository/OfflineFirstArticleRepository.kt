@@ -17,7 +17,6 @@
 package pl.nowinkitransferowe.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import pl.nowinkitransferowe.core.data.Synchronizer
 import pl.nowinkitransferowe.core.data.model.asEntity
@@ -27,6 +26,7 @@ import pl.nowinkitransferowe.core.data.model.playerEntities
 import pl.nowinkitransferowe.core.data.model.playerStub
 import pl.nowinkitransferowe.core.data.model.tagEntities
 import pl.nowinkitransferowe.core.data.model.topicEntities
+import pl.nowinkitransferowe.core.data.news.SyncNewsRecorder
 import pl.nowinkitransferowe.core.data.syncChanges
 import pl.nowinkitransferowe.core.database.dao.ArticleDao
 import pl.nowinkitransferowe.core.database.dao.ClubDao
@@ -39,7 +39,6 @@ import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.ArticleKind
 import pl.nowinkitransferowe.core.network.NetworkRecordType
 import pl.nowinkitransferowe.core.network.NtNetworkDataSource
-import pl.nowinkitransferowe.core.notifications.Notifier
 import javax.inject.Inject
 
 internal class OfflineFirstArticleRepository @Inject constructor(
@@ -48,7 +47,7 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     private val playerDao: PlayerDao,
     private val network: NtNetworkDataSource,
     private val ntPreferencesDataSource: NtPreferencesDataSource,
-    private val notifier: Notifier,
+    private val newsRecorder: SyncNewsRecorder,
 ) : ArticleRepository {
 
     override fun observeArticle(id: Int): Flow<Article?> = articleDao.observeArticle(id).map { it?.asExternalModel() }
@@ -101,9 +100,7 @@ internal class OfflineFirstArticleRepository @Inject constructor(
         )
         // After the first sync everything there is counts as read; later articles are new
         if (synced) ntPreferencesDataSource.setReadUpToIfUnset(articleId = articleDao.getNewestId(), transferId = null)
-        if (synced && addedIds.isNotEmpty() && ntPreferencesDataSource.userData.first().isNewsNotificationsAllowed) {
-            notifier.postArticleNotifications(observeArticles(addedIds).first())
-        }
+        newsRecorder.recordArticles(addedIds)
         return synced
     }
 }

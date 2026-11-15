@@ -71,5 +71,17 @@ message UserPreferences {
     int32 articles_read_up_to_id = 38;
     int32 transfers_read_up_to_id = 39;
 
-    // NEXT AVAILABLE ID: 40
+    // Which news about followed clubs and players notify: new transfers, rumours moving to a
+    // higher stage and new articles. Turned on and off by UserPreferencesMigration's defaults.
+    bool notify_followed_transfers = 40;
+    bool notify_followed_rumours = 41;
+    bool notify_followed_articles = 42;
+
+    // Holds the app's own notifications from 23:00 to 7:00 for one morning summary.
+    bool quiet_hours = 43;
+
+    // Keys of the records held back by the quiet hours, oldest first, posted together at 7:00.
+    repeated string pending_notification_keys = 44;
+
+    // NEXT AVAILABLE ID: 45
 }

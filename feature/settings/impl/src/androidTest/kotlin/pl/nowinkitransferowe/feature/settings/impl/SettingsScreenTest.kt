@@ -17,7 +17,6 @@
 package pl.nowinkitransferowe.feature.settings.impl
 
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -43,13 +42,11 @@ class SettingsScreenTest {
     private val settings = UserEditableSettings(
         darkThemeConfig = DarkThemeConfig.DARK,
         useDynamicColor = false,
-        isNewsNotificationsAllowed = true,
-        isTransfersNotificationsAllowed = false,
         isGeneralNotificationsAllowed = true,
     )
 
     private var darkThemeConfig: DarkThemeConfig? = null
-    private var transfersAllowed: Boolean? = null
+    private var generalAllowed: Boolean? = null
     private var backClicked = false
     private var followedOpened = false
     private var systemSettingsOpened = false
@@ -65,9 +62,7 @@ class SettingsScreenTest {
                 onBackClick = { backClicked = true },
                 onChangeDynamicColorPreference = {},
                 onChangeDarkThemeConfig = { darkThemeConfig = it },
-                onChangeNewsNotificationsPreference = {},
-                onChangeTransfersNotificationsPreference = { transfersAllowed = it },
-                onChangeGeneralNotificationsPreference = {},
+                onChangeGeneralNotificationsPreference = { generalAllowed = it },
                 onOpenSystemNotificationSettings = { systemSettingsOpened = true },
                 onOpenLicenses = {},
                 appVersion = "4.0.0",
@@ -95,10 +90,8 @@ class SettingsScreenTest {
     fun notificationSwitches_showStateAndReportChanges() {
         setContent()
         val general = getString(R.string.feature_settings_impl_notification_channel_general)
-        val transfers = getString(R.string.feature_settings_impl_notification_channel_transfers)
-        composeTestRule.onNodeWithTag(general).assertIsOn()
-        composeTestRule.onNodeWithTag(transfers).performScrollTo().assertIsOff().performClick()
-        assertEquals(true, transfersAllowed)
+        composeTestRule.onNodeWithTag(general).performScrollTo().assertIsOn().performClick()
+        assertEquals(false, generalAllowed)
     }
 
     @Test

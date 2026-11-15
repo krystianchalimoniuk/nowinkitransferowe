@@ -37,12 +37,19 @@ class UserPreferencesMigration @Inject constructor() : DataMigration<UserPrefere
             notifyFollowed = true
             notifyFollowedLeagues = true
         }
+        if (schemaVersion < 2) {
+            // 4.0: which news about followed clubs and players notify, and the quiet hours.
+            notifyFollowedTransfers = true
+            notifyFollowedRumours = true
+            notifyFollowedArticles = false
+            quietHours = true
+        }
         schemaVersion = CURRENT_SCHEMA_VERSION
     }
 
     override suspend fun cleanUp() = Unit
 
     companion object {
-        const val CURRENT_SCHEMA_VERSION = 1
+        const val CURRENT_SCHEMA_VERSION = 2
     }
 }

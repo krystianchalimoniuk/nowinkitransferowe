@@ -48,6 +48,20 @@ class FakeUserDataRepository @Inject constructor(
 
     override suspend fun setPlayerFollowed(playerId: Int, followed: Boolean) = ntPreferencesDataSource.setPlayerFollowed(playerId, followed)
 
+    override suspend fun setTopicFollowed(topicSlug: String, followed: Boolean) = ntPreferencesDataSource.setTopicFollowed(topicSlug, followed)
+
+    override suspend fun setFollowedNotificationsAllowed(isAllowed: Boolean) = ntPreferencesDataSource.setFollowedNotificationsAllowed(isAllowed)
+
+    override suspend fun setFollowedLeaguesNotificationsAllowed(isAllowed: Boolean) = ntPreferencesDataSource.setFollowedLeaguesNotificationsAllowed(isAllowed)
+
+    override suspend fun setFollowedTransfersNotified(isNotified: Boolean) = ntPreferencesDataSource.setFollowedTransfersNotified(isNotified)
+
+    override suspend fun setFollowedRumoursNotified(isNotified: Boolean) = ntPreferencesDataSource.setFollowedRumoursNotified(isNotified)
+
+    override suspend fun setFollowedArticlesNotified(isNotified: Boolean) = ntPreferencesDataSource.setFollowedArticlesNotified(isNotified)
+
+    override suspend fun setQuietHours(isEnabled: Boolean) = ntPreferencesDataSource.setQuietHours(isEnabled)
+
     override suspend fun setTransfersReadUpTo(id: Int) = ntPreferencesDataSource.setTransfersReadUpTo(id)
 
     override suspend fun setArticlesReadUpTo(id: Int) = ntPreferencesDataSource.setArticlesReadUpTo(id)

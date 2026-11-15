@@ -35,6 +35,7 @@ import pl.nowinkitransferowe.core.screenshottesting.captureMultiDevice
 import pl.nowinkitransferowe.core.testing.data.clubsTestData
 import pl.nowinkitransferowe.core.testing.data.lewandowskiTestData
 import pl.nowinkitransferowe.core.testing.data.playersTestData
+import pl.nowinkitransferowe.core.testing.data.topicsTestData
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -48,6 +49,8 @@ class FollowedScreenshotTests {
     private val followed = FollowedUiState.Success(
         clubs = listOf(FollowedClub(clubsTestData[1], "Serie A"), FollowedClub(clubsTestData[0], "Premier League")),
         players = listOf(playersTestData[0], lewandowskiTestData),
+        notifications = FollowedNotifications(followedLeagues = setOf("premier-league")),
+        leagues = topicsTestData,
     )
 
     @Test
