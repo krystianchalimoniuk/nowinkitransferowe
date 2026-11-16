@@ -232,6 +232,8 @@ jobs:
 
       - name: Build projects and run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
+        # Below the job timeout, so a hang still leaves time to upload logcat and reports
+        timeout-minutes: 42
         with:
           api-level: ${{ matrix.api-level }}
           # The "default" API 26 image crashes in Compose SlotWriter on activity destroy;
@@ -241,7 +243,15 @@ jobs:
           disable-animations: true
           disk-size: 6000M
           heap-size: 600M
-          script: ./gradlew connectedDemoDebugAndroidTest --daemon
+          # Each script line runs in its own shell. Logcat and a screenshot every two minutes
+          # are written to build/emulator-diagnostics for the artifact below. timeout_msec fails
+          # any test that runs over 5 minutes instead of hanging the job.
+          script: |
+            mkdir -p build/emulator-diagnostics/screenshots
+            adb logcat -c || true
+            nohup adb logcat -v threadtime > build/emulator-diagnostics/logcat.txt 2>&1 &
+            nohup sh -c 'while sleep 120; do adb exec-out screencap -p > build/emulator-diagnostics/screenshots/$(date +%H%M%S).png; done' > /dev/null 2>&1 &
+            ./gradlew connectedDemoDebugAndroidTest --daemon --continue -Pandroid.testInstrumentationRunnerArguments.timeout_msec=300000 || (adb shell dumpsys activity activities > build/emulator-diagnostics/activities.txt; adb shell dumpsys window windows > build/emulator-diagnostics/windows.txt; adb pull /data/anr build/emulator-diagnostics/anr; exit 1)
 
       # The emulator step leaves its Gradle and Kotlin daemons (4 GB each) running, and the next
       # step forks a new single-use daemon, so the runner runs out of memory and shuts down.
@@ -266,7 +276,18 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-reports-${{ matrix.api-level }}
-          path: '**/build/reports/androidTests'
+          path: |
+            **/build/reports/androidTests
+            **/build/outputs/androidTest-results/connected/**/*.xml
+            **/build/outputs/androidTest-results/connected/**/logcat-*.txt
+
+      - name: Upload emulator diagnostics (logcat, screenshots, ANR traces)
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-diagnostics-${{ matrix.api-level }}
+          path: build/emulator-diagnostics
+          if-no-files-found: ignore
 
       - name: Display local test coverage (only API 34)
         if: matrix.api-level == 34

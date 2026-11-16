@@ -39,6 +39,7 @@ import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
+import pl.nowinkitransferowe.core.testing.rules.HangTimeoutRule
 import javax.inject.Inject
 import pl.nowinkitransferowe.feature.articles.impl.R as NewsR
 import pl.nowinkitransferowe.feature.bookmarks.impl.R as BookmarksR
@@ -52,6 +53,12 @@ import pl.nowinkitransferowe.feature.transfers.impl.R as TransfersR
  */
 @HiltAndroidTest
 class NavigationTest {
+
+    /**
+     * Fails a stuck test after 3 minutes with a thread dump, instead of hanging the CI job.
+     */
+    @get:Rule(order = -1)
+    val hangTimeout = HangTimeoutRule()
 
     /**
      * Manages the components' state and is used to perform injection on your test
