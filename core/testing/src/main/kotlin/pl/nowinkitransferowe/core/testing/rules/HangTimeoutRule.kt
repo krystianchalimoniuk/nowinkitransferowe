@@ -58,8 +58,7 @@ class HangTimeoutRule(private val minutes: Long = 3) : TestRule {
         }
     }
 
-    private class StuckThreadException(thread: Thread, stack: Array<StackTraceElement>) :
-        Exception("Stack of thread \"${thread.name}\" (${thread.state}) at the timeout") {
+    private class StuckThreadException(thread: Thread, stack: Array<StackTraceElement>) : Exception("Stack of thread \"${thread.name}\" (${thread.state}) at the timeout") {
         init {
             stackTrace = stack
         }
