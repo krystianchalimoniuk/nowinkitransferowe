@@ -16,15 +16,14 @@
 
 package pl.nowinkitransferowe.benchmarks.bookmarks
 
+import androidx.test.uiautomator.Until
+import pl.nowinkitransferowe.benchmarks.waitAndFindObject
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
 import pl.nowinkitransferowe.benchmarks.waitForObjectOnTopAppBar
 
 fun MacrobenchmarkScope.goToBookmarksScreen() {
-    val savedSelector = By.text("Zapisane")
-    val savedButton = device.findObject(savedSelector)
-    savedButton.click()
+    device.waitAndFindObject(By.text("Zapisane"), 5_000).click()
     device.waitForIdle()
-    // Wait until saved title are shown on screen
-    waitForObjectOnTopAppBar(savedSelector)
+    device.wait(Until.hasObject(By.res("bookmarks:feed")), 5_000)
 }

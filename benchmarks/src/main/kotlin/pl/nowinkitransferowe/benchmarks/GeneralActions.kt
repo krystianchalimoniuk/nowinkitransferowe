@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.benchmarks
 
+import androidx.test.uiautomator.untilHasChildren
 import android.Manifest.permission
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
@@ -54,6 +55,46 @@ fun MacrobenchmarkScope.allowNotifications() {
 fun MacrobenchmarkScope.startActivityAndAllowNotifications() {
     startActivityAndWait()
     allowNotifications()
+    skipClubsOnboarding()
+}
+
+/**
+ * Skips "Wybierz swoje kluby", which a fresh install shows before the app.
+ */
+fun MacrobenchmarkScope.skipClubsOnboarding() {
+    val skip = By.text("Pomiń")
+    device.wait(Until.findObject(skip), 5_000)?.let {
+        it.click()
+        device.wait(Until.gone(skip), 5_000)
+    }
+}
+
+/** Opens the top level destination labelled [label] in the navigation bar. */
+fun MacrobenchmarkScope.goToTopLevel(label: String, content: String) {
+    device.waitAndFindObject(By.text(label), 5_000)
+    // The navigation bar is at the bottom; the home screen also has a "Plotki" tab
+    device.findObjects(By.text(label)).maxBy { it.visibleBounds.bottom }.click()
+    device.waitForIdle()
+    device.wait(Until.gone(By.res("loadingWheel")), 5_000)
+    device.waitAndFindObject(By.res(content), 30_000).wait(untilHasChildren(), 30_000)
+}
+
+/** Clicks the first item of the list [list] that is a card or row, not a chip or tab. */
+fun MacrobenchmarkScope.openFirstItem(list: String) {
+    // The list can be on screen before its items, so wait for one
+    val deadline = System.currentTimeMillis() + 10_000
+    while (true) {
+        val item = device.findObject(By.res(list))
+            ?.findObjects(By.clickable(true))
+            ?.firstOrNull { it.visibleBounds.width() > device.displayWidth / 2 && it.visibleBounds.height() > device.displayHeight / 24 }
+        if (item != null) {
+            item.click()
+            device.waitForIdle()
+            return
+        }
+        check(System.currentTimeMillis() < deadline) { "No item to open in $list" }
+        Thread.sleep(200)
+    }
 }
 
 /**
