@@ -29,13 +29,25 @@ data class Transfer(
     val fee: Fee,
     val date: LocalDate,
     val articleId: Int?,
+    /** The last day of a loan; null for other transfers. */
+    val loanUntil: LocalDate? = null,
 ) {
     val season: Season get() = Season.of(date)
+
+    /** A loan that has not ended on [today]. */
+    fun isLoanOn(today: LocalDate): Boolean = isLoanOn(fee, loanUntil, today)
+
+    /** Where the transfer leaves the player on [today]: after a loan ends he is back at [from], as on the website. */
+    fun clubOn(today: LocalDate): ClubRef = clubOn(from, to, fee, loanUntil, today)
 
     /** A contract extension (the same club on both sides); left out of spending, income and season lists. */
     val isExtension: Boolean
         get() = from is ClubRef.Club && to is ClubRef.Club && from.id == to.id
 }
+
+internal fun isLoanOn(fee: Fee, loanUntil: LocalDate?, today: LocalDate): Boolean = fee.kind == FeeKind.LOAN && (loanUntil == null || today <= loanUntil)
+
+internal fun clubOn(from: ClubRef, to: ClubRef, fee: Fee, loanUntil: LocalDate?, today: LocalDate): ClubRef = if (fee.kind == FeeKind.LOAN && loanUntil != null && today > loanUntil && from is ClubRef.Club) from else to
 
 /**
  * A player as a transfer or rumour refers to him; his current name comes from the players table

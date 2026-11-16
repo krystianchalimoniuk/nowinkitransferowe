@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "872d9e59e892f238cd79ec3404b19cdc",
+    "identityHash": "aead17aff67444c083f6b59395cd35b3",
     "entities": [
       {
         "tableName": "recentSearchQueries",
@@ -420,7 +420,7 @@
       },
       {
         "tableName": "transfers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `player_id` INTEGER, `player_name` TEXT NOT NULL, `from_club_id` INTEGER, `from_club_name` TEXT, `from_status` TEXT, `to_club_id` INTEGER, `to_club_name` TEXT, `to_status` TEXT, `fee_kind` TEXT NOT NULL, `fee_label` TEXT NOT NULL, `fee_millions` REAL, `date` TEXT NOT NULL, `season` INTEGER NOT NULL, `article_id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`player_id`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`from_club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`to_club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `player_id` INTEGER, `player_name` TEXT NOT NULL, `from_club_id` INTEGER, `from_club_name` TEXT, `from_status` TEXT, `to_club_id` INTEGER, `to_club_name` TEXT, `to_status` TEXT, `fee_kind` TEXT NOT NULL, `fee_label` TEXT NOT NULL, `fee_millions` REAL, `date` TEXT NOT NULL, `season` INTEGER NOT NULL, `article_id` INTEGER, `loan_until` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`player_id`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`from_club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`to_club_id`) REFERENCES `clubs`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`article_id`) REFERENCES `articles`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -502,6 +502,11 @@
             "fieldPath": "articleId",
             "columnName": "article_id",
             "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "loanUntil",
+            "columnName": "loan_until",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -1688,7 +1693,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '872d9e59e892f238cd79ec3404b19cdc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aead17aff67444c083f6b59395cd35b3')"
     ]
   }
 }

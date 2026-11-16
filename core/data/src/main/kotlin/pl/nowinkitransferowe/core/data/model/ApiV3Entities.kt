@@ -94,6 +94,7 @@ fun NetworkTransfer.asEntity(existingArticleIds: Set<Int>) = TransferEntity(
     date = date,
     season = Season.of(date).startYear,
     articleId = articleId?.takeIf { it in existingArticleIds },
+    loanUntil = loanUntil,
 )
 
 /**
