@@ -19,6 +19,7 @@ package pl.nowinkitransferowe.feature.transfers.impl
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -83,16 +84,33 @@ class TransfersScreenTest {
         composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.feature_transfers_impl_mark_as_read)).assertDoesNotExist()
     }
 
+    @Test
+    fun syncWithTransfersOnScreen_showsTheBar_notTheWheel() {
+        composeTestRule.setContent { Screen(state, isSyncing = true) }
+
+        composeTestRule.onNodeWithTag("sync:progress").assertExists()
+        composeTestRule.onNodeWithContentDescription(composeTestRule.activity.getString(R.string.feature_transfers_impl_loading)).assertDoesNotExist()
+    }
+
+    @Test
+    fun syncWithoutTransfers_showsTheWheel() {
+        composeTestRule.setContent { Screen(state.copy(transfers = emptyList()), isSyncing = true) }
+
+        composeTestRule.onNodeWithContentDescription(composeTestRule.activity.getString(R.string.feature_transfers_impl_loading)).assertExists()
+        composeTestRule.onNodeWithTag("sync:progress").assertDoesNotExist()
+    }
+
     @Composable
     private fun Screen(
         uiState: TransfersUiState,
         onSeasonSelected: (Season) -> Unit = {},
         onTransferClick: (Int) -> Unit = {},
         onMarkAsRead: () -> Unit = {},
+        isSyncing: Boolean = false,
     ) {
         TransfersScreen(
             uiState = uiState,
-            isSyncing = false,
+            isSyncing = isSyncing,
             onSeasonSelected = onSeasonSelected,
             onTopicSelected = {},
             onTransferClick = onTransferClick,

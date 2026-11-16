@@ -40,13 +40,10 @@ fun MacrobenchmarkScope.newsScrollFeedDownUp() {
 }
 
 fun MacrobenchmarkScope.setAppTheme(isDark: Boolean) {
-    when (isDark) {
-        true -> device.findObject(By.text("Dark")).click()
-        false -> device.findObject(By.text("Light")).click()
-    }
+    // The full screen settings of 4.0, opened from the top app bar
+    device.waitAndFindObject(By.desc("Ustawienia"), 5_000).click()
+    device.waitAndFindObject(By.text(if (isDark) "Ciemny" else "Jasny"), 5_000).click()
     device.waitForIdle()
-    device.findObject(By.text("OK")).click()
-
-    // Wait until the top app bar is visible on screen
-    waitForObjectOnTopAppBar(By.text("Nowinki transferowe"))
+    device.pressBack()
+    device.waitAndFindObject(By.res("news:feed"), 10_000)
 }

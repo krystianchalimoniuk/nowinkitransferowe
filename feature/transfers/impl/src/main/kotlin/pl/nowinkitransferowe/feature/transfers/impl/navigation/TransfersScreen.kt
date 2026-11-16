@@ -46,12 +46,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
-import pl.nowinkitransferowe.core.designsystem.component.NtOverlayLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtTextButton
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
 import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.ui.FollowedChip
+import pl.nowinkitransferowe.core.ui.SyncIndicator
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferListItem
@@ -162,14 +162,12 @@ internal fun TransfersScreen(
                 }
             }
         }
-        if (isSyncing || uiState is TransfersUiState.Loading) {
-            NtOverlayLoadingWheel(
-                contentDesc = stringResource(R.string.feature_transfers_impl_loading),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 8.dp),
-            )
-        }
+        SyncIndicator(
+            isLoading = uiState is TransfersUiState.Loading,
+            isSyncing = isSyncing,
+            hasContent = uiState is TransfersUiState.Success && uiState.transfers.isNotEmpty(),
+            contentDesc = stringResource(R.string.feature_transfers_impl_loading),
+        )
     }
     TrackScreenViewEvent(screenName = "Transfers")
 }
@@ -182,7 +180,13 @@ private fun LeagueChips(
     hasFollowed: Boolean = false,
     onlyFollowed: Boolean = false,
 ) {
+    val listState = rememberLazyListState()
+    // The "Obserwowane" chip comes first once something is followed; show it then
+    LaunchedEffect(hasFollowed) {
+        if (hasFollowed && selected == null && !onlyFollowed) listState.scrollToItem(0)
+    }
     LazyRow(
+        state = listState,
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {

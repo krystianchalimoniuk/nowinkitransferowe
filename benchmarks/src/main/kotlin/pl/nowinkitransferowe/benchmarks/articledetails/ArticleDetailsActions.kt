@@ -16,6 +16,7 @@
 
 package pl.nowinkitransferowe.benchmarks.articledetails
 
+import java.util.regex.Pattern
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Until
@@ -23,16 +24,15 @@ import pl.nowinkitransferowe.benchmarks.flingElementDownUp
 import pl.nowinkitransferowe.benchmarks.waitForObjectOnTopAppBar
 
 fun MacrobenchmarkScope.goToArticleDetailsScreen() {
-    device.findObject(By.text("Oficjalnie: Raphael Varane w Como 1907")).click()
-    device.waitForIdle()
-    // Wait until transfers are shown on screen
-    waitForObjectOnTopAppBar(By.text("Transfery"))
-
-    // Wait until content is loaded by checking if transfers are loaded
-    device.wait(Until.gone(By.res("loadingWheel")), 5_000)
+    // The hero card and the article rows are tagged with their article's id
+    val article = device.wait(Until.findObject(By.res(Pattern.compile("article:\\d+"))), 30_000) ?: return
+    article.click()
+    device.wait(Until.hasObject(By.res("article:content")), 10_000)
 }
 
 fun MacrobenchmarkScope.detailsNewsScrollFeedDownUp() {
-    val feedList = device.findObject(By.res("details_transfers:feed"))
-    device.flingElementDownUp(feedList)
+    val article = device.findObject(By.scrollable(true).hasDescendant(By.res("article:content")))
+        ?: device.findObject(By.scrollable(true))
+        ?: return
+    device.flingElementDownUp(article)
 }

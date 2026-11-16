@@ -31,6 +31,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -252,7 +255,8 @@ class MainActivity : ComponentActivity() {
                     val onboarding = (uiState as? Success)?.userData?.isClubsOnboardingShown == false
                     if (onboarding) {
                         // "Wybierz swoje kluby" once, on a new install and after the update to 4.0
-                        NtBackground { OnboardingRoute() }
+                        // Tags as resource ids, like in NtApp, so that UI Automator finds "Pomiń"
+                        NtBackground(Modifier.semantics { testTagsAsResourceId = true }) { OnboardingRoute() }
                     } else {
                         NtApp(appState, deepLinkKeys = deepLinkKeys.orEmpty())
                     }

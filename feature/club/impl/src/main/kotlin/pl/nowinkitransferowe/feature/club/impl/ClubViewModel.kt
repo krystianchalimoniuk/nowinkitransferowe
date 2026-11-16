@@ -49,8 +49,8 @@ import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.model.UserTransfer
 
-/** The tabs of the club screen. */
-enum class ClubTab { FINANCES, ARRIVALS, DEPARTURES, RUMOURS }
+/** The tabs of the club screen; who came first, as that is what most readers look for. */
+enum class ClubTab { ARRIVALS, DEPARTURES, RUMOURS, FINANCES }
 
 sealed interface ClubUiState {
     data object Loading : ClubUiState
@@ -107,7 +107,7 @@ class ClubViewModel @AssistedInject constructor(
     @Assisted val clubId: Int,
 ) : ViewModel() {
 
-    private val tab = savedStateHandle.getStateFlow(TAB_KEY, ClubTab.FINANCES)
+    private val tab = savedStateHandle.getStateFlow(TAB_KEY, ClubTab.ARRIVALS)
 
     /** Start year of the picked season, [ALL_SEASONS] for all of them, null before a pick. */
     private val pickedSeason = savedStateHandle.getStateFlow<Int?>(SEASON_KEY, null)
