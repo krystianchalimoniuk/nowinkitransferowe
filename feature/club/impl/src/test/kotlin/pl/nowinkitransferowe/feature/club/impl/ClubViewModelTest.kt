@@ -151,9 +151,12 @@ class ClubViewModelTest {
         val viewModel = viewModel(clubId = 86)
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        viewModel.selectTab(ClubTab.ARRIVALS)
-
+        // Who came first, as that is what most readers look for
         assertEquals(ClubTab.ARRIVALS, assertIs<ClubUiState.Success>(viewModel.uiState.value).tab)
+
+        viewModel.selectTab(ClubTab.FINANCES)
+
+        assertEquals(ClubTab.FINANCES, assertIs<ClubUiState.Success>(viewModel.uiState.value).tab)
     }
 
     @Test

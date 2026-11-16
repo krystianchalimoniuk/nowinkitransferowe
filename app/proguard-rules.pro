@@ -19,3 +19,8 @@
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 # Repackage classes into the default package to reduce the size of descriptors.
 -repackageclasses
+
+# Firebase creates its component registrars by reflection. Since AGP 9, R8 full mode drops the
+# constructors of classes kept without members, which left Crashlytics, Messaging and Analytics
+# without their registrars in release builds.
+-keep class * implements com.google.firebase.components.ComponentRegistrar { public <init>(); }

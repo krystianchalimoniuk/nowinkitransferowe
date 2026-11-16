@@ -50,7 +50,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus.Denied
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.collectLatest
-import pl.nowinkitransferowe.core.designsystem.component.NtOverlayLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.Topic
@@ -59,6 +58,7 @@ import pl.nowinkitransferowe.core.ui.ArticleHeroCard
 import pl.nowinkitransferowe.core.ui.ArticleListItem
 import pl.nowinkitransferowe.core.ui.FollowedChip
 import pl.nowinkitransferowe.core.ui.RumourCarouselCard
+import pl.nowinkitransferowe.core.ui.SyncIndicator
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferCarouselCard
@@ -182,14 +182,12 @@ internal fun ArticlesScreen(
                 }
             }
         }
-        if (isSyncing || uiState is HomeUiState.Loading) {
-            NtOverlayLoadingWheel(
-                contentDesc = stringResource(R.string.feature_articles_impl_loading),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 8.dp),
-            )
-        }
+        SyncIndicator(
+            isLoading = uiState is HomeUiState.Loading,
+            isSyncing = isSyncing,
+            hasContent = uiState is HomeUiState.Success && (uiState.featured != null || uiState.latest.isNotEmpty()),
+            contentDesc = stringResource(R.string.feature_articles_impl_loading),
+        )
     }
     TrackScreenViewEvent(screenName = "Home")
     NotificationPermissionEffect()
@@ -231,6 +229,10 @@ private fun TopicChips(
     onlyFollowed: Boolean = false,
 ) {
     val listState = rememberLazyListState()
+    // The "Obserwowane" chip comes first once something is followed; show it then
+    LaunchedEffect(hasFollowed) {
+        if (hasFollowed && selected == null && !onlyFollowed) listState.scrollToItem(0)
+    }
     // A topic picked elsewhere, e.g. by a link to /temat/{slug}, scrolls into view
     LaunchedEffect(selected, topics) {
         val index = topics.indexOfFirst { it.slug == selected }

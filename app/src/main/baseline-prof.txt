@@ -30316,7 +30316,6 @@ HSPLpl/nowinkitransferowe/util/ProfileVerifierLogger$Companion;-><init>(Lkotlin/
 HSPLpl/nowinkitransferowe/util/ProfileVerifierLogger$invoke$1;-><init>(Lkotlin/coroutines/Continuation;)V
 HSPLpl/nowinkitransferowe/util/ProfileVerifierLogger$invoke$1;->create(Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Lkotlin/coroutines/Continuation;
 HSPLpl/nowinkitransferowe/util/ProfileVerifierLogger$invoke$1;->invokeSuspend(Ljava/lang/Object;)Ljava/lang/Object;
-HSPLpl/nowinkitransferowe/util/ProfileVerifierLogger$invoke$1;->invokeSuspend(Ljava/lang/Object;)Ljava/lang/Object;Landroidx/activity/BackEventCompat$$ExternalSyntheticApiModelOutline0;
 HSPLpl/nowinkitransferowe/util/ProfileVerifierLogger;-><clinit>()V
 HSPLpl/nowinkitransferowe/util/ProfileVerifierLogger;-><init>(Lkotlinx/coroutines/CoroutineScope;)V
 HSPLpl/nowinkitransferowe/util/ProfileVerifierLogger;->invoke()Lkotlinx/coroutines/Job;
