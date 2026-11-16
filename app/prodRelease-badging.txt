@@ -1,4 +1,4 @@
-package: name='pl.nowinkitransferowe' versionCode='13' versionName='3.2.0' platformBuildVersionName='17' platformBuildVersionCode='37' compileSdkVersion='37' compileSdkVersionCodename='17'
+package: name='pl.nowinkitransferowe' versionCode='14' versionName='4.0.0' platformBuildVersionName='17' platformBuildVersionCode='37' compileSdkVersion='37' compileSdkVersionCodename='17'
 minSdkVersion:'24'
 targetSdkVersion:'36'
 uses-permission: name='android.permission.INTERNET'
