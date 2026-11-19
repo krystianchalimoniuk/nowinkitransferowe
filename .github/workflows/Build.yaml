@@ -67,7 +67,7 @@ jobs:
           ./gradlew dependencyGuardBaseline
 
       - name: Push new Dependency Guard baselines if available
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         if: steps.dependencyguard_baseline.outcome == 'success'
         with:
           file_pattern: '**/dependencies/*.txt'
@@ -93,7 +93,7 @@ jobs:
 
       - name: Push new graphs if available
         if: steps.graphs_verify.outcome == 'failure' && github.event_name == 'pull_request'
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           file_pattern: '**/README.md'
           disable_globbing: true
@@ -119,7 +119,7 @@ jobs:
           ./gradlew recordRoborazziDemoDebug
 
       - name: Push new screenshots if available
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         if: steps.screenshotsrecord.outcome == 'success'
         with:
           file_pattern: '*/*.png'
