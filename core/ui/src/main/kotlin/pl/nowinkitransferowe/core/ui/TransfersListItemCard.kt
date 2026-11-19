@@ -76,7 +76,7 @@ fun TransferListItemCard(
                         modifier = Modifier.weight(.12f),
                     )
                     TransfersResourceTransferListLabel(
-                        label = dateFormatted(userTransfer.date),
+                        label = transferMonth(userTransfer.date),
                         modifier = Modifier.weight(.14f),
                     )
                     Row(

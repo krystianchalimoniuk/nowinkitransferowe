@@ -68,6 +68,7 @@ import pl.nowinkitransferowe.core.ui.FeeLabel
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TransferListItem
 import pl.nowinkitransferowe.core.ui.dateFormatted
+import pl.nowinkitransferowe.core.ui.transferMonth
 
 @Composable
 internal fun TransferDetailsRoute(
@@ -239,7 +240,7 @@ private fun RouteClub(club: ClubRef, modifier: Modifier, onClubClick: (Int) -> U
 private fun Facts(transfer: UserTransfer) {
     Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         Fact(stringResource(R.string.feature_transfer_details_impl_fee), transfer.fee.label, Modifier.weight(1f))
-        Fact(stringResource(R.string.feature_transfer_details_impl_list_label_date), dateFormatted(transfer.date), Modifier.weight(1f))
+        Fact(stringResource(R.string.feature_transfer_details_impl_list_label_date), transferMonth(transfer.date), Modifier.weight(1f))
         Fact(stringResource(R.string.feature_transfer_details_impl_list_label_season), transfer.season.label, Modifier.weight(1f))
     }
 }

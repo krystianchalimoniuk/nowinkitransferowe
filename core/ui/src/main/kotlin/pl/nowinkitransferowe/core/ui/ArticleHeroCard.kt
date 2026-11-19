@@ -19,6 +19,7 @@ package pl.nowinkitransferowe.core.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,14 +35,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import pl.nowinkitransferowe.core.designsystem.component.NtLogo
+import pl.nowinkitransferowe.core.designsystem.theme.BarlowCondensed
 import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
 import pl.nowinkitransferowe.core.model.UserArticle
 
@@ -107,7 +114,31 @@ fun ArticleHeroCard(
 /** An article image filling its box; nothing in previews and tests, where the box shows. */
 @Composable
 fun ArticleImage(url: String?, modifier: Modifier = Modifier) {
-    if (url != null && !LocalInspectionMode.current) {
-        AsyncImage(model = url, contentDescription = null, contentScale = ContentScale.Crop, modifier = modifier)
+    Box(modifier, contentAlignment = Alignment.Center) {
+        // The /N/ of the website under the image: shown without one, while it loads and when it fails
+        ArticlePlaceholder()
+        if (url != null && !LocalInspectionMode.current) {
+            AsyncImage(model = url, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+        }
+    }
+}
+
+/** The website's placeholder of an article without an image: a faded /N/ in the middle. */
+@Composable
+private fun ArticlePlaceholder() {
+    BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        val size = (minOf(maxWidth, maxHeight).value * 0.3f).coerceIn(18f, 40f)
+        NtLogo(
+            text = "N",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontFamily = BarlowCondensed,
+                fontWeight = FontWeight.ExtraBold,
+                fontStyle = FontStyle.Italic,
+                fontSize = size.sp,
+                lineHeight = size.sp,
+            ),
+            modifier = Modifier.alpha(0.55f),
+        )
     }
 }

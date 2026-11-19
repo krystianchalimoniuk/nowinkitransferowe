@@ -104,7 +104,41 @@ fun NtPlayerPhoto(
     modifier: Modifier = Modifier,
     size: Dp = 36.dp,
 ) {
-    NtCrest(imageUrl = photoUrl, name = name, modifier = modifier, size = size, fillShape = true)
+    NtCrest(imageUrl = photoUrl?.takeIf { SHOW_PLAYER_PHOTOS }, name = name, modifier = modifier, size = size, fillShape = true)
+}
+
+/**
+ * Initials only for now, like on the website: the portraits are mostly cut out of other people's
+ * photos (clubs, leagues, agencies) and the rights to them are not cleared. The photos stay in the
+ * database and the API; showing them again is a change of this constant.
+ */
+const val SHOW_PLAYER_PHOTOS = false
+
+/** An author as on the website: the first letter of the name in a dark circle. */
+@Composable
+fun NtAuthorAvatar(
+    name: String,
+    modifier: Modifier = Modifier,
+    size: Dp = 28.dp,
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.onSurface),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = name.firstOrNull()?.uppercase().orEmpty(),
+            color = MaterialTheme.colorScheme.surface,
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = (size.value * 0.4f).sp,
+                lineHeight = (size.value * 0.45f).sp,
+            ),
+            maxLines = 1,
+        )
+    }
 }
 
 /** "Real Madryt" -> "RM", "Gavi" -> "GAV". */

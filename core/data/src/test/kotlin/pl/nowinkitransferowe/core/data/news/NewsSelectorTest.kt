@@ -57,13 +57,13 @@ class NewsSelectorTest {
         notifyFollowedArticles = false,
     )
 
-    private fun transfer(id: Int, toId: Int, millions: Double?, kind: FeeKind = FeeKind.AMOUNT) = Transfer(
+    private fun transfer(id: Int, toId: Int, millions: Double?, kind: FeeKind = FeeKind.AMOUNT, date: LocalDate = LocalDate(2026, 11, id)) = Transfer(
         id = id,
         player = PlayerRef(100 + id, "Zawodnik $id"),
         from = ClubRef.Club(50, "Inny klub"),
         to = ClubRef.Club(toId, directory.clubs[toId]?.name ?: "Klub"),
         fee = Fee(kind, millions?.let { "$it mln €" } ?: "za darmo", millions),
-        date = LocalDate(2026, 11, id),
+        date = date,
         articleId = null,
     )
 
@@ -144,6 +144,20 @@ class NewsSelectorTest {
         val off = emptyUserData.copy(isFollowedLeaguesNotificationsAllowed = false, followedTopics = setOf("la-liga"))
 
         assertTrue(select(transfers = listOf(transfer(1, 9, 25.0)), userData = off).isEmpty())
+    }
+
+    @Test
+    fun oldTransfersAddedLater_areNotNews_butFutureOnesAre() {
+        val groups = select(
+            transfers = listOf(
+                transfer(1, 4, 5.0, date = LocalDate(2025, 7, 1)),
+                transfer(2, 4, 5.0, date = LocalDate(2026, 10, 20)),
+                transfer(3, 4, 5.0, date = LocalDate(2027, 1, 2)),
+            ),
+        )
+
+        val ids = groups.flatMap { it.items }.map { (it as NewsItem.TransferNews).transfer.id }
+        assertEquals(setOf(2, 3), ids.toSet())
     }
 
     @Test
