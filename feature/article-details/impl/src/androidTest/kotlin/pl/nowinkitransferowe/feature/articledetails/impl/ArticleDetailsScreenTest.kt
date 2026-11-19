@@ -30,10 +30,15 @@ import pl.nowinkitransferowe.core.testing.data.clubsTestData
 import pl.nowinkitransferowe.core.testing.data.playersTestData
 import pl.nowinkitransferowe.core.testing.data.rumoursTestData
 import pl.nowinkitransferowe.core.testing.data.userArticlesTestData
+import pl.nowinkitransferowe.core.testing.rules.NoWebContentRule
 import kotlin.test.assertEquals
 
 class ArticleDetailsScreenTest {
-    @get:Rule
+    /** Keeps the article WebView out: on the API 26 emulator it never lets the app go idle. */
+    @get:Rule(order = 0)
+    val noWebContent = NoWebContentRule()
+
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     private val article = userArticlesTestData.first()
