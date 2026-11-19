@@ -19,20 +19,48 @@ package pl.nowinkitransferowe
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import pl.nowinkitransferowe.core.data.repository.ClubRepository
+import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
+import pl.nowinkitransferowe.core.model.TopicKind
 import pl.nowinkitransferowe.core.model.UserData
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     userDataRepository: UserDataRepository,
+    clubRepository: ClubRepository,
+    dictionaryRepository: DictionaryRepository,
 ) : ViewModel() {
-    val uiState: StateFlow<MainActivityUiState> = userDataRepository.userData.map {
-        MainActivityUiState.Success(it)
+
+    /**
+     * Whether the clubs of the leagues were on the phone when the app started. On the first start
+     * they are not (the first sync brings them later), so "Wybierz swoje kluby" waits for the next
+     * start instead of a spinner; checked once, so it never pops up while the app is in use.
+     */
+    private val clubsReadyAtStart = viewModelScope.async(start = CoroutineStart.LAZY) {
+        val leagues = dictionaryRepository.observeTopics().first()
+            .filter { it.kind == TopicKind.LEAGUE }
+            .mapTo(mutableSetOf()) { it.slug }
+        leagues.isNotEmpty() && clubRepository.observeClubsInLeagues(leagues).first().isNotEmpty()
+    }
+
+    val uiState: StateFlow<MainActivityUiState> = flow {
+        val clubsReady = clubsReadyAtStart.await()
+        emitAll(
+            userDataRepository.userData.map {
+                MainActivityUiState.Success(it, showClubsOnboarding = clubsReady && !it.isClubsOnboardingShown)
+            },
+        )
     }.stateIn(
         scope = viewModelScope,
         initialValue = MainActivityUiState.Loading,
@@ -42,5 +70,9 @@ class MainActivityViewModel @Inject constructor(
 
 sealed interface MainActivityUiState {
     data object Loading : MainActivityUiState
-    data class Success(val userData: UserData) : MainActivityUiState
+    data class Success(
+        val userData: UserData,
+        /** "Wybierz swoje kluby": not done yet and the clubs were there at the start. */
+        val showClubsOnboarding: Boolean = false,
+    ) : MainActivityUiState
 }
