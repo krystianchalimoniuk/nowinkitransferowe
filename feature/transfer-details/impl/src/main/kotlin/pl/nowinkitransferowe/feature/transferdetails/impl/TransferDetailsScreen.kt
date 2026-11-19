@@ -242,6 +242,15 @@ private fun Facts(transfer: UserTransfer) {
         Fact(stringResource(R.string.feature_transfer_details_impl_list_label_date), dateFormatted(transfer.date), Modifier.weight(1f))
         Fact(stringResource(R.string.feature_transfer_details_impl_list_label_season), transfer.season.label, Modifier.weight(1f))
     }
+    transfer.loanUntil?.let { until ->
+        Fact(
+            stringResource(R.string.feature_transfer_details_impl_loan_until),
+            dateFormatted(until),
+            Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
+        )
+    }
 }
 
 @Composable

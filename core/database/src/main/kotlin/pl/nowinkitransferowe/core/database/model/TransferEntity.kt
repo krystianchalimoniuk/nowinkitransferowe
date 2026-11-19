@@ -81,6 +81,8 @@ data class TransferEntity(
     val season: Int,
     @ColumnInfo(name = "article_id")
     val articleId: Int?,
+    @ColumnInfo(name = "loan_until")
+    val loanUntil: LocalDate? = null,
 )
 
 /**
@@ -118,6 +120,7 @@ fun PopulatedTransfer.asExternalModel() = Transfer(
     fee = Fee(kind = FeeKind.fromApi(transfer.feeKind), label = transfer.feeLabel, millionsOfEuro = transfer.feeMillions),
     date = transfer.date,
     articleId = transfer.articleId,
+    loanUntil = transfer.loanUntil,
 )
 
 /** The name from the clubs or players table, unless that is an empty stub. */
