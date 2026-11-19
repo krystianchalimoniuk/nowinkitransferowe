@@ -35,7 +35,10 @@ internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension,
 ) {
     commonExtension.apply {
-        compileSdk = 37
+        // 37.1: Compose 1.13 requires the minor SDK release
+        compileSdk {
+            version = release(37) { minorApiLevel = 1 }
+        }
 
         defaultConfig.apply {
             minSdk = 24
