@@ -125,14 +125,17 @@ class NewsNotifications @Inject constructor(
         val directory = NewsDirectory(
             clubs = clubs.associate { it.id to NewsSubject.Club(it.id, it.name, it.crestUrl) },
             players = playerRepository.observePlayers(userData.followedPlayers).first()
-                .associate { it.id to NewsSubject.Player(it.id, it.name, it.photoUrl) },
+                .associate { it.id to NewsSubject.Player(it.id, it.name, photoUrl = null) },
             clubTopics = clubs.mapNotNull { club -> club.topic?.let { club.id to it } }.toMap(),
             leagueNames = dictionaryRepository.observeTopics().first().associate { it.slug to it.name },
         )
         return selectNews(transfers, rumours, articles, userData, preferences.getNotifiedKeys(), directory, now)
     }
 
-    /** The crests and photos the notifications show, by url. */
+    /**
+     * The crests and article images the notifications show, by url. No player photos, like in the
+     * app and on the website: the rights to them are not cleared.
+     */
     private suspend fun loadImages(groups: List<NewsGroup>): Map<String, Bitmap> = groups
         .flatMap { group ->
             val subject = when (val subject = group.subject) {
@@ -142,8 +145,8 @@ class NewsNotifications @Inject constructor(
             }
             listOf(subject) + group.items.flatMap { item ->
                 when (item) {
-                    is NewsItem.TransferNews -> listOf(item.transfer.player.photoUrl, item.transfer.from.crestUrl, item.transfer.to.crestUrl)
-                    is NewsItem.RumourNews -> listOf(item.rumour.player.photoUrl, item.rumour.from?.crestUrl, item.rumour.to.crestUrl)
+                    is NewsItem.TransferNews -> listOf(item.transfer.from.crestUrl, item.transfer.to.crestUrl)
+                    is NewsItem.RumourNews -> listOf(item.rumour.from?.crestUrl, item.rumour.to.crestUrl)
                     is NewsItem.ArticleNews -> listOf(item.article.thumbnailUrl ?: item.article.imageUrl)
                 }
             }

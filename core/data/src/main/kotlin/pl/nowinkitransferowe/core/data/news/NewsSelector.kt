@@ -16,9 +16,12 @@
 
 package pl.nowinkitransferowe.core.data.news
 
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.minus
+import kotlinx.datetime.toLocalDateTime
 import pl.nowinkitransferowe.core.model.Article
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.FeeKind
@@ -28,11 +31,18 @@ import pl.nowinkitransferowe.core.model.NewsItem
 import pl.nowinkitransferowe.core.model.NewsSubject
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.RumourStage
+import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Transfer
 import pl.nowinkitransferowe.core.model.UserData
 
 /** Official transfers from this fee up are important news of a league. */
 internal const val LEAGUE_TRANSFER_MILLIONS = 20.0
+
+/**
+ * A new transfer is news only when it happened in the last days or is set for later (the next
+ * window). Older ones are the editors filling in the history, not news.
+ */
+internal const val FRESH_TRANSFER_DAYS = 30
 
 /** What the clubs and leagues of the news are called and look like. */
 internal data class NewsDirectory(
@@ -50,7 +60,8 @@ internal data class NewsDirectory(
  * turns all of them off. The rest counts for a followed league
  * only when it is important: articles the editors feature, official transfers from
  * [LEAGUE_TRANSFER_MILLIONS] and rumours that reached an agreement. Items in [notifiedKeys] were
- * already notified and are left out, and so are subjects muted for the day.
+ * already notified and are left out, and so are subjects muted for the day. Transfers dated more
+ * than [FRESH_TRANSFER_DAYS] ago are history added later, not news.
  */
 internal fun selectNews(
     transfers: List<Transfer>,
@@ -84,7 +95,8 @@ internal fun selectNews(
         }
     }
 
-    transfers.forEach { transfer ->
+    val oldestFreshTransfer = now.toLocalDateTime(Season.TIME_ZONE).date.minus(FRESH_TRANSFER_DAYS, DateTimeUnit.DAY)
+    transfers.filter { it.date >= oldestFreshTransfer }.forEach { transfer ->
         add(
             item = NewsItem.TransferNews(transfer),
             time = transfer.date.atStartOfDayIn(TimeZone.UTC),

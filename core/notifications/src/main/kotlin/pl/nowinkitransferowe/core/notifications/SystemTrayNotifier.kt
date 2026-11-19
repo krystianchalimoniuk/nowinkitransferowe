@@ -224,7 +224,7 @@ internal class SystemTrayNotifier @Inject constructor(
         when (item) {
             is NewsItem.TransferNews -> {
                 val transfer = item.transfer
-                transfer.player.photoUrl?.let(images::get)?.let { builder.setLargeIcon(circleCrop(it)) }
+                transfer.to.crestUrl?.let(images::get)?.let { builder.setLargeIcon(crestIcon(it)) }
                 val picture = transferGraphic(transfer, images, transfer.fee.label)
                 builder.setStyle(BigPictureStyle().bigPicture(picture).bigLargeIcon(null as Bitmap?))
                 (transfer.to as? ClubRef.Club)?.let { club ->
@@ -235,7 +235,8 @@ internal class SystemTrayNotifier @Inject constructor(
 
             is NewsItem.RumourNews -> {
                 val rumour = item.rumour
-                rumour.player.photoUrl?.let(images::get)?.let { builder.setLargeIcon(circleCrop(it)) }
+                // The crest of the club the player may join; player photos are not shown
+                rumour.to.crestUrl?.let(images::get)?.let { builder.setLargeIcon(crestIcon(it)) }
                 // Before Android 16 the stage is in the text: a plain progress bar would hide it
                 builder.setStyle(
                     BigTextStyle().bigText(
@@ -267,7 +268,7 @@ internal class SystemTrayNotifier @Inject constructor(
     @RequiresApi(36)
     private fun Context.rumourWithStages(item: NewsItem.RumourNews, group: NewsGroup, images: Map<String, Bitmap>, id: Int): Notification {
         val rumour = item.rumour
-        val photo = rumour.player.photoUrl?.let(images::get)?.let(::circleCrop)
+        val crest = rumour.to.crestUrl?.let(images::get)?.let(::crestIcon)
         val stages = RumourStage.entries
         val style = Notification.ProgressStyle()
             .setStyledByProgress(false)
@@ -282,7 +283,6 @@ internal class SystemTrayNotifier @Inject constructor(
                 },
             )
             .setProgress(rumour.stage.level)
-        photo?.let { style.setProgressTrackerIcon(Icon.createWithBitmap(it)) }
         // The path of the rumour: the club the player leaves at the start, the new one at the end
         rumour.from?.crestUrl?.let(images::get)?.let { style.setProgressStartIcon(Icon.createWithBitmap(crestIcon(it))) }
         rumour.to.crestUrl?.let(images::get)?.let { style.setProgressEndIcon(Icon.createWithBitmap(crestIcon(it))) }
@@ -292,7 +292,7 @@ internal class SystemTrayNotifier @Inject constructor(
             .setSubText(group.subject.name)
             .setContentTitle(itemTitle(item))
             .setContentText(itemText(item))
-            .apply { photo?.let { setLargeIcon(it) } }
+            .apply { crest?.let { setLargeIcon(it) } }
             .setStyle(style)
             .setContentIntent(openIntent(item.deepLink(), id))
             .addAction(
@@ -320,8 +320,8 @@ internal class SystemTrayNotifier @Inject constructor(
             .addAction(0, getString(R.string.core_notifications_action_mute_today), muteIntent(group.subject, group.subject.key.hashCode()))
         when (val subject = group.subject) {
             is NewsSubject.Club -> subject.crestUrl?.let(images::get)?.let { builder.setLargeIcon(crestIcon(it)) }
-            is NewsSubject.Player -> subject.photoUrl?.let(images::get)?.let { builder.setLargeIcon(circleCrop(it)) }
-            is NewsSubject.League -> Unit
+            // No player photos, like in the app and on the website
+            is NewsSubject.Player, is NewsSubject.League -> Unit
         }
         return builder.build()
     }

@@ -80,7 +80,7 @@ fun TransferListItem(
         Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
             FeeLabel(transfer.fee)
             Text(
-                dateFormatted(transfer.date),
+                transferMonth(transfer.date),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

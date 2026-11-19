@@ -65,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.common.WebContent
+import pl.nowinkitransferowe.core.designsystem.component.NtAuthorAvatar
 import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
@@ -225,23 +226,22 @@ private fun ArticleToolbar(
 private fun ArticleHeader(article: UserArticle) {
     Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         val image = article.imageUrl ?: article.thumbnailUrl
-        if (image != null) {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16f / 9f)
-                    .clip(MaterialTheme.shapes.large)
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-            ) {
-                ArticleImage(image, Modifier.fillMaxSize())
-            }
-            article.imageSource?.let {
-                Text(
-                    stringResource(R.string.feature_article_details_impl_photo, it),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+        // Without an image the website shows its /N/ placeholder in the same frame
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+                .clip(MaterialTheme.shapes.large)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+        ) {
+            ArticleImage(image, Modifier.fillMaxSize())
+        }
+        article.imageSource?.let {
+            Text(
+                stringResource(R.string.feature_article_details_impl_photo, it),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             ArticleKindBadge(article.kind)
@@ -253,7 +253,7 @@ private fun ArticleHeader(article: UserArticle) {
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             article.author?.let { author ->
-                NtCrest(imageUrl = author.avatarUrl, name = author.name, size = 28.dp)
+                NtAuthorAvatar(name = author.name, size = 28.dp)
                 Text(author.name, style = MaterialTheme.typography.labelLarge)
             }
             article.newsSource?.let {

@@ -20,7 +20,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.TextPaint
@@ -132,21 +131,6 @@ internal fun initials(name: String): String {
         words.size == 1 -> words[0].take(3).uppercase()
         else -> words.take(2).joinToString("") { it.first().uppercase() }
     }
-}
-
-/** A square copy of [bitmap] cut to a circle, for the large icon of a notification. */
-internal fun circleCrop(bitmap: Bitmap, background: Int? = null): Bitmap {
-    val size = minOf(bitmap.width, bitmap.height)
-    val output = createBitmap(size, size)
-    val canvas = Canvas(output)
-    val circle = RectF(0f, 0f, size.toFloat(), size.toFloat())
-    canvas.withClip(Path().apply { addOval(circle, Path.Direction.CW) }) {
-        background?.let { drawColor(it) }
-        // Photos are cut from the top, where the face is
-        val source = Rect((bitmap.width - size) / 2, 0, (bitmap.width - size) / 2 + size, size)
-        drawBitmap(bitmap, source, circle, Paint(Paint.FILTER_BITMAP_FLAG))
-    }
-    return output
 }
 
 /** A crest fitted into a white circle, for the large icon of a notification about a club. */
