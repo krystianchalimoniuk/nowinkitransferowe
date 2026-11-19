@@ -64,6 +64,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import pl.nowinkitransferowe.core.common.WebContent
 import pl.nowinkitransferowe.core.designsystem.component.NtAuthorAvatar
 import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
@@ -336,7 +337,7 @@ private fun ArticleContent(
     onArticleLinkClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (LocalInspectionMode.current) return
+    if (LocalInspectionMode.current || !WebContent.enabled) return
     AndroidView(
         modifier = modifier
             .fillMaxWidth()

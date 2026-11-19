@@ -56,7 +56,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.plus
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.todayIn
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
@@ -254,11 +256,20 @@ private fun Facts(state: PlayerUiState.Success, today: LocalDate, onClubClick: (
             FactItem(NtIcons.Cake, text)
         }
         player.heightCm?.let { FactItem(NtIcons.Height, stringResource(R.string.feature_player_impl_height, it)) }
-        (state.currentClub as? ClubRef.Club)?.let { club ->
-            val since = state.transfers.first().date.toJavaLocalDate().format(SHORT_MONTH_YEAR)
+        (state.currentClubOn(today) as? ClubRef.Club)?.let { club ->
+            val latest = state.transfers.first()
+            val loanUntil = latest.loanUntil
+            val text = when {
+                latest.isLoanOn(today) && loanUntil != null ->
+                    stringResource(R.string.feature_player_impl_current_club_loan_until, club.name, loanUntil.toJavaLocalDate().format(LOAN_DATE))
+                // Back from a loan: at the loaning club since the loan ended
+                loanUntil != null && today > loanUntil ->
+                    stringResource(R.string.feature_player_impl_current_club_since, club.name, loanUntil.plus(1, DateTimeUnit.DAY).toJavaLocalDate().format(SHORT_MONTH_YEAR))
+                else -> stringResource(R.string.feature_player_impl_current_club_since, club.name, latest.date.toJavaLocalDate().format(SHORT_MONTH_YEAR))
+            }
             FactItem(
                 icon = NtIcons.Shield,
-                text = stringResource(R.string.feature_player_impl_current_club_since, club.name, since),
+                text = text,
                 label = stringResource(R.string.feature_player_impl_current_club),
                 onClick = { onClubClick(club.id) },
                 modifier = Modifier.testTag("player:current-club"),
@@ -383,3 +394,4 @@ private val POLISH = Locale.forLanguageTag("pl")
 private val BIRTH_DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy", POLISH)
 private val MONTH_YEAR = DateTimeFormatter.ofPattern("LLLL yyyy", POLISH)
 private val SHORT_MONTH_YEAR = DateTimeFormatter.ofPattern("LLL yyyy", POLISH)
+private val LOAN_DATE = DateTimeFormatter.ofPattern("d.MM.yyyy", POLISH)

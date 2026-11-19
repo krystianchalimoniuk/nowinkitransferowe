@@ -97,7 +97,7 @@ class PlayerViewModelTest {
         val state = assertIs<PlayerUiState.Success>(viewModel.uiState.value)
         val expected = transfersTestData.filter { it.player.id == playerId }.sortedByDescending { it.date }
         assertEquals(expected.map { it.id }, state.transfers.map { it.id })
-        assertEquals(expected.first().to, state.currentClub)
+        assertEquals(expected.first().to, state.currentClubOn(expected.first().date))
         assertEquals(listOf(polandTestData), state.countries)
         assertEquals(listOf(rumoursTestData[0].id), state.rumours.map { it.id })
         assertEquals(articlesTestData.take(2).map { it.id }, state.articles.map { it.id })

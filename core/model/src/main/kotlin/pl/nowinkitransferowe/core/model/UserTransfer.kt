@@ -31,6 +31,8 @@ data class UserTransfer internal constructor(
     val articleId: Int?,
     val isSaved: Boolean,
     val hasBeenViewed: Boolean,
+    /** The last day of a loan; null for other transfers. */
+    val loanUntil: LocalDate? = null,
 ) {
     constructor(transfer: Transfer, userData: UserData) : this(
         id = transfer.id,
@@ -42,9 +44,16 @@ data class UserTransfer internal constructor(
         articleId = transfer.articleId,
         isSaved = transfer.id in userData.bookmarkedTransfers,
         hasBeenViewed = userData.isTransferRead(transfer.id),
+        loanUntil = transfer.loanUntil,
     )
 
     val season: Season get() = Season.of(date)
+
+    /** A loan that has not ended on [today]. */
+    fun isLoanOn(today: LocalDate): Boolean = isLoanOn(fee, loanUntil, today)
+
+    /** Where the transfer leaves the player on [today]: after a loan ends he is back at [from], as on the website. */
+    fun clubOn(today: LocalDate): ClubRef = clubOn(from, to, fee, loanUntil, today)
 }
 
 fun List<Transfer>.mapToUserTransfers(userData: UserData): List<UserTransfer> = map { UserTransfer(it, userData) }

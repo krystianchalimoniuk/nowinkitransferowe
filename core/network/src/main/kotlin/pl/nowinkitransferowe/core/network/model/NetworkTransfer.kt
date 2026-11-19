@@ -23,7 +23,7 @@ import kotlinx.serialization.Serializable
  * Network representation of a transfer from `GET /api/v3/transfers`.
  *
  * When a side has no club, its club id is null and its status is `FREE_AGENT`, `RETIRED` or
- * `UNKNOWN`.
+ * `UNKNOWN`. After [loanUntil] the player is back at the club that loaned him out.
  */
 @Serializable
 data class NetworkTransfer(
@@ -39,6 +39,8 @@ data class NetworkTransfer(
     val fee: NetworkFee,
     val date: LocalDate,
     val articleId: Int? = null,
+    /** The last day of a loan; set only when [fee] is a `LOAN`. */
+    val loanUntil: LocalDate? = null,
 )
 
 /**
