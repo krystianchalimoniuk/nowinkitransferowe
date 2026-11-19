@@ -96,20 +96,17 @@ internal class SyncWorker @AssistedInject constructor(
     }
 
     /**
-     * Syncs the API v3 record types one after another: the leagues and clubs first, so that the
-     * clubs onboarding on the first start shows its crests within seconds instead of after the
-     * whole history; then articles, so that the home screen fills up; rumours after transfers,
-     * which they point to; players last, replacing the stubs the other records created. Records
-     * insert missing clubs as stubs with insert-or-ignore, so they never overwrite a synced club.
-     * A type that fails does not stop the others; its change list version stays, so the retry
-     * picks it up where it stopped.
+     * Syncs the API v3 record types one after another: articles first, so that the home screen
+     * fills up within seconds; rumours after transfers, which they point to; clubs and players
+     * last, replacing the stubs the other records created. A type that fails does not stop the
+     * others; its change list version stays, so the retry picks it up where it stopped.
      */
     private suspend fun syncApiV3(): Boolean = listOf(
         dictionaryRepository,
-        clubRepository,
         articleRepository,
         transferRepository,
         rumourRepository,
+        clubRepository,
         playerRepository,
     ).map { it.sync() }.all { it }
 

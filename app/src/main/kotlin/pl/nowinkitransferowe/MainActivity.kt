@@ -252,9 +252,9 @@ class MainActivity : ComponentActivity() {
                     darkTheme = darkTheme,
                     disableDynamicTheming = shouldDisableDynamicTheming(uiState),
                 ) {
-                    val onboarding = (uiState as? Success)?.userData?.isClubsOnboardingShown == false
+                    val onboarding = (uiState as? Success)?.showClubsOnboarding == true
                     if (onboarding) {
-                        // "Wybierz swoje kluby" once, on a new install and after the update to 4.0
+                        // "Wybierz swoje kluby" once, on the start after the clubs came with the first sync
                         // Tags as resource ids, like in NtApp, so that UI Automator finds "Pomiń"
                         NtBackground(Modifier.semantics { testTagsAsResourceId = true }) { OnboardingRoute() }
                     } else {
