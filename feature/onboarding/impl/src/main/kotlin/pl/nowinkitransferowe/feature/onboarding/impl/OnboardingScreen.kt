@@ -38,6 +38,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.CornerRounding
+import androidx.compose.foundation.shape.PolygonShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -192,7 +194,13 @@ private fun ClubTile(club: Club, picked: Boolean, onToggle: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NtCrest(imageUrl = club.crestUrl, name = club.name, size = 56.dp)
+                // A picked club's crest sits in a scalloped badge instead of the rounded square
+                NtCrest(
+                    imageUrl = club.crestUrl,
+                    name = club.name,
+                    size = 56.dp,
+                    shape = if (picked) PickedCrestShape else RoundedCornerShape(30),
+                )
                 Text(
                     club.name,
                     style = MaterialTheme.typography.labelLarge,
@@ -213,3 +221,10 @@ private fun ClubTile(club: Club, picked: Boolean, onToggle: () -> Unit) {
         }
     }
 }
+
+/** A soft ten-point badge, like Material's "cookie" shape. */
+private val PickedCrestShape = PolygonShape.star(
+    numPoints = 10,
+    innerRadiusRatio = 0.8f,
+    outerRounding = CornerRounding.fraction(0.25f),
+)
