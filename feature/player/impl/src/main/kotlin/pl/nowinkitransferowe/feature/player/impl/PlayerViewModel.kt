@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.PlayerRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
@@ -63,8 +64,8 @@ sealed interface PlayerUiState {
         val rumours: List<Rumour>,
         val articles: List<UserArticle> = emptyList(),
     ) : PlayerUiState {
-        /** Where the latest transfer took him, as on the website. */
-        val currentClub: ClubRef? get() = transfers.firstOrNull()?.to
+        /** Where the latest transfer leaves him on [today]: back at the loaning club after a loan ends, as on the website. */
+        fun currentClubOn(today: LocalDate): ClubRef? = transfers.firstOrNull()?.clubOn(today)
 
         /** All fees together; loans and undisclosed fees count as 0, like on the website. */
         val totalMillions: Double get() = transfers.sumOf { it.fee.countedMillions }

@@ -39,6 +39,8 @@ import org.junit.Rule
 import org.junit.Test
 import pl.nowinkitransferowe.core.data.repository.ArticleRepository
 import pl.nowinkitransferowe.core.testing.rules.GrantPostNotificationsPermissionRule
+import pl.nowinkitransferowe.core.testing.rules.HangTimeoutRule
+import pl.nowinkitransferowe.core.testing.rules.NoWebContentRule
 import javax.inject.Inject
 import pl.nowinkitransferowe.feature.articles.impl.R as NewsR
 import pl.nowinkitransferowe.feature.bookmarks.impl.R as BookmarksR
@@ -54,6 +56,12 @@ import pl.nowinkitransferowe.feature.transfers.impl.R as TransfersR
 class NavigationTest {
 
     /**
+     * Fails a stuck test after 3 minutes with a thread dump, instead of hanging the CI job.
+     */
+    @get:Rule(order = -1)
+    val hangTimeout = HangTimeoutRule()
+
+    /**
      * Manages the components' state and is used to perform injection on your test
      */
     @get:Rule(order = 0)
@@ -66,9 +74,15 @@ class NavigationTest {
     val postNotificationsPermission = GrantPostNotificationsPermissionRule()
 
     /**
-     * Use the primary activity to initialize the app normally.
+     * Keep the article WebView out: on the API 26 emulator it never lets the app go idle.
      */
     @get:Rule(order = 2)
+    val noWebContent = NoWebContentRule()
+
+    /**
+     * Use the primary activity to initialize the app normally.
+     */
+    @get:Rule(order = 3)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject

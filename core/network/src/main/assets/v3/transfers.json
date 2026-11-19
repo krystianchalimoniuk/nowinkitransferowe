@@ -15,7 +15,8 @@
    "millionsOfEuro": null
   },
   "date": "2026-10-31",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2027-06-30"
  },
  {
   "id": 20721,
@@ -33,7 +34,8 @@
    "millionsOfEuro": 40.0
   },
   "date": "2026-07-11",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20713,
@@ -51,7 +53,8 @@
    "millionsOfEuro": 22.0
   },
   "date": "2026-10-31",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20703,
@@ -69,7 +72,8 @@
    "millionsOfEuro": 40.0
   },
   "date": "2026-10-31",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20692,
@@ -87,7 +91,8 @@
    "millionsOfEuro": 40.0
   },
   "date": "2026-10-31",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20691,
@@ -105,7 +110,8 @@
    "millionsOfEuro": 70.0
   },
   "date": "2026-10-31",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20645,
@@ -123,7 +129,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2026-10-31",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20643,
@@ -141,7 +148,8 @@
    "millionsOfEuro": 20.0
   },
   "date": "2026-10-31",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20582,
@@ -159,7 +167,8 @@
    "millionsOfEuro": 25.0
   },
   "date": "2026-07-14",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20574,
@@ -177,7 +186,8 @@
    "millionsOfEuro": 49.0
   },
   "date": "2026-07-05",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20540,
@@ -195,7 +205,8 @@
    "millionsOfEuro": 64.5
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20538,
@@ -213,7 +224,8 @@
    "millionsOfEuro": 145.0
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20537,
@@ -231,7 +243,8 @@
    "millionsOfEuro": 125.0
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20536,
@@ -249,7 +262,8 @@
    "millionsOfEuro": 38.0
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20529,
@@ -267,7 +281,8 @@
    "millionsOfEuro": 40.8
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20481,
@@ -285,7 +300,8 @@
    "millionsOfEuro": 46.7
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20477,
@@ -303,7 +319,8 @@
    "millionsOfEuro": 30.0
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20472,
@@ -321,7 +338,8 @@
    "millionsOfEuro": null
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2027-06-30"
  },
  {
   "id": 20469,
@@ -339,7 +357,8 @@
    "millionsOfEuro": 55.0
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20439,
@@ -357,7 +376,8 @@
    "millionsOfEuro": 30.0
   },
   "date": "2026-09-02",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20425,
@@ -375,7 +395,8 @@
    "millionsOfEuro": 87.7
   },
   "date": "2026-08-26",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20399,
@@ -393,7 +414,8 @@
    "millionsOfEuro": null
   },
   "date": "2026-08-26",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2027-06-30"
  },
  {
   "id": 20392,
@@ -411,7 +433,8 @@
    "millionsOfEuro": 50.0
   },
   "date": "2026-08-26",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20387,
@@ -429,7 +452,8 @@
    "millionsOfEuro": 30.0
   },
   "date": "2026-08-26",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20385,
@@ -447,7 +471,8 @@
    "millionsOfEuro": 75.0
   },
   "date": "2026-08-26",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20357,
@@ -465,7 +490,8 @@
    "millionsOfEuro": 45.0
   },
   "date": "2026-08-18",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20349,
@@ -483,7 +509,8 @@
    "millionsOfEuro": 48.5
   },
   "date": "2026-08-18",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20330,
@@ -501,7 +528,8 @@
    "millionsOfEuro": null
   },
   "date": "2026-08-18",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2027-06-30"
  },
  {
   "id": 20326,
@@ -519,7 +547,8 @@
    "millionsOfEuro": 0.85
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20319,
@@ -537,7 +566,8 @@
    "millionsOfEuro": 37.0
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20317,
@@ -555,7 +585,8 @@
    "millionsOfEuro": 60.0
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20304,
@@ -573,7 +604,8 @@
    "millionsOfEuro": 138.0
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20294,
@@ -591,7 +623,8 @@
    "millionsOfEuro": 2.5
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20291,
@@ -609,7 +642,8 @@
    "millionsOfEuro": 50.0
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20288,
@@ -627,7 +661,8 @@
    "millionsOfEuro": 135.0
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20281,
@@ -645,7 +680,8 @@
    "millionsOfEuro": 40.0
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20278,
@@ -663,7 +699,8 @@
    "millionsOfEuro": 30.0
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20275,
@@ -681,7 +718,8 @@
    "millionsOfEuro": 41.2
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20259,
@@ -699,7 +737,8 @@
    "millionsOfEuro": 35.0
   },
   "date": "2026-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20250,
@@ -717,7 +756,8 @@
    "millionsOfEuro": 135.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20249,
@@ -735,7 +775,8 @@
    "millionsOfEuro": 74.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20248,
@@ -753,7 +794,8 @@
    "millionsOfEuro": 108.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20247,
@@ -771,7 +813,8 @@
    "millionsOfEuro": 99.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20245,
@@ -789,7 +832,8 @@
    "millionsOfEuro": 57.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20244,
@@ -807,7 +851,8 @@
    "millionsOfEuro": 50.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20239,
@@ -825,7 +870,8 @@
    "millionsOfEuro": 5.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20237,
@@ -843,7 +889,8 @@
    "millionsOfEuro": 50.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20235,
@@ -861,7 +908,8 @@
    "millionsOfEuro": 3.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20224,
@@ -879,7 +927,8 @@
    "millionsOfEuro": 6.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20223,
@@ -897,7 +946,8 @@
    "millionsOfEuro": 6.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20222,
@@ -915,7 +965,8 @@
    "millionsOfEuro": 3.0
   },
   "date": "2026-07-10",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20220,
@@ -933,7 +984,8 @@
    "millionsOfEuro": 55.0
   },
   "date": "2026-06-19",
-  "articleId": 11273
+  "articleId": 11273,
+  "loanUntil": null
  },
  {
   "id": 20217,
@@ -951,7 +1003,8 @@
    "millionsOfEuro": 40.0
   },
   "date": "2026-06-19",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20216,
@@ -969,7 +1022,8 @@
    "millionsOfEuro": 1.0
   },
   "date": "2026-06-19",
-  "articleId": 11272
+  "articleId": 11272,
+  "loanUntil": null
  },
  {
   "id": 20214,
@@ -987,7 +1041,8 @@
    "millionsOfEuro": 4.05
   },
   "date": "2026-06-19",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20210,
@@ -1005,7 +1060,8 @@
    "millionsOfEuro": 1.7
   },
   "date": "2026-06-19",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20204,
@@ -1023,7 +1079,8 @@
    "millionsOfEuro": 44.0
   },
   "date": "2026-06-19",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20202,
@@ -1041,7 +1098,8 @@
    "millionsOfEuro": 80.0
   },
   "date": "2026-06-19",
-  "articleId": 11271
+  "articleId": 11271,
+  "loanUntil": null
  },
  {
   "id": 20194,
@@ -1059,7 +1117,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2026-03-26",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20167,
@@ -1077,7 +1136,8 @@
    "millionsOfEuro": 42.0
   },
   "date": "2026-02-12",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20130,
@@ -1095,7 +1155,8 @@
    "millionsOfEuro": null
   },
   "date": "2026-01-26",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 20061,
@@ -1113,7 +1174,8 @@
    "millionsOfEuro": null
   },
   "date": "2026-01-22",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2026-06-30"
  },
  {
   "id": 20055,
@@ -1131,7 +1193,8 @@
    "millionsOfEuro": 1.5
   },
   "date": "2026-01-22",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19940,
@@ -1149,7 +1212,8 @@
    "millionsOfEuro": null
   },
   "date": "2026-01-15",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2026-06-30"
  },
  {
   "id": 19904,
@@ -1167,7 +1231,8 @@
    "millionsOfEuro": 14.0
   },
   "date": "2026-01-15",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19901,
@@ -1185,7 +1250,8 @@
    "millionsOfEuro": 6.0
   },
   "date": "2026-01-15",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19899,
@@ -1203,7 +1269,8 @@
    "millionsOfEuro": 29.0
   },
   "date": "2026-01-15",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19801,
@@ -1221,7 +1288,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2026-01-04",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19798,
@@ -1239,7 +1307,8 @@
    "millionsOfEuro": null
   },
   "date": "2026-01-04",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2026-06-30"
  },
  {
   "id": 19788,
@@ -1257,7 +1326,8 @@
    "millionsOfEuro": 23.0
   },
   "date": "2026-01-04",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19642,
@@ -1275,7 +1345,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-09-23",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19580,
@@ -1293,7 +1364,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-09-11",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19481,
@@ -1311,7 +1383,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-09-07",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19422,
@@ -1329,7 +1402,8 @@
    "millionsOfEuro": 17.0
   },
   "date": "2025-09-07",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19412,
@@ -1347,7 +1421,8 @@
    "millionsOfEuro": 44.0
   },
   "date": "2025-09-07",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19307,
@@ -1365,7 +1440,8 @@
    "millionsOfEuro": 23.0
   },
   "date": "2025-09-07",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19300,
@@ -1383,7 +1459,8 @@
    "millionsOfEuro": null
   },
   "date": "2025-09-07",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2026-06-30"
  },
  {
   "id": 19250,
@@ -1401,7 +1478,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-09-07",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19236,
@@ -1419,7 +1497,8 @@
    "millionsOfEuro": 0.7
   },
   "date": "2025-09-07",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 19229,
@@ -1437,7 +1516,8 @@
    "millionsOfEuro": null
   },
   "date": "2025-09-07",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2026-06-30"
  },
  {
   "id": 19015,
@@ -1455,7 +1535,8 @@
    "millionsOfEuro": 20.78
   },
   "date": "2025-08-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 18937,
@@ -1473,7 +1554,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-08-05",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 18921,
@@ -1491,7 +1573,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-08-04",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 18679,
@@ -1509,7 +1592,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-07-21",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 18623,
@@ -1527,7 +1611,8 @@
    "millionsOfEuro": 19.36
   },
   "date": "2025-07-20",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 18484,
@@ -1545,7 +1630,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-07-12",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 18456,
@@ -1563,7 +1649,8 @@
    "millionsOfEuro": 63.8
   },
   "date": "2025-07-12",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 18282,
@@ -1581,7 +1668,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-07-03",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 17847,
@@ -1599,7 +1687,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2025-05-15",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 17837,
@@ -1617,7 +1706,8 @@
    "millionsOfEuro": 40.0
   },
   "date": "2025-05-09",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 17677,
@@ -1635,7 +1725,8 @@
    "millionsOfEuro": null
   },
   "date": "2025-02-21",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 17340,
@@ -1653,7 +1744,8 @@
    "millionsOfEuro": null
   },
   "date": "2025-02-03",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 17125,
@@ -1671,7 +1763,8 @@
    "millionsOfEuro": null
   },
   "date": "2025-01-22",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 16917,
@@ -1689,7 +1782,8 @@
    "millionsOfEuro": 1.5
   },
   "date": "2025-01-04",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 16878,
@@ -1707,7 +1801,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-12-29",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 16542,
@@ -1725,7 +1820,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-09-03",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 16487,
@@ -1743,7 +1839,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-09-03",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 16475,
@@ -1761,7 +1858,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-09-03",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 16466,
@@ -1779,7 +1877,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-09-03",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 16459,
@@ -1797,7 +1896,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-09-03",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 16361,
@@ -1815,7 +1915,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2024-08-30",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 16163,
@@ -1833,7 +1934,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-08-30",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 16162,
@@ -1851,7 +1953,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-08-30",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 16119,
@@ -1869,7 +1972,8 @@
    "millionsOfEuro": 17.6
   },
   "date": "2024-08-30",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 16037,
@@ -1887,7 +1991,8 @@
    "millionsOfEuro": null
   },
   "date": "2024-08-30",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": "2025-06-30"
  },
  {
   "id": 15954,
@@ -1905,7 +2010,8 @@
    "millionsOfEuro": 0.0
   },
   "date": "2024-08-30",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 15942,
@@ -1923,7 +2029,8 @@
    "millionsOfEuro": 29.3
   },
   "date": "2024-08-30",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 15921,
@@ -1941,7 +2048,8 @@
    "millionsOfEuro": 27.0
   },
   "date": "2024-08-30",
-  "articleId": null
+  "articleId": null,
+  "loanUntil": null
  },
  {
   "id": 15625,
@@ -1959,7 +2067,8 @@
    "millionsOfEuro": 21.4
   },
   "date": "2024-08-30",
-  "articleId": 6592
+  "articleId": 6592,
+  "loanUntil": null
  },
  {
   "id": 15375,
@@ -1977,6 +2086,7 @@
    "millionsOfEuro": 47.5
   },
   "date": "2024-08-30",
-  "articleId": 6592
+  "articleId": 6592,
+  "loanUntil": null
  }
 ]
