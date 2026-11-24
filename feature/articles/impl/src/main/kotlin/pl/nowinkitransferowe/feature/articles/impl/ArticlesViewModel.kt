@@ -85,7 +85,7 @@ sealed interface HomeUiState {
 @HiltViewModel
 class ArticlesViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    syncManager: SyncManager,
+    private val syncManager: SyncManager,
     private val userDataRepository: UserDataRepository,
     userArticleRepository: UserArticleRepository,
     userTransferRepository: UserTransferRepository,
@@ -149,6 +149,9 @@ class ArticlesViewModel @Inject constructor(
         savedStateHandle[TOPIC_KEY] = topic
         page.value = 1
     }
+
+    /** Pull to refresh: asks for a sync now. */
+    fun refresh() = syncManager.requestSync()
 
     fun loadNextPage() {
         val state = uiState.value

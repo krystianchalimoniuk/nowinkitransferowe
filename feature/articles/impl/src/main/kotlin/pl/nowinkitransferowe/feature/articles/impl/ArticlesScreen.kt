@@ -20,7 +20,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -59,6 +58,7 @@ import pl.nowinkitransferowe.core.ui.ArticleListItem
 import pl.nowinkitransferowe.core.ui.FollowedChip
 import pl.nowinkitransferowe.core.ui.RumourCarouselCard
 import pl.nowinkitransferowe.core.ui.SyncIndicator
+import pl.nowinkitransferowe.core.ui.SyncRefreshBox
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferCarouselCard
@@ -81,6 +81,7 @@ fun ArticlesRoute(
     ArticlesScreen(
         uiState = uiState,
         isSyncing = isSyncing,
+        onRefresh = viewModel::refresh,
         selectedArticleId = selectedArticleId,
         highlightSelectedArticle = highlightSelectedArticle,
         onTabSelected = viewModel::selectTab,
@@ -120,6 +121,7 @@ internal fun ArticlesScreen(
     modifier: Modifier = Modifier,
     selectedArticleId: Int? = null,
     highlightSelectedArticle: Boolean = false,
+    onRefresh: () -> Unit = {},
 ) {
     ReportDrawnWhen { !isSyncing && uiState is HomeUiState.Success }
 
@@ -131,7 +133,7 @@ internal fun ArticlesScreen(
             .collectLatest { (last, total) -> if (last != null && last >= total - 2) loadNextPage() }
     }
 
-    Box(modifier.fillMaxSize()) {
+    SyncRefreshBox(isSyncing = isSyncing, onRefresh = onRefresh, modifier = modifier.fillMaxSize()) {
         when (uiState) {
             HomeUiState.Loading -> Unit
             is HomeUiState.Success -> LazyColumn(

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,20 +36,29 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFlexibleTopAppBar
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -65,6 +75,7 @@ import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtPlayerPhoto
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
+import pl.nowinkitransferowe.core.designsystem.theme.BarlowCondensed
 import pl.nowinkitransferowe.core.model.ClubRef
 import pl.nowinkitransferowe.core.model.Player
 import pl.nowinkitransferowe.core.model.Season
@@ -146,50 +157,54 @@ internal fun PlayerScreen(
                 )
             }
 
-            is PlayerUiState.Success -> LazyColumn(
-                contentPadding = PaddingValues(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier
-                    .widthIn(max = 720.dp)
-                    .fillMaxSize()
-                    .testTag("player:${uiState.player.id}"),
-            ) {
-                item(key = "top") { TopRow(showBackButton, onBackClick, uiState.player, isFollowed, onFollowedChange) }
-                item(key = "header") { Header(uiState) }
-                item(key = "facts") { Facts(uiState, today, onClubClick) }
-                if (uiState.transfers.isNotEmpty()) {
-                    item(key = "summary") { Summary(uiState) }
-                }
-                if (uiState.showChart) {
-                    item(key = "fees") { FeeCard(uiState.chartTransfers) }
-                }
-                if (uiState.transfers.isNotEmpty()) {
-                    item(key = "history") {
-                        NtSectionHeader(stringResource(R.string.feature_player_impl_history), Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
+            is PlayerUiState.Success -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+                PlayerTopBar(uiState, showBackButton, onBackClick, isFollowed, onFollowedChange, scrollBehavior)
+                LazyColumn(
+                    contentPadding = PaddingValues(bottom = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier
+                        .widthIn(max = 720.dp)
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .testTag("player:${uiState.player.id}"),
+                ) {
+                    item(key = "header") { Header(uiState) }
+                    item(key = "facts") { Facts(uiState, today, onClubClick) }
+                    if (uiState.transfers.isNotEmpty()) {
+                        item(key = "summary") { Summary(uiState) }
                     }
-                    items(uiState.transfers, key = { "transfer:${it.id}" }) { transfer ->
-                        HistoryRow(transfer, onClick = { onTransferClick(transfer.id) })
+                    if (uiState.showChart) {
+                        item(key = "fees") { FeeCard(uiState.chartTransfers) }
                     }
-                }
-                if (uiState.rumours.isNotEmpty()) {
-                    item(key = "rumours") {
-                        NtSectionHeader(stringResource(R.string.feature_player_impl_rumours), Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
+                    if (uiState.transfers.isNotEmpty()) {
+                        item(key = "history") {
+                            NtSectionHeader(stringResource(R.string.feature_player_impl_history), Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
+                        }
+                        items(uiState.transfers, key = { "transfer:${it.id}" }) { transfer ->
+                            HistoryRow(transfer, onClick = { onTransferClick(transfer.id) })
+                        }
                     }
-                    items(uiState.rumours, key = { "rumour:${it.id}" }) { rumour ->
-                        RumourListItem(rumour, onClick = { onRumourClick(rumour.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+                    if (uiState.rumours.isNotEmpty()) {
+                        item(key = "rumours") {
+                            NtSectionHeader(stringResource(R.string.feature_player_impl_rumours), Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
+                        }
+                        items(uiState.rumours, key = { "rumour:${it.id}" }) { rumour ->
+                            RumourListItem(rumour, onClick = { onRumourClick(rumour.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+                        }
                     }
-                }
-                if (uiState.articles.isNotEmpty()) {
-                    item(key = "articles") {
-                        NtSectionHeader(stringResource(R.string.feature_player_impl_articles), Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
-                    }
-                    items(uiState.articles, key = { "article:${it.id}" }) { article ->
-                        ArticleListItem(
-                            article = article,
-                            onClick = { onArticleClick(article.id) },
-                            onToggleBookmark = { onArticleSavedChanged(article.id, !article.isSaved) },
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                        )
+                    if (uiState.articles.isNotEmpty()) {
+                        item(key = "articles") {
+                            NtSectionHeader(stringResource(R.string.feature_player_impl_articles), Modifier.padding(horizontal = 16.dp).padding(top = 8.dp))
+                        }
+                        items(uiState.articles, key = { "article:${it.id}" }) { article ->
+                            ArticleListItem(
+                                article = article,
+                                onClick = { onArticleClick(article.id) },
+                                onToggleBookmark = { onArticleSavedChanged(article.id, !article.isSaved) },
+                                modifier = Modifier.padding(horizontal = 12.dp),
+                            )
+                        }
                     }
                 }
             }
@@ -197,6 +212,50 @@ internal fun PlayerScreen(
     }
     TrackScreenViewEvent(screenName = "Player")
 }
+
+/**
+ * Material 3 Expressive's large flexible top bar: the player's name big with his position under
+ * it, collapsing into a small title while the list scrolls.
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun PlayerTopBar(
+    state: PlayerUiState.Success,
+    showBackButton: Boolean,
+    onBackClick: () -> Unit,
+    isFollowed: Boolean,
+    onFollowedChange: (Boolean) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior,
+) {
+    val player = state.player
+    val context = LocalContext.current
+    LargeFlexibleTopAppBar(
+        title = { Text(player.name.uppercase(), style = LocalTextStyle.current.displayTitle(), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        subtitle = player.position?.let { position -> { Text(position) } },
+        navigationIcon = {
+            if (showBackButton) {
+                IconButton(onClick = onBackClick) {
+                    Icon(NtIcons.ArrowBack, contentDescription = stringResource(R.string.feature_player_impl_back))
+                }
+            }
+        },
+        actions = {
+            FollowButton(isFollowed, onFollowedChange, player.name, Modifier.testTag("player:follow"))
+            player.url?.let { url ->
+                IconButton(onClick = { share(context, player.name, url) }) {
+                    Icon(NtIcons.Share, contentDescription = stringResource(R.string.feature_player_impl_share))
+                }
+            }
+        },
+        // The app's scaffold already keeps the screens out of the status bar
+        windowInsets = WindowInsets(0),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+        scrollBehavior = scrollBehavior,
+    )
+}
+
+/** The titles in Barlow Condensed italic, like the website, at the size the top bar gives. */
+private fun TextStyle.displayTitle() = copy(fontFamily = BarlowCondensed, fontStyle = FontStyle.Italic, fontWeight = FontWeight.ExtraBold)
 
 @Composable
 private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, player: Player?, isFollowed: Boolean, onFollowedChange: (Boolean) -> Unit) {
@@ -228,9 +287,9 @@ private fun Header(state: PlayerUiState.Success) {
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         NtPlayerPhoto(photoUrl = player.photoUrl, name = player.name, size = 64.dp)
+        // The name and position are in the top bar above; here the initials and nationalities
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(player.name.uppercase(), style = MaterialTheme.typography.headlineMedium.copy(fontStyle = FontStyle.Italic))
-            val details = state.countries.map { it.name } + listOfNotNull(player.position)
+            val details = state.countries.map { it.name }
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 state.countries.forEach { CountryFlag(it.code, contentDescription = null) }
                 if (details.isNotEmpty()) {

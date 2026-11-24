@@ -34,19 +34,30 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingToolbarDefaults
+import androidx.compose.material3.FloatingToolbarExitDirection
+import androidx.compose.material3.FloatingToolbarScrollBehavior
+import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +67,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
@@ -141,6 +153,8 @@ internal fun ArticleDetailsScreen(
 ) {
     val scrollState = rememberScrollState()
     TrackScrollJank(scrollableState = scrollState, stateName = "details:screen")
+    // The actions hide while reading down and come back when scrolling up
+    val toolbarScrollBehavior = FloatingToolbarDefaults.exitAlwaysScrollBehavior(exitDirection = FloatingToolbarExitDirection.Bottom)
     val context = LocalContext.current
 
     when (detailsUiState) {
@@ -148,79 +162,112 @@ internal fun ArticleDetailsScreen(
             NtLoadingWheel(contentDesc = stringResource(R.string.feature_article_details_impl_loading))
         }
 
-        is ArticleDetailsUiState.Success -> Column(
-            modifier = modifier
+        is ArticleDetailsUiState.Success -> Box(
+            modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .nestedScroll(toolbarScrollBehavior),
         ) {
             val article = detailsUiState.userArticle
             Column(
-                Modifier
-                    .widthIn(max = 720.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                ArticleToolbar(
-                    article = article,
-                    showBackButton = showBackButton,
-                    onBackClick = onBackClick,
-                    onShare = { shareArticle(context, article) },
-                    onToggleBookmark = { onBookmarkChanged(article.id, !article.isSaved) },
-                )
-                ArticleHeader(article)
-                detailsUiState.rumour?.let { rumour ->
-                    RumourBox(rumour, onClick = { onRumourClick(rumour) }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+                Column(
+                    Modifier
+                        .widthIn(max = 720.dp)
+                        .fillMaxWidth(),
+                ) {
+                    ArticleToolbar(showBackButton = showBackButton, onBackClick = onBackClick)
+                    ArticleHeader(article)
+                    detailsUiState.rumour?.let { rumour ->
+                        RumourBox(rumour, onClick = { onRumourClick(rumour) }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+                    }
+                    AboutChips(detailsUiState.clubs, detailsUiState.players, onClubClick = onClubClick, onPlayerClick = onPlayerClick)
+                    ArticleContent(
+                        contentHtml = article.contentHtml,
+                        darkTheme = when (darkThemeConfig) {
+                            DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+                            DarkThemeConfig.LIGHT -> false
+                            DarkThemeConfig.DARK -> true
+                        },
+                        onArticleLinkClick = onArticleLinkClick,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                    // The topics first, which open their topic screen, then the tags
+                    ArticleTags(
+                        topics = article.topics.map { it.name },
+                        onTopicClick = { name -> article.topics.find { it.name == name }?.let { onArticleTopicClick(it.slug) } },
+                        highlighted = true,
+                        modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp).testTag("article:topics"),
+                    )
+                    ArticleTags(
+                        topics = article.tags,
+                        onTopicClick = onTopicClick,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                    // Room for the floating toolbar over the end of the article
+                    Spacer(Modifier.height(FloatingToolbarRoom))
+                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
                 }
-                AboutChips(detailsUiState.clubs, detailsUiState.players, onClubClick = onClubClick, onPlayerClick = onPlayerClick)
-                ArticleContent(
-                    contentHtml = article.contentHtml,
-                    darkTheme = when (darkThemeConfig) {
-                        DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
-                        DarkThemeConfig.LIGHT -> false
-                        DarkThemeConfig.DARK -> true
-                    },
-                    onArticleLinkClick = onArticleLinkClick,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                )
-                // The topics first, which open their topic screen, then the tags
-                ArticleTags(
-                    topics = article.topics.map { it.name },
-                    onTopicClick = { name -> article.topics.find { it.name == name }?.let { onArticleTopicClick(it.slug) } },
-                    highlighted = true,
-                    modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp).testTag("article:topics"),
-                )
-                ArticleTags(
-                    topics = article.tags,
-                    onTopicClick = onTopicClick,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                )
-                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
             }
+            ArticleActions(
+                article = article,
+                scrollBehavior = toolbarScrollBehavior,
+                onShare = { shareArticle(context, article) },
+                onToggleBookmark = { onBookmarkChanged(article.id, !article.isSaved) },
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
+                    .offset(y = -FloatingToolbarDefaults.ScreenOffset),
+            )
         }
     }
 }
 
 @Composable
 private fun ArticleToolbar(
-    article: UserArticle,
     showBackButton: Boolean,
     onBackClick: () -> Unit,
-    onShare: () -> Unit,
-    onToggleBookmark: () -> Unit,
 ) {
-    Row(Modifier.fillMaxWidth().padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().padding(4.dp).heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
         if (showBackButton) {
             IconButton(onClick = onBackClick) {
                 Icon(NtIcons.ArrowBack, contentDescription = stringResource(pl.nowinkitransferowe.core.ui.R.string.core_ui_back))
             }
         }
-        Spacer(Modifier.weight(1f))
+    }
+}
+
+/**
+ * Material 3 Expressive's floating toolbar at the bottom of the article: save and share within
+ * thumb reach. It slides away while reading down and returns when scrolling up.
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun ArticleActions(
+    article: UserArticle,
+    scrollBehavior: FloatingToolbarScrollBehavior,
+    onShare: () -> Unit,
+    onToggleBookmark: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    HorizontalFloatingToolbar(
+        expanded = true,
+        scrollBehavior = scrollBehavior,
+        colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
+        modifier = modifier.testTag("article:actions"),
+    ) {
+        BookmarkButton(article.isSaved, onToggleBookmark)
         IconButton(onClick = onShare) {
             Icon(NtIcons.Share, contentDescription = stringResource(R.string.feature_article_details_impl_share))
         }
-        BookmarkButton(article.isSaved, onToggleBookmark)
     }
 }
+
+/** The floating toolbar with its offset from the bottom edge. */
+private val FloatingToolbarRoom = 96.dp
 
 @Composable
 private fun ArticleHeader(article: UserArticle) {
