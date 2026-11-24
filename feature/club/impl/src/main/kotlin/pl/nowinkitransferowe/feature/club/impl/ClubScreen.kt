@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,31 +39,43 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFlexibleTopAppBar
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.nowinkitransferowe.core.designsystem.component.NtCrest
 import pl.nowinkitransferowe.core.designsystem.component.NtLoadingWheel
 import pl.nowinkitransferowe.core.designsystem.component.NtSectionHeader
 import pl.nowinkitransferowe.core.designsystem.icon.NtIcons
+import pl.nowinkitransferowe.core.designsystem.theme.BarlowCondensed
 import pl.nowinkitransferowe.core.designsystem.theme.LocalNtColors
 import pl.nowinkitransferowe.core.designsystem.theme.cardContainer
 import pl.nowinkitransferowe.core.model.Club
@@ -138,27 +151,31 @@ internal fun ClubScreen(
                 )
             }
 
-            is ClubUiState.Success -> LazyColumn(
-                contentPadding = PaddingValues(bottom = 16.dp),
-                modifier = Modifier
-                    .widthIn(max = 720.dp)
-                    .fillMaxSize()
-                    .testTag("club:${uiState.club.id}"),
-            ) {
-                item(key = "top") { TopRow(showBackButton, onBackClick, uiState.club, isFollowed, onFollowedChange) }
-                item(key = "header") { Header(uiState) }
-                item(key = "tabs") { Tabs(uiState, onTabSelected) }
-                if (uiState.tab != ClubTab.RUMOURS && uiState.availableSeasons.isNotEmpty()) {
-                    item(key = "seasons") { SeasonChips(uiState.availableSeasons, uiState.season, onSeasonSelected) }
-                }
-                when (uiState.tab) {
-                    ClubTab.FINANCES -> finances(uiState)
-                    ClubTab.ARRIVALS -> transfers(uiState.arrivals, uiState.season, R.string.feature_club_impl_no_arrivals, onTransferClick)
-                    ClubTab.DEPARTURES -> transfers(uiState.departures, uiState.season, R.string.feature_club_impl_no_departures, onTransferClick)
-                    ClubTab.RUMOURS -> {
-                        if (uiState.rumours.isEmpty()) item(key = "empty") { Empty(R.string.feature_club_impl_no_rumours) }
-                        items(uiState.rumours, key = { "rumour:${it.id}" }) { rumour ->
-                            RumourListItem(rumour, onClick = { onRumourClick(rumour.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+            is ClubUiState.Success -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+                ClubTopBar(uiState, showBackButton, onBackClick, isFollowed, onFollowedChange, scrollBehavior)
+                LazyColumn(
+                    contentPadding = PaddingValues(bottom = 16.dp),
+                    modifier = Modifier
+                        .widthIn(max = 720.dp)
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .testTag("club:${uiState.club.id}"),
+                ) {
+                    item(key = "header") { Header(uiState) }
+                    item(key = "tabs") { Tabs(uiState, onTabSelected) }
+                    if (uiState.tab != ClubTab.RUMOURS && uiState.availableSeasons.isNotEmpty()) {
+                        item(key = "seasons") { SeasonChips(uiState.availableSeasons, uiState.season, onSeasonSelected) }
+                    }
+                    when (uiState.tab) {
+                        ClubTab.FINANCES -> finances(uiState)
+                        ClubTab.ARRIVALS -> transfers(uiState.arrivals, uiState.season, R.string.feature_club_impl_no_arrivals, onTransferClick)
+                        ClubTab.DEPARTURES -> transfers(uiState.departures, uiState.season, R.string.feature_club_impl_no_departures, onTransferClick)
+                        ClubTab.RUMOURS -> {
+                            if (uiState.rumours.isEmpty()) item(key = "empty") { Empty(R.string.feature_club_impl_no_rumours) }
+                            items(uiState.rumours, key = { "rumour:${it.id}" }) { rumour ->
+                                RumourListItem(rumour, onClick = { onRumourClick(rumour.id) }, modifier = Modifier.padding(horizontal = 4.dp))
+                            }
                         }
                     }
                 }
@@ -167,6 +184,50 @@ internal fun ClubScreen(
     }
     TrackScreenViewEvent(screenName = "Club")
 }
+
+/**
+ * Material 3 Expressive's large flexible top bar: the club name big with the number of transfers
+ * under it, collapsing into a small title while the list scrolls.
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun ClubTopBar(
+    state: ClubUiState.Success,
+    showBackButton: Boolean,
+    onBackClick: () -> Unit,
+    isFollowed: Boolean,
+    onFollowedChange: (Boolean) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior,
+) {
+    val club = state.club
+    val context = LocalContext.current
+    LargeFlexibleTopAppBar(
+        title = { Text(club.name.uppercase(), style = LocalTextStyle.current.displayTitle(), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        subtitle = { Text(pluralStringResource(R.plurals.feature_club_impl_transfer_count, state.transferCount, state.transferCount)) },
+        navigationIcon = {
+            if (showBackButton) {
+                IconButton(onClick = onBackClick) {
+                    Icon(NtIcons.ArrowBack, contentDescription = stringResource(R.string.feature_club_impl_back))
+                }
+            }
+        },
+        actions = {
+            FollowButton(isFollowed, onFollowedChange, club.name, Modifier.testTag("club:follow"))
+            club.url?.let { url ->
+                IconButton(onClick = { share(context, club.name, url) }) {
+                    Icon(NtIcons.Share, contentDescription = stringResource(R.string.feature_club_impl_share))
+                }
+            }
+        },
+        // The app's scaffold already keeps the screens out of the status bar
+        windowInsets = WindowInsets(0),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+        scrollBehavior = scrollBehavior,
+    )
+}
+
+/** The titles in Barlow Condensed italic, like the website, at the size the top bar gives. */
+private fun TextStyle.displayTitle() = copy(fontFamily = BarlowCondensed, fontStyle = FontStyle.Italic, fontWeight = FontWeight.ExtraBold)
 
 @Composable
 private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, club: Club?, isFollowed: Boolean, onFollowedChange: (Boolean) -> Unit) {
@@ -193,18 +254,13 @@ private fun TopRow(showBackButton: Boolean, onBackClick: () -> Unit, club: Club?
 @Composable
 private fun Header(state: ClubUiState.Success) {
     val club = state.club
-    Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            NtCrest(imageUrl = club.crestUrl, name = club.name, size = 64.dp)
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(club.name.uppercase(), style = MaterialTheme.typography.headlineMedium.copy(fontStyle = FontStyle.Italic))
-                Text(
-                    pluralStringResource(R.plurals.feature_club_impl_transfer_count, state.transferCount, state.transferCount),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
+    // The name is in the top bar above; here the crest and the facts
+    Row(
+        Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        NtCrest(imageUrl = club.crestUrl, name = club.name, size = 64.dp)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             state.country?.let { country ->
                 Fact(text = country.name) { CountryFlag(country.code, contentDescription = null) }

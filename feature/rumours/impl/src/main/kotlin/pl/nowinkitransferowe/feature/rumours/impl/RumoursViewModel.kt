@@ -33,6 +33,7 @@ import pl.nowinkitransferowe.core.data.repository.DictionaryRepository
 import pl.nowinkitransferowe.core.data.repository.RumourRepository
 import pl.nowinkitransferowe.core.data.repository.RumourStatsRepository
 import pl.nowinkitransferowe.core.data.repository.UserDataRepository
+import pl.nowinkitransferowe.core.data.util.SyncManager
 import pl.nowinkitransferowe.core.model.Rumour
 import pl.nowinkitransferowe.core.model.RumourStage
 import pl.nowinkitransferowe.core.model.RumourStats
@@ -70,7 +71,13 @@ class RumoursViewModel @Inject constructor(
     private val rumourStatsRepository: RumourStatsRepository,
     dictionaryRepository: DictionaryRepository,
     userDataRepository: UserDataRepository,
+    private val syncManager: SyncManager,
 ) : ViewModel() {
+
+    val isSyncing: StateFlow<Boolean> = syncManager.isSyncing.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    /** Pull to refresh: asks for a sync now. */
+    fun refresh() = syncManager.requestSync()
 
     private val topic = savedStateHandle.getStateFlow<String?>(TOPIC_KEY, null)
     private val stageLevel = savedStateHandle.getStateFlow<Int?>(STAGE_KEY, null)

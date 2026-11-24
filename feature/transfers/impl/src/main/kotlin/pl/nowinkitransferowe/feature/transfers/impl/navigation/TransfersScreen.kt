@@ -52,6 +52,7 @@ import pl.nowinkitransferowe.core.model.Season
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.ui.FollowedChip
 import pl.nowinkitransferowe.core.ui.SyncIndicator
+import pl.nowinkitransferowe.core.ui.SyncRefreshBox
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.TransferListItem
@@ -70,6 +71,7 @@ fun TransfersRoute(
     TransfersScreen(
         uiState = uiState,
         isSyncing = isSyncing,
+        onRefresh = viewModel::refresh,
         selectedTransferId = selectedTransferId,
         highlightSelectedTransfer = highlightSelectedTransfer,
         onSeasonSelected = viewModel::selectSeason,
@@ -100,6 +102,7 @@ internal fun TransfersScreen(
     modifier: Modifier = Modifier,
     selectedTransferId: Int? = null,
     highlightSelectedTransfer: Boolean = false,
+    onRefresh: () -> Unit = {},
 ) {
     ReportDrawnWhen { !isSyncing && uiState is TransfersUiState.Success }
     val listState = rememberLazyListState()
@@ -110,7 +113,7 @@ internal fun TransfersScreen(
             .collectLatest { (last, total) -> if (last != null && last >= total - 3) loadNextPage() }
     }
 
-    Box(modifier.fillMaxSize()) {
+    SyncRefreshBox(isSyncing = isSyncing, onRefresh = onRefresh, modifier = modifier.fillMaxSize()) {
         if (uiState is TransfersUiState.Success) {
             LazyColumn(
                 state = listState,

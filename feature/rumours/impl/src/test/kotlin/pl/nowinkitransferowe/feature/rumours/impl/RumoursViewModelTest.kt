@@ -35,6 +35,7 @@ import pl.nowinkitransferowe.core.testing.repository.TestRumourStatsRepository
 import pl.nowinkitransferowe.core.testing.repository.TestUserDataRepository
 import pl.nowinkitransferowe.core.testing.repository.emptyUserData
 import pl.nowinkitransferowe.core.testing.util.MainDispatcherRule
+import pl.nowinkitransferowe.core.testing.util.TestSyncManager
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.time.Duration.Companion.days
@@ -51,7 +52,7 @@ class RumoursViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = RumoursViewModel(SavedStateHandle(), rumourRepository, statsRepository, dictionaryRepository, userDataRepository)
+        viewModel = RumoursViewModel(SavedStateHandle(), rumourRepository, statsRepository, dictionaryRepository, userDataRepository, TestSyncManager())
     }
 
     private fun success() = assertIs<RumoursUiState.Success>(viewModel.uiState.value)

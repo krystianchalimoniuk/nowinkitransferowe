@@ -63,6 +63,7 @@ import pl.nowinkitransferowe.core.model.RumourStats
 import pl.nowinkitransferowe.core.model.Topic
 import pl.nowinkitransferowe.core.ui.FollowedChip
 import pl.nowinkitransferowe.core.ui.RumourListItem
+import pl.nowinkitransferowe.core.ui.SyncRefreshBox
 import pl.nowinkitransferowe.core.ui.TrackScreenViewEvent
 import pl.nowinkitransferowe.core.ui.TrackScrollJank
 import pl.nowinkitransferowe.core.ui.stageName
@@ -76,9 +77,12 @@ internal fun RumoursRoute(
     viewModel: RumoursViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
     val selectedRumourId by viewModel.selectedRumourId.collectAsStateWithLifecycle()
     RumoursScreen(
         uiState = uiState,
+        isSyncing = isSyncing,
+        onRefresh = viewModel::refresh,
         onTopicSelected = viewModel::selectTopic,
         onStageSelected = viewModel::selectStage,
         onRumourClick = { id ->
@@ -104,10 +108,12 @@ internal fun RumoursScreen(
     modifier: Modifier = Modifier,
     selectedRumourId: Int? = null,
     highlightSelectedRumour: Boolean = false,
+    isSyncing: Boolean = false,
+    onRefresh: () -> Unit = {},
 ) {
     val listState = rememberLazyListState()
     TrackScrollJank(scrollableState = listState, stateName = "rumours:feed")
-    Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+    SyncRefreshBox(isSyncing = isSyncing, onRefresh = onRefresh, modifier = modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         when (uiState) {
             RumoursUiState.Loading -> NtLoadingWheel(
                 contentDesc = stringResource(R.string.feature_rumours_impl_loading),
